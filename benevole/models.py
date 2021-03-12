@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
-from evenement.models import Planning
+from evenement.models import Planning, Poste
 
 
 class Origine(models.Model):
@@ -54,13 +54,33 @@ class Creneau(models.Model):
     UUID_creneau = \
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     UUID_planning = \
-        models.ForeignKey(Planning, primary_key=False, blank=True, default='', on_delete=models.DO_NOTHING)
+        models.ForeignKey(Planning, primary_key=False, blank=False, default='', on_delete=models.DO_NOTHING)
     UUID_personne = \
-        models.ForeignKey(ProfilePersonne, primary_key=False, blank=True, default='', on_delete=models.DO_NOTHING)
-    nom = models.CharField(max_length=50, default='')
-    debut = models.DateTimeField(blank=True, default='')
-    fin = models.DateTimeField(blank=True, default='')
+        models.ForeignKey(ProfilePersonne, \
+                          primary_key=False, \
+                          null=True, \
+                          blank=True, \
+                          default='', \
+                          on_delete=models.DO_NOTHING)
+    UUID_poste = \
+        models.ForeignKey(Poste, \
+                          primary_key=False, \
+                          null=True, \
+                          blank=True, \
+                          default='', \
+                          on_delete=models.DO_NOTHING)
+    nom = models.CharField(max_length=80,  blank=True, default='')
+    debut = models.DateTimeField(blank=False, default='')
+    fin = models.DateTimeField(blank=False, default='')
     description = models.CharField(max_length=500, blank=True, default='')
+
+    # surcharge la methode save pour mettre un nom automatiquement
+    def save(self, *args, **kwargs):
+        self.nom = '{0}_{1}_{2}'.format( \
+            str(self.UUID_planning).replace(' ',''), \
+            self.debut.strftime('%H-%M'), \
+            self.fin.strftime('%H-%M'))
+        super(Creneau, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.nom

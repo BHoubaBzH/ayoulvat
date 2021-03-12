@@ -26,7 +26,7 @@ class Equipe(models.Model):
     description = models.CharField(max_length=500, blank=True, default='')
 
     def __str__(self):
-        return '{0} : {1}'.format(self.UUID_evenement, self.nom)
+        return '{0} - {1}'.format(self.UUID_evenement, self.nom)
 
 
 class Planning(models.Model):
@@ -41,4 +41,15 @@ class Planning(models.Model):
     description = models.CharField(max_length=500, blank=True, default='')
 
     def __str__(self):
-        return '{0} : {1}'.format(self.UUID_equipe, self.nom)
+        return '{0} - {1}'.format(self.UUID_equipe, self.nom)
+
+
+# reste a gérer les postes par équipe / planning 
+class Poste(models.Model):
+    UUID_poste = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID_planning = models.ForeignKey(Planning, primary_key=False, on_delete=models.CASCADE)
+    nom = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.nom
+
