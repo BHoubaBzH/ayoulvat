@@ -36,7 +36,9 @@ class Planning(models.Model):
     debut = models.DateTimeField()
     fin = models.DateTimeField()
     creneaux = models.BooleanField(help_text="par créneaux fixes ou par entrée libre des bénévoles")
+    ouvert_mineur = models.BooleanField(default=True, \
+                                        help_text='possibilité de bloquer l\'accès aux mineurs, ex : BAR')
     description = models.CharField(max_length=500, blank=True, default='')
 
     def __str__(self):
-        return self.nom
+        return '{0} : {1}'.format(self.UUID_equipe, self.nom)

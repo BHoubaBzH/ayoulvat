@@ -3,16 +3,28 @@ import uuid
 from django.contrib.auth.models import User
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+
 from evenement.models import Planning, Equipe
 
 
 class ProfilePersonne(models.Model):
+    MIN = "MINEUR"
+    HOM = "HOMME"
+    FEM = "FEMME"
+    NSP = "NSP"
+    genreListe = [
+        (MIN, 'Mineur'), # a remplacer a terme pour le choix par un calcul sur l'age
+        (HOM, 'Homme'),
+        (FEM, 'Femme'),
+        (NSP, 'Ne se prononce pas'),
+    ]
     # La liaison OneToOne vers le modèle User
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     UUID_personne = \
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     role = models.CharField(max_length=50, blank=True, default='')
-    genre = models.CharField(max_length=50, blank=True, default='')
+    #genre = models.CharField(max_length=50, blank=True, default='')
+    genre = models.CharField(max_length=50,choices=genreListe,default=NSP)
     date_de_naissance = models.DateField(default='2000-01-01')
     fixe = PhoneNumberField(null=True,
                             blank=True,
@@ -32,13 +44,14 @@ class ProfilePersonne(models.Model):
 class Creneau(models.Model):
     UUID_creneau = \
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    UUID_planning = models.ForeignKey(Planning, primary_key=False, blank=True, default='', on_delete=models.DO_NOTHING)
-    nom = models.CharField(max_length=50)
+    UUID_planning = \
+        models.ForeignKey(Planning, primary_key=False, blank=True, default='', on_delete=models.DO_NOTHING)
+    nom = models.CharField(max_length=50, default='')
     debut = models.DateTimeField(blank=True, default='')
     fin = models.DateTimeField(blank=True, default='')
     description = models.CharField(max_length=500, blank=True, default='')
-    UUID_personne = models.ForeignKey(ProfilePersonne, primary_key=False, blank=True, default='', on_delete=models.DO_NOTHING)
-    UUID_equipe = models.ForeignKey(Equipe, primary_key=False, blank=True, default='', on_delete=models.DO_NOTHING)
+    UUID_personne = \
+        models.ForeignKey(ProfilePersonne, primary_key=False, blank=True, default='', on_delete=models.DO_NOTHING)
 
     def __str__(self):
         return self.nom
