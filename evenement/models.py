@@ -51,5 +51,5 @@ class Poste(models.Model):
     nom = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.nom
+        return '{0} - {1}'.format(self.UUID_planning, self.nom)
 

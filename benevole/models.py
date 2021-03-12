@@ -62,13 +62,6 @@ class Creneau(models.Model):
                           blank=True, \
                           default='', \
                           on_delete=models.DO_NOTHING)
-    UUID_poste = \
-        models.ForeignKey(Poste, \
-                          primary_key=False, \
-                          null=True, \
-                          blank=True, \
-                          default='', \
-                          on_delete=models.DO_NOTHING)
     nom = models.CharField(max_length=80,  blank=True, default='')
     debut = models.DateTimeField(blank=False, default='')
     fin = models.DateTimeField(blank=False, default='')
