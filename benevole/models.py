@@ -1,0 +1,54 @@
+import uuid
+
+from django.contrib.auth.models import User
+from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
+from evenement.models import Planning, Equipe
+
+
+class ProfilePersonne(models.Model):
+    # La liaison OneToOne vers le modèle User
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    UUID_personne = \
+        models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    role = models.CharField(max_length=50, blank=True, default='')
+    genre = models.CharField(max_length=50, blank=True, default='')
+    date_de_naissance = models.DateField(default='2000-01-01')
+    fixe = PhoneNumberField(null=True,
+                            blank=True,
+                            unique=False,
+                            help_text='donnée optionnelle')
+    # unique=False car une personne peu etre contact pour plusieures assos
+    portable = PhoneNumberField(null=False,
+                                blank=False,
+                                unique=False,
+                                help_text='donnée obligatoire')
+    description = models.CharField(max_length=500, blank=True, default='')
+
+    def __str__(self):
+        return "{0} {1}".format(self.user.last_name.upper(), self.user.first_name.capitalize())
+
+
+class Creneau(models.Model):
+    UUID_creneau = \
+        models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID_planning = models.ForeignKey(Planning, primary_key=False, blank=True, default='', on_delete=models.DO_NOTHING)
+    nom = models.CharField(max_length=50)
+    debut = models.DateTimeField(blank=True, default='')
+    fin = models.DateTimeField(blank=True, default='')
+    description = models.CharField(max_length=500, blank=True, default='')
+    UUID_personne = models.ForeignKey(ProfilePersonne, primary_key=False, blank=True, default='', on_delete=models.DO_NOTHING)
+    UUID_equipe = models.ForeignKey(Equipe, primary_key=False, blank=True, default='', on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return self.nom
+
+
+class Origine(models.Model):
+    UUID_origine = \
+        models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    nom = models.CharField(max_length=50)
+    UUID_personne = models.OneToOneField(ProfilePersonne, primary_key=False, blank=True, default='', on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return self.nom

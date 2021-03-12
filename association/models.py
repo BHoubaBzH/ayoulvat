@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.datetime_safe import date
 from django.utils.timezone import now
 from phonenumber_field.modelfields import PhoneNumberField
 from administration.models import Formule
@@ -20,6 +21,7 @@ class Association(models.Model):
                             unique=False)  # unique=False car une personne peu etre contact pour plusieures assos
     portable = PhoneNumberField(null=False, blank=True,
                                 unique=False)  # unique=False car une personne peu etre contact pour plusieures assos
+    site_web = models.URLField(blank=False, default='')
     description = models.CharField(max_length=500, blank=True, default='')
     # attention : l'admin unique de l'asso ne pourra pas etre vide plus tard et contiendra le UUID de l'admin
     administrateur = models.CharField(max_length=500, blank=True,
@@ -62,8 +64,7 @@ class ProfileGestionnaire(models.Model):
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     role = models.CharField(max_length=50, blank=True, default='')
     genre = models.CharField(max_length=50, blank=True, default='')
-    age = models.IntegerField(default=20)
-    # unique=False car une personne peu etre contact pour plusieures assos
+    date_de_naissance = models.DateField(default='2000-01-01')
     fixe = PhoneNumberField(null=True,
                             blank=True,
                             unique=False,

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'association.apps.AssociationsConfig',
     'administration.apps.AdministrationConfig',
     'evenement',
+    'benevole',
 ]
 
 MIDDLEWARE = [

@@ -36,17 +36,18 @@ class GestionnaireDetails(UserAdmin):
 
 
 admin.site.register(Association, AssociationDetails)
-# on désenregistre le model User pour le replacer par le profile Gestionnaire
-admin.site.unregister(User)
-admin.site.register(User, GestionnaireDetails)
+# on Désenregistre le model User pour le replacer par le profile Gestionnaire
+#admin.site.unregister(User)
+#admin.site.register(User, GestionnaireDetails)
+admin.site.register(ProfileGestionnaire)
 
-
+'''
 ######################################
 # test de gestion user + profile dans la partie de l'admin
 ######################################
 class ProfileGestionnaireAdmin(admin.ModelAdmin):
     readonly_fields = ['role']  # Be sure to read only mode
-    fields = ('role', 'age')  # Specify the fields that need to be displayed in the administrative form
+    fields = ('role', 'date_de_naissance')  # Specify the fields that need to be displayed in the administrative form
     list_display = ('last_name', 'first_name',)
     # va chercher last_name dans la class user liée par ManyToMany
     def last_name(self, obj):
@@ -62,3 +63,6 @@ class ProfileInline(admin.StackedInline):
 
 
 admin.site.register(ProfileGestionnaire, ProfileGestionnaireAdmin)
+
+'''
+

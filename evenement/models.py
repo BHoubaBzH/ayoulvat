@@ -9,7 +9,7 @@ class Evenement(models.Model):
     nom = models.CharField(max_length=50)
     date_debut = models.DateField()
     date_fin = models.DateField()
-    site_web = models.URLField()
+    site_web = models.URLField(blank=True, default='')
     editable = models.BooleanField(help_text="inscription ouvertes ou non")
     description = models.CharField(max_length=500, blank=True, default='')
 
@@ -19,14 +19,14 @@ class Evenement(models.Model):
 
 class Equipe(models.Model):
     UUID_equipe = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    UUID_evenement = models.ForeignKey(Evenement, primary_key=False, on_delete=models.CASCADE)
+    UUID_evenement = models.ForeignKey(Evenement, primary_key=False, unique=False, on_delete=models.CASCADE)
     nom = models.CharField(max_length=50)
     responsable_valide = models.BooleanField(help_text="les responsables doivent valider les créneaux choisis")
     responsable_creer = models.BooleanField(help_text="les responsables peuvent creer des bénévoles")
     description = models.CharField(max_length=500, blank=True, default='')
 
     def __str__(self):
-        return self.nom
+        return '{0} : {1}'.format(self.UUID_evenement, self.nom)
 
 
 class Planning(models.Model):
