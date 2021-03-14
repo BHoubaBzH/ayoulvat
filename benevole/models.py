@@ -1,10 +1,10 @@
 import uuid
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
-
-from evenement.models import Planning, Poste
 
 
 class Origine(models.Model):
@@ -16,7 +16,7 @@ class Origine(models.Model):
         return self.nom
 
 
-class ProfilePersonne(models.Model):
+class ProfileBenevole(models.Model):
     MIN = "MINEUR"
     HOM = "HOMME"
     FEM = "FEMME"
@@ -50,30 +50,12 @@ class ProfilePersonne(models.Model):
         return "{0} {1}".format(self.user.last_name.upper(), self.user.first_name.capitalize())
 
 
-class Creneau(models.Model):
-    UUID_creneau = \
-        models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    UUID_planning = \
-        models.ForeignKey(Planning, primary_key=False, blank=False, default='', on_delete=models.DO_NOTHING)
-    UUID_personne = \
-        models.ForeignKey(ProfilePersonne, \
-                          primary_key=False, \
-                          null=True, \
-                          blank=True, \
-                          default='', \
-                          on_delete=models.DO_NOTHING)
-    nom = models.CharField(max_length=80,  blank=True, default='')
-    debut = models.DateTimeField(blank=False, default='')
-    fin = models.DateTimeField(blank=False, default='')
-    description = models.CharField(max_length=500, blank=True, default='')
+# hook create_or_update_user_profile methode.
+# quand on crée un user sur le projet, ce hook vient aussi lui creer une entree dans la table benevole
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        ProfileBenevole.objects.create(user=instance)
+    # instance.profile.save()
 
-    # surcharge la methode save pour mettre un nom automatiquement
-    def save(self, *args, **kwargs):
-        self.nom = '{0}_{1}_{2}'.format( \
-            str(self.UUID_planning).replace(' ',''), \
-            self.debut.strftime('%H-%M'), \
-            self.fin.strftime('%H-%M'))
-        super(Creneau, self).save(*args, **kwargs)
 
-    def __str__(self):
-        return self.nom

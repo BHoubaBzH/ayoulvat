@@ -2,19 +2,21 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from .models import Association, Abonnement, ProfileGestionnaire
+from .models import Association, Abonnement
+# from benevole.models import ProfileBenevole
 
 
 class AbonnementInLine(admin.TabularInline):
     model = Abonnement
 
-
+'''
 class ProfileGestionnaireInLine(admin.TabularInline):
-    model = ProfileGestionnaire
+    model = ProfileBenevole
     can_delete = False
     verbose_name = 'Gestionnaire'
     # fk_name = 'user'
     extra = 1
+'''
 
 
 class AssociationDetails(admin.ModelAdmin):
@@ -22,7 +24,7 @@ class AssociationDetails(admin.ModelAdmin):
     list_display = ['nom', 'description', 'courriel']
     inlines = [AbonnementInLine, ]
 
-
+'''
 class GestionnaireDetails(UserAdmin):
     inlines = [ProfileGestionnaireInLine, ]
     list_display = ('last_name', )
@@ -33,13 +35,15 @@ class GestionnaireDetails(UserAdmin):
         if not obj:
             return list()
         return super(GestionnaireDetails, self).get_inline_instances(request, obj)
+'''
 
 
 admin.site.register(Association, AssociationDetails)
 # on Désenregistre le model User pour le replacer par le profile Gestionnaire
-#admin.site.unregister(User)
-#admin.site.register(User, GestionnaireDetails)
-admin.site.register(ProfileGestionnaire)
+# admin.site.unregister(User)
+# admin.site.register(User, GestionnaireDetails)
+
+# admin.site.register(ProfileBenevole)
 
 '''
 ######################################

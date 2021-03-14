@@ -30,7 +30,7 @@ class Association(models.Model):
     est_actif = models.BooleanField(default=False)  # permet de geler une asso qui n'a pas payé par exemple
     date_creation = models.DateField(default=now, blank=False)
     # fait le lien avec les gestionnaires
-    Gestionnaires = models.ManyToManyField('ProfileGestionnaire', related_name='gestionnaires')
+    Gestionnaires = models.ManyToManyField('benevole.ProfileBenevole', related_name='Benevoles')
 
     def __str__(self):
         return self.nom
@@ -56,6 +56,7 @@ class Abonnement(models.Model):
         return self.a_jour
 
 
+''' passé dans app benevole
 # classe de surcharge sur le model user avec un profile
 class ProfileGestionnaire(models.Model):
     # La liaison OneToOne vers le modèle User
@@ -86,3 +87,5 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
         ProfileGestionnaire.objects.create(user=instance)
     # instance.profile.save()
+'''
+
