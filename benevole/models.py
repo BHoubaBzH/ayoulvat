@@ -1,8 +1,9 @@
 import uuid
 
-from django.db.models.signals import post_save
+from django.db.backends.utils import logger
+from django.db.models.signals import post_save, post_migrate
 from django.dispatch import receiver
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -32,7 +33,7 @@ class ProfileBenevole(models.Model):
     UUID_personne = \
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     UUID_origine = \
-        models.ForeignKey(Origine, primary_key=False, blank=True, default='', on_delete=models.DO_NOTHING)
+        models.ForeignKey(Origine, primary_key=False, null=True, blank=True, default='', on_delete=models.DO_NOTHING)
     role = models.CharField(max_length=50, blank=True, default='')
     genre = models.CharField(max_length=50,choices=genreListe,default=NSP)
     date_de_naissance = models.DateField(default='2000-01-01')
@@ -47,7 +48,10 @@ class ProfileBenevole(models.Model):
     description = models.CharField(max_length=500, blank=True, default='')
 
     def __str__(self):
-        return "{0} {1}".format(self.user.last_name.upper(), self.user.first_name.capitalize())
+        if not self.user.last_name and not self.user.first_name :
+            return "{0}".format(self.user.username)
+        else:
+            return "{0} {1}".format(self.user.last_name.upper(), self.user.first_name.capitalize())
 
 
 # hook create_or_update_user_profile methode.
@@ -59,3 +63,20 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
     # instance.profile.save()
 
 
+# crée nos groupe à la fin de la migration, grace au hook
+@receiver(post_migrate)
+def init_groups(sender, **kwargs):
+    #permission and group code goes here
+    group, created = Group.objects.get_or_create(name='Gestionnaire')
+    if created:
+        #group.permissions.add(can_read_campaign)
+        logger.info('Gestionnaire Group created')
+    group, created = Group.objects.get_or_create(name='Organisateur')
+    if created:
+        logger.info('Organisateur Group created')
+    group, created = Group.objects.get_or_create(name='Bénévole')
+    if created:
+        logger.info('Bénévole Group created')
+    group, created = Group.objects.get_or_create(name='plop')
+    if created:
+        logger.info('plop Group created')

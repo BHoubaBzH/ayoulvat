@@ -9,6 +9,7 @@ from .models import Association, Abonnement
 class AbonnementInLine(admin.TabularInline):
     model = Abonnement
 
+
 '''
 class ProfileGestionnaireInLine(admin.TabularInline):
     model = ProfileBenevole
@@ -23,6 +24,7 @@ class AssociationDetails(admin.ModelAdmin):
     # details affichés de l'asso dans la liste
     list_display = ['nom', 'description', 'courriel']
     inlines = [AbonnementInLine, ]
+
 
 '''
 class GestionnaireDetails(UserAdmin):
@@ -69,4 +71,3 @@ class ProfileInline(admin.StackedInline):
 admin.site.register(ProfileGestionnaire, ProfileGestionnaireAdmin)
 
 '''
-
