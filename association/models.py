@@ -30,7 +30,7 @@ class Association(models.Model):
     est_actif = models.BooleanField(default=False)  # permet de geler une asso qui n'a pas payé par exemple
     date_creation = models.DateField(default=now, blank=False)
     # fait le lien avec les gestionnaires
-    Gestionnaires = models.ManyToManyField('benevole.ProfileBenevole', related_name='Benevoles')
+    Gestionnaires = models.ManyToManyField('benevole.ProfileGestionnaire', related_name='Gestionnaire')
 
     def __str__(self):
         return self.nom
@@ -39,7 +39,7 @@ class Association(models.Model):
 class Abonnement(models.Model):
     UUID_abonnement = \
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    UUID_association = \
+    association = \
         models.OneToOneField(Association, primary_key=False, on_delete=models.CASCADE)
     a_jour = models.BooleanField(default=False)
     date_debut = models.DateField()

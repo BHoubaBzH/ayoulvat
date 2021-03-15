@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 
-from .models import ProfileBenevole, Origine
+from .models import ProfileBenevole, Origine, ProfileGestionnaire, ProfileResponsable, ProfileOrganisateur
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
@@ -28,4 +28,7 @@ class BenevoleDetails(UserAdmin):
 #admin.site.register(User, BenevoleDetails)
 
 admin.site.register(ProfileBenevole)
+admin.site.register(ProfileGestionnaire)
+admin.site.register(ProfileOrganisateur)
+admin.site.register(ProfileResponsable)
 admin.site.register(Origine)

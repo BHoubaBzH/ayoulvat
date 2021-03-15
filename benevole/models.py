@@ -30,10 +30,16 @@ class ProfileBenevole(models.Model):
     ]
     # La liaison OneToOne vers le modèle User
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    UUID_personne = \
+    UUID_benevole = \
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    UUID_origine = \
-        models.ForeignKey(Origine, primary_key=False, null=True, blank=True, default='', on_delete=models.DO_NOTHING)
+    origine = \
+        models.ForeignKey(Origine,
+                          primary_key=False,
+                          null=True,
+                          blank=True,
+                          default='',
+                          on_delete=models.DO_NOTHING)
+
     role = models.CharField(max_length=50, blank=True, default='')
     genre = models.CharField(max_length=50,choices=genreListe,default=NSP)
     date_de_naissance = models.DateField(default='2000-01-01')
@@ -54,6 +60,46 @@ class ProfileBenevole(models.Model):
             return "{0} {1}".format(self.user.last_name.upper(), self.user.first_name.capitalize())
 
 
+# paramètres specifiques gestionnaires de l'asso
+class ProfileGestionnaire(models.Model):
+    UUID_gestionnaire = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    benevole = models.OneToOneField(ProfileBenevole, on_delete=models.CASCADE, default='')
+    referent = models.BooleanField(default=False)
+
+    def __str__(self):
+        if not self.benevole.user.last_name and not self.benevole.user.first_name :
+            return "{0}".format(self.benevole.user.username)
+        else:
+            return "{0} {1}".format(self.benevole.user.last_name.upper(), \
+                                    self.benevole.user.first_name.capitalize())
+
+
+# paramètres specifiques organisateur de l'evenement
+class ProfileOrganisateur(models.Model):
+    UUID_Organisateur = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    benevole = models.OneToOneField(ProfileBenevole, on_delete=models.CASCADE, default='')
+
+    def __str__(self):
+        if not self.benevole.user.last_name and not self.benevole.user.first_name :
+            return "{0}".format(self.benevole.user.username)
+        else:
+            return "{0} {1}".format(self.benevole.user.last_name.upper(), \
+                                    self.benevole.user.first_name.capitalize())
+
+# paramètres specifiques responsable d'equipe
+class ProfileResponsable(models.Model):
+    UUID_Responsable = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    benevole = models.OneToOneField(ProfileBenevole, on_delete=models.CASCADE, default='')
+
+    def __str__(self):
+        if not self.benevole.user.last_name and not self.benevole.user.first_name :
+            return "{0}".format(self.benevole.user.username)
+        else:
+            return "{0} {1}".format(self.benevole.user.last_name.upper(), \
+                                    self.benevole.user.first_name.capitalize())
+
+'''
+
 # hook create_or_update_user_profile methode.
 # quand on crée un user sur le projet, ce hook vient aussi lui creer une entree dans la table benevole
 @receiver(post_save, sender=User)
@@ -61,22 +107,23 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
         ProfileBenevole.objects.create(user=instance)
     # instance.profile.save()
-
+'''
 
 # crée nos groupe à la fin de la migration, grace au hook
 @receiver(post_migrate)
 def init_groups(sender, **kwargs):
-    #permission and group code goes here
-    group, created = Group.objects.get_or_create(name='Gestionnaire')
-    if created:
-        #group.permissions.add(can_read_campaign)
-        logger.info('Gestionnaire Group created')
-    group, created = Group.objects.get_or_create(name='Organisateur')
-    if created:
-        logger.info('Organisateur Group created')
-    group, created = Group.objects.get_or_create(name='Bénévole')
-    if created:
-        logger.info('Bénévole Group created')
-    group, created = Group.objects.get_or_create(name='plop')
-    if created:
-        logger.info('plop Group created')
+    gest = 'GESTIONNAIRE'
+    orga = 'ORGANISATEUR'
+    bene = 'BENEVOLE'
+
+    groupe_liste = [
+        (gest, 'Gestionnaire'),
+        (orga, 'Organisateur'),
+        (bene, 'Bénévole'),
+    ]
+    for code_quadri, nom in groupe_liste:
+        group, created = Group.objects.get_or_create(name=nom)
+        if created:
+            # group.permissions.add(can_edit_user)
+            logger.info('{0} Group created'.format(nom))
+        group, created = Group.objects.get_or_create(name=nom)
