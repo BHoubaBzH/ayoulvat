@@ -8,7 +8,7 @@ from .models import Association, Abonnement
 
 class AbonnementInLine(admin.TabularInline):
     model = Abonnement
-
+    extra = 0
 
 '''
 class ProfileGestionnaireInLine(admin.TabularInline):
@@ -41,6 +41,7 @@ class GestionnaireDetails(UserAdmin):
 
 
 admin.site.register(Association, AssociationDetails)
+admin.site.register(Abonnement)
 # on Désenregistre le model User pour le replacer par le profile Gestionnaire
 # admin.site.unregister(User)
 # admin.site.register(User, GestionnaireDetails)

@@ -24,13 +24,15 @@ class Association(models.Model):
     site_web = models.URLField(blank=False, default='')
     description = models.CharField(max_length=500, blank=True, default='')
     # attention : l'admin unique de l'asso ne pourra pas etre vide plus tard et contiendra le UUID de l'admin
-    administrateur = models.CharField(max_length=500, blank=True,
-                                      default='', help_text="attention : l'admin unique de l'asso ne pourra pas etre "
-                                                            "vide plus tard et contiendra la FK vers l'admin")
+    administrateur = models.CharField(max_length=500,
+                                      blank=True,
+                                      default='',
+                                      help_text="attention : l'admin unique de l'asso ne pourra pas etre "
+                                                "vide plus tard et contiendra la FK vers l'admin")
     est_actif = models.BooleanField(default=False)  # permet de geler une asso qui n'a pas payé par exemple
     date_creation = models.DateField(default=now, blank=False)
     # fait le lien avec les gestionnaires
-    Gestionnaires = models.ManyToManyField('benevole.ProfileGestionnaire', related_name='Gestionnaire')
+    # Gestionnaires = models.ManyToManyField('benevole.ProfileGestionnaire', related_name='Gestionnaire')
 
     def __str__(self):
         return self.nom
@@ -39,8 +41,11 @@ class Association(models.Model):
 class Abonnement(models.Model):
     UUID_abonnement = \
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    association = \
-        models.OneToOneField(Association, primary_key=False, on_delete=models.CASCADE)
+    association = models.ForeignKey(Association,
+                                    primary_key=False,
+                                    default='',
+                                    null=True,
+                                    on_delete=models.CASCADE) # supp l'abonnement si l'asso est supprimée
     a_jour = models.BooleanField(default=False)
     date_debut = models.DateField()
     date_fin = models.DateField()
@@ -50,7 +55,12 @@ class Abonnement(models.Model):
     facture_code_postal = models.IntegerField()
     facture_courriel = models.EmailField(default='')
     description = models.CharField(max_length=500, blank=True, default='')
-    UUID_formule = models.OneToOneField(Formule, primary_key=False, on_delete=models.DO_NOTHING)
+    # on ne peut pas suprimer un tarif/formule si un abonnement pointe dessus
+    formule = models.OneToOneField(Formule,
+                                   primary_key=False,
+                                   default='',
+                                   null=True,
+                                   on_delete=models.PROTECT)
 
     def __bool__(self):
         return self.a_jour

@@ -6,9 +6,14 @@ from benevole.models import ProfileBenevole, ProfileOrganisateur, ProfileRespons
 
 class Evenement(models.Model):
     UUID_evenement = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    UUID_association = models.ForeignKey(Association, primary_key=False, on_delete=models.CASCADE)
-    UUID_benevole = models.ManyToManyField(ProfileOrganisateur,
-                                           related_name='Organisateur')
+    # supprime evenement si asso supprimée
+    association = models.ForeignKey(Association,
+                                    primary_key=False,
+                                    default='',
+                                    null=True,
+                                    on_delete=models.CASCADE)
+    benevole = models.ManyToManyField(ProfileOrganisateur,
+                                      related_name='Organisateur')
     nom = models.CharField(max_length=50)
     date_debut = models.DateField()
     date_fin = models.DateField()
@@ -22,21 +27,35 @@ class Evenement(models.Model):
 
 class Equipe(models.Model):
     UUID_equipe = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    UUID_evenement = models.ForeignKey(Evenement, primary_key=False, unique=False, on_delete=models.CASCADE)
-    UUID_benevole = models.ManyToManyField(ProfileResponsable,
-                                           related_name='Responsable')
+    # supprime equipe si evenement supprimé
+    evenement = models.ForeignKey(Evenement,
+                                  primary_key=False,
+                                  unique=False,
+                                  default='',
+                                  null=True,
+                                  on_delete=models.CASCADE)
+    # supprime le lien au bénévole si celui-ci est supprimé
+    benevole = models.ManyToManyField(ProfileResponsable,
+                                      related_name='Responsable',
+                                      default = '',
+                                      null = True)
     nom = models.CharField(max_length=50)
     responsable_valide = models.BooleanField(help_text="les responsables doivent valider les créneaux choisis")
     responsable_creer = models.BooleanField(help_text="les responsables peuvent creer des bénévoles")
     description = models.CharField(max_length=500, blank=True, default='')
 
     def __str__(self):
-        return '{0} - {1}'.format(self.UUID_evenement, self.nom)
+        return '{0} - {1}'.format(self.evenement, self.nom)
 
 
 class Planning(models.Model):
     UUID_planning = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    UUID_equipe = models.ForeignKey(Equipe, primary_key=False, on_delete=models.CASCADE)
+    # supprime planning si equipe supprimée
+    equipe = models.ForeignKey(Equipe, primary_key=False,
+                               unique=False,
+                               default='',
+                               null=False,
+                               on_delete=models.CASCADE)
     nom = models.CharField(max_length=50)
     debut = models.DateTimeField()
     fin = models.DateTimeField()
@@ -52,7 +71,12 @@ class Planning(models.Model):
 # reste a gérer les postes par équipe / planning
 class Poste(models.Model):
     UUID_poste = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    planning = models.ForeignKey(Planning, primary_key=False, on_delete=models.CASCADE)
+    # supprime poste si planning supprimé
+    planning = models.ForeignKey(Planning,
+                                 primary_key=False,
+                                 default='',
+                                 null=False,
+                                 on_delete=models.CASCADE)
     nom = models.CharField(max_length=50)
 
     def __str__(self):
@@ -62,17 +86,24 @@ class Poste(models.Model):
 class Creneau(models.Model):
     UUID_creneau = \
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    poste = \
-        models.ForeignKey(Poste, primary_key=False, blank=False, default='', on_delete=models.CASCADE)
+    # supprime creneau si poste supprimé
+    poste = models.ForeignKey(Poste,
+                              primary_key=False,
+                              blank=False,
+                              default='',
+                              null=False,
+                              on_delete=models.CASCADE)
+    # si retire le bénévole, on enlève le lien vers le bénévole
+    benevole = models.OneToOneField(ProfileBenevole,
+                                    primary_key=False,
+                                    default='',
+                                    null=True,
+                                    on_delete=models.SET_NULL)
     nom = models.CharField(max_length=80,
                            blank=True,
                            default='',
                            help_text='laisser vide, le champs sera rempli automatiquement')
-    UUID_benevole = models.OneToOneField(ProfileBenevole,
-                                         null=True,
-                                         default='',
-                                         primary_key=False,
-                                         on_delete=models.DO_NOTHING)
+
     debut = models.DateTimeField(blank=False, default='')
     fin = models.DateTimeField(blank=False, default='')
     description = models.CharField(max_length=500, blank=True, default='')

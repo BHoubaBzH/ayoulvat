@@ -7,6 +7,8 @@ from django.contrib.auth.models import User, Group
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
+from association.models import Association
+
 
 class Origine(models.Model):
     UUID_origine = \
@@ -29,17 +31,17 @@ class ProfileBenevole(models.Model):
         (NSP, 'Ne se prononce pas'),
     ]
     # La liaison OneToOne vers le modèle User
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE) # supprime ce benevole si le user est supprimé
     UUID_benevole = \
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    origine = \
-        models.ForeignKey(Origine,
-                          primary_key=False,
-                          null=True,
-                          blank=True,
-                          default='',
-                          on_delete=models.DO_NOTHING)
-
+    # on ne peut pas supprimer une asso origine tant
+    # qu'un bénévole en fait partie
+    origine = models.ForeignKey(Origine,
+                                primary_key=False,
+                                null=True,
+                                blank=True,
+                                default='',
+                                on_delete=models.PROTECT)
     role = models.CharField(max_length=50, blank=True, default='')
     genre = models.CharField(max_length=50,choices=genreListe,default=NSP)
     date_de_naissance = models.DateField(default='2000-01-01')
@@ -63,7 +65,16 @@ class ProfileBenevole(models.Model):
 # paramètres specifiques gestionnaires de l'asso
 class ProfileGestionnaire(models.Model):
     UUID_gestionnaire = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    benevole = models.OneToOneField(ProfileBenevole, on_delete=models.CASCADE, default='')
+    # supprime le gestionnaire si l'entree benevole est supprimee
+    benevole = models.OneToOneField(ProfileBenevole,
+                                    default='',
+                                    null=True,
+                                    on_delete=models.CASCADE)
+    # supprime le gestionnaire si l'asso est supprimée, le benevole reste
+    association = models.ForeignKey(Association,
+                                    default='',
+                                    null=True,
+                                    on_delete=models.CASCADE)
     referent = models.BooleanField(default=False)
 
     def __str__(self):
@@ -77,7 +88,11 @@ class ProfileGestionnaire(models.Model):
 # paramètres specifiques organisateur de l'evenement
 class ProfileOrganisateur(models.Model):
     UUID_Organisateur = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    benevole = models.OneToOneField(ProfileBenevole, on_delete=models.CASCADE, default='')
+    # supprime l'organisateur si l'entree benevole est supprimee
+    benevole = models.OneToOneField(ProfileBenevole,
+                                    default='',
+                                    null=True,
+                                    on_delete=models.CASCADE)
 
     def __str__(self):
         if not self.benevole.user.last_name and not self.benevole.user.first_name :
@@ -89,7 +104,11 @@ class ProfileOrganisateur(models.Model):
 # paramètres specifiques responsable d'equipe
 class ProfileResponsable(models.Model):
     UUID_Responsable = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    benevole = models.OneToOneField(ProfileBenevole, on_delete=models.CASCADE, default='')
+    # supprime le responsable si l'entree benevole est supprimee
+    benevole = models.OneToOneField(ProfileBenevole,
+                                    default='',
+                                    null=True,
+                                    on_delete=models.CASCADE)
 
     def __str__(self):
         if not self.benevole.user.last_name and not self.benevole.user.first_name :
