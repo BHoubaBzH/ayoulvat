@@ -6,7 +6,6 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User, Group
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
-
 from association.models import Association
 
 
@@ -93,6 +92,10 @@ class ProfileOrganisateur(models.Model):
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
+    evenement = models.ForeignKey('evenement.Evenement',
+                                  default='',
+                                  null=True,
+                                  on_delete=models.CASCADE)
 
     def __str__(self):
         if not self.benevole.user.last_name and not self.benevole.user.first_name :
@@ -109,6 +112,10 @@ class ProfileResponsable(models.Model):
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
+    equipe = models.ForeignKey('evenement.Equipe',
+                               default='',
+                               null=True,
+                               on_delete=models.CASCADE)
 
     def __str__(self):
         if not self.benevole.user.last_name and not self.benevole.user.first_name :

@@ -65,7 +65,7 @@ class Planning(models.Model):
     description = models.CharField(max_length=500, blank=True, default='')
 
     def __str__(self):
-        return '{0} - {1}'.format(self.UUID_equipe, self.nom)
+        return '{0} - {1}'.format(self.equipe, self.nom)
 
 
 # reste a gérer les postes par équipe / planning
