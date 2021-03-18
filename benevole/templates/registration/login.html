@@ -1,0 +1,13 @@
+<!-- templates/registration/login.html -->
+{% extends 'benevole/base.html' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+<h2>Connexion</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Connexion</button>
+</form>
+{% endblock %}

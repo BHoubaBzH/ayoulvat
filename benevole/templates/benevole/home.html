@@ -1,0 +1,18 @@
+<!-- templates/home.html -->
+{% extends 'benevole/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  {% if user.last_name or user.first.name %}
+    Bonjour {{ user.last_name }} {{ user.first_name}} !
+  {% else %}
+    Bonjour {{ user.username }}
+  {% endif %}
+  <p><a href="{% url 'logout' %}">Deconnexion</a></p>
+{% else %}
+  <p>Vous n'etes pas connecté</p>
+  <a href="{% url 'login' %}">Connexion</a>
+{% endif %}
+{% endblock %}

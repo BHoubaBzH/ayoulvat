@@ -12,7 +12,7 @@ class Evenement(models.Model):
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
-    benevole = models.ManyToManyField(ProfileOrganisateur,
+    organisateur = models.ManyToManyField(ProfileOrganisateur,
                                       related_name='Organisateur')
     nom = models.CharField(max_length=50)
     date_debut = models.DateField()
@@ -35,10 +35,9 @@ class Equipe(models.Model):
                                   null=True,
                                   on_delete=models.CASCADE)
     # supprime le lien au bénévole si celui-ci est supprimé
-    benevole = models.ManyToManyField(ProfileResponsable,
+    responsable = models.ManyToManyField(ProfileResponsable,
                                       related_name='Responsable',
-                                      default = '',
-                                      null = True)
+                                      default = '')
     nom = models.CharField(max_length=50)
     responsable_valide = models.BooleanField(help_text="les responsables doivent valider les créneaux choisis")
     responsable_creer = models.BooleanField(help_text="les responsables peuvent creer des bénévoles")

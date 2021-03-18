@@ -12,7 +12,8 @@ from association.models import Association
 class Origine(models.Model):
     UUID_origine = \
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    nom = models.CharField(max_length=50)
+    nom = models.CharField(max_length=50,
+                           verbose_name="association repésentée par le bénévole")
 
     def __str__(self):
         return self.nom
@@ -30,9 +31,9 @@ class ProfileBenevole(models.Model):
         (NSP, 'Ne se prononce pas'),
     ]
     # La liaison OneToOne vers le modèle User
-    user = models.OneToOneField(User, on_delete=models.CASCADE) # supprime ce benevole si le user est supprimé
-    UUID_benevole = \
-        models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    user = models.OneToOneField(User,
+                                on_delete=models.CASCADE) # supprime ce benevole si le user est supprimé
+    UUID_benevole = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # on ne peut pas supprimer une asso origine tant
     # qu'un bénévole en fait partie
     origine = models.ForeignKey(Origine,
