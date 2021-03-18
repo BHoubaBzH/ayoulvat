@@ -1,7 +1,7 @@
 import uuid
 from django.db import models
 from association.models import Association
-from benevole.models import ProfileBenevole, ProfileOrganisateur, ProfileResponsable
+from benevole.models import ProfileOrganisateur, ProfileResponsable, ProfileBenevole
 
 
 class Evenement(models.Model):
@@ -13,12 +13,17 @@ class Evenement(models.Model):
                                     null=True,
                                     on_delete=models.CASCADE)
     organisateur = models.ManyToManyField(ProfileOrganisateur,
-                                      related_name='Organisateur')
+                                          related_name='OrganisateurEvenement',
+                                          default='')
+    benevole =  models.ManyToManyField(ProfileBenevole,
+                                       related_name='BenevolesEvenement',
+                                       default='')
     nom = models.CharField(max_length=50)
     date_debut = models.DateField()
     date_fin = models.DateField()
     site_web = models.URLField(blank=True, default='')
-    editable = models.BooleanField(help_text="inscription ouvertes ou non")
+    editable = models.BooleanField(default=True, help_text="si non editable, l'évènement est bloqué."
+                                                           " Seul un responsable ou + peu l'éditer ou le réouvrir")
     description = models.CharField(max_length=500, blank=True, default='')
 
     def __str__(self):
@@ -34,15 +39,18 @@ class Equipe(models.Model):
                                   default='',
                                   null=True,
                                   on_delete=models.CASCADE)
-    # supprime le lien au bénévole si celui-ci est supprimé
     responsable = models.ManyToManyField(ProfileResponsable,
-                                      related_name='Responsable',
-                                      default = '')
+                                         related_name='ResponsableEquipe',
+                                         default = '')
+    benevole =  models.ManyToManyField(ProfileBenevole,
+                                       related_name='BenevolesEquipe',
+                                       default='')
     nom = models.CharField(max_length=50)
     responsable_valide = models.BooleanField(help_text="les responsables doivent valider les créneaux choisis")
     responsable_creer = models.BooleanField(help_text="les responsables peuvent creer des bénévoles")
     description = models.CharField(max_length=500, blank=True, default='')
-
+    editable = models.BooleanField(default=True, help_text="si non editable, l'équipe est bloqué."
+                                                           " Seul un responsable ou + peu l'éditer ou le réouvrir")
     def __str__(self):
         return '{0} - {1}'.format(self.evenement, self.nom)
 
@@ -55,6 +63,9 @@ class Planning(models.Model):
                                default='',
                                null=False,
                                on_delete=models.CASCADE)
+    benevole = models.ManyToManyField(ProfileBenevole,
+                                       related_name='BenevolesPlanning',
+                                       default='')
     nom = models.CharField(max_length=50)
     debut = models.DateTimeField()
     fin = models.DateTimeField()
@@ -62,7 +73,8 @@ class Planning(models.Model):
     ouvert_mineur = models.BooleanField(default=True,
                                         help_text='possibilité de bloquer l\'accès aux mineurs, ex : BAR')
     description = models.CharField(max_length=500, blank=True, default='')
-
+    editable = models.BooleanField(default=True, help_text="si non editable, le planning est bloqué."
+                                                           " Seul un responsable ou + peu l'éditer ou le réouvrir")
     def __str__(self):
         return '{0} - {1}'.format(self.equipe, self.nom)
 
@@ -76,8 +88,12 @@ class Poste(models.Model):
                                  default='',
                                  null=False,
                                  on_delete=models.CASCADE)
+    benevole = models.ManyToManyField(ProfileBenevole,
+                                       related_name='BenevolesPoste',
+                                       default='')
     nom = models.CharField(max_length=50)
-
+    editable = models.BooleanField(default=True, help_text="si non editable, le poste est bloqué."
+                                                           " Seul un responsable ou + peu l'éditer ou le réouvrir")
     def __str__(self):
         return '{0} - {1}'.format(self.planning, self.nom)
 
@@ -92,12 +108,9 @@ class Creneau(models.Model):
                               default='',
                               null=False,
                               on_delete=models.CASCADE)
-    # si retire le bénévole, on enlève le lien vers le bénévole
-    benevole = models.OneToOneField(ProfileBenevole,
-                                    primary_key=False,
-                                    default='',
-                                    null=True,
-                                    on_delete=models.SET_NULL)
+    benevole = models.ManyToManyField(ProfileBenevole,
+                                       related_name='BenevolesCreneau',
+                                       default='')
     nom = models.CharField(max_length=80,
                            blank=True,
                            default='',
@@ -106,6 +119,8 @@ class Creneau(models.Model):
     debut = models.DateTimeField(blank=False, default='')
     fin = models.DateTimeField(blank=False, default='')
     description = models.CharField(max_length=500, blank=True, default='')
+    editable = models.BooleanField(default=True, help_text="si non editable, le créneau est bloqué."
+                                                           " Seul un responsable ou + peu l'éditer ou le réouvrir")
 
     class Meta:
         verbose_name_plural = "Creneaux"

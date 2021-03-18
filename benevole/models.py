@@ -19,7 +19,7 @@ class Origine(models.Model):
         return self.nom
 
 
-class ProfileBenevole(models.Model):
+class ProfilePersonne(models.Model):
     MIN = "MINEUR"
     HOM = "HOMME"
     FEM = "FEMME"
@@ -32,10 +32,10 @@ class ProfileBenevole(models.Model):
     ]
     # La liaison OneToOne vers le modèle User
     user = models.OneToOneField(User,
-                                on_delete=models.CASCADE) # supprime ce benevole si le user est supprimé
-    UUID_benevole = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+                                on_delete=models.CASCADE) # supprime cette personne si le user est supprimé
+    UUID_personne = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # on ne peut pas supprimer une asso origine tant
-    # qu'un bénévole en fait partie
+    # qu'une personne en fait partie
     origine = models.ForeignKey(Origine,
                                 primary_key=False,
                                 null=True,
@@ -65,8 +65,8 @@ class ProfileBenevole(models.Model):
 # paramètres specifiques gestionnaires de l'asso
 class ProfileGestionnaire(models.Model):
     UUID_gestionnaire = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    # supprime le gestionnaire si l'entree benevole est supprimee
-    benevole = models.OneToOneField(ProfileBenevole,
+    # supprime le gestionnaire si l'entree personne est supprimee
+    personne = models.OneToOneField(ProfilePersonne,
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
@@ -78,61 +78,81 @@ class ProfileGestionnaire(models.Model):
     referent = models.BooleanField(default=False)
 
     def __str__(self):
-        if not self.benevole.user.last_name and not self.benevole.user.first_name :
-            return "{0}".format(self.benevole.user.username)
+        if not self.personne.user.last_name and not self.personne.user.first_name :
+            return "{0}".format(self.personne.user.username)
         else:
-            return "{0} {1}".format(self.benevole.user.last_name.upper(), \
-                                    self.benevole.user.first_name.capitalize())
+            return "{0} {1}".format(self.personne.user.last_name.upper(), \
+                                    self.personne.user.first_name.capitalize())
 
 
 # paramètres specifiques organisateur de l'evenement
 class ProfileOrganisateur(models.Model):
-    UUID_Organisateur = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    # supprime l'organisateur si l'entree benevole est supprimee
-    benevole = models.OneToOneField(ProfileBenevole,
+    UUID_organisateur = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    # supprime l'organisateur si l'entree personne est supprimee
+    personne = models.OneToOneField(ProfilePersonne,
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
-    evenement = models.ForeignKey('evenement.Evenement',
-                                  default='',
-                                  null=True,
-                                  on_delete=models.CASCADE)
+    # pas de sens
+    # evenement = models.ForeignKey('evenement.Evenement',
+    #                              default='',
+    #                              null=True,
+    #                              on_delete=models.CASCADE)
 
     def __str__(self):
-        if not self.benevole.user.last_name and not self.benevole.user.first_name :
-            return "{0}".format(self.benevole.user.username)
+        if not self.personne.user.last_name and not self.personne.user.first_name :
+            return "{0}".format(self.personne.user.username)
         else:
-            return "{0} {1}".format(self.benevole.user.last_name.upper(), \
-                                    self.benevole.user.first_name.capitalize())
+            return "{0} {1}".format(self.personne.user.last_name.upper(), \
+                                    self.personne.user.first_name.capitalize())
 
 # paramètres specifiques responsable d'equipe
 class ProfileResponsable(models.Model):
-    UUID_Responsable = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    # supprime le responsable si l'entree benevole est supprimee
-    benevole = models.OneToOneField(ProfileBenevole,
+    UUID_responsable = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    # supprime le responsable si l'entree personne est supprimee
+    personne = models.OneToOneField(ProfilePersonne,
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
-    equipe = models.ForeignKey('evenement.Equipe',
-                               default='',
-                               null=True,
-                               on_delete=models.CASCADE)
+    # pas de sens
+    # equipe = models.ForeignKey('evenement.Equipe',
+    #                           default='',
+    #                           null=True,
+    #                           on_delete=models.CASCADE)
 
     def __str__(self):
-        if not self.benevole.user.last_name and not self.benevole.user.first_name :
-            return "{0}".format(self.benevole.user.username)
+        if not self.personne.user.last_name and not self.personne.user.first_name :
+            return "{0}".format(self.personne.user.username)
         else:
-            return "{0} {1}".format(self.benevole.user.last_name.upper(), \
-                                    self.benevole.user.first_name.capitalize())
+            return "{0} {1}".format(self.personne.user.last_name.upper(), \
+                                    self.personne.user.first_name.capitalize())
+
+
+# paramètres specifiques benevole
+class ProfileBenevole(models.Model):
+    UUID_benevole = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    # supprime le benevole si l'entree personne est supprimee
+    personne = models.OneToOneField(ProfilePersonne,
+                                    default='',
+                                    null=True,
+                                    on_delete=models.CASCADE)
+    message = models.CharField(max_length=1000, blank=True, default='')
+
+    def __str__(self):
+        if not self.personne.user.last_name and not self.personne.user.first_name :
+            return "{0}".format(self.personne.user.username)
+        else:
+            return "{0} {1}".format(self.personne.user.last_name.upper(), \
+                                    self.personne.user.first_name.capitalize())
+
 
 '''
-
 # hook create_or_update_user_profile methode.
-# quand on crée un user sur le projet, ce hook vient aussi lui creer une entree dans la table benevole
+# quand on crée un user sur le projet, ce hook vient aussi lui creer une entree dans la table personne
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
-        ProfileBenevole.objects.create(user=instance)
+        ProfilePersonne.objects.create(user=instance)
     # instance.profile.save()
 '''
 
@@ -141,11 +161,13 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
 def init_groups(sender, **kwargs):
     gest = 'GESTIONNAIRE'
     orga = 'ORGANISATEUR'
+    resp = 'RESPONSABLE'
     bene = 'BENEVOLE'
 
     groupe_liste = [
         (gest, 'Gestionnaire'),
         (orga, 'Organisateur'),
+        (resp, 'Responsable'),
         (bene, 'Bénévole'),
     ]
     for code_quadri, nom in groupe_liste:

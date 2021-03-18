@@ -29,7 +29,9 @@ class Association(models.Model):
                                       default='',
                                       help_text="attention : l'admin unique de l'asso ne pourra pas etre "
                                                 "vide plus tard et contiendra la FK vers l'admin")
-    est_actif = models.BooleanField(default=False)  # permet de geler une asso qui n'a pas payé par exemple
+    est_actif = models.BooleanField(default=False, help_text="permet de geler une asso : "
+                                                             " - qui n'a pas payée"
+                                                             " - supprimée, pour garder l'historique")
     date_creation = models.DateField(default=now, blank=False)
     # fait le lien avec les gestionnaires
     # Gestionnaires = models.ManyToManyField('benevole.ProfileGestionnaire', related_name='Gestionnaire')
