@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.utils.datetime_safe import date
 from django.utils.timezone import now
 from phonenumber_field.modelfields import PhoneNumberField
+
 from administration.models import Formule
 from django.contrib.auth.models import User
 
@@ -24,11 +25,11 @@ class Association(models.Model):
     site_web = models.URLField(blank=False, default='')
     description = models.CharField(max_length=500, blank=True, default='')
     # attention : l'admin unique de l'asso ne pourra pas etre vide plus tard et contiendra le UUID de l'admin
-    administrateur = models.CharField(max_length=500,
-                                      blank=True,
-                                      default='',
-                                      help_text="attention : l'admin unique de l'asso ne pourra pas etre "
-                                                "vide plus tard et contiendra la FK vers l'admin")
+    administrateur = models.OneToOneField('benevole.ProfileGestionnaire',
+                                          null=True,
+                                          default='',
+                                          related_name='admin',
+                                          on_delete=models.SET_NULL)
     est_actif = models.BooleanField(default=False, help_text="permet de geler une asso : "
                                                              " - qui n'a pas payée"
                                                              " - supprimée, pour garder l'historique")

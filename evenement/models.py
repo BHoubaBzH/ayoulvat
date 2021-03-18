@@ -22,7 +22,7 @@ class Evenement(models.Model):
     date_debut = models.DateField()
     date_fin = models.DateField()
     site_web = models.URLField(blank=True, default='')
-    editable = models.BooleanField(default=True, help_text="si non editable, l'évènement est bloqué."
+    editable = models.BooleanField(default=True, help_text="si non editable, l'é vènement est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
     description = models.CharField(max_length=500, blank=True, default='')
 
@@ -42,15 +42,16 @@ class Equipe(models.Model):
     responsable = models.ManyToManyField(ProfileResponsable,
                                          related_name='ResponsableEquipe',
                                          default = '')
-    benevole =  models.ManyToManyField(ProfileBenevole,
-                                       related_name='BenevolesEquipe',
-                                       default='')
+    benevole = models.ManyToManyField(ProfileBenevole,
+                                      related_name='BenevolesEquipe',
+                                      default='')
     nom = models.CharField(max_length=50)
     responsable_valide = models.BooleanField(help_text="les responsables doivent valider les créneaux choisis")
     responsable_creer = models.BooleanField(help_text="les responsables peuvent creer des bénévoles")
     description = models.CharField(max_length=500, blank=True, default='')
     editable = models.BooleanField(default=True, help_text="si non editable, l'équipe est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
+
     def __str__(self):
         return '{0} - {1}'.format(self.evenement, self.nom)
 

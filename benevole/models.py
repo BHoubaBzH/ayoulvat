@@ -1,7 +1,7 @@
 import uuid
 
 from django.db.backends.utils import logger
-from django.db.models.signals import post_save, post_migrate
+from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.contrib.auth.models import User, Group
 from django.db import models
@@ -136,7 +136,7 @@ class ProfileBenevole(models.Model):
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
-    message = models.CharField(max_length=1000, blank=True, default='')
+    message = models.TextField(max_length=1000, blank=True, default='')
 
     def __str__(self):
         if not self.personne.user.last_name and not self.personne.user.first_name :

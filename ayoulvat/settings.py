@@ -125,5 +125,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOGIN_REDIRECT_URL = 'home' # redirection de login
-LOGOUT_REDIRECT_URL = 'home' # redirection de logout
+LOGIN_REDIRECT_URL = 'home'  # redirection de login
+LOGOUT_REDIRECT_URL = 'home'  # redirection de logout
+
+# conf smtp de test
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))

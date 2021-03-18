@@ -20,8 +20,11 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     # pages de login / logout ...
-    #path('connect/', include('django.contrib.auth.urls')),
+    # path('connect/', include('django.contrib.auth.urls')),
+    # home page pour l'instant
+    path('', TemplateView.as_view(template_name='benevole/home.html'), name='home'),
     # page accedée après login
-    # path('', TemplateView.as_view(template_name='benevole/home.html'), name='home'),
-    path('ayoulvat/', include('benevole.urls'))
+    path('ayoulvat/', include('benevole.urls')),
+    # test phil premiere page
+    path('association/', include ('association.urls'))
 ]
