@@ -10,14 +10,15 @@ class Evenement(models.Model):
     association = models.ForeignKey(Association,
                                     primary_key=False,
                                     default='',
-                                    null=True,
                                     on_delete=models.CASCADE)
     organisateur = models.ManyToManyField(ProfileOrganisateur,
                                           related_name='OrganisateurEvenement',
+                                          blank=True,
                                           default='')
-    benevole =  models.ManyToManyField(ProfileBenevole,
-                                       related_name='BenevolesEvenement',
-                                       default='')
+    benevole = models.ManyToManyField(ProfileBenevole,
+                                      related_name='BenevolesEvenement',
+                                      blank=True,
+                                      default='')
     nom = models.CharField(max_length=50)
     date_debut = models.DateField()
     date_fin = models.DateField()
@@ -41,9 +42,11 @@ class Equipe(models.Model):
                                   on_delete=models.CASCADE)
     responsable = models.ManyToManyField(ProfileResponsable,
                                          related_name='ResponsableEquipe',
+                                         blank=True,
                                          default = '')
     benevole = models.ManyToManyField(ProfileBenevole,
                                       related_name='BenevolesEquipe',
+                                      blank=True,
                                       default='')
     nom = models.CharField(max_length=50)
     responsable_valide = models.BooleanField(help_text="les responsables doivent valider les créneaux choisis")
@@ -65,8 +68,9 @@ class Planning(models.Model):
                                null=False,
                                on_delete=models.CASCADE)
     benevole = models.ManyToManyField(ProfileBenevole,
-                                       related_name='BenevolesPlanning',
-                                       default='')
+                                      related_name='BenevolesPlanning',
+                                      blank=True,
+                                      default='')
     nom = models.CharField(max_length=50)
     debut = models.DateTimeField()
     fin = models.DateTimeField()
@@ -90,8 +94,9 @@ class Poste(models.Model):
                                  null=False,
                                  on_delete=models.CASCADE)
     benevole = models.ManyToManyField(ProfileBenevole,
-                                       related_name='BenevolesPoste',
-                                       default='')
+                                      related_name='BenevolesPoste',
+                                      blank=True,
+                                      default='')
     nom = models.CharField(max_length=50)
     editable = models.BooleanField(default=True, help_text="si non editable, le poste est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
@@ -110,8 +115,9 @@ class Creneau(models.Model):
                               null=False,
                               on_delete=models.CASCADE)
     benevole = models.ManyToManyField(ProfileBenevole,
-                                       related_name='BenevolesCreneau',
-                                       default='')
+                                      related_name='BenevolesCreneau',
+                                      blank=True,
+                                      default='')
     nom = models.CharField(max_length=80,
                            blank=True,
                            default='',

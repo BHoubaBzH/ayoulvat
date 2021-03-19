@@ -1,0 +1,9 @@
+{% extends 'association/base.html' %}
+
+{% block content %}
+{% for asso in Assos %}
+<ul>
+    <a href="{{ asso.UUID_association }}"><H1>{{ asso.nom }}</H1></a>
+</ul>
+{% endfor %}
+{% endblock content %}

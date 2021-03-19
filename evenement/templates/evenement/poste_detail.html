@@ -1,0 +1,12 @@
+{% extends 'evenement/base.html' %}
+
+{% block content %}
+<ul>
+    <a href={% url 'liste_creneaux' %}><H1>{{ Poste.nom }}</H1></a>
+    <li>description : {{ Poste.description }}</li>
+</ul>
+<ul>
+    <li>ici les details du poste</li>
+</ul>
+
+{% endblock content %}

@@ -1,0 +1,13 @@
+{% extends 'evenement/base.html' %}
+
+{% block content %}
+<ul>
+    <a href={% url 'liste_equipes' %}><H1>{{ Evenement.nom }}</H1></a>
+    <li>date de début : {{ Evenement.date_debut }}</li>
+    <li>date de fin : {{ Evenement.date_fin }}</li>
+</ul>
+<ul>
+    <li>ici les details de l'evenement</li>
+</ul>
+
+{% endblock content %}

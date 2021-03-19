@@ -1,0 +1,14 @@
+{% extends 'association/base.html' %}
+
+{% block content %}
+<ul>
+    <!-- a href="/evenement/{{ asso.UUID_association }}"><H1>{{ Asso.nom }}</H1></a-->
+    <a href={% url 'liste_evenements' %}><H1>{{ Asso.nom }}</H1></a>
+    <li>date de création : {{ Asso.date_creation }}</li>
+    <li>administrateur : {{ Asso.administrateur }}</li>
+</ul>
+<ul>
+    <li>ici les details de l'association</li>
+</ul>
+
+{% endblock content %}

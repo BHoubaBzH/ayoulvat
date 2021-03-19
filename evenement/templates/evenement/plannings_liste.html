@@ -1,0 +1,16 @@
+{% extends 'evenement/base.html' %}
+
+{% block content %}
+
+{% if Plannings %}
+    {% for plan in Plannings %}
+            <ul>
+                <a href={{ plan.UUID_planning }}><H1>{{ plan.nom }}</H1></a>
+            </ul>
+    {% endfor %}
+
+{% else %}
+    <p>il n'y a pas encore de planning créés pour cette équipe.</p>
+{% endif %}
+
+{% endblock content %}

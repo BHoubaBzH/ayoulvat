@@ -24,12 +24,11 @@ class Association(models.Model):
                                 unique=False)  # unique=False car une personne peu etre contact pour plusieures assos
     site_web = models.URLField(blank=False, default='')
     description = models.CharField(max_length=500, blank=True, default='')
-    # attention : l'admin unique de l'asso ne pourra pas etre vide plus tard et contiendra le UUID de l'admin
-    administrateur = models.OneToOneField('benevole.ProfileGestionnaire',
-                                          null=True,
-                                          default='',
-                                          related_name='admin',
-                                          on_delete=models.SET_NULL)
+    administrateur = models.ForeignKey('benevole.ProfileGestionnaire',
+                                       null=True,
+                                       default='',
+                                       related_name='admin',
+                                       on_delete=models.SET_NULL)
     est_actif = models.BooleanField(default=False, help_text="permet de geler une asso : "
                                                              " - qui n'a pas payée"
                                                              " - supprimée, pour garder l'historique")

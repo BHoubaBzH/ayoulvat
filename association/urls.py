@@ -3,8 +3,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # test phil premiere page
-    path('', views.ShowAsso, name='show_asso'),
+    path('', views.liste_assos, name='liste_assos'),
+    path('<uuid_asso>/', views.detail_asso, name='detail_asso'),
 
 
 ]

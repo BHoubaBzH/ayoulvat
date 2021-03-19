@@ -19,16 +19,12 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # pages de login / logout ...
-    # path('connect/', include('django.contrib.auth.urls')),
-    # home page pour l'instant
-    #path('', TemplateView.as_view(template_name='benevole/home.html'), name='home'),
 
-    # conf finale
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    # tout ce qui touche à l'authent
     path('', include('django.contrib.auth.urls')),
-
+    # nos app
     path('benevole/', include('benevole.urls')),
     path('association/', include('association.urls')),
-    #path('registration/', TemplateView.as_view(template_name='registration/login.html'), name='login'),
+    path('evenement/', include('evenement.urls')),
 ]

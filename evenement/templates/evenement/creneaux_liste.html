@@ -1,0 +1,16 @@
+{% extends 'evenement/base.html' %}
+
+{% block content %}
+
+{% if Creneaux %}
+    {% for creno in Creneaux %}
+            <ul>
+                <a href={{ creno.UUID_creneau }}><H1>{{ creno.nom }}</H1></a>
+            </ul>
+    {% endfor %}
+
+{% else %}
+    <p>il n'y a pas encore de creneaux créés pour ce poste.</p>
+{% endif %}
+
+{% endblock content %}

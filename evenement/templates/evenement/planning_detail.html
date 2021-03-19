@@ -1,0 +1,12 @@
+{% extends 'evenement/base.html' %}
+
+{% block content %}
+<ul>
+    <a href={% url 'liste_postes' %}><H1>{{ Planning.nom }}</H1></a>
+    <li>description : {{ Planning.description }}</li>
+</ul>
+<ul>
+    <li>ici les details du planning</li>
+</ul>
+
+{% endblock content %}
