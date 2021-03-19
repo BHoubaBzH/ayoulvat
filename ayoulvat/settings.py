@@ -58,8 +58,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            # ajoute le template au niveau de la racine du projet pour le login
-            # str(BASE_DIR.joinpath('templates')),
+            # ajoute le template au niveau de la racine du projet pour l accueil
+            str(BASE_DIR.joinpath('templates')),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

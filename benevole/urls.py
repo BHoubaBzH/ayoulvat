@@ -5,7 +5,5 @@ from django.views.generic import TemplateView
 from benevole.views import InscriptionView
 
 urlpatterns = [
-    # pages de login / logout ...
-    path('', include('django.contrib.auth.urls')),
     path('inscription/', InscriptionView.as_view(), name='inscription'),
 ]
