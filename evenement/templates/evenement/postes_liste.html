@@ -5,12 +5,14 @@
 {% if Postes %}
     {% for poste in Postes %}
             <ul>
-                <a href={{ poste.UUID_poste }}><H1>{{ poste.nom }}</H1></a>
+                <a href={% url 'detail_poste' uuid_poste=poste.UUID_poste %}>
+                <H1>{{ poste.nom }}</H1>
+                </a>
             </ul>
     {% endfor %}
 
 {% else %}
-    <p>il n'y a pas encore de poste créés pour ce planning.</p>
+    <p>il n'y a pas encore de poste créé pour ce planning.</p>
 {% endif %}
 
 {% endblock content %}

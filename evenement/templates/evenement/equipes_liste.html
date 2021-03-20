@@ -5,12 +5,14 @@
 {% if Equipes %}
     {% for team in Equipes %}
             <ul>
-                <a href={{ team.UUID_equipe }}><H1>{{ team.nom }}</H1></a>
+                <a href={% url 'detail_equipe' uuid_equipe=team.UUID_equipe %}>
+                <H1>{{ team.nom }}</H1>
+                </a>
             </ul>
     {% endfor %}
 
 {% else %}
-    <p>il n'y a pas encore d'équipe créés pour cet évènement.</p>
+    <p>il n'y a pas encore d'équipe créé pour cet évènement.</p>
 {% endif %}
 
 {% endblock content %}

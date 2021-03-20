@@ -5,12 +5,14 @@
 {% if Evenements %}
     {% for event in Evenements %}
             <ul>
-                <a href={{ event.UUID_evenement }}><H1>{{ event.nom }}</H1></a>
+                <a href={% url 'detail_evenement' uuid_event=event.UUID_evenement %}>
+                <H1>{{ event.nom }}</H1>
+                </a>
             </ul>
     {% endfor %}
 
 {% else %}
-    <p>il n'y a pas encore d'évènements créés pour cette association.</p>
+    <p>il n'y a pas encore d'évènement créé pour cette association.</p>
 {% endif %}
 
 {% endblock content %}
