@@ -20,7 +20,8 @@
         {% for creno in Creneaux %}
                 <ul>
                     <a href={% url 'detail_creneau' uuid_creneau=creno.UUID_creneau %}>
-                    <H2>{{ creno.nom }}</H2>
+                    {#<H2>{{ creno.nom }}</H2>#}
+                    <H2>{{ creno.debut|date:'H:i' }}-{{ creno.fin|date:'H:i' }}</H2>
                 </ul>
         {% endfor %}
 

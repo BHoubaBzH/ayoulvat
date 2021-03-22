@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'administration.apps.AdministrationConfig',
     'evenement.apps.EvenementConfig',
     'benevole.apps.BenevoleConfig',
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -131,3 +132,6 @@ LOGOUT_REDIRECT_URL = 'home'  # redirection de logout
 # conf smtp de test
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
+# numéros de téléphone en fr ou e164
+PHONENUMBER_DB_FORMAT = 'NATIONAL'
+PHONENUMBER_DEFAULT_REGION = 'FR'

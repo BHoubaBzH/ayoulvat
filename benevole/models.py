@@ -1,9 +1,6 @@
 import uuid
 
-from django.db.backends.utils import logger
-from django.db.models.signals import post_migrate
-from django.dispatch import receiver
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from association.models import Association
@@ -155,24 +152,3 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
         ProfilePersonne.objects.create(user=instance)
     # instance.profile.save()
 '''
-
-# crée nos groupe à la fin de la migration, grace au hook
-@receiver(post_migrate)
-def init_groups(sender, **kwargs):
-    gest = 'GESTIONNAIRE'
-    orga = 'ORGANISATEUR'
-    resp = 'RESPONSABLE'
-    bene = 'BENEVOLE'
-
-    groupe_liste = [
-        (gest, 'Gestionnaire'),
-        (orga, 'Organisateur'),
-        (resp, 'Responsable'),
-        (bene, 'Bénévole'),
-    ]
-    for code_quadri, nom in groupe_liste:
-        group, created = Group.objects.get_or_create(name=nom)
-        if created:
-            # group.permissions.add(can_edit_user)
-            logger.info('{0} Group created'.format(nom))
-        group, created = Group.objects.get_or_create(name=nom)

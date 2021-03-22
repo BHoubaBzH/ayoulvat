@@ -68,36 +68,3 @@ class Abonnement(models.Model):
         return self.a_jour
 
 
-''' passé dans app benevole
-# classe de surcharge sur le model user avec un profile
-class ProfileGestionnaire(models.Model):
-    # La liaison OneToOne vers le modèle User
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    UUID_gestionnaire = \
-        models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    role = models.CharField(max_length=50, blank=True, default='')
-    genre = models.CharField(max_length=50, blank=True, default='')
-    date_de_naissance = models.DateField(default='2000-01-01')
-    fixe = PhoneNumberField(null=True,
-                            blank=True,
-                            unique=False,
-                            help_text='donnée optionnelle')
-    # unique=False car une personne peu etre contact pour plusieures assos
-    portable = PhoneNumberField(null=False,
-                                blank=False,
-                                unique=False,
-                                help_text='donnée obligatoire')
-    description = models.CharField(max_length=500, blank=True, default='')
-
-    def __str__(self):
-        return "{0} {1}".format(self.user.last_name.upper(), self.user.first_name.capitalize())
-
-
-# Basically we are hooking the create_or_update_user_profile method to the User model
-@receiver(post_save, sender=User)
-def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if created:
-        ProfileGestionnaire.objects.create(user=instance)
-    # instance.profile.save()
-'''
-

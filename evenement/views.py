@@ -137,7 +137,7 @@ def detail_poste(request, uuid_poste):
     request.session['uuid_poste'] = uuid_poste
 
     poste = Poste.objects.get(UUID_poste=uuid_poste)
-    creneaux = Creneau.objects.filter(poste_id=uuid_poste)
+    creneaux = Creneau.objects.filter(poste_id=uuid_poste).order_by('debut')
     data = {
         "Poste": poste,
         "Creneaux": creneaux, # pb sur NoReverseMatch
