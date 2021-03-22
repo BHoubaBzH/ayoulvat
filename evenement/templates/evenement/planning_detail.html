@@ -1,12 +1,33 @@
 {% extends 'evenement/base.html' %}
 
 {% block content %}
-<ul>
-    <a href={% url 'liste_postes' %}><H1>{{ Planning.nom }}</H1></a>
-    <li>description : {{ Planning.description }}</li>
-</ul>
-<ul>
-    <li>ici les details du planning</li>
-</ul>
+<div class="row">
+  <div class="column" style="background-color:#aaa;">
+    <ul>
+    <H1> planning : </H1>
+    </ul>
+    <ul>
+        <a href={% url 'liste_postes' %}><H1>{{ Planning.nom }}</H1></a>
+        <li>description : {{ Planning.description }}</li>
+    </ul>
+    <ul>
+        <li>ici les details du planning</li>
+    </ul>
+  </div>
+  <div class="column" style="background-color:#bbb;">
+    <H1> postes : </H1>
+    {% if Postes %}
+        {% for poste in Postes %}
+                <ul>
+                    <a href={% url 'detail_poste' uuid_poste=poste.UUID_poste %}>
+                    <H1>{{ poste.nom }}</H1>
+                    </a>
+                </ul>
+        {% endfor %}
 
+    {% else %}
+        <p>il n'y a pas encore de poste créé pour ce planning.</p>
+    {% endif %}
+  </div>
+</div>
 {% endblock content %}
