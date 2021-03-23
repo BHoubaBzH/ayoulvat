@@ -2,19 +2,20 @@
 
 {% block content %}
 <div class="row">
-  <div class="column" style="background-color:#aaa;">
+  <div class="col-sm-6">
     <ul>
     <H1> poste : </H1>
     </ul>
     <ul>
-        <a href={% url 'liste_creneaux' %}><H2>{{ Poste.nom }}</H2></a>
+        <!--a href={% url 'liste_creneaux' %}><H2>{{ Poste.nom }}</H2></a-->
+        <H2>{{ Poste.nom }}</H2>
         <li>description : {{ Poste.description }}</li>
     </ul>
     <ul>
         <li>ici les details du poste</li>
     </ul>
   </div>
-  <div class="column" style="background-color:#bbb;">
+  <div class="col-sm-6">
     <H1> creneaux : </H1>
     {% if Creneaux %}
         {% for creno in Creneaux %}

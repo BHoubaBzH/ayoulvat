@@ -1,15 +1,20 @@
+<!-- association/base.html -->
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% bootstrap_messages %}
+
 <!DOCTYPE html>
 <html>
 <head>
-  {% comment "bootstrap" %}{% endcomment %}
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap-theme.min.css">
   <meta charset="utf-8">
   <title>{% block title %}Association{% endblock %}</title>
 </head>
 <body>
   <main>
     {% block content %}
+
     {% endblock %}
   </main>
 </body>

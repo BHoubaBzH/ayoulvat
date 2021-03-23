@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render
 
+from benevole.models import ProfileBenevole, ProfilePersonne
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
 
 

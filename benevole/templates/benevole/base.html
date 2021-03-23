@@ -1,11 +1,15 @@
 <!-- benevole/base.html -->
 {% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% bootstrap_messages %}
 
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>{% block title %}Django Auth Tutorial{% endblock %}</title>
+  <title>{% block title %}benevoles{% endblock %}</title>
 </head>
 <body>
   <main>

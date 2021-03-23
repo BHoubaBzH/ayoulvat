@@ -2,8 +2,10 @@ import uuid
 
 from django.contrib.auth.models import User
 from django.db import models
+
 from phonenumber_field.modelfields import PhoneNumberField
 from association.models import Association
+
 
 
 class Origine(models.Model):
@@ -22,14 +24,14 @@ class ProfilePersonne(models.Model):
     FEM = "FEMME"
     NSP = "NSP"
     genreListe = [
-        (MIN, 'Mineur'), # a remplacer a terme pour le choix par un calcul sur l'age
+        (MIN, 'Mineur'),  # a remplacer a terme pour le choix par un calcul sur l'age
         (HOM, 'Homme'),
         (FEM, 'Femme'),
         (NSP, 'Ne se prononce pas'),
     ]
     # La liaison OneToOne vers le modèle User
     user = models.OneToOneField(User,
-                                on_delete=models.CASCADE) # supprime cette personne si le user est supprimé
+                                on_delete=models.CASCADE)  # supprime cette personne si le user est supprimé
     UUID_personne = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # on ne peut pas supprimer une asso origine tant
     # qu'une personne en fait partie
@@ -40,7 +42,7 @@ class ProfilePersonne(models.Model):
                                 default='',
                                 on_delete=models.PROTECT)
     role = models.CharField(max_length=50, blank=True, default='')
-    genre = models.CharField(max_length=50,choices=genreListe,default=NSP)
+    genre = models.CharField(max_length=50, choices=genreListe, default=NSP)
     date_de_naissance = models.DateField(default='2000-01-01')
     fixe = PhoneNumberField(null=True,
                             blank=True,
@@ -53,7 +55,7 @@ class ProfilePersonne(models.Model):
     description = models.CharField(max_length=500, blank=True, default='')
 
     def __str__(self):
-        if not self.user.last_name and not self.user.first_name :
+        if not self.user.last_name and not self.user.first_name:
             return "{0}".format(self.user.username)
         else:
             return "{0} {1}".format(self.user.last_name.upper(), self.user.first_name.capitalize())
@@ -75,7 +77,7 @@ class ProfileGestionnaire(models.Model):
     referent = models.BooleanField(default=False)
 
     def __str__(self):
-        if not self.personne.user.last_name and not self.personne.user.first_name :
+        if not self.personne.user.last_name and not self.personne.user.first_name:
             return "{0}".format(self.personne.user.username)
         else:
             return "{0} {1}".format(self.personne.user.last_name.upper(), \
@@ -90,6 +92,7 @@ class ProfileOrganisateur(models.Model):
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
+
     # pas de sens
     # evenement = models.ForeignKey('evenement.Evenement',
     #                              default='',
@@ -97,11 +100,12 @@ class ProfileOrganisateur(models.Model):
     #                              on_delete=models.CASCADE)
 
     def __str__(self):
-        if not self.personne.user.last_name and not self.personne.user.first_name :
+        if not self.personne.user.last_name and not self.personne.user.first_name:
             return "{0}".format(self.personne.user.username)
         else:
             return "{0} {1}".format(self.personne.user.last_name.upper(), \
                                     self.personne.user.first_name.capitalize())
+
 
 # paramètres specifiques responsable d'equipe
 class ProfileResponsable(models.Model):
@@ -111,6 +115,7 @@ class ProfileResponsable(models.Model):
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
+
     # pas de sens
     # equipe = models.ForeignKey('evenement.Equipe',
     #                           default='',
@@ -118,7 +123,7 @@ class ProfileResponsable(models.Model):
     #                           on_delete=models.CASCADE)
 
     def __str__(self):
-        if not self.personne.user.last_name and not self.personne.user.first_name :
+        if not self.personne.user.last_name and not self.personne.user.first_name:
             return "{0}".format(self.personne.user.username)
         else:
             return "{0} {1}".format(self.personne.user.last_name.upper(), \
@@ -136,19 +141,8 @@ class ProfileBenevole(models.Model):
     message = models.TextField(max_length=1000, blank=True, default='')
 
     def __str__(self):
-        if not self.personne.user.last_name and not self.personne.user.first_name :
+        if not self.personne.user.last_name and not self.personne.user.first_name:
             return "{0}".format(self.personne.user.username)
         else:
             return "{0} {1}".format(self.personne.user.last_name.upper(), \
                                     self.personne.user.first_name.capitalize())
-
-
-'''
-# hook create_or_update_user_profile methode.
-# quand on crée un user sur le projet, ce hook vient aussi lui creer une entree dans la table personne
-@receiver(post_save, sender=User)
-def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if created:
-        ProfilePersonne.objects.create(user=instance)
-    # instance.profile.save()
-'''

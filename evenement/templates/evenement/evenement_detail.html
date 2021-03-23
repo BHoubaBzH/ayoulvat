@@ -1,12 +1,13 @@
 {% extends 'evenement/base.html' %}
 {% block content %}
 <div class="row">
-  <div class="column" style="background-color:#aaa;">
+  <div class="col-sm-6">
     <ul>
     <H1> evenement : </H1>
     </ul>
     <ul>
-        <a href={% url 'liste_equipes' %}><H2>{{ Evenement.nom }}</H2></a>
+        <!--a href={% url 'liste_equipes' %}><H2>{{ Evenement.nom }}</H2></a-->
+        <H2>{{ Evenement.nom }}</H2>
         <li>date de début : {{ Evenement.date_debut }}</li>
         <li>date de fin : {{ Evenement.date_fin }}</li>
     </ul>
@@ -14,8 +15,7 @@
         <li>ici les details de l'evenement</li>
     </ul>
   </div>
-  <div class="column" style="background-color:#bbb;">
-    
+  <div class="col-sm-6">
     <H1> équipes : </H1>
     {% if Equipes %}
         {% for team in Equipes %}

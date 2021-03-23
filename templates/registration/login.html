@@ -1,20 +1,7 @@
 <!-- templates/registration/login.html -->
 {% extends 'benevole/base.html' %}
 {% load bootstrap5 %}
-
 {% block title %}Connexion{% endblock %}
-
-{% comment "" %}
-{% block content %}
-  <h2>Connexion</h2>
-  <form method="post" class="form">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Connexion</button>
-    <a href="{% url 'password_reset' %}">Mot de passe perdu?</a>
-  </form>
-{% endblock %}
-{% endcomment %}
 
 {% block content %}
   <h2>Connexion</h2>

@@ -4,11 +4,11 @@
 
 {% if Postes %}
     {% for poste in Postes %}
-            <ul>
+            <div class="col-sm-6">
                 <a href={% url 'detail_poste' uuid_poste=poste.UUID_poste %}>
                 <H1>{{ poste.nom }}</H1>
                 </a>
-            </ul>
+            </div>
     {% endfor %}
 
 {% else %}

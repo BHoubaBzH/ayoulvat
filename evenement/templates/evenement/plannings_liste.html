@@ -4,11 +4,11 @@
 
 {% if Plannings %}
     {% for plan in Plannings %}
-            <ul>
+            <div class="col-sm-6">
                 <a href={% url 'detail_planning' uuid_planning=plan.UUID_planning %}>
                 <H1>{{ plan.nom }}</H1>
                 </a>
-            </ul>
+            </div>
     {% endfor %}
 
 {% else %}

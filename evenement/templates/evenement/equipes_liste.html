@@ -4,11 +4,11 @@
 
 {% if Equipes %}
     {% for team in Equipes %}
-            <ul>
+            <div class="col-sm-6">
                 <a href={% url 'detail_equipe' uuid_equipe=team.UUID_equipe %}>
                 <H1>{{ team.nom }}</H1>
                 </a>
-            </ul>
+            </div>
     {% endfor %}
 
 {% else %}

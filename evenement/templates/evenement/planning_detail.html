@@ -2,25 +2,26 @@
 
 {% block content %}
 <div class="row">
-  <div class="column" style="background-color:#aaa;">
+  <div class="col-sm-6">
     <ul>
     <H1> planning : </H1>
     </ul>
     <ul>
-        <a href={% url 'liste_postes' %}><H1>{{ Planning.nom }}</H1></a>
+        <!--a href={% url 'liste_postes' %}><H1>{{ Planning.nom }}</H1></a-->
+        <H2>{{ Planning.nom }}</H2>
         <li>description : {{ Planning.description }}</li>
     </ul>
     <ul>
         <li>ici les details du planning</li>
     </ul>
   </div>
-  <div class="column" style="background-color:#bbb;">
+  <div class="col-sm-6">
     <H1> postes : </H1>
     {% if Postes %}
         {% for poste in Postes %}
                 <ul>
                     <a href={% url 'detail_poste' uuid_poste=poste.UUID_poste %}>
-                    <H1>{{ poste.nom }}</H1>
+                    <H2>{{ poste.nom }}</H2>
                     </a>
                 </ul>
         {% endfor %}

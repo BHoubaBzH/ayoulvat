@@ -114,10 +114,12 @@ class Creneau(models.Model):
                               default='',
                               null=False,
                               on_delete=models.CASCADE)
-    benevole = models.ManyToManyField(ProfileBenevole,
-                                      related_name='BenevolesCreneau',
-                                      blank=True,
-                                      default='')
+    benevole = models.ForeignKey(ProfileBenevole,
+                                    related_name='BenevolesCreneau',
+                                    null=True,
+                                    blank=True,
+                                    default='',
+                                    on_delete=models.SET_NULL)
     nom = models.CharField(max_length=80,
                            blank=True,
                            default='',

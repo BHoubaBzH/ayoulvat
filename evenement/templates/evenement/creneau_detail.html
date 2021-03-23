@@ -1,13 +1,13 @@
 {% extends 'evenement/base.html' %}
 
 {% block content %}
-<ul>
+<div class="col-sm-6">
     <H2>{{ Creneau.nom }}</H2></a>
     <li>debut : {{ Creneau.debut }}</li>
     <li>fin : {{ Creneau.fin }}</li>
-</ul>
-<ul>
-    <li>ici les details du creneau</li>
-</ul>
+    {% if Creneau.benevole_id %}
+        <li>Profile benevole uuid : {{ Creneau.benevole_id }}</li>
+    {% endif %}
+</div>
 
 {% endblock content %}

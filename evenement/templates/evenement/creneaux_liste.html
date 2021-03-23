@@ -4,11 +4,11 @@
 
 {% if Creneaux %}
     {% for creno in Creneaux %}
-            <ul>
+            <div class="col-sm-6">
                 <a href={% url 'detail_creneau' uuid_creneau=creno.UUID_creneau %}>
                 <H1>{{ creno.nom }}</H1>
                 </a>
-            </ul>
+            </div>
     {% endfor %}
 
 {% else %}
