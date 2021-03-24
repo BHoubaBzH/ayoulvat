@@ -68,9 +68,14 @@ def detail_equipe(request, uuid_equipe):
     # store dans la session le uuid de l'equipe
     request.session['uuid_equipe'] = uuid_equipe
 
+    # récupère dans la session les uuid
+    uuid_evt = request.session.get('uuid_evenement')
+
+    evenement = Evenement.objects.get(UUID_evenement=uuid_evt)
     equipe = Equipe.objects.get(UUID_equipe=uuid_equipe)
     plannings = Planning.objects.filter(equipe_id=uuid_equipe)
     data = {
+        "Evenement": evenement,
         "Equipe": equipe,
         "Plannings" : plannings,
     }
@@ -103,9 +108,17 @@ def detail_planning(request, uuid_planning):
     # store dans la session le uuid du planning
     request.session['uuid_planning'] = uuid_planning
 
+    # récupère dans la session les uuid
+    uuid_evt = request.session.get('uuid_evenement')
+    uuid_equipe = request.session.get('uuid_equipe')
+
+    evenement = Evenement.objects.get(UUID_evenement=uuid_evt)
+    equipe = Equipe.objects.get(UUID_equipe=uuid_equipe)
     planning = Planning.objects.get(UUID_planning=uuid_planning)
     postes = Poste.objects.filter(planning_id=uuid_planning)
     data = {
+        "Evenement": evenement,
+        "Equipe": equipe,
         "Planning": planning,
         "Postes": postes,
     }
@@ -138,11 +151,22 @@ def detail_poste(request, uuid_poste):
     # store dans la session le uuid du poste
     request.session['uuid_poste'] = uuid_poste
 
+    # récupère dans la session les uuid
+    uuid_evt = request.session.get('uuid_evenement')
+    uuid_equipe = request.session.get('uuid_equipe')
+    uuid_plan = request.session.get('uuid_planning')
+
+    evenement = Evenement.objects.get(UUID_evenement=uuid_evt)
+    equipe = Equipe.objects.get(UUID_equipe=uuid_equipe)
+    planning = Planning.objects.get(UUID_planning=uuid_plan)
     poste = Poste.objects.get(UUID_poste=uuid_poste)
     creneaux = Creneau.objects.filter(poste_id=uuid_poste).order_by('debut')
     data = {
+        "Evenement": evenement,
+        "Equipe": equipe,
+        "Planning": planning,
         "Poste": poste,
-        "Creneaux": creneaux, # pb sur NoReverseMatch
+        "Creneaux": creneaux,
     }
     return render(request, 'evenement/poste_detail.html', data)
 

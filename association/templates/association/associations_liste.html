@@ -1,9 +1,17 @@
 {% extends 'association/base.html' %}
 
 {% block content %}
-{% for asso in Assos %}
-<ul>
-    <a href="{{ asso.UUID_association }}"><H1>{{ asso.nom }}</H1></a>
-</ul>
-{% endfor %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm">
+        {% for asso in Assos %}
+
+            <a href="{{ asso.UUID_association }}"><H2>{{ asso.nom }}</H2></a>
+
+        {% endfor %}
+        </div>
+        <div class="col-sm"></div>
+        <div class="col-sm"></div>
+    </div>
+</div>
 {% endblock content %}

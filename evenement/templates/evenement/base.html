@@ -8,17 +8,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-  {% comment "css local" %}
-  <link rel="stylesheet" href="{% static 'css/evenement.css' %}">
-  {% endcomment %}
-
   <meta charset="utf-8">
   <title>{% block title %}Evenement{% endblock %}</title>
 </head>
 <body>
   <main>
-    {% block content %}
-    {% endblock %}
+
+  <div class="container-fluid">
+      <div class="row">
+          <div class="col-sm" title="evenement">
+              {% block evenement %}
+              {% endblock %}
+          </div> 
+          <div class="col-sm" title="équipe">
+              {% block equipe %}
+              {% endblock %}
+          </div>
+          <div class="col-sm" title="planning">
+              {% block planning %}
+              {% endblock %}
+          </div>
+          <div class="col-sm" title="poste">
+              {% block poste %}
+              {% endblock %}
+          </div>
+          <div class="col-sm" title="creneau">
+              {% block creneau %}
+              {% endblock %}
+          </div>    
+    </div>
+  </div>
+
   </main>
 </body>
 </html>

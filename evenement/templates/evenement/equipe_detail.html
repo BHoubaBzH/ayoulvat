@@ -1,8 +1,8 @@
-{% extends 'evenement/base.html' %}
+{% extends 'evenement/evenement_detail.html' %}
+{% comment "" %}{% extends 'evenement/base.html' %}{% endcomment %}
 
-{% block content %}
-<div class="row">
-  <div class="col-sm-6">
+{% block equipe %}
+
     <ul>
     <H1> équipe : </H1>
     </ul>
@@ -14,10 +14,11 @@
     <ul>
         <li>ici les details de l'equipe</li>
     </ul>
-  </div>
-  <div class="col-sm-6">
-    <H1> Plannings : </H1>
+{% endblock equipe %}
+{% block planning %}
+
     {% if Plannings %}
+    <H1> Plannings : </H1>
         {% for plan in Plannings %}
                 <ul>
                     <a href={% url 'detail_planning' uuid_planning=plan.UUID_planning %}>
@@ -25,11 +26,6 @@
                     </a>
                 </ul>
         {% endfor %}
-
-    {% else %}
-        <p>il n'y a pas encore de planning créés pour cette équipe.</p>
     {% endif %}
-  </div>
-</div>
 
-{% endblock content %}
+{% endblock planning %}

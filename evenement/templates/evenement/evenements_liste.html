@@ -1,18 +1,16 @@
 {% extends 'evenement/base.html' %}
 
-{% block content %}
+{% block evenement %}
 
-{% if Evenements %}
-    {% for event in Evenements %}
-            <div class="col-sm-6">
-                <a href={% url 'detail_evenement' uuid_event=event.UUID_evenement %}>
-                <H1>{{ event.nom }}</H1>
-                </a>
-            </div>
-    {% endfor %}
+    {% if Evenements %}
+        {% for event in Evenements %}
+            <a href={% url 'detail_evenement' uuid_event=event.UUID_evenement %}>
+            <H2>{{ event.nom }}</H2>
+            </a>
+        {% endfor %}
 
-{% else %}
-    <p>il n'y a pas encore d'évènement créé pour cette association.</p>
-{% endif %}
+    {% else %}
+        <p>il n'y a pas encore d'évènement créé pour cette association.</p>
+    {% endif %}
 
-{% endblock content %}
+{% endblock evenement %}

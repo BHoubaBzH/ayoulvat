@@ -1,34 +1,50 @@
-{% extends 'evenement/base.html' %}
+{% extends 'evenement/planning_detail.html' %}
+{% comment "" %}{% extends 'evenement/base.html' %}{% endcomment %}
 
-{% block content %}
-<div class="row">
-  <div class="col-sm-6">
-    <ul>
-    <H1> poste : </H1>
-    </ul>
-    <ul>
-        <!--a href={% url 'liste_creneaux' %}><H2>{{ Poste.nom }}</H2></a-->
-        <H2>{{ Poste.nom }}</H2>
-        <li>description : {{ Poste.description }}</li>
-    </ul>
-    <ul>
-        <li>ici les details du poste</li>
-    </ul>
-  </div>
-  <div class="col-sm-6">
-    <H1> creneaux : </H1>
+{% load bootstrap5 %}
+
+{% block poste %}
+
+    <ul><H1> poste : </H1></ul>
+    <H2>{{ Poste.nom }}</H2>
+    <li>description : {{ Poste.description }}</li>
+    </p>
+
+{% endblock poste %}
+
+{% block creneau %}
+
     {% if Creneaux %}
+        <H1> creneaux : </H1>
         {% for creno in Creneaux %}
-                <ul>
-                    <a href={% url 'detail_creneau' uuid_creneau=creno.UUID_creneau %}>
-                    {#<H2>{{ creno.nom }}</H2>#}
-                    <H2>{{ creno.debut|date:'H:i' }}-{{ creno.fin|date:'H:i' }}</H2>
-                </ul>
-        {% endfor %}
+            <ul>
+                {#<a href={% url 'detail_creneau' uuid_creneau=creno.UUID_creneau %}></a>#}
+                {#<H2>{{ creno.nom }}</H2>#}
 
-    {% else %}
-        <p>il n'y a pas encore de créneau créé pour ce poste.</p>
+                {% buttons %}
+                    <button class="btn btn-primary" \
+                            type="button" data-bs-toggle="collapse" \
+                            style="height:50px;width:200px" \
+                            data-bs-target="#collapseCreneau{{ forloop.counter }}" \
+                            aria-expanded="false" \
+                            aria-controls="collapseCreneau{{ forloop.counter }}">
+                    {{ creno.debut|date:'H:i' }}-{{ creno.fin|date:'H:i' }}
+                    </button>
+                {% endbuttons %}
+                <div class="collapse" id="collapseCreneau{{ forloop.counter }}">
+                <div class="card card-body">
+                    <ul class="list-group list-group-flush" style="font-size: 0.8em">
+                        <li class="list-group-item">{{ creno.nom }}</li>
+                        <li class="list-group-item">debut : {{ creno.debut }}</li>
+                        <li class="list-group-item">fin : {{ creno.fin }}</li>
+                        {% if creno.benevole_id %}
+                            <li class="list-group-item">Profile benevole uuid : {{ creno.benevole_id }}</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                </div>
+            </ul>
+        {% endfor %}
     {% endif %}
-  </div>
-</div>
-{% endblock content %}
+
+{% endblock creneau %}

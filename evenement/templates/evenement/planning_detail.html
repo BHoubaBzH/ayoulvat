@@ -1,8 +1,8 @@
-{% extends 'evenement/base.html' %}
+{% extends 'evenement/equipe_detail.html' %}
+{% comment "" %}{% extends 'evenement/base.html' %}{% endcomment %}
 
-{% block content %}
-<div class="row">
-  <div class="col-sm-6">
+{% block planning %}
+
     <ul>
     <H1> planning : </H1>
     </ul>
@@ -14,21 +14,20 @@
     <ul>
         <li>ici les details du planning</li>
     </ul>
-  </div>
-  <div class="col-sm-6">
-    <H1> postes : </H1>
-    {% if Postes %}
-        {% for poste in Postes %}
-                <ul>
-                    <a href={% url 'detail_poste' uuid_poste=poste.UUID_poste %}>
-                    <H2>{{ poste.nom }}</H2>
-                    </a>
-                </ul>
-        {% endfor %}
 
-    {% else %}
-        <p>il n'y a pas encore de poste créé pour ce planning.</p>
+{% endblock planning %}
+{% block poste %}
+
+    {% if Postes %}
+    <H1> postes : </H1>
+
+        {% for poste in Postes %}
+            <ul>
+                <a href={% url 'detail_poste' uuid_poste=poste.UUID_poste %}>
+                <H2>{{ poste.nom }}</H2>
+                </a>
+            </ul>
+        {% endfor %}
     {% endif %}
-  </div>
-</div>
-{% endblock content %}
+
+{% endblock poste %}    

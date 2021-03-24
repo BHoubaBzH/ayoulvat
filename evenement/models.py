@@ -98,6 +98,7 @@ class Poste(models.Model):
                                       blank=True,
                                       default='')
     nom = models.CharField(max_length=50)
+    description = models.CharField(max_length=500, blank=True, default='')
     editable = models.BooleanField(default=True, help_text="si non editable, le poste est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
     def __str__(self):

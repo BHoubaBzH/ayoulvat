@@ -1,13 +1,14 @@
-{% extends 'evenement/base.html' %}
+{% extends 'evenement/poste_detail.html' %}
+{% comment "" %}{% extends 'evenement/base.html' %}{% endcomment %}
 
-{% block content %}
-<div class="col-sm-6">
+{% block creneau %}
+
     <H2>{{ Creneau.nom }}</H2></a>
     <li>debut : {{ Creneau.debut }}</li>
     <li>fin : {{ Creneau.fin }}</li>
+    <p>PLOP</p>
     {% if Creneau.benevole_id %}
         <li>Profile benevole uuid : {{ Creneau.benevole_id }}</li>
     {% endif %}
-</div>
 
-{% endblock content %}
+{% endblock creneau %}

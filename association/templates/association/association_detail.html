@@ -2,14 +2,18 @@
 {% load bootstrap5 %}
 
 {% block content %}
-<ul>
-    <!-- a href="/evenement/{{ asso.UUID_association }}"><H1>{{ Asso.nom }}</H1></a-->
-    <a href={% url 'liste_evenements' %}><H1>{{ Asso.nom }}</H1></a>
-    <li>date de création : {{ Asso.date_creation }}</li>
-    <li>administrateur : {{ Asso.administrateur }}</li>
-</ul>
-<ul>
-    <li>ici les details de l'association</li>
-</ul>
-
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <!-- a href="/evenement/{{ asso.UUID_association }}"><H1>{{ Asso.nom }}</H1></a-->
+            <a href={% url 'liste_evenements' %}><H2>{{ Asso.nom }}</H2></a>
+        </div>
+        <div class="col-sm">
+            <li>date de création : {{ Asso.date_creation }}</li>
+            <li>administrateur : {{ Asso.administrateur }}</li>
+            <li>ici les details de l'association</li>
+        </div>
+        <div class="col-sm"></div>
+    </div>
+</div>
 {% endblock content %}

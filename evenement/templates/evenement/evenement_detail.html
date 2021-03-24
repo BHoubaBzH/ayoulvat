@@ -1,7 +1,7 @@
 {% extends 'evenement/base.html' %}
-{% block content %}
-<div class="row">
-  <div class="col-sm-6">
+
+{% block evenement %}
+
     <ul>
     <H1> evenement : </H1>
     </ul>
@@ -14,22 +14,21 @@
     <ul>
         <li>ici les details de l'evenement</li>
     </ul>
-  </div>
-  <div class="col-sm-6">
-    <H1> équipes : </H1>
+    
+{% endblock evenement %}
+{% block equipe %}
+
     {% if Equipes %}
+        <H1> équipes : </H1>
         {% for team in Equipes %}
-                <ul>
-                    <a href={% url 'detail_equipe' uuid_equipe=team.UUID_equipe %}>
-                    <H2>{{ team.nom }}</H2>
-                    </a>
-                </ul>
+            <ul>
+                <a href={% url 'detail_equipe' uuid_equipe=team.UUID_equipe %}>
+                <H2>{{ team.nom }}</H2>
+                </a>
+            </ul>
         {% endfor %}
-
-    {% else %}
-        <p>il n'y a pas encore d'équipe créé pour cet évènement.</p>
     {% endif %}
-  </div>
-</div>
 
-{% endblock content %}
+{% endblock equipe %}
+
+

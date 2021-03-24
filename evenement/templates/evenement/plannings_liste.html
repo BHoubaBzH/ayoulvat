@@ -1,18 +1,26 @@
 {% extends 'evenement/base.html' %}
 
 {% block content %}
+<div class="container-fluid">
+    <div class="row" >
+        <div class="col-sm" title="evenement"></div>
+        <div class="col-sm" title="équipe"></div>
+        <div class="col-sm" title="planning">
+            {% if Plannings %}
+                {% for plan in Plannings %}
+                        <div class="col-sm-6">
+                            <a href={% url 'detail_planning' uuid_planning=plan.UUID_planning %}>
+                            <H1>{{ plan.nom }}</H1>
+                            </a>
+                        </div>
+                {% endfor %}
 
-{% if Plannings %}
-    {% for plan in Plannings %}
-            <div class="col-sm-6">
-                <a href={% url 'detail_planning' uuid_planning=plan.UUID_planning %}>
-                <H1>{{ plan.nom }}</H1>
-                </a>
-            </div>
-    {% endfor %}
-
-{% else %}
-    <p>il n'y a pas encore de planning créés pour cette équipe.</p>
-{% endif %}
-
+            {% else %}
+                <p>il n'y a pas encore de planning créés pour cette équipe.</p>
+            {% endif %}
+        </div>
+        <div class="col-sm" title="poste"></div>
+        <div class="col-sm" title="creneau"></div>
+    </div>
+</div>
 {% endblock content %}
