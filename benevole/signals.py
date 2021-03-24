@@ -47,7 +47,7 @@ def check_group(send_name):
 @receiver(post_save, sender=ProfileGestionnaire)
 @receiver(post_save, sender=ProfileOrganisateur)
 @receiver(post_save, sender=ProfileResponsable)
-@receiver([post_save, post_delete], sender=ProfileBenevole)
+@receiver(post_save, sender=ProfileBenevole)
 def create_or_update_profiles(sender, instance, **kwargs):
     print('change or create on {0} hooked'.format(sender.__name__))
     if kwargs.get('created', True):  # creation
