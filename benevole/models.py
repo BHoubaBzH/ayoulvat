@@ -1,9 +1,10 @@
 import uuid
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import models
 
 from phonenumber_field.modelfields import PhoneNumberField
+
 from association.models import Association
 
 
