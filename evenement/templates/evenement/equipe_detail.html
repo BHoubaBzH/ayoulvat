@@ -3,29 +3,40 @@
 
 {% block equipe %}
 
-    <ul>
-    <H1> équipe : </H1>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <a href={% url 'detail_evenement' uuid_evenement=Evenement.UUID_evenement %}>
+                <H1> équipe </H1>
+            </a>
+        </li>
     </ul>
-    <ul>
-        <!--a href={% url 'liste_plannings' %}><H2>{{ Equipe.nom }}</H2></a-->
-        <H2>{{ Equipe.nom }}</H2>
-        <li>description : {{ Equipe.description }}</li>
-    </ul>
-    <ul>
-        <li>ici les details de l'equipe</li>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <a href={% url 'detail_equipe' uuid_equipe=Equipe.UUID_equipe %}><H2>{{ Equipe.nom }}</H2></a>
+        </li>
+        <li class="list-group-item"><b>description :</b> {{ Equipe.description }}</li>
+        <li class="list-group-item">ici les details de l'equipe</li>
     </ul>
 {% endblock equipe %}
 {% block planning %}
 
     {% if Plannings %}
-    <H1> Plannings : </H1>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <H1> plannings </H1>
+        </li>
+    </ul>
+    <ul class="list-group">
+
         {% for plan in Plannings %}
-                <ul>
-                    <a href={% url 'detail_planning' uuid_planning=plan.UUID_planning %}>
-                    <H2>{{ plan.nom }}</H2>
-                    </a>
-                </ul>
+            <li class="list-group-item">
+                <a href={% url 'detail_planning' uuid_planning=plan.UUID_planning %}>
+                <H2>{{ plan.nom }}</H2>
+                </a>
+            </li>
         {% endfor %}
+
+    </ul>
     {% endif %}
 
 {% endblock planning %}

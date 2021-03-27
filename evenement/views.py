@@ -25,180 +25,58 @@ def liste_evenements(request):
 
 
 @login_required(login_url='login')
-def detail_evenement(request, uuid_event):
+def detail_evenement(request, uuid_evenement):
     """
     détails d'un evenement
     """
+    uuid_equipe = ''
+    uuid_planning = ''
+    uuid_poste = ''
     # store dans la session le uuid de l'evenement
-    request.session['uuid_evenement'] = uuid_event
+    request.session['uuid_evenement'] = uuid_evenement
 
-    evenement = Evenement.objects.get(UUID_evenement=uuid_event)
-    equipes = Equipe.objects.filter(evenement_id=uuid_event)
+    # on construit nos objet avec l'uuid de l'evenement
+    evenement = Evenement.objects.get(UUID_evenement=uuid_evenement)
+    equipes = Equipe.objects.filter(evenement_id=uuid_evenement)
+
     data = {
-
         "Evenement": evenement,
         "Equipes": equipes,
     }
+
+    # recupere les uuid en POST ou en session si ils on été stockés, but est de tout gerer dans une seule page:
+    if request.POST.get('uuid_equipe'):
+        uuid_equipe = request.POST.get('uuid_equipe')
+    elif request.session.get('uuid_equipe'):
+        uuid_equipe = request.session.get('uuid_equipe')
+    if request.POST.get('uuid_planning'):
+        uuid_planning = request.POST.get('uuid_planning')
+    elif request.session.get('uuid_planning'):
+        uuid_planning = request.session.get('uuid_planning')
+    if request.POST.get('uuid_poste'):
+        uuid_poste = request.POST.get('uuid_poste')
+    elif request.session.get('uuid_poste'):
+        uuid_poste = request.session.get('uuid_poste')
+        
+    if uuid_equipe: # selection d'une équipe
+        # store dans la session le uuid de l'equipe
+        request.session['uuid_equipe'] = uuid_equipe
+        equipe = Equipe.objects.get(UUID_equipe=uuid_equipe)
+        plannings = Planning.objects.filter(equipe_id=uuid_equipe).order_by('debut')
+        data["Equipe"] = equipe
+        data["Plannings"] = plannings
+    if uuid_planning:   # selection d'un planning
+        # store dans la session le uuid du planning
+        request.session['uuid_planning'] = uuid_planning
+        planning = Planning.objects.get(UUID_planning=uuid_planning)
+        postes = Poste.objects.filter(planning_id=uuid_planning).order_by('nom')
+        data["Planning"] = planning
+        data["Postes"] = postes
+    if uuid_poste:  # selection d'un poste
+        # store dans la session le uuid du poste
+        request.session['uuid_poste'] = uuid_poste
+        poste = Poste.objects.get(UUID_poste=uuid_poste)
+        creneaux = Creneau.objects.filter(poste_id=uuid_poste).order_by('debut')
+        data["Poste"] = poste
+        data["Creneaux"] = creneaux
     return render(request, "evenement/evenement_detail.html", data)
-
-
-################################################
-##      views equipes
-################################################
-@login_required(login_url='login')
-def liste_equipes(request):
-    """
-    liste des équipes
-    """
-    # récupère dans la session l'uuid de l'association
-    uuid_evt = request.session.get('uuid_evenement')
-
-    data = {
-        # on filtre les équipes sur celles de l'evenement uniquement
-        "Equipes": Equipe.objects.filter(evenement_id=uuid_evt),
-    }
-    return render(request, 'evenement/equipes_liste.html', data)
-
-
-@login_required(login_url='login')
-def detail_equipe(request, uuid_equipe):
-    """
-    détails d'une équipe
-    """
-    # store dans la session le uuid de l'equipe
-    request.session['uuid_equipe'] = uuid_equipe
-
-    # récupère dans la session les uuid
-    uuid_evt = request.session.get('uuid_evenement')
-
-    evenement = Evenement.objects.get(UUID_evenement=uuid_evt)
-    equipe = Equipe.objects.get(UUID_equipe=uuid_equipe)
-    plannings = Planning.objects.filter(equipe_id=uuid_equipe)
-    data = {
-        "Evenement": evenement,
-        "Equipe": equipe,
-        "Plannings" : plannings,
-    }
-    return render(request, 'evenement/equipe_detail.html', data)
-
-
-################################################
-##      views plannings
-################################################
-@login_required(login_url='login')
-def liste_plannings(request):
-    """
-    liste des plannings
-    """
-    # récupère dans la session l'uuid de l'equipe
-    uuid_equipe = request.session.get('uuid_equipe')
-
-    data = {
-        # on filtre les plannings sur ceux de l'equipe uniquement
-        "Plannings": Planning.objects.filter(equipe_id=uuid_equipe),
-    }
-    return render(request, 'evenement/plannings_liste.html', data)
-
-
-@login_required(login_url='login')
-def detail_planning(request, uuid_planning):
-    """
-    détails d'un planning
-    """
-    # store dans la session le uuid du planning
-    request.session['uuid_planning'] = uuid_planning
-
-    # récupère dans la session les uuid
-    uuid_evt = request.session.get('uuid_evenement')
-    uuid_equipe = request.session.get('uuid_equipe')
-
-    evenement = Evenement.objects.get(UUID_evenement=uuid_evt)
-    equipe = Equipe.objects.get(UUID_equipe=uuid_equipe)
-    planning = Planning.objects.get(UUID_planning=uuid_planning)
-    postes = Poste.objects.filter(planning_id=uuid_planning)
-    data = {
-        "Evenement": evenement,
-        "Equipe": equipe,
-        "Planning": planning,
-        "Postes": postes,
-    }
-    return render(request, 'evenement/planning_detail.html', data)
-
-
-################################################
-##      views postes
-################################################
-@login_required(login_url='login')
-def liste_postes(request):
-    """
-    liste des postes
-    """
-    # récupère dans la session l'uuid du planning
-    uuid_plan = request.session.get('uuid_planning')
-
-    data = {
-        # on filtre les postes sur ceux des plannings uniquement
-        "Postes": Poste.objects.filter(planning_id=uuid_plan),
-    }
-    return render(request, 'evenement/postes_liste.html', data)
-
-
-@login_required(login_url='login')
-def detail_poste(request, uuid_poste):
-    """
-    détails d'un poste
-    """
-    # store dans la session le uuid du poste
-    request.session['uuid_poste'] = uuid_poste
-
-    # récupère dans la session les uuid
-    uuid_evt = request.session.get('uuid_evenement')
-    uuid_equipe = request.session.get('uuid_equipe')
-    uuid_plan = request.session.get('uuid_planning')
-
-    evenement = Evenement.objects.get(UUID_evenement=uuid_evt)
-    equipe = Equipe.objects.get(UUID_equipe=uuid_equipe)
-    planning = Planning.objects.get(UUID_planning=uuid_plan)
-    poste = Poste.objects.get(UUID_poste=uuid_poste)
-    creneaux = Creneau.objects.filter(poste_id=uuid_poste).order_by('debut')
-    data = {
-        "Evenement": evenement,
-        "Equipe": equipe,
-        "Planning": planning,
-        "Poste": poste,
-        "Creneaux": creneaux,
-    }
-    return render(request, 'evenement/poste_detail.html', data)
-
-
-################################################
-##      views céneaux
-################################################
-@login_required(login_url='login')
-def liste_creneaux(request):
-    """
-    liste des creneaux
-    """
-    # récupère dans la session l'uuid du poste
-    uuid_poste = request.session.get('uuid_poste')
-
-    data = {
-        # on filtre les postes sur ceux des plannings uniquement
-        "Creneaux": Creneau.objects.filter(poste_id=uuid_poste),
-    }
-    return render(request, 'evenement/creneaux_liste.html', data)
-
-
-@login_required(login_url='login')
-def detail_creneau(request, uuid_creneau):
-    """
-    détails d'un planning
-    """
-    # store dans la session le uuid du creneau
-    request.session['uuid_creneau'] = uuid_creneau
-
-    creneau = Creneau.objects.get(UUID_creneau=uuid_creneau)
-    data = {
-        "Creneau": creneau,
-    }
-    return render(request, 'evenement/creneau_detail.html', data)

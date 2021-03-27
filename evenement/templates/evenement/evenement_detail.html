@@ -1,34 +1,245 @@
 {% extends 'evenement/base.html' %}
 
-{% block evenement %}
+{% load bootstrap5 %}
 
-    <ul>
-    <H1> evenement : </H1>
-    </ul>
-    <ul>
-        <!--a href={% url 'liste_equipes' %}><H2>{{ Evenement.nom }}</H2></a-->
-        <H2>{{ Evenement.nom }}</H2>
-        <li>date de début : {{ Evenement.date_debut }}</li>
-        <li>date de fin : {{ Evenement.date_fin }}</li>
-    </ul>
-    <ul>
-        <li>ici les details de l'evenement</li>
+{% block evenement %}
+    {% comment "haut de notre page avec les infos de l evenement" %}{% endcomment %}
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item"><H1> evenement </H1></li>
+        {#<a href={% url 'liste_equipes' %}><H2>{{ Evenement.nom }}</H2></a>#}
+        <li class="list-group-item"><H2>{{ Evenement.nom }}</H2></li>
+        <li class="list-group-item">date de début : {{ Evenement.date_debut }}</li>
+        <li class="list-group-item">date de fin : {{ Evenement.date_fin }}</li>
+        <li class="list-group-item">ici les details de l'evenement</li>
     </ul>
     
+    <br>
+
 {% endblock evenement %}
+
+{% block equipes %}
+    {% comment "premiere colonne de notre page avec la liste des equipes" %}{% endcomment %}
+        <ul class="list-group">
+        {% for team in Equipes %}
+            <li class="list-group-item">
+                {#<a href={% url 'detail_equipe' uuid_equipe=team.UUID_equipe %}>#}
+                <H2>{{ team.nom }}</H2>
+                {#</a>#}
+
+                <form class="form" method="post"> {# action pas selectionné donc meme self page #}
+                    {% csrf_token %}
+                    <input  name="uuid_equipe" value={{ team.UUID_equipe }} type="hidden">
+                    <button type="submit" class="btn btn-primary">Select</button>
+                </form>
+            </li>
+        {% endfor %}
+        </ul>
+{% endblock equipes %}
+
 {% block equipe %}
 
-    {% if Equipes %}
-        <H1> équipes : </H1>
-        {% for team in Equipes %}
-            <ul>
-                <a href={% url 'detail_equipe' uuid_equipe=team.UUID_equipe %}>
-                <H2>{{ team.nom }}</H2>
-                </a>
-            </ul>
-        {% endfor %}
-    {% endif %}
-
+    <ul class="list-group">
+        <li class="list-group-item">
+            {#<a href={% url 'detail_evenement' uuid_evenement=Evenement.UUID_evenement %}>#}
+                <H1> équipe </H1>
+            {#</a>#}
+        </li>
+    </ul>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <a href={% url 'detail_equipe' uuid_equipe=Equipe.UUID_equipe %}><H2>{{ Equipe.nom }}</H2></a>
+        </li>
+        <li class="list-group-item"><b>description :</b> {{ Equipe.description }}</li>
+        <li class="list-group-item">ici les details de l'equipe</li>
+    </ul>
 {% endblock equipe %}
 
+{% block plannings %}
+    <ul class="list-group">
+        {% for plan in Plannings %}
+            <li class="list-group-item">
+                {#<a href={% url 'detail_planning' uuid_planning=plan.UUID_planning %}>#}
+                <H2>{{ plan.nom }}</H2>
+                {#</a>#}
+                <form class="form" method="post"> {# action pas selectionné donc meme self page #}
+                    {% csrf_token %}
+                    <input  name="uuid_planning" value={{ plan.UUID_planning }} type="hidden">
+                    <button type="submit" class="btn btn-primary">Select</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock plannings %}
 
+{% block planning %}
+
+    <ul class="list-group">
+        <li class="list-group-item">
+            <a href={% url 'detail_evenement' uuid_evenement=Evenement.UUID_evenement %}>
+                <H1> planning </H1>
+            </a>
+        </li>
+    </ul>
+    <ul class="list-group">
+        <!--a href={% url 'liste_postes' %}><H1>{{ Planning.nom }}</H1></a-->
+        <li class="list-group-item">
+            <a href={% url 'detail_planning' uuid_planning=Planning.UUID_planning %}><H2>{{ Planning.nom }}</H2></a>
+        </li>
+        <li class="list-group-item"><b>debut :</b> {{ Planning.debut }}</li>
+        <li class="list-group-item"><b>fin :</b> {{ Planning.fin }}</li>
+        <li class="list-group-item"><b>description :</b> {{ Planning.description }}</li>
+        <li class="list-group-item">ici les details du planning</li>
+    </ul>
+
+{% endblock planning %}
+
+{% block postes%}
+    <ul class="list-group">
+    {% for poste in Postes %}
+        <li class="list-group-item">
+            {#<a href={% url 'detail_evenement' uuid_evenement=Evenement.UUID_evenement %}>#}
+            <H2>{{ poste.nom }}</H2>
+            {#</a>#}
+            <form class="form" method="post"> {# action pas selectionné donc meme self page #}
+                {% csrf_token %}
+                <input  name="uuid_poste" value={{ poste.UUID_poste }} type="hidden">
+                <button type="submit" class="btn btn-primary">Select</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock postes %}
+
+{% block creneau%}
+    {% if Creneaux %}
+        <ul class="list-group">
+
+            {% for creno in Creneaux %}
+
+                {#<a href={% url 'detail_creneau' uuid_creneau=creno.UUID_creneau %}></a>#}
+                {#<H2>{{ creno.nom }}</H2>#}
+            <li class="list-group-item">
+                {% buttons %}
+                    {% comment "" %}
+                    <button class="btn btn-primary" \
+                            type="button" data-bs-toggle="collapse" \
+                            style="height:50px;width:200px" \
+                            data-bs-target="#collapseCreneau{{ forloop.counter }}" \
+                            aria-expanded="false" \
+                            aria-controls="collapseCreneau{{ forloop.counter }}">
+                    {{ creno.debut|date:'H:i' }}-{{ creno.fin|date:'H:i' }}
+                    </button>
+                    {% endcomment %}
+
+                    <button class="list-group-item list-group-item-action active" \
+                            type="button" data-bs-toggle="collapse" \
+                            data-bs-target="#collapseCreneau{{ forloop.counter }}" \
+                            aria-expanded="false" \
+                            aria-controls="collapseCreneau{{ forloop.counter }}">
+                    {{ creno.debut|date:'H:i' }}-{{ creno.fin|date:'H:i' }}
+                    </button>
+                {% endbuttons %}
+            </li>
+                <div class="collapse" id="collapseCreneau{{ forloop.counter }}">
+                <div class="card card-body">
+                    <ul class="list-group list-group-flush" style="font-size: 0.8em">
+                        <li class="list-group-item">{{ creno.nom }}</li>
+                        <li class="list-group-item"><b>debut :</b> {{ creno.debut }}</li>
+                        <li class="list-group-item"><b>fin :</b> {{ creno.fin }}</li>
+                        {% if creno.benevole_id %}
+                            <li class="list-group-item">Profile benevole uuid : {{ creno.benevole_id }}</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                </div>
+
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock creneau %}
+
+{% block agenda %}
+    </br>
+    <div class="schedule" aria-labelledby="schedule-heading">
+
+        <h2 class="time-slot" style="grid-column: time-0000;">00:00</h2>
+        <h2 class="time-slot" style="grid-column: time-0030;">00:30</h2>
+        <h2 class="time-slot" style="grid-column: time-0100;">01:00</h2>
+        <h2 class="time-slot" style="grid-column: time-0130;">01:30</h2>
+        <h2 class="time-slot" style="grid-column: time-0200;">02:00</h2>
+        <h2 class="time-slot" style="grid-column: time-0230;">02:30</h2>
+        <h2 class="time-slot" style="grid-column: time-0300;">03:00</h2>
+        <h2 class="time-slot" style="grid-column: time-0330;">03:30</h2>
+        <h2 class="time-slot" style="grid-column: time-0400;">04:00</h2>
+        <h2 class="time-slot" style="grid-column: time-0430;">04:30</h2>
+        <h2 class="time-slot" style="grid-column: time-0500;">05:00</h2>
+        <h2 class="time-slot" style="grid-column: time-0530;">05:30</h2>
+        <h2 class="time-slot" style="grid-column: time-0600;">06:00</h2>
+        <h2 class="time-slot" style="grid-column: time-0630;">06:30</h2>
+        <h2 class="time-slot" style="grid-column: time-0700;">07:00</h2>
+        <h2 class="time-slot" style="grid-column: time-0730;">07:30</h2>
+        <h2 class="time-slot" style="grid-column: time-0800;">08:00</h2>
+        <h2 class="time-slot" style="grid-column: time-0830;">08:30</h2>
+        <h2 class="time-slot" style="grid-column: time-0900;">09:00</h2>
+        <h2 class="time-slot" style="grid-column: time-0930;">09:30</h2>
+        <h2 class="time-slot" style="grid-column: time-1000;">10:00</h2>
+        <h2 class="time-slot" style="grid-column: time-1030;">10:30</h2>
+        <h2 class="time-slot" style="grid-column: time-1100;">11:00</h2>
+        <h2 class="time-slot" style="grid-column: time-1130;">11:30</h2>
+        <h2 class="time-slot" style="grid-column: time-1200;">12:00</h2>
+        <h2 class="time-slot" style="grid-column: time-1230;">12:30</h2>
+        <h2 class="time-slot" style="grid-column: time-1300;">13:00</h2>
+        <h2 class="time-slot" style="grid-column: time-1330;">13:30</h2>
+        <h2 class="time-slot" style="grid-column: time-1400;">14:00</h2>
+        <h2 class="time-slot" style="grid-column: time-1430;">14:30</h2>
+        <h2 class="time-slot" style="grid-column: time-1500;">15:00</h2>
+        <h2 class="time-slot" style="grid-column: time-1530;">15:30</h2>
+        <h2 class="time-slot" style="grid-column: time-1600;">16:00</h2>
+        <h2 class="time-slot" style="grid-column: time-1630;">16:30</h2>
+        <h2 class="time-slot" style="grid-column: time-1700;">17:00</h2>
+        <h2 class="time-slot" style="grid-column: time-1730;">17:30</h2>
+        <h2 class="time-slot" style="grid-column: time-1800;">18:00</h2>
+        <h2 class="time-slot" style="grid-column: time-1830;">18:30</h2>
+        <h2 class="time-slot" style="grid-column: time-1900;">19:00</h2>
+        <h2 class="time-slot" style="grid-column: time-1930;">19:30</h2>
+        <h2 class="time-slot" style="grid-column: time-2000;">20:00</h2>
+        <h2 class="time-slot" style="grid-column: time-2030;">20:30</h2>
+        <h2 class="time-slot" style="grid-column: time-2100;">21:00</h2>
+        <h2 class="time-slot" style="grid-column: time-2130;">21:30</h2>
+        <h2 class="time-slot" style="grid-column: time-2200;">22:00</h2>
+        <h2 class="time-slot" style="grid-column: time-2230;">22:30</h2>
+        <h2 class="time-slot" style="grid-column: time-2300;">23:00</h2>
+        <h2 class="time-slot" style="grid-column: time-2330;">23:30</h2>
+        <h2 class="time-slot" style="grid-column: time-2400;">24:00</h2>
+
+        <span class="creneau-slot" aria-hidden="true" style="grid-row: creneau-1; grid-column: creneaux;">BAR : serveur 1</span>
+        <span class="creneau-slot" aria-hidden="true" style="grid-row: creneau-2; grid-column: creneaux;">BAR : serveur 2</span>
+
+        <div class="session session-1 creneau-1" style="grid-row: creneau-1; grid-column: time-0600 / time-0900;">
+            <h3 class="session-title"><a href="#">creneau</a></h3>
+            <span class="session-time">6:00 - 9:00</span>
+            <span class="session-creneau"></span>
+            <span class="session-presenter">Phil rioual</span>
+        </div>
+        <div class="session session-1 creneau-libre" style="grid-row: creneau-1; grid-column: time-0900 / time-1200;">
+            <h3 class="session-title"><a href="#">creneau</a></h3>
+            <span class="session-time">9:00 - 12:00</span>
+            <span class="session-creneau"></span>
+            <span class="session-presenter"></span>
+        </div>
+        <div class="session session-1 creneau-1" style="grid-row: creneau-1; grid-column: time-1200 / time-1500;">
+            <h3 class="session-title"><a href="#">creneau</a></h3>
+            <span class="session-time">12:00 - 15:00</span>
+            <span class="session-creneau"></span>
+            <span class="session-presenter">Phil rioual</span>
+        </div>
+
+        <div class="session session-2 creneau-2" style="grid-row: creneau-2; grid-column: time-1100 / time-1400;">
+            <h3 class="session-title"><a href="#">creneau</a></h3>
+            <span class="session-time">11:00 - 14:00</span>
+            <span class="session-creneau"></span>
+            <span class="session-presenter">Phil rioual</span>
+        </div>
+
+    </div>
+{% endblock agenda %}

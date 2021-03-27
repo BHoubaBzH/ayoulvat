@@ -124,7 +124,7 @@ class Creneau(models.Model):
     nom = models.CharField(max_length=80,
                            blank=True,
                            default='',
-                           help_text='laisser vide, le champs sera rempli automatiquement')
+                           help_text='le champs sera écrasé automatiquement')
 
     debut = models.DateTimeField(blank=False, default='')
     fin = models.DateTimeField(blank=False, default='')

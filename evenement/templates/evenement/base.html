@@ -5,39 +5,78 @@
 
 {% bootstrap_messages %}
 
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <title>{% block title %}Evenement{% endblock %}</title>
+
+  <link rel="stylesheet" href="{% static 'css/planning.css' %}" type="text/css" />
 </head>
 <body>
+
   <main>
 
-  <div class="container-fluid">
-      <div class="row">
-          <div class="col-sm" title="evenement">
-              {% block evenement %}
-              {% endblock %}
-          </div> 
-          <div class="col-sm" title="équipe">
-              {% block equipe %}
-              {% endblock %}
-          </div>
-          <div class="col-sm" title="planning">
-              {% block planning %}
-              {% endblock %}
-          </div>
-          <div class="col-sm" title="poste">
-              {% block poste %}
-              {% endblock %}
-          </div>
-          <div class="col-sm" title="creneau">
-              {% block creneau %}
-              {% endblock %}
-          </div>    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12" title="evenement">
+                {% block evenement %}
+                {% endblock %}
+            </div> 
+        </div> 
     </div>
-  </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3" title="équipe">
+                <ul class="list-group">
+                    <li class="list-group-item"><H1> équipes </H1></li>
+                </ul>
+                {%  if Equipes %}
+                    {% block equipes %}
+                    {% endblock %}
+                {% endif %}
+            </div>
+            <div class="col-sm-3" title="planning">
+                <ul class="list-group">
+                    <li class="list-group-item"><H1> plannings </H1></li>
+                </ul>
+                {% if Equipe and Plannings %}
+
+                    {% block plannings %}
+                    {% endblock %}
+                {% endif %}
+            </div>
+            <div class="col-sm-3" title="poste">
+                <ul class="list-group">
+                    <li class="list-group-item"><H1> postes </H1></li>
+                </ul>
+                {% if Planning and Postes %}
+                    {% block postes %}
+                    {% endblock %}
+                {% endif %}
+            </div>
+            <div class="col-sm-3" title="creneau">
+                <ul class="list-group">
+                    <li class="list-group-item"><H1> creneaux </H1></li>
+                </ul>
+                {% block creneau %}
+                {% endblock %}
+            </div>    
+        </div>
+    </div>
+
+    {% comment "scheduler on affiche que si un planning est selectionne" %}
+    {% endcomment %}
+    {% if Planning or Poste %}
+        </br>
+        <div class="container-fluid">
+            {% block agenda %}
+            {% endblock agenda %}
+        </div>
+    {% endif %}    
 
   </main>
 </body>
