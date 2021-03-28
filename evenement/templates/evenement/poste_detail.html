@@ -36,16 +36,6 @@
                 {#<H2>{{ creno.nom }}</H2>#}
             <li class="list-group-item">
                 {% buttons %}
-                    {% comment "" %}
-                    <button class="btn btn-primary" \
-                            type="button" data-bs-toggle="collapse" \
-                            style="height:50px;width:200px" \
-                            data-bs-target="#collapseCreneau{{ forloop.counter }}" \
-                            aria-expanded="false" \
-                            aria-controls="collapseCreneau{{ forloop.counter }}">
-                    {{ creno.debut|date:'H:i' }}-{{ creno.fin|date:'H:i' }}
-                    </button>
-                    {% endcomment %}
                     <button class="list-group-item list-group-item-action active" \
                             type="button" data-bs-toggle="collapse" \
                             data-bs-target="#collapseCreneau{{ forloop.counter }}" \

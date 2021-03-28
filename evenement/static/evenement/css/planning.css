@@ -2,8 +2,20 @@
 /* variables */
 /* ###############################################" */
 
+
+
+.evenement-button {
+	width: -webkit-fill-available;
+	text-align: left;
+}
+
+.evenement-form {
+	margin: inherit;
+}
+
+
 /* ###############################################" */
-/* test grid pour scheduler */
+/* grid pour scheduler */
 /* ###############################################" */
 
 /*************************
@@ -12,9 +24,8 @@
 @media screen and (min-width:700px) {
 	.schedule {
 		display: grid;
-		grid-gap: 0.5em;
+		gap: 0.5em;
 		border: 1px solid #000000;
-
 
 		grid-template-rows:
 			[times] 2em
