@@ -2,7 +2,7 @@ import uuid
 from django.db import models
 from association.models import Association
 from benevole.models import ProfileOrganisateur, ProfileResponsable, ProfileBenevole
-
+from colorful.fields import RGBColorField
 
 class Evenement(models.Model):
     UUID_evenement = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
@@ -26,6 +26,7 @@ class Evenement(models.Model):
     editable = models.BooleanField(default=True, help_text="si non editable, l'é vènement est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
     description = models.CharField(max_length=500, blank=True, default='')
+    couleur = RGBColorField(default="#0d6efd")
 
     def __str__(self):
         return self.nom
@@ -52,6 +53,7 @@ class Equipe(models.Model):
     responsable_valide = models.BooleanField(help_text="les responsables doivent valider les créneaux choisis")
     responsable_creer = models.BooleanField(help_text="les responsables peuvent creer des bénévoles")
     description = models.CharField(max_length=500, blank=True, default='')
+    couleur = RGBColorField(default="#0d6efd")
     editable = models.BooleanField(default=True, help_text="si non editable, l'équipe est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
 
@@ -72,12 +74,13 @@ class Planning(models.Model):
                                       blank=True,
                                       default='')
     nom = models.CharField(max_length=50)
-    debut = models.DateTimeField()
-    fin = models.DateTimeField()
+    debut = models.DateTimeField(blank=False, default='')
+    fin = models.DateTimeField(blank=False, default='')
     creneaux = models.BooleanField(help_text="par créneaux fixes ou par entrée libre des bénévoles")
     ouvert_mineur = models.BooleanField(default=True,
                                         help_text='possibilité de bloquer l\'accès aux mineurs, ex : BAR')
     description = models.CharField(max_length=500, blank=True, default='')
+    couleur = RGBColorField(default="#0d6efd")
     editable = models.BooleanField(default=True, help_text="si non editable, le planning est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
     def __str__(self):
@@ -99,6 +102,7 @@ class Poste(models.Model):
                                       default='')
     nom = models.CharField(max_length=50)
     description = models.CharField(max_length=500, blank=True, default='')
+    couleur = RGBColorField(default="#0d6efd")
     editable = models.BooleanField(default=True, help_text="si non editable, le poste est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
     def __str__(self):

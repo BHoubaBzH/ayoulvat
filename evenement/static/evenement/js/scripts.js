@@ -7,7 +7,9 @@ $(document).ready(function(){
     $('#liste_creneaux button').click(function(e) {
         e.preventDefault();
         $that = $(this);
+        // supprime les class active des boutons sous "ul > il" référents de that
         $that.closest("ul").find('il').find('button').removeClass('active');
+        // set class active sur le bouton en cours : that
         $that.addClass('active');
     });
 });

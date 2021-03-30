@@ -1,9 +1,30 @@
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.shortcuts import render
+import re
+from datetime import timedelta
 
-from benevole.models import ProfileBenevole, ProfilePersonne
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.utils.formats import localize
+
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
+
+
+################################################
+##      fonctions
+################################################
+def planning_range(debut, fin):
+    '''
+        retourne un dictionnaire des dates et heures par pas de 30 minutes
+        dates pour les style unique et bien placer le creneau dans le ccs grid
+        heures pour l'affichage
+    '''
+    print('###### planning : {0} - {1}'.format(debut, fin))
+    dates_heures = {}
+    while debut <= fin:
+        date = debut.strftime("%Y-%m-%d-%H%M")
+        heure = debut.strftime("%H:%M")
+        dates_heures[date] = heure
+        debut += timedelta(minutes=30)
+    return dates_heures
 
 
 ################################################
@@ -50,7 +71,6 @@ def detail_evenement(request, uuid_evenement):
     for key, value in request.POST.items():
         print('{0} : {1}'.format(key, value))
 
-
     # recupere les uuid en POST, but est de tout gerer dans une seule page:
     if request.POST.get('uuid_equipe'):
         uuid_equipe = request.POST.get('uuid_equipe')
@@ -61,20 +81,32 @@ def detail_evenement(request, uuid_evenement):
     if request.POST.get('uuid_poste'):
         uuid_poste = request.POST.get('uuid_poste')
         data["uuid_poste"] = uuid_poste
-        
-    if uuid_equipe: # selection d'une équipe
+
+    if uuid_equipe:  # selection d'une équipe
         equipe = Equipe.objects.get(UUID_equipe=uuid_equipe)
         plannings = Planning.objects.filter(equipe_id=uuid_equipe).order_by('debut')
-        data["Equipe"] = equipe             # recupere l'equipe selectionnée
-        data["Plannings"] = plannings       # recupere les plannings de l'equipe
-    if uuid_planning:   # selection d'un planning
+        data["Equipe"] = equipe  # recupere l'equipe selectionnée
+        data["Plannings"] = plannings  # recupere les plannings de l'equipe
+    if uuid_planning:  # selection d'un planning
         planning = Planning.objects.get(UUID_planning=uuid_planning)
         postes = Poste.objects.filter(planning_id=uuid_planning).order_by('nom')
-        data["Planning"] = planning         # recupere le planning selectionnée
-        data["Postes"] = postes             # recupere les postes du planning
+        data["Planning"] = planning  # recupere le planning selectionnée
+        data["Postes"] = postes  # recupere les postes du planning
+        data["PlanningRange"] = planning_range(planning.debut, planning.fin) # données formatées du planning
+        crenos = []              # liste des creneaux du planning par poste
+        for po in postes:
+            crenos.append(po.UUID_poste)
+        creneaux = Creneau.objects.filter(poste_id__in=crenos)       # creneaux des postes du planning
+        try :
+            for v in creneaux:
+                # print('###### creneaux : {}'.format(v.nom))
+                data["Creneaux"] = creneaux.order_by('debut')  # creneaux des postes du planning
+        except :
+            print('###### pas de creneaux sur ce planning')
+
     if uuid_poste:  # selection d'un poste
         poste = Poste.objects.get(UUID_poste=uuid_poste)
-        creneaux = Creneau.objects.filter(poste_id=uuid_poste).order_by('debut')
-        data["Poste"] = poste               # recupere le poste selectionnée
-        data["Creneaux"] = creneaux         # recupere les creneaux du poste
+        creneaux = Creneau.objects.filter(poste_id=uuid_poste)
+        data["Poste"] = poste  # recupere le poste selectionnée
+        data["Creneaux"] = creneaux.order_by('debut')  # recupere les creneaux du poste
     return render(request, "evenement/evenement_detail.html", data)

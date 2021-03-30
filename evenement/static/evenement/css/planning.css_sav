@@ -2,7 +2,7 @@
 /* variables */
 /* ###############################################" */
 
-{{ planning.nom }}
+
 
 .evenement-button {
 	width: -webkit-fill-available;
@@ -20,8 +20,74 @@
 
 /*************************
  * GRID SCHEDULE LAYOUT
- * déplacé dans base.html pour etre dynamique 
  *************************/
+@media screen and (min-width:700px) {
+	.schedule {
+		display: grid;
+		gap: 0.5em;
+		border: 1px solid #000000;
+
+		grid-template-rows:
+			[heures] 2em
+			[poste-1] auto
+			[poste-2] auto
+			[poste-3] auto
+			[poste-4] auto;
+
+		grid-template-columns:
+			[postes] auto
+			[time-2021-10-29-0900] auto
+			[time-2021-10-30-0930] auto
+			[time-0100] auto
+			[time-0130] auto
+			[time-0200] auto
+			[time-0230] auto
+			[time-0300] auto
+			[time-0330] auto
+			[time-0400] auto
+			[time-0430] auto
+			[time-0500] auto
+			[time-0530] auto
+			[time-0600] auto
+			[time-0630] auto
+			[time-0700] auto
+			[time-0730] auto
+			[time-0800] auto
+			[time-0830] auto
+			[time-0900] auto
+			[time-0930] auto
+			[time-1000] auto
+			[time-1030] auto
+			[time-1100] auto
+			[time-1130] auto
+			[time-1200] auto
+			[time-1230] auto
+			[time-1300] auto
+			[time-1330] auto
+			[time-1400] auto
+			[time-1430] auto
+			[time-1500] auto
+			[time-1530] auto
+			[time-1600] auto
+			[time-1630] auto
+			[time-1700] auto
+			[time-1730] auto
+			[time-1800] auto
+			[time-1830] auto
+			[time-1900] auto
+			[time-1930] auto
+			[time-2000] auto
+			[time-2030] auto
+			[time-2100] auto
+			[time-2130] auto
+			[time-2200] auto
+			[time-2230] auto
+			[time-2300] auto
+			[time-2330] auto
+			[time-2400] auto
+			;
+	}
+}
 
 .time-slot {
 	grid-row: times;
@@ -111,9 +177,28 @@ body {
 	font-size:.75em;
 }
 
-/* utilisé si personne affecté au creneau et si pas bloqué : créneau libre */ 
+.creneau-1 {
+	background-color: #0f6dfdaa; # aa pour la transparence
+	color: #fff;
+}
+
+.creneau-2 {
+	background-color: #544D69aa; # aa pour la transparence
+	color: #fff;
+}
+
+.creneau-3 {
+	background-color: #544D69aa; # aa pour la transparence
+	color: #fff;
+}
+
+.creneau-4 {
+	background-color: #c35500aa; # aa pour la transparence
+	color: #fff;
+}
+
 .creneau-libre {
-	background-color: #1fca1caa; /* aa pour la transparence */
+	background-color: #1fca1caa; # aa pour la transparence
 	color: #fff;
 }
 

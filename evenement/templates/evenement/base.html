@@ -14,8 +14,49 @@
     <title>{% block title %}Evenement{% endblock %}</title>
     {# ressources CSS #}
     <link rel="stylesheet" href="{% static 'evenement/css/planning.css' %}" type="text/css" />
+    <style>
+        /* ###############################################" */
+        /* grid pour scheduler */
+        /* ###############################################" */
+
+        /*************************
+        * GRID SCHEDULE LAYOUT
+        * partie dynamique ayant besoins de faire appel a de variables
+        *************************/
+        @media screen and (min-width:700px) {
+            .schedule {
+                display: grid;
+                gap: 0.5em;
+                border: 1px solid #000000;
+
+                {# entete des lignes de la grille planning: postes #}
+                grid-template-rows:
+                    [times] 2em
+                    {% for poste in Postes %}
+                        [poste-{{ poste.UUID_poste }}] auto
+                    {% endfor %}
+                    ;
+                {# entete des colonnes de la grille planning: heures #}
+                grid-template-columns:
+                    [postes] auto
+                    {% for dates, heures in PlanningRange.items %} 
+                        [time-{{ dates }}] auto
+                    {% endfor %}
+                    ;
+            }
+
+            {% for poste in Postes %}
+                .poste-{{ poste.UUID_poste }} {
+                    background-color: {{ poste.couleur }}aa; {# aa pour la transparence  #}
+                    color: #fff;
+                }
+            {% endfor %}
+        }
+
+    </style>
     {# ressources JQUERY #}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    {# sources scripts #}
     <script src="{% static "evenement/js/scripts.js" %}"></script>
 
 </head>
@@ -43,7 +84,7 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-3" title="équipe">
+            <div class="col-sm-4" title="équipe">
                 <ul class="list-group">
                     <li class="list-group-item"><H1> équipes </H1></li>
                 </ul>
@@ -62,7 +103,7 @@
                     {% endblock %}
                 {% endif %}
             </div>
-            <div class="col-sm-3" title="poste">
+            <div class="col-sm-4" title="poste">
                 <ul class="list-group">
                     <li class="list-group-item"><H1> postes </H1></li>
                 </ul>
@@ -71,13 +112,15 @@
                     {% endblock %}
                 {% endif %}
             </div>
+            {% comment "colonne creneau inutile avec le planning" %}
             <div class="col-sm-3" title="creneau">
                 <ul class="list-group">
                     <li class="list-group-item"><H1> creneaux </H1></li>
                 </ul>
-                {% block creneau %}
+                {% block creneaux %}
                 {% endblock %}
             </div>    
+            {% endcomment %}
         </div>
     </div>
 

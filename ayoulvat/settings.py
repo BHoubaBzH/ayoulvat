@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'evenement.apps.EvenementConfig',
     'benevole.apps.BenevoleConfig',
     'bootstrap5',
+    'colorful',
 ]
 
 MIDDLEWARE = [
