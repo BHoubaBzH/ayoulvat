@@ -1,9 +1,7 @@
-import re
 from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.utils.formats import localize
 
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
 
@@ -11,19 +9,20 @@ from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
 ################################################
 ##      fonctions
 ################################################
-def planning_range(debut, fin):
+def planning_range(debut, fin, delta):
     '''
-        retourne un dictionnaire des dates et heures par pas de 30 minutes
+        retourne un dictionnaire des dates (cles) et heures (valeurs) par pas de 30 minutes
         dates pour les style unique et bien placer le creneau dans le ccs grid
         heures pour l'affichage
     '''
     print('###### planning : {0} - {1}'.format(debut, fin))
     dates_heures = {}
     while debut <= fin:
+        print('date : {}'.format(debut.strftime('%H:%M %z')))
         date = debut.strftime("%Y-%m-%d-%H%M")
         heure = debut.strftime("%H:%M")
         dates_heures[date] = heure
-        debut += timedelta(minutes=30)
+        debut += timedelta(minutes=delta)
     return dates_heures
 
 
@@ -92,7 +91,7 @@ def detail_evenement(request, uuid_evenement):
         postes = Poste.objects.filter(planning_id=uuid_planning).order_by('nom')
         data["Planning"] = planning  # recupere le planning selectionnée
         data["Postes"] = postes  # recupere les postes du planning
-        data["PlanningRange"] = planning_range(planning.debut, planning.fin) # données formatées du planning
+        data["PlanningRange"] = planning_range(planning.debut, planning.fin, planning.pas) # données formatées du planning
         crenos = []              # liste des creneaux du planning par poste
         for po in postes:
             crenos.append(po.UUID_poste)

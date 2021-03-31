@@ -107,14 +107,23 @@
     </br>
     <H2> {{ Planning.nom }} : {{ Planning.debut|date:"d/m/Y H:i" }} - {{ Planning.fin|date:"d/m/Y H:i" }}</H2>
     <div class="schedule" aria-labelledby="schedule-heading">
+
+        {# on parcour les cellule pour y appliquer un div et un border#}
+        {% for poste in Postes %}
+            {% for dates, heures in PlanningRange.items %}
+                <div class="grid-cell" ></div>
+            {% endfor %}
+
+        {% endfor %}
+
         {# affiche les entetes des colonnes du planning : les heures #}
         {% for dates, heures in PlanningRange.items %} 
             <h2 class="time-slot" style="grid-column: time-{{ dates }}; grid-row: times">{{ heures }}</h2>
         {% endfor %}
-            
+
         {#les noms des postes sont insérés dans la premiere colonne nommée postes #}
         {% for poste in Postes %}
-            <span class="creneau-slot" aria-hidden="true" style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes;">{{ poste.nom }}</span>
+            <span class="poste-slot" aria-hidden="true" style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes;">{{ poste.nom }}</span>
         {# pour le placement dans la grille planning garder le filtre sur creno.debut et creno.fin comme la fonction planning_range de views.py : #}
         {# si on a choisi un poste , on affiche les creneaux de ce poste #}
         {% for creno in Creneaux %}

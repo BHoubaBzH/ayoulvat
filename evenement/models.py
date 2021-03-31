@@ -81,6 +81,7 @@ class Planning(models.Model):
                                         help_text='possibilité de bloquer l\'accès aux mineurs, ex : BAR')
     description = models.CharField(max_length=500, blank=True, default='')
     couleur = RGBColorField(default="#0d6efd")
+    pas = models.IntegerField(default="30",blank=False,help_text="pas de reglage des creneaux en minutes: 15 / 30 / 60")
     editable = models.BooleanField(default=True, help_text="si non editable, le planning est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
     def __str__(self):

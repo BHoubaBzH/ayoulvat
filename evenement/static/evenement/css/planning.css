@@ -28,19 +28,19 @@
 	transform: rotate(-45deg);
 }
 
-.creneau-slot {
+.poste-slot {
     #display: none; /* hidden on small screens and browsers without grid support */
 }
 
 @supports( display:grid ) {
 	@media screen and (min-width:700px) {
-		.creneau-slot {
+		.poste-slot {
 			display: block;
 			padding: 10px 5px 5px;
 			position: sticky;
 			top: 0;
 			z-index: 1000;
-			background-color: rgba(255,255,255,.9);
+			background-color: rgb(255, 255, 255);
 		}
 	}
 }
@@ -68,6 +68,12 @@ body {
 	#max-width: 1100px;
 	margin: 0 auto;
 	line-height: 1.5;
+}
+
+.grid-cell {
+	border-left: inherit; 
+	border-bottom: inherit; 
+	border-color: lightgray;
 }
 
 .poste {
@@ -105,7 +111,7 @@ body {
 	}
 }
 
-.creneau-slot,
+.poste-slot,
 .time-slot {
 	font-weight: bold;
 	font-size:.75em;
