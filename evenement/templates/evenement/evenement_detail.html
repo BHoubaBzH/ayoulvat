@@ -50,7 +50,7 @@
         {% endfor %}
     </div>
 {% endblock plannings %}
-
+{% comment "colonne poste et creneau inutile avec le planning" %}
 {% block postes%}
     <div class="list-group" id="liste_postes_forms">
         {% for poste in Postes %}
@@ -69,7 +69,7 @@
         {% endfor %}
     </div>
 {% endblock postes %}
-{% comment "" %}
+
 {% block creneaux %}
     {% if Creneaux %}
         <ul class="list-group" id="liste_creneaux">
@@ -106,38 +106,66 @@
 {% block agenda %}
     </br>
     <H2> {{ Planning.nom }} : {{ Planning.debut|date:"d/m/Y H:i" }} - {{ Planning.fin|date:"d/m/Y H:i" }}</H2>
-    <div class="schedule" aria-labelledby="schedule-heading">
-
-        {# on parcour les cellule pour y appliquer un div et un border#}
-        {% for poste in Postes %}
-            {% for dates, heures in PlanningRange.items %}
-                <div class="grid-cell" ></div>
+    {% if Postes %}
+        <div class="schedule" aria-labelledby="schedule-heading">
+            {# affiche les entetes des colonnes du planning : les heures #}
+            {% for dates, heures in PlanningRange.items %} 
+                <h2 class="time-slot" style="grid-column: time-{{ dates }}; grid-row: times">{{ heures.0 }}</h2>
             {% endfor %}
+            {#les noms des postes sont insérés dans la premiere colonne nommée postes #}
+            {% for poste in Postes %}
+                <span class="poste-slot" aria-hidden="true" style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes;">{{ poste.nom }}</span>
+            {# pour le placement dans la grille planning garder le filtre sur creno.debut et creno.fin comme la fonction planning_range de views.py : #}
+            {# si on a choisi un poste , on affiche les creneaux de ce poste #}
+            {% comment "" %}
+                {% for creno in Creneaux %}
+                    {% if creno.poste_id == poste.UUID_poste %}
+                        {# affiche le creneau dans la grid ccs#}
+                        <div class="creneau poste poste-{{ poste.UUID_poste }}" style="grid-row: poste-{{ creno.poste_id }}; grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};">
+                            <h4 class="poste-title"><a href="#">creneau</a></h4>
+                        </div>
+                        {# donnée si hover creneau associé au creneau #}
+                        <div class="hide modal-dialog modal-sm modal-content" style="background-color: {{ poste.couleur }};">
+                            <span class="poste-time">{{ creno.debut }} - {{ creno.fin }}</span>
+                            <span class="poste-nom"></span>
+                            <span class="poste-presenter">{{ creno.benevole_id }}</span>
+                        </div>
 
-        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endcomment %}
+                {% for creno_benevole in Creneaux_Benevoles %}
+                    {% if creno_benevole.Creneau.poste_id == poste.UUID_poste %}
+                        {# affiche le creneau dans la grid ccs#}
+                        <div class="creneau poste poste-{{ poste.UUID_poste }}" style="grid-row: poste-{{ creno_benevole.Creneau.poste_id }}; grid-column: time-{{ creno_benevole.Creneau.debut|date:'Y-m-d-Hi' }} / time-{{ creno_benevole.Creneau.fin|date:'Y-m-d-Hi' }};">
+                            <h4 class="poste-title"><a href="#">creneau</a></h4>
+                        </div>
+                        {# donnée si hover creneau associé au creneau #}
+                        <div class="hide modal-dialog modal-sm modal-content" style="background-color: {{ poste.couleur }};">
+                            <span class="poste-nom">infos : </span>
+                            {# si un benevole est affecté au créneau #}
+                            {% if creno_benevole.Creneau.benevole_id %}
+                                {% if creno_benevole.First_name or creno_benevole.Last_name %}
+                                    <span class="poste-presenter">Bénévole : {{ creno_benevole.First_name }} {{ creno_benevole.Last_name }}</span>
+                                    {% elif creno_benevole.Username %}
+                                    <span class="poste-presenter">Bénévole : {{ creno_benevole.Username }}</span>
+                                {% endif %}
+                                <span class="poste-presenter">Asso : {{ creno_benevole.Origine }}</span>
+                            {% else %} {# pas de benevole affecté au créneau #}
+                                <span class="poste-presenter">Libre</span>
+                            {% endif %}                           
+                        </div>
 
-        {# affiche les entetes des colonnes du planning : les heures #}
-        {% for dates, heures in PlanningRange.items %} 
-            <h2 class="time-slot" style="grid-column: time-{{ dates }}; grid-row: times">{{ heures }}</h2>
-        {% endfor %}
+                    {% endif %}
+                {% endfor %}
 
-        {#les noms des postes sont insérés dans la premiere colonne nommée postes #}
-        {% for poste in Postes %}
-            <span class="poste-slot" aria-hidden="true" style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes;">{{ poste.nom }}</span>
-        {# pour le placement dans la grille planning garder le filtre sur creno.debut et creno.fin comme la fonction planning_range de views.py : #}
-        {# si on a choisi un poste , on affiche les creneaux de ce poste #}
-        {% for creno in Creneaux %}
-            {% if creno.poste_id == poste.UUID_poste %}
-                <div class="poste poste-{{ poste.UUID_poste }}" style="grid-row: poste-{{ creno.poste_id }}; grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};">
-                    <h4 class="poste-title"><a href="#">creneau</a></h4>
-                    {% comment "" %}
-                    <span class="poste-time">{{ creno.debut }} - {{ creno.fin }}</span>
-                    <span class="poste-nom"></span>
-                    <span class="poste-presenter">{{ creno.benevole_id }}</span>
-                    {% endcomment %}
-                </div>
-            {% endif %}
-        {% endfor %}
-        {% endfor %}
-    </div>
+                {# on parcour les cellule de la grid css pour y appliquer un div et une decoration css #}
+                {% for dates, dateheure in PlanningRange.items %}
+                    <div class="grid-cell" style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};" ></div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <H3> pas encore de postes définits </H3> 
+    {% endif %}
 {% endblock agenda %}

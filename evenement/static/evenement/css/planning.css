@@ -2,7 +2,6 @@
 /* variables */
 /* ###############################################" */
 
-{{ planning.nom }}
 
 .evenement-button {
 	width: -webkit-fill-available;
@@ -13,6 +12,18 @@
 	margin: inherit;
 }
 
+/* creneau, affiche les details quand on passe dessus dans la grille */
+.hide {
+	display: none;
+	position: absolute;
+	z-index: 30;
+	opacity: 1;
+}
+
+.creneau_details:hover + .hide {
+	display: block;
+	color: rgb(0, 0, 0);
+}
 
 /* ###############################################" */
 /* grid pour scheduler */
@@ -39,7 +50,7 @@
 			padding: 10px 5px 5px;
 			position: sticky;
 			top: 0;
-			z-index: 1000;
+			z-index: 20;
 			background-color: rgb(255, 255, 255);
 		}
 	}
@@ -54,6 +65,7 @@
 	@media screen and (min-width: 700px) {
 		.poste {
 			margin: 0;
+			z-index: 20;
 		}
 	}
 }
