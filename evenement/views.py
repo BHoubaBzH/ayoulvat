@@ -34,46 +34,40 @@ def get_infos_benevole(creneaux):
     '''
         entree: tableau de creneaux
         donne des infos sur le benevole pour affichage dans le creneau
-        retour : liste de tableau d'objets model
+
+        retour : liste de tableaux de dictionnaires des models
         { 'Creneau': creno,
-        'Username' : username,
-        'First_name' : first_name,
-        'Last_name' : last_name,
-        'Date_de_naissance' : date_de_naissance,
-        'Origine' : origine }
+        'Benevole' : benevole.ProfileBenevole,
+        'Personne' : benevole.ProfilePersonne,
+        'Utilisateur' : auth.User,
+        'Origine' : benevole.origine }
     '''
     infos_benevole = []
     for creno in creneaux:
-        if creno.benevole_id:   # il y a un benevole associé au creneau
-            benevoleref = ProfileBenevole.objects.get(UUID_benevole=creno.benevole_id)
-            personneref = ProfilePersonne.objects.get(UUID_personne=benevoleref.personne_id)
-            benevoleinfo = User.objects.get(id=personneref.user_id)
-            print('username : {}'.format(benevoleinfo.username))
-            print('prenom : {}'.format(benevoleinfo.first_name))
-            print('nom : {}'.format(benevoleinfo.last_name))
-            if Origine.objects.get(UUID_origine=personneref.origine_id):
-                origineref = Origine.objects.get(UUID_origine=personneref.origine_id)
-                print('origine : {}'.format(origineref.nom))
+        if creno.benevole_id:   # il y a un benevole lié au creneau
+            benevoleinfo = ProfileBenevole.objects.get(UUID_benevole=creno.benevole_id)
+            personneinfo = ProfilePersonne.objects.get(UUID_personne=benevoleinfo.personne_id)
+            userinfo = User.objects.get(id=personneinfo.user_id)
+            if Origine.objects.get(UUID_origine=personneinfo.origine_id):
+                origineinfo = Origine.objects.get(UUID_origine=personneinfo.origine_id)
+                # print('origine : {}'.format(origineinfo.nom))
                 infos_benevole.append({'Creneau': creno,
-                                      'Username': benevoleinfo.username,
-                                      'First_name': benevoleinfo.first_name,
-                                      'Last_name': benevoleinfo.last_name,
-                                      'Date_de_naissance': personneref.date_de_naissance,
-                                      'Origine': origineref.nom})
-            else:               # un benevole, sans association origine, associé au creneau
-                print('pas d origine')
+                                       'Utilisateur': userinfo,
+                                       'Personne': personneinfo,
+                                       'Benevole': benevoleinfo,
+                                       'Origine': origineinfo,})
+            else:               # un benevole, sans association origine, lié au creneau
+                # print('pas d origine')
                 infos_benevole.append({'Creneau': creno,
-                                      'Username': benevoleinfo.username,
-                                      'First_name': benevoleinfo.first_name,
-                                      'Last_name': benevoleinfo.last_name,
-                                      'Date_de_naissance': personneref.date_de_naissance,
+                                       'Utilisateur': userinfo,
+                                       'Personne': personneinfo,
+                                       'Benevole': benevoleinfo,
                                        'Origine': ''})
         else:                    # pas de benevole associé au creneau
-            infos_benevole.append({'Creneau':creno,
-                                   'Username': '',
-                                   'First_name': '',
-                                   'Last_name': '',
-                                   'Date_de_naissance': '',
+            infos_benevole.append({'Creneau': creno,
+                                   'Utilisateur': '',
+                                   'Personne': '',
+                                   'Benevole': '',
                                    'Origine': ''})
     return infos_benevole
 
@@ -148,13 +142,10 @@ def detail_evenement(request, uuid_evenement):
         for po in postes:
             crenos.append(po.UUID_poste)        # crenos : liste des creneaux du planning par poste
         creneaux = Creneau.objects.filter(poste_id__in=crenos)       # liste des creneaux des postes du planning
-        ########## en cours #############################################################
-        creneaux_benevoles = get_infos_benevole(creneaux) ########## en cours ##################################
+        creneaux_benevoles = get_infos_benevole(creneaux)
         print('{}'.format(creneaux_benevoles))
-        ########## en cours #############################################################
         try:
-            data["Creneaux"] = creneaux.order_by('debut')  # creneaux des postes du planning
-            data["Creneaux_Benevoles"] = creneaux_benevoles########## en cours ##################################
+            data["Creneaux_Benevoles"] = creneaux_benevoles
         except:
             print('###### pas de creneaux sur ce planning')
     ''' 

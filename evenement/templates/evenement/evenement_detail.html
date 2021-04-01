@@ -115,44 +115,37 @@
             {#les noms des postes sont insérés dans la premiere colonne nommée postes #}
             {% for poste in Postes %}
                 <span class="poste-slot" aria-hidden="true" style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes;">{{ poste.nom }}</span>
-            {# pour le placement dans la grille planning garder le filtre sur creno.debut et creno.fin comme la fonction planning_range de views.py : #}
+            {# pour le placement dans la grille planning garder le filtre sur creno_benevole.Creneau.debut et creno_benevole.Creneau.fin comme la fonction planning_range de views.py : #}
             {# si on a choisi un poste , on affiche les creneaux de ce poste #}
-            {% comment "" %}
-                {% for creno in Creneaux %}
-                    {% if creno.poste_id == poste.UUID_poste %}
-                        {# affiche le creneau dans la grid ccs#}
-                        <div class="creneau poste poste-{{ poste.UUID_poste }}" style="grid-row: poste-{{ creno.poste_id }}; grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};">
-                            <h4 class="poste-title"><a href="#">creneau</a></h4>
-                        </div>
-                        {# donnée si hover creneau associé au creneau #}
-                        <div class="hide modal-dialog modal-sm modal-content" style="background-color: {{ poste.couleur }};">
-                            <span class="poste-time">{{ creno.debut }} - {{ creno.fin }}</span>
-                            <span class="poste-nom"></span>
-                            <span class="poste-presenter">{{ creno.benevole_id }}</span>
-                        </div>
-
-                    {% endif %}
-                {% endfor %}
-            {% endcomment %}
                 {% for creno_benevole in Creneaux_Benevoles %}
                     {% if creno_benevole.Creneau.poste_id == poste.UUID_poste %}
-                        {# affiche le creneau dans la grid ccs#}
-                        <div class="creneau poste poste-{{ poste.UUID_poste }}" style="grid-row: poste-{{ creno_benevole.Creneau.poste_id }}; grid-column: time-{{ creno_benevole.Creneau.debut|date:'Y-m-d-Hi' }} / time-{{ creno_benevole.Creneau.fin|date:'Y-m-d-Hi' }};">
-                            <h4 class="poste-title"><a href="#">creneau</a></h4>
-                        </div>
-                        {# donnée si hover creneau associé au creneau #}
+                        {# affiche le creneau dans la grid ccs#} 
+                        {% if creno_benevole.Creneau.benevole_id %} {# si un benevole est affecté au créneau #}
+                            <div class="creneau poste poste-{{ poste.UUID_poste }}" style="grid-row: poste-{{ creno_benevole.Creneau.poste_id }}; grid-column: time-{{ creno_benevole.Creneau.debut|date:'Y-m-d-Hi' }} / time-{{ creno_benevole.Creneau.fin|date:'Y-m-d-Hi' }};">
+
+                                {# template a insérer pour les boutons  editer/supprimer  #}
+                                <div style="position:absolute; bottom:0px;right: 0px">x</div>
+
+
+                            </div>
+                        {% else %} {# pas de benevole affecté au créneau #}
+                            <div class="creneau_libre poste poste-{{ poste.UUID_poste }}" style="grid-row: poste-{{ creno_benevole.Creneau.poste_id }}; grid-column: time-{{ creno_benevole.Creneau.debut|date:'Y-m-d-Hi' }} / time-{{ creno_benevole.Creneau.fin|date:'Y-m-d-Hi' }};">
+                            </div>                        
+                        {% endif %}
+
+                        {# données du creneau affichée en mouse over #}
                         <div class="hide modal-dialog modal-sm modal-content" style="background-color: {{ poste.couleur }};">
                             <span class="poste-nom">infos : </span>
                             {# si un benevole est affecté au créneau #}
                             {% if creno_benevole.Creneau.benevole_id %}
-                                {% if creno_benevole.First_name or creno_benevole.Last_name %}
-                                    <span class="poste-presenter">Bénévole : {{ creno_benevole.First_name }} {{ creno_benevole.Last_name }}</span>
-                                    {% elif creno_benevole.Username %}
-                                    <span class="poste-presenter">Bénévole : {{ creno_benevole.Username }}</span>
+                                {% if creno_benevole.Utilisateur.first_name or creno_benevole.Utilisateur.last_name %}
+                                    <span class="poste-presenter">Bénévole : {{ creno_benevole.Utilisateur.first_name }} {{ creno_benevole.Utilisateur.last_name }}</span>
+                                    {% elif creno_benevole.Utilisateur.username %}
+                                    <span class="poste-presenter">Bénévole : {{ creno_benevole.Utilisateur.username }}</span>
                                 {% endif %}
-                                <span class="poste-presenter">Asso : {{ creno_benevole.Origine }}</span>
+                                <span class="poste-presenter">Asso : {{ creno_benevole.Origine.nom }}</span>
                             {% else %} {# pas de benevole affecté au créneau #}
-                                <span class="poste-presenter">Libre</span>
+                                <span class="poste-presenter">Créneau Libre</span>
                             {% endif %}                           
                         </div>
 

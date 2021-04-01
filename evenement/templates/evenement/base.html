@@ -46,13 +46,20 @@
                     {% endfor %}
                     ;
             }
-
+            {# colorise les créneaux en fonction du poste #}
             {% for poste in Postes %}
                 .poste-{{ poste.UUID_poste }} {
                     background-color: {{ poste.couleur }}aa; {# aa pour la transparence  #}
                     color: #fff;
+                    position: relative;
                 }
             {% endfor %}
+
+            {# utilisé si personne affecté au creneau et si pas bloqué : créneau libre */ #}
+            .creneau_libre {
+                background-color: #1fca1caa; /* aa pour la transparence */
+                background-color: var(--bs-teal);
+            }
     </style>
 
     {# ressources JQUERY #}
