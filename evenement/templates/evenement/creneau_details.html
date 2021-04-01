@@ -1,0 +1,43 @@
+{# evenement/creneau_details.html #}
+
+{# pour le placement dans la grille planning garder le filtre sur creno_benevole.Creneau.debut et creno_benevole.Creneau.fin comme la fonction planning_range de views.py : #}
+<button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%} poste poste-{{ poste.UUID_poste }}" 
+         style="grid-row: poste-{{ creno_benevole.Creneau.poste_id }};
+         grid-column: time-{{ creno_benevole.Creneau.debut|date:'Y-m-d-Hi' }} /
+         time-{{ creno_benevole.Creneau.fin|date:'Y-m-d-Hi' }};" data-bs-toggle="modal" data-bs-target="#Modal-{{ creno_benevole.Creneau.UUID_creneau }}">
+
+    <div style="position:absolute; bottom:0px;right: 0px"><a href="https://deusta.bzh" target="blank"><i class="bi bi-trash-fill"></a></i></div>
+</button>
+
+{# modal #}
+<div class="modal fade" id="Modal-{{ creno_benevole.Creneau.UUID_creneau }}" tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{ creno_benevole.Creneau.nom }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+ 
+                <div class="card card-body">
+                    <ul class="list-group list-group-flush" style="font-size: 0.8em">
+                {% if libre == 'non' %} {# si un benevole est affecté au créneau #}
+                        <li class="list-group-item"><b>Bénévole :</b> {{ creno_benevole.Utilisateur.first_name }} {{ creno_benevole.Utilisateur.last_name }}</li>
+                        <li class="list-group-item"><b>Bénévole login :</b> {{ creno_benevole.Utilisateur.username }}</li>
+                        <li class="list-group-item"><b>Asso Représentée :</b> {{ creno_benevole.Origine.nom }}</li>
+
+                    {% else %}
+                        <li class="list-group-item">Créneau Libre</li>
+                    {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>    
+        </div>
+    </div>
+</div>

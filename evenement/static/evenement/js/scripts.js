@@ -1,6 +1,6 @@
 /*
     dans le groupe id="liste_creneaux" , met le fond de la case selectionnée en couleur
-*/
+
 
 $(document).ready(function(){
     console.log('ready');
@@ -13,3 +13,4 @@ $(document).ready(function(){
         $that.addClass('active');
     });
 });
+*/
