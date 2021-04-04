@@ -1,21 +1,20 @@
 from django.contrib import admin
-from django.contrib.auth.models import User
 
-from .models import ProfilePersonne, Origine, ProfileGestionnaire, ProfileResponsable, ProfileOrganisateur, \
+from .models import Personne, AssoOrigine, ProfileAdministrateur, ProfileResponsable, ProfileOrganisateur, \
     ProfileBenevole
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
 
-class ProfilePersonneInLine(admin.TabularInline):
-    model = ProfilePersonne
+class PersonneInLine(admin.TabularInline):
+    model = Personne
     can_delete = False
     verbose_name = 'Bénévoles'
     # fk_name = 'user'
     extra = 1
 
+'''
 class BenevoleDetails(UserAdmin):
-    inlines = [ProfilePersonneInLine, ]
-    list_display = ('last_name', )
+    inlines = [PersonneInLine, ]
+    list_display = ('nom', )
     # va chercher last_name dans la class user liée par ManyToMany
     def last_name(self, obj):
         return obj.user.last_name
@@ -23,14 +22,15 @@ class BenevoleDetails(UserAdmin):
         if not obj:
             return list()
         return super(BenevoleDetails, self).get_inline_instances(request, obj)
+'''
 
 
 #admin.site.unregister(User)
 #admin.site.register(User, BenevoleDetails)
 
-admin.site.register(ProfilePersonne)
-admin.site.register(ProfileGestionnaire)
+admin.site.register(Personne)
+admin.site.register(ProfileAdministrateur)
 admin.site.register(ProfileOrganisateur)
 admin.site.register(ProfileResponsable)
 admin.site.register(ProfileBenevole)
-admin.site.register(Origine)
+admin.site.register(AssoOrigine)

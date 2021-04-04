@@ -1,11 +1,10 @@
 from datetime import timedelta
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
-from benevole.models import ProfileBenevole, ProfilePersonne, Origine
-from django.contrib.auth.models import User
+from benevole.models import ProfileBenevole, Personne, AssoOrigine, ProfileResponsable, ProfileOrganisateur
 
 ################################################
 ##      fonctions
@@ -38,37 +37,46 @@ def get_infos_benevole(creneaux):
         retour : liste de tableaux de dictionnaires des models
         { 'Creneau': creno,
         'Benevole' : benevole.ProfileBenevole,
-        'Personne' : benevole.ProfilePersonne,
-        'Utilisateur' : auth.User,
-        'Origine' : benevole.origine }
+        'Personne' : benevole.Personne,
+        'Responsable' : benevole.ProfileResponsable,
+        'Organisateur' : benevole.ProfileOrganisateur,
+        'AssoOrigine' : benevole.AssoOrigine }
     '''
     infos_benevole = []
     for creno in creneaux:
         if creno.benevole_id:   # il y a un benevole lié au creneau
             benevoleinfo = ProfileBenevole.objects.get(UUID_benevole=creno.benevole_id)
-            personneinfo = ProfilePersonne.objects.get(UUID_personne=benevoleinfo.personne_id)
-            userinfo = User.objects.get(id=personneinfo.user_id)
-            if Origine.objects.get(UUID_origine=personneinfo.origine_id):
-                origineinfo = Origine.objects.get(UUID_origine=personneinfo.origine_id)
-                # print('origine : {}'.format(origineinfo.nom))
-                infos_benevole.append({'Creneau': creno,
-                                       'Utilisateur': userinfo,
-                                       'Personne': personneinfo,
-                                       'Benevole': benevoleinfo,
-                                       'Origine': origineinfo,})
-            else:               # un benevole, sans association origine, lié au creneau
-                # print('pas d origine')
-                infos_benevole.append({'Creneau': creno,
-                                       'Utilisateur': userinfo,
-                                       'Personne': personneinfo,
-                                       'Benevole': benevoleinfo,
-                                       'Origine': ''})
+            try:
+                personneinfo = Personne.objects.get(UUID_personne=benevoleinfo.personne_id)
+            except:
+                personneinfo = ''
+            try:
+                responsableinfo = ProfileResponsable.objects.get(personne_id=personneinfo.UUID_personne)
+            except:
+                responsableinfo = ''
+            try:
+                organisateurinfo = ProfileOrganisateur.objects.get(personne_id=personneinfo.UUID_personne)
+            except:
+                organisateurinfo = ''
+            try:
+                assoorigineinfo = AssoOrigine.objects.get(UUID_assoorigine=personneinfo.assoorigine_id)
+            except:
+                assoorigineinfo = ''
+
+            infos_benevole.append({'Creneau': creno,
+                                   'Benevole': benevoleinfo,
+                                   'Personne': personneinfo,
+                                   'Responsable': responsableinfo,
+                                   'Organisateur': organisateurinfo,
+                                   'AssoOrigine': assoorigineinfo,})
         else:                    # pas de benevole associé au creneau
             infos_benevole.append({'Creneau': creno,
-                                   'Utilisateur': '',
-                                   'Personne': '',
                                    'Benevole': '',
-                                   'Origine': ''})
+                                   'Personne': '',
+                                   'Responsable': '',
+                                   'Organisateur': '',
+                                   'AssoOrigine': ''})
+
     return infos_benevole
 
 
@@ -91,7 +99,8 @@ def liste_evenements(request):
 
 
 @login_required(login_url='login')
-def detail_evenement(request, uuid_evenement):
+@permission_required('evenement.view_evenement', login_url='login')
+def evenement(request, uuid_evenement):
     """
     détails d'un evenement
     """
@@ -156,4 +165,4 @@ def detail_evenement(request, uuid_evenement):
         data["Poste"] = poste  # recupere le poste selectionnée
         data["Creneaux"] = creneaux.order_by('debut')  # recupere les creneaux du poste
     '''
-    return render(request, "evenement/evenement_detail.html", data)
+    return render(request, "evenement/evenement.html", data)

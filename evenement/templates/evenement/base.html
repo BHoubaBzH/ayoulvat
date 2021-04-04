@@ -30,6 +30,7 @@
                 display: grid;
                 gap: 0.3em;
                 border: 1px solid #000000;
+                padding: inherit;
 
                 {# entete des lignes de la grille planning: postes #}
                 grid-template-rows:
@@ -73,6 +74,7 @@
 <body>
 
   <main>
+    <hr class="bg-danger border-2 border-top">
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12" title="evenement">
@@ -81,6 +83,7 @@
             </div> 
         </div> 
     </div>
+    <hr class="bg-danger border-2 border-top">
     {# tabs pour montrer différentes infos #}
     <ul class="nav nav-tabs">
         <li class="nav-item">
@@ -130,14 +133,14 @@
                 {% block creneaux %}
                 {% endblock %}
             </div>    
-            {% endcomment %}
-        </div>
+
+        </div> 
     </div>
 
     {% comment "scheduler on affiche que si un planning est selectionne" %}
     {% endcomment %}
     {% if Planning or Poste %}
-        </br>
+        <hr class="bg-danger border-2 border-top">
         <div class="container-fluid">
             {% block agenda %}
             {% endblock agenda %}

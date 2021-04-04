@@ -1,13 +1,9 @@
 import uuid
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.utils.datetime_safe import date
 from django.utils.timezone import now
 from phonenumber_field.modelfields import PhoneNumberField
 
 from administration.models import Formule
-from django.contrib.auth.models import User
 
 
 class Association(models.Model):
@@ -24,7 +20,7 @@ class Association(models.Model):
                                 unique=False)  # unique=False car une personne peu etre contact pour plusieures assos
     site_web = models.URLField(blank=False, default='')
     description = models.CharField(max_length=500, blank=True, default='')
-    administrateur = models.ForeignKey('benevole.ProfileGestionnaire',
+    administrateur = models.ForeignKey('benevole.ProfileAdministrateur',
                                        null=True,
                                        default='',
                                        related_name='admin',
@@ -33,8 +29,8 @@ class Association(models.Model):
                                                              " - qui n'a pas payée"
                                                              " - supprimée, pour garder l'historique")
     date_creation = models.DateField(default=now, blank=False)
-    # fait le lien avec les gestionnaires
-    # Gestionnaires = models.ManyToManyField('benevole.ProfileGestionnaire', related_name='Gestionnaire')
+    # fait le lien avec les Administrateurs
+    # Administrateurs = models.ManyToManyField('benevole.ProfileAdministrateur', related_name='Administrateur')
 
     def __str__(self):
         return self.nom

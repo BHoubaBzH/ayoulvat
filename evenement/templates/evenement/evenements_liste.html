@@ -4,7 +4,7 @@
 
     {% if Evenements %}
         {% for event in Evenements %}
-            <a href={% url 'detail_evenement' uuid_evenement=event.UUID_evenement %}>
+            <a href={% url 'evenement' uuid_evenement=event.UUID_evenement %}>
             <H2>{{ event.nom }}</H2>
             </a>
         {% endfor %}

@@ -15,7 +15,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">{{ creno_benevole.Creneau.nom }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -23,9 +23,9 @@
  
                 <div class="card card-body">
                     <ul class="list-group list-group-flush" style="font-size: 0.8em">
-                {% if libre == 'non' %} {# si un benevole est affecté au créneau #}
-                        <li class="list-group-item"><b>Bénévole :</b> {{ creno_benevole.Utilisateur.first_name }} {{ creno_benevole.Utilisateur.last_name }}</li>
-                        <li class="list-group-item"><b>Bénévole login :</b> {{ creno_benevole.Utilisateur.username }}</li>
+                    {% if libre == 'non' %} {# si un benevole est affecté au créneau #}
+                        <li class="list-group-item"><b>Bénévole :</b> {{ creno_benevole.Personne.first_name }} {{ creno_benevole.Personne.last_name }}</li>
+                        <li class="list-group-item"><b>Bénévole login :</b> {{ creno_benevole.Personne.username }}</li>
                         <li class="list-group-item"><b>Asso Représentée :</b> {{ creno_benevole.Origine.nom }}</li>
 
                     {% else %}
@@ -35,8 +35,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary">Sauver</button>
             </div>    
         </div>
     </div>

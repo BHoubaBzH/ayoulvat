@@ -8,7 +8,7 @@ from association.models import Association
 @login_required(login_url='login')
 def liste_assos(request):
     """
-    liste toutes les assosciations,a filtrer par assos affectées au gestionnaire
+    liste toutes les assosciations,a filtrer par assos affectées a administrateur
     """
     data = {
         "Assos": Association.objects.all(),

@@ -1,16 +1,16 @@
 import uuid
 
-from django.contrib.auth.models import User, Group
 from django.db import models
 
 from phonenumber_field.modelfields import PhoneNumberField
 
 from association.models import Association
 
+from django.contrib.auth.models import AbstractUser
+from django.utils.translation import ugettext_lazy as _
 
-
-class Origine(models.Model):
-    UUID_origine = \
+class AssoOrigine(models.Model):
+    UUID_assoorigine = \
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     nom = models.CharField(max_length=50,
                            verbose_name="association repésentée par le bénévole")
@@ -18,8 +18,7 @@ class Origine(models.Model):
     def __str__(self):
         return self.nom
 
-
-class ProfilePersonne(models.Model):
+class Personne(AbstractUser):
     MIN = "MINEUR"
     HOM = "HOMME"
     FEM = "FEMME"
@@ -30,18 +29,22 @@ class ProfilePersonne(models.Model):
         (FEM, 'Femme'),
         (NSP, 'Ne se prononce pas'),
     ]
-    # La liaison OneToOne vers le modèle User
-    user = models.OneToOneField(User,
-                                on_delete=models.CASCADE)  # supprime cette personne si le user est supprimé
+
     UUID_personne = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    # on oblige a rentrer un nom et un prenom
+    last_name = models.CharField(_('last name'), max_length=30, blank=False, unique=True)
+    first_name = models.CharField(_('first name'), max_length=30, blank=False, unique=True)
+    email = models.EmailField(_('email address'), unique=True)
+
     # on ne peut pas supprimer une asso origine tant
     # qu'une personne en fait partie
-    origine = models.ForeignKey(Origine,
+    assoorigine = models.ForeignKey(AssoOrigine,
                                 primary_key=False,
                                 null=True,
                                 blank=True,
                                 default='',
-                                on_delete=models.PROTECT)
+                                on_delete=models.PROTECT,
+                                help_text='association pour la quelle le benevole travaille')
     role = models.CharField(max_length=50, blank=True, default='')
     genre = models.CharField(max_length=50, choices=genreListe, default=NSP)
     date_de_naissance = models.DateField(default='2000-01-01')
@@ -55,41 +58,36 @@ class ProfilePersonne(models.Model):
                                 help_text='donnée obligatoire')
     description = models.CharField(max_length=500, blank=True, default='')
 
-    def __str__(self):
-        if not self.user.last_name and not self.user.first_name:
-            return "{0}".format(self.user.username)
-        else:
-            return "{0} {1}".format(self.user.last_name.upper(), self.user.first_name.capitalize())
 
-
-# paramètres specifiques gestionnaires de l'asso
-class ProfileGestionnaire(models.Model):
-    UUID_gestionnaire = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    # supprime le gestionnaire si l'entree personne est supprimee
-    personne = models.OneToOneField(ProfilePersonne,
+# paramètres specifiques administrateurs de l'asso
+class ProfileAdministrateur(models.Model):
+    UUID_administrateur = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    # supprime l administrateur si l'entree personne est supprimee
+    personne = models.OneToOneField(Personne,
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
-    # supprime le gestionnaire si l'asso est supprimée, le benevole reste
+    # supprime l administrateur si l'asso est supprimée, le benevole reste
     association = models.ForeignKey(Association,
                                     default='',
+                                    blank=True,
                                     null=True,
                                     on_delete=models.CASCADE)
     referent = models.BooleanField(default=False)
 
     def __str__(self):
-        if not self.personne.user.last_name and not self.personne.user.first_name:
-            return "{0}".format(self.personne.user.username)
+        if not self.personne.last_name and not self.personne.first_name:
+            return "{0}".format(self.personne.username)
         else:
-            return "{0} {1}".format(self.personne.user.last_name.upper(), \
-                                    self.personne.user.first_name.capitalize())
+            return "{0} {1}".format(self.personne.last_name.upper(), \
+                                    self.personne.first_name.capitalize())
 
 
 # paramètres specifiques organisateur de l'evenement
 class ProfileOrganisateur(models.Model):
     UUID_organisateur = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # supprime l'organisateur si l'entree personne est supprimee
-    personne = models.OneToOneField(ProfilePersonne,
+    personne = models.OneToOneField(Personne,
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
@@ -101,18 +99,18 @@ class ProfileOrganisateur(models.Model):
     #                              on_delete=models.CASCADE)
 
     def __str__(self):
-        if not self.personne.user.last_name and not self.personne.user.first_name:
-            return "{0}".format(self.personne.user.username)
+        if not self.personne.last_name and not self.personne.first_name:
+            return "{0}".format(self.personne.username)
         else:
-            return "{0} {1}".format(self.personne.user.last_name.upper(), \
-                                    self.personne.user.first_name.capitalize())
+            return "{0} {1}".format(self.personne.last_name.upper(), \
+                                    self.personne.first_name.capitalize())
 
 
 # paramètres specifiques responsable d'equipe
 class ProfileResponsable(models.Model):
     UUID_responsable = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # supprime le responsable si l'entree personne est supprimee
-    personne = models.OneToOneField(ProfilePersonne,
+    personne = models.OneToOneField(Personne,
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
@@ -124,26 +122,26 @@ class ProfileResponsable(models.Model):
     #                           on_delete=models.CASCADE)
 
     def __str__(self):
-        if not self.personne.user.last_name and not self.personne.user.first_name:
-            return "{0}".format(self.personne.user.username)
+        if not self.personne.last_name and not self.personne.first_name:
+            return "{0}".format(self.personne.username)
         else:
-            return "{0} {1}".format(self.personne.user.last_name.upper(), \
-                                    self.personne.user.first_name.capitalize())
+            return "{0} {1}".format(self.personne.last_name.upper(), \
+                                    self.personne.first_name.capitalize())
 
 
 # paramètres specifiques benevole
 class ProfileBenevole(models.Model):
     UUID_benevole = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # supprime le benevole si l'entree personne est supprimee
-    personne = models.OneToOneField(ProfilePersonne,
+    personne = models.OneToOneField(Personne,
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
     message = models.TextField(max_length=1000, blank=True, default='')
 
     def __str__(self):
-        if not self.personne.user.last_name and not self.personne.user.first_name:
-            return "{0}".format(self.personne.user.username)
+        if not self.personne.last_name and not self.personne.first_name:
+            return "{0}".format(self.personne.username)
         else:
-            return "{0} {1}".format(self.personne.user.last_name.upper(), \
-                                    self.personne.user.first_name.capitalize())
+            return "{0} {1}".format(self.personne.last_name.upper(), \
+                                    self.personne.first_name.capitalize())

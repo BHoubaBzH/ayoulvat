@@ -10,35 +10,33 @@ from django.dispatch import receiver
 ##########################################################
 # definition de nos groupes
 ##########################################################
-gest = 'GESTIONNAIRE'  # gestionnaire d'asso
+admi = 'ADMINISTRATEUR'  # administrateur d'asso
 orga = 'ORGANISATEUR'  # organisateur d'evenement
 resp = 'RESPONSABLE'  # responsable d'equipe
 bene = 'BENEVOLE'  # bénévole affecté aux creneaux
 
 groupe_liste = [
-    (gest, 'Gestionnaire'),
+    (admi, 'Administrateur'),
     (orga, 'Organisateur'),
     (resp, 'Responsable'),
     (bene, 'Benevole'),
 ]
 
 groupe_permission = {
-    'Gestionnaire': (  # asso
+    'Administrateur': (  # asso
         'add_abonnement', 'view_abonnement',
         'add_association', 'view_association', 'change_association', 'delete_association',
-        # users
-        'add_user', 'view_user', 'change_user', 'delete_user',
-        'add_profilegestionnaire', 'view_profilegestionnaire', 'change_profilegestionnaire',
-        'delete_profilegestionnaire',
+        # custom user : personne
+        'add_personne', 'view_personne', 'change_personne', 'delete_personne',
+        'add_profileadministrateur', 'view_profileadministrateur', 'change_profileadministrateur',
+        'delete_profileadministrateur',
         'add_profileorganisateur', 'view_profileorganisateur', 'change_profileorganisateur',
         'delete_profileorganisateur',
         'add_profileresponsable', 'view_profileresponsable', 'change_profileresponsable',
         'delete_profileresponsable',
         'add_profilebenevole', 'view_profilebenevole', 'change_profilebenevole',
         'delete_profilebenevole',
-        'add_profilepersonne', 'view_profilepersonne', 'change_profilepersonne',
-        'delete_profilepersonne',
-        'add_origine', 'view_origine', 'change_origine', 'delete_origine',
+        'add_assoorigine', 'view_assoorigine', 'change_assoorigine', 'delete_assoorigine',
         # evenement
         'add_evenement', 'view_evenement', 'change_evenement', 'delete_evenement',
         'add_equipe', 'view_equipe', 'change_equipe', 'delete_equipe',
@@ -46,18 +44,16 @@ groupe_permission = {
         'add_poste', 'view_poste', 'change_poste', 'delete_poste',
         'add_creneau', 'view_creneau', 'change_creneau', 'delete_creneau',
     ),
-    'Organisateur': (  # users
-        'add_user', 'view_user', 'change_user', 'delete_user',
-        'view_profilegestionnaire',
+    'Organisateur': (  # custom user : personne
+        'add_personne', 'view_personne', 'change_personne', 'delete_personne',
+        'view_profileadministrateur',
         'add_profileorganisateur', 'view_profileorganisateur', 'change_profileorganisateur',
         'delete_profileorganisateur',
         'add_profileresponsable', 'view_profileresponsable', 'change_profileresponsable',
         'delete_profileresponsable',
         'add_profilebenevole', 'view_profilebenevole', 'change_profilebenevole',
         'delete_profilebenevole',
-        'add_profilepersonne', 'view_profilepersonne', 'change_profilepersonne',
-        'delete_profilepersonne',
-        'add_origine', 'view_origine', 'change_origine', 'delete_origine',
+        'add_assoorigine', 'view_assoorigine', 'change_assoorigine', 'delete_assoorigine',
         # evenement
         'add_evenement', 'view_evenement', 'change_evenement', 'delete_evenement',
         'add_equipe', 'view_equipe', 'change_equipe', 'delete_equipe',
@@ -65,17 +61,15 @@ groupe_permission = {
         'add_poste', 'view_poste', 'change_poste', 'delete_poste',
         'add_creneau', 'view_creneau', 'change_creneau', 'delete_creneau',
     ),
-    'Responsable': (  # users
-        'add_user', 'view_user', 'change_user', 'delete_user',
-        'view_profilegestionnaire',
+    'Responsable': (  # custom user : personne
+        'add_personne', 'view_personne', 'change_personne', 'delete_personne',
+        'view_profileadministrateur',
         'view_profileorganisateur',
         'add_profileresponsable', 'view_profileresponsable', 'change_profileresponsable',
         'delete_profileresponsable',
         'add_profilebenevole', 'view_profilebenevole', 'change_profilebenevole',
         'delete_profilebenevole',
-        'add_profilepersonne', 'view_profilepersonne', 'change_profilepersonne',
-        'delete_profilepersonne',
-        'view_origine',
+        'view_assoorigine',
         # evenement
         'view_evenement',
         'add_equipe', 'view_equipe', 'change_equipe', 'delete_equipe',
@@ -83,16 +77,14 @@ groupe_permission = {
         'add_poste', 'view_poste', 'change_poste', 'delete_poste',
         'add_creneau', 'view_creneau', 'change_creneau', 'delete_creneau',
     ),
-    'Benevole': (  # users
-        'add_user', 'view_user', 'change_user', 'delete_user',
-        'view_profilegestionnaire',
+    'Benevole': (  # custom user : personne
+        'add_personne', 'view_personne', 'change_personne', 'delete_personne',
+        'view_profileadministrateur',
         'view_profileorganisateur',
         'view_profileresponsable',
         'add_profilebenevole', 'view_profilebenevole', 'change_profilebenevole',
         'delete_profilebenevole',
-        'add_profilepersonne', 'view_profilepersonne', 'change_profilepersonne',
-        'delete_profilepersonne',
-        'view_origine',
+        'view_assoorigine',
         # evenement
         'view_evenement',
         'add_equipe', 'view_equipe', 'change_equipe', 'delete_equipe',
@@ -123,7 +115,7 @@ class Logs(models.Model):
     def __str__(self):
         return self.log
 
-# crée nos groupe à la fin de la migration, grace au hook
+# crée nos groupes à la fin de la migration, grace au hook
 # on crée également les droits affectés aux groupes
 @receiver(post_migrate)
 def init_groups(sender, **kwargs):
@@ -134,6 +126,7 @@ def init_groups(sender, **kwargs):
         group.permissions.clear()
         # on met à jour les autorisations des groupes
         for perm in groupe_permission[nom]:
+            #print(' permission : {}'.format(perm))
             permission = Permission.objects.get(codename=perm)
             group.permissions.add(permission)
         if created:

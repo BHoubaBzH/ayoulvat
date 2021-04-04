@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'association.apps.AssociationsConfig',
     'administration.apps.AdministrationConfig',
     'evenement.apps.EvenementConfig',
@@ -126,6 +127,10 @@ USE_TZ = False # False pour resoudre les pb de timezone sur les plannings
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# authent personnalisée
+AUTH_USER_MODEL = 'benevole.Personne'
+AUTHENTICATION_BACKENDS = ['benevole.backends.EmailBackend']
 
 LOGIN_REDIRECT_URL = 'home'  # redirection de login
 LOGOUT_REDIRECT_URL = 'home'  # redirection de logout
