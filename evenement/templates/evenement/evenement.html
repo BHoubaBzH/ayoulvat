@@ -1,7 +1,8 @@
 {% extends 'evenement/base.html' %}
 
 {% load bootstrap5 %}
-
+{# templates tags customs ici pour trouver les groupes des personnes #}
+{% load benevole_extras %}
 
 {% block evenement %}
     {% comment "haut de notre page avec les infos de l evenement" %}{% endcomment %}
@@ -113,7 +114,18 @@
             {% endfor %}
             {#affiche les entetes des lignes du planning : postes #}
             {% for poste in Postes %}
-                <span class="poste-slot" aria-hidden="true" style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes;">{{ poste.nom }}</span>
+
+                <div class="poste-slot" aria-hidden="true" style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes;">
+                        {{ poste.nom }}
+                    {% if request.user|has_group:"Administrateur" or request.user|has_group:"Organisateur" or request.user|has_group:"Responsable" %} 
+                    {# les purs benevoles n'ont pas accès a ces données #}
+                        <button style="position:absolute; bottom:0px;right: 0px" class="btn btn-danger btn-sm" type="button" title="supprimer ce poste">
+                            <div >
+                                <i class="bi bi-dash-circle-fill"></i>
+                            </div>
+                        </button>
+                    {% endif %}
+                </div>
 
                 {% for creno_benevole in Creneaux_Benevoles %}
                     {% if creno_benevole.Creneau.poste_id == poste.UUID_poste %}
@@ -129,9 +141,21 @@
 
                 {# on parcour toutes les cellule de la grid css pour y appliquer un div et une decoration css #}
                 {% for dates, dateheure in PlanningRange.items %}
-                    <div class="grid-cell" style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};" ></div>
+                    <div class="grid-cell" style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};" >
+                    </div>
                 {% endfor %}
             {% endfor %}
+            {# ajoute une ligne vide pour pouvoir ajouter des postes au besoins #}
+            {% if request.user|has_group:"Administrateur" or request.user|has_group:"Organisateur" or request.user|has_group:"Responsable" %} 
+            {# les purs benevoles n'ont pas accès a ces données #}
+                <span class="poste-slot" aria-hidden="true" style="grid-row: poste-add; grid-column: postes;">
+                    <button style="position:absolute; bottom:0px;right: 0px" class="btn btn-primary btn-sm" type="button" title="ajouter un poste">
+                        <div >
+                            <i class="bi bi-plus-circle-fill"></i>
+                        </div>
+                    </button>
+                </span>
+            {% endif %}
         </div>
     {% else %}
         <H3> pas encore de postes définis </H3> 

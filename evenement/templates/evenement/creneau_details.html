@@ -1,12 +1,14 @@
 {# evenement/creneau_details.html #}
 
+{# templates tags customs ici pour trouver les groupes des personnes #}
+{% load benevole_extras %}
+
 {# pour le placement dans la grille planning garder le filtre sur creno_benevole.Creneau.debut et creno_benevole.Creneau.fin comme la fonction planning_range de views.py : #}
 <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%} poste poste-{{ poste.UUID_poste }}" 
          style="grid-row: poste-{{ creno_benevole.Creneau.poste_id }};
          grid-column: time-{{ creno_benevole.Creneau.debut|date:'Y-m-d-Hi' }} /
          time-{{ creno_benevole.Creneau.fin|date:'Y-m-d-Hi' }};" data-bs-toggle="modal" data-bs-target="#Modal-{{ creno_benevole.Creneau.UUID_creneau }}">
-
-    <div style="position:absolute; bottom:0px;right: 0px"><a href="https://deusta.bzh" target="blank"><i class="bi bi-trash-fill"></a></i></div>
+    
 </button>
 
 {# modal #}
@@ -20,24 +22,40 @@
                 </button>
             </div>
             <div class="modal-body">
- 
                 <div class="card card-body">
-                    <ul class="list-group list-group-flush" style="font-size: 0.8em">
-                    {% if libre == 'non' %} {# si un benevole est affecté au créneau #}
-                        <li class="list-group-item"><b>Bénévole :</b> {{ creno_benevole.Personne.first_name }} {{ creno_benevole.Personne.last_name }}</li>
-                        <li class="list-group-item"><b>Bénévole login :</b> {{ creno_benevole.Personne.username }}</li>
-                        <li class="list-group-item"><b>Asso Représentée :</b> {{ creno_benevole.Origine.nom }}</li>
-
-                    {% else %}
-                        <li class="list-group-item">Créneau Libre</li>
-                    {% endif %}
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><b>Date :</b> {{ creno_benevole.Creneau.debut|date:'d/m/Y' }}</li>
+                        <li class="list-group-item"><b>Début :</b> {{ creno_benevole.Creneau.debut|date:'H:i' }}</li>
+                        <li class="list-group-item"><b>Fin :</b> {{ creno_benevole.Creneau.fin|date:'H:i' }}</li>
+                        <li class="list-group-item"><b>Durée :</b> {{ creno_benevole.CreneauDuree }}</li>
+                        {% if libre == 'non' %} {# si un benevole est affecté au créneau #}
+                          <li class="list-group-item"><b>Bénévole :</b> {{ creno_benevole.Personne.first_name }} {{ creno_benevole.Personne.last_name }}</li>
+                            {% if request.user|has_group:"Administrateur" or request.user|has_group:"Organisateur" or request.user|has_group:"Responsable" %}
+                            {# les purs benevoles n'ont pas accès a ces données #} 
+                                <li class="list-group-item"><b>Genre :</b> {{ creno_benevole.Personne.genre }}</li>
+                                <li class="list-group-item"><b>Date de naissance :</b> {{ creno_benevole.Personne.date_de_naissance }}</li>
+                                <li class="list-group-item"><b>Asso Représentée :</b> {{ creno_benevole.AssoOrigine.nom }}</li>
+                                <li class="list-group-item"><b>Courriel :</b> {{ creno_benevole.Personne.email }}</li>
+                                <li class="list-group-item"><b>Téléphone :</b> {{ creno_benevole.Personne.portable }}</li>
+                            {% endif %}
+                        {% else %}
+                          <li class="list-group-item">Créneau Libre</li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
             <div class="modal-footer">
+                {% if request.user|has_group:"Administrateur" or request.user|has_group:"Organisateur" or request.user|has_group:"Responsable" %} 
+                {# les purs benevoles n'ont pas accès a ces données #}
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" title="supprimer le créneau">Supprimer</button>
+                    <button type="button" class="btn btn-primary">Sauver</button>
+                {% endif %}
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                <button type="button" class="btn btn-primary">Sauver</button>
-            </div>    
+            </div>
+
+            <div>
+            </div>
+
         </div>
     </div>
 </div>

@@ -31,9 +31,9 @@ class Personne(AbstractUser):
     ]
 
     UUID_personne = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    # on oblige a rentrer un nom et un prenom
-    last_name = models.CharField(_('last name'), max_length=30, blank=False, unique=True)
-    first_name = models.CharField(_('first name'), max_length=30, blank=False, unique=True)
+    # on oblige a rentrer un nom et un prenom et on retire username
+    last_name = models.CharField(_('last name'), max_length=30, blank=False, unique=False)
+    first_name = models.CharField(_('first name'), max_length=30, blank=False, unique=False)
     email = models.EmailField(_('email address'), unique=True)
 
     # on ne peut pas supprimer une asso origine tant

@@ -2,9 +2,11 @@ from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
+from django.utils.timesince import timesince
 
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
 from benevole.models import ProfileBenevole, Personne, AssoOrigine, ProfileResponsable, ProfileOrganisateur
+
 
 ################################################
 ##      fonctions
@@ -29,18 +31,21 @@ def planning_range(debut, fin, delta):
         debut += timedelta(minutes=delta)
     return dates_heures
 
+
 def get_infos_benevole(creneaux):
     '''
         entree: tableau de creneaux
         donne des infos sur le benevole pour affichage dans le creneau
 
-        retour : liste de tableaux de dictionnaires des models
+        retour : liste de tableaux de dictionnaires des models et une duree Time
         { 'Creneau': creno,
         'Benevole' : benevole.ProfileBenevole,
         'Personne' : benevole.Personne,
         'Responsable' : benevole.ProfileResponsable,
         'Organisateur' : benevole.ProfileOrganisateur,
-        'AssoOrigine' : benevole.AssoOrigine }
+        'AssoOrigine' : benevole.AssoOrigine,
+        'CreneauDuree' timesince(creneau.debut, creneau.fin):
+         }
     '''
     infos_benevole = []
     for creno in creneaux:
@@ -68,17 +73,17 @@ def get_infos_benevole(creneaux):
                                    'Personne': personneinfo,
                                    'Responsable': responsableinfo,
                                    'Organisateur': organisateurinfo,
-                                   'AssoOrigine': assoorigineinfo,})
+                                   'AssoOrigine': assoorigineinfo,
+                                   'CreneauDuree': timesince(creno.debut, creno.fin),})
         else:                    # pas de benevole associé au creneau
             infos_benevole.append({'Creneau': creno,
                                    'Benevole': '',
                                    'Personne': '',
                                    'Responsable': '',
                                    'Organisateur': '',
-                                   'AssoOrigine': ''})
-
+                                   'AssoOrigine': '',
+                                   'CreneauDuree': timesince(creno.debut, creno.fin),})
     return infos_benevole
-
 
 ################################################
 ##      views evenements
@@ -106,7 +111,7 @@ def evenement(request, uuid_evenement):
     """
     uuid_equipe = ''
     uuid_planning = ''
-    uuid_poste = ''
+    # uuid_poste = ''
     # store dans la session le uuid de l'evenement
     request.session['uuid_evenement'] = uuid_evenement
     #print('uuid evt : {}'.format(uuid_evenement))

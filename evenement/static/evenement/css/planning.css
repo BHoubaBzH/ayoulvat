@@ -49,13 +49,15 @@
 
 .poste-slot {
     #display: none; /* hidden on small screens and browsers without grid support */
+	text-align: left;
+	min-width: 100px;
 }
 
 @supports( display:grid ) {
 	@media screen and (min-width:700px) {
 		.poste-slot {
 			display: block;
-			padding: 10px 5px 5px;
+			padding: 20px 5px 5px;
 			position: sticky;
 			top: 0;
 			z-index: 20;
