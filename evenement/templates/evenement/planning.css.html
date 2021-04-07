@@ -1,0 +1,163 @@
+
+/* ###############################################" */
+/* variables */
+/* ###############################################" */
+
+.evenement-button {
+	/* width: -webkit-fill-available; */
+	width: 100%;
+	text-align: left;
+}
+
+.evenement-form {
+	margin: inherit;
+}
+
+
+.creneau, .creneau_libre {
+	box-shadow: 3px 2px #888;
+	display: block;
+	color: rgb(0, 0, 0);
+}
+
+.creneau_libre {
+	background-color: teal;
+}
+/* ###############################################" */
+/* grid pour scheduler */
+/* ###############################################" */
+
+/*************************
+ * GRID SCHEDULE LAYOUT
+ *  partie dynamique
+ *************************/
+
+@media screen and (min-width:700px) {
+	.schedule {
+		#overflow-x: scroll;
+		inline-size: fit-content;
+		display: grid;
+		gap: 0.3em;
+		border: 1px solid #ffffff;
+		padding: inherit;
+
+
+		{# construction des entetes et des lignes de la grille planning: heures puis postes #}
+		grid-template-rows:
+			[heures] 3em
+			{% for poste in Postes %}
+				[poste-{{ poste.UUID_poste }}] auto
+			{% endfor %};
+		{# construction des entete et des colonnes de la grille planning: postes puis heures puis boutons #}
+		grid-template-columns:
+			[postes] auto
+			{% for dates, heures in PlanningRange.items %}
+				[time-{{ dates }}] auto
+			{% endfor %}
+			[postes-boutons] auto
+			;
+	}
+	{# colorise les créneaux en fonction du poste et la couleur dans la table poste#}
+	{% for poste in Postes %}
+		.poste-{{ poste.UUID_poste }} {
+			background-color: {{ poste.couleur }}aa; {# aa pour la transparence  #}
+			color: #fff;
+			position: relative;
+		}
+	{% endfor %}
+
+	{# utilisé si personne affecté au creneau et si pas bloqué : créneau libre */ #}
+	.creneau_libre {
+		background-color: #1fca1caa; /* aa pour la transparence */
+		background-color: var(--bs-teal);
+	}
+
+.time-slot {
+	grid-row: heures;
+	transform: rotate(-45deg);
+}
+
+.poste-slot, .poste-bouton-slot {
+    #display: none; /* hidden on small screens and browsers without grid support */
+	text-align: left;
+	min-width: 100px;
+}
+
+.poste-bouton-slot {
+	min-width: 10px;
+}
+
+@supports( display:grid ) {
+	@media screen and (min-width:700px) {
+		.poste-slot, .poste-bouton-slot {
+			display: block;
+			padding: 10px 5px 5px;
+			position: sticky;
+			top: 0;
+			z-index: 20;
+			background-color: rgb(255, 255, 255);
+		}
+	}
+}
+
+/* Small-screen & fallback styles */
+.session {
+	margin-bottom:  1em;
+}
+
+@supports( display:grid ) {
+	@media screen and (min-width: 700px) {
+		.poste {
+			margin: 0;
+			z-index: 20;
+		}
+	}
+}
+
+/*************************
+ * VISUAL STYLES
+ * 
+ *************************/
+
+body {
+	padding: 50px;
+	#max-width: 1100px;
+	margin: 0 auto;
+	line-height: 1.5;
+}
+
+.grid-cell {
+	border-left: inherit; 
+	border-bottom: inherit; 
+	border-color: lightgray;
+}
+
+.poste-slot,
+.poste-bouton-slot,
+.time-slot {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	font-size:.75em;
+}
+
+
+.text {
+	max-width: 750px;
+	font-size: 18px;
+	margin: 0 auto 50px;
+}
+
+.meta {
+	color: #555;
+	font-style: italic;
+}
+
+.meta a {
+	color: #555;
+}
+
+hr {
+	margin: 40px 0;
+}

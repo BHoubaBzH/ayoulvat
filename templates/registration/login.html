@@ -12,7 +12,7 @@
     {% csrf_token %}
     {% bootstrap_form form %}
     {% buttons %}
-      <button type="submit" class="btn btn-primary btn-lg">Connexion</button>
+      <button type="submit" class="btn btn-primary btn-sm">Connexion</button>
     {% endbuttons %}
     <a href="{% url 'password_reset' %}">Mot de passe perdu?</a>
   </form>

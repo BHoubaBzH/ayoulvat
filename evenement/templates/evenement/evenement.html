@@ -1,8 +1,6 @@
 {% extends 'evenement/base.html' %}
 
 {% load bootstrap5 %}
-{# templates tags customs ici pour trouver les groupes des personnes #}
-{% load benevole_extras %}
 
 {% block evenement %}
     {% comment "haut de notre page avec les infos de l evenement" %}{% endcomment %}
@@ -110,23 +108,21 @@
         <div class="schedule" aria-labelledby="schedule-heading">
             {# affiche les entetes des colonnes du planning : les heures #}
             {% for dates, heures in PlanningRange.items %} 
-                <h2 class="time-slot" style="grid-column: time-{{ dates }}; grid-row: times">{{ heures.0 }}</h2>
+                <h2 class="time-slot" style="grid-column: time-{{ dates }}; grid-row: heures">{{ heures.0 }}</h2>
             {% endfor %}
-            {#affiche les entetes des lignes du planning : postes #}
+            
             {% for poste in Postes %}
-
-                <div class="poste-slot" aria-hidden="true" style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes;">
-                        {{ poste.nom }}
-                    {% if request.user|has_group:"Administrateur" or request.user|has_group:"Organisateur" or request.user|has_group:"Responsable" %} 
-                    {# les purs benevoles n'ont pas accès a ces données #}
-                        <button style="position:absolute; bottom:0px;right: 0px" class="btn btn-danger btn-sm" type="button" title="supprimer ce poste">
-                            <div >
-                                <i class="bi bi-dash-circle-fill"></i>
-                            </div>
-                        </button>
-                    {% endif %}
+                {# affiche les entetes des lignes du planning : postes #}
+{# en cours de modif : debut #}
+                <div class="poste-slot"
+                     aria-hidden="true"
+                     style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes;">
+                        <p style="margin-bottom: 0px;">{{ poste.nom }}</p>
                 </div>
-
+                {% if 'evenement.delete_poste'  in perms %}
+                    {% include "evenement/poste_supprime.html" %}
+                {% endif %}
+{# en cours de modif : fin #}
                 {% for creno_benevole in Creneaux_Benevoles %}
                     {% if creno_benevole.Creneau.poste_id == poste.UUID_poste %}
                         {# affiche le creneau dans la grid ccs#} 
@@ -146,10 +142,9 @@
                 {% endfor %}
             {% endfor %}
             {# ajoute une ligne vide pour pouvoir ajouter des postes au besoins #}
-            {% if request.user|has_group:"Administrateur" or request.user|has_group:"Organisateur" or request.user|has_group:"Responsable" %} 
-            {# les purs benevoles n'ont pas accès a ces données #}
-                <span class="poste-slot" aria-hidden="true" style="grid-row: poste-add; grid-column: postes;">
-                    <button style="position:absolute; bottom:0px;right: 0px" class="btn btn-primary btn-sm" type="button" title="ajouter un poste">
+            {% if 'evenement.add_poste' in perms %} 
+                <span class="poste-slot" aria-hidden="true" style="grid-row: poste-add; grid-column: postes-boutons;">
+                    <button style="" class="btn btn-primary btn-sm" type="button" title="ajouter un poste">
                         <div >
                             <i class="bi bi-plus-circle-fill"></i>
                         </div>

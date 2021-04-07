@@ -38,7 +38,8 @@ def get_infos_benevole(creneaux):
         donne des infos sur le benevole pour affichage dans le creneau
 
         retour : liste de tableaux de dictionnaires des models et une duree Time
-        { 'Creneau': creno,
+        {
+        'Creneau': creno,
         'Benevole' : benevole.ProfileBenevole,
         'Personne' : benevole.Personne,
         'Responsable' : benevole.ProfileResponsable,
@@ -107,14 +108,16 @@ def liste_evenements(request):
 @permission_required('evenement.view_evenement', login_url='login')
 def evenement(request, uuid_evenement):
     """
-    détails d'un evenement
+    page d'un evenement
     """
     uuid_equipe = ''
     uuid_planning = ''
+    # poste_a_supprimer = '' # si seté, alors on supprime le UUID_poste
     # uuid_poste = ''
+
     # store dans la session le uuid de l'evenement
+    # il apparait dans l'url pour pouvir donner le liens aux bénévoles par la suite
     request.session['uuid_evenement'] = uuid_evenement
-    #print('uuid evt : {}'.format(uuid_evenement))
 
     # on construit nos objet avec l'uuid de l'evenement
     evenement = Evenement.objects.get(UUID_evenement=uuid_evenement)
@@ -127,41 +130,53 @@ def evenement(request, uuid_evenement):
     }
 
     # log les donnees post
-    #for key, value in request.POST.items():
-    #    print('{0} : {1}'.format(key, value))
+    for key, value in request.POST.items():
+        print('{0} : {1}'.format(key, value))
 
     # recupere les uuid en POST, but est de tout gerer dans une seule page:
-    if request.POST.get('uuid_equipe'):
-        uuid_equipe = request.POST.get('uuid_equipe')
-        data["uuid_equipe"] = uuid_equipe
-    if request.POST.get('uuid_planning'):
-        uuid_planning = request.POST.get('uuid_planning')
-        data["uuid_planning"] = uuid_planning
-    if request.POST.get('uuid_poste'):
-        uuid_poste = request.POST.get('uuid_poste')
-        data["uuid_poste"] = uuid_poste
+    if request.method == "POST":
+        if request.POST.get('uuid_equipe'):
+            uuid_equipe = request.POST.get('uuid_equipe')
+            data["uuid_equipe"] = uuid_equipe
+        if request.POST.get('uuid_planning'):
+            uuid_planning = request.POST.get('uuid_planning')
+            data["uuid_planning"] = uuid_planning
+        if request.POST.get('uuid_poste'):
+            uuid_poste = request.POST.get('uuid_poste')
+            data["uuid_poste"] = uuid_poste
 
-    if uuid_equipe:  # selection d'une équipe
-        equipe = Equipe.objects.get(UUID_equipe=uuid_equipe)
-        plannings = Planning.objects.filter(equipe_id=uuid_equipe).order_by('debut')
-        data["Equipe"] = equipe  # recupere l'equipe selectionnée
-        data["Plannings"] = plannings  # recupere les plannings de l'equipe
-    if uuid_planning:  # selection d'un planning
-        planning = Planning.objects.get(UUID_planning=uuid_planning)
-        postes = Poste.objects.filter(planning_id=uuid_planning).order_by('nom')
-        data["Planning"] = planning  # recupere le planning selectionnée
-        data["Postes"] = postes  # recupere les postes du planning
-        data["PlanningRange"] = planning_range(planning.debut, planning.fin, planning.pas) # données formatées du planning
-        crenos = []
-        for po in postes:
-            crenos.append(po.UUID_poste)        # crenos : liste des creneaux du planning par poste
-        creneaux = Creneau.objects.filter(poste_id__in=crenos)       # liste des creneaux des postes du planning
-        creneaux_benevoles = get_infos_benevole(creneaux)
-        print('{}'.format(creneaux_benevoles))
-        try:
-            data["Creneaux_Benevoles"] = creneaux_benevoles
-        except:
-            print('###### pas de creneaux sur ce planning')
+        ################
+        ### paramètres d'affichage
+        ################
+        if uuid_equipe:  # selection d'une équipe
+            equipe = Equipe.objects.get(UUID_equipe=uuid_equipe)
+            plannings = Planning.objects.filter(equipe_id=uuid_equipe).order_by('debut')
+            data["Equipe"] = equipe  # recupere l'equipe selectionnée
+            data["Plannings"] = plannings  # recupere les plannings de l'equipe
+        if uuid_planning:  # selection d'un planning
+            planning = Planning.objects.get(UUID_planning=uuid_planning)
+            postes = Poste.objects.filter(planning_id=uuid_planning).order_by('nom')
+            data["Planning"] = planning  # recupere le planning selectionnée
+            data["Postes"] = postes  # recupere les postes du planning
+            data["PlanningRange"] = planning_range(planning.debut, planning.fin, planning.pas) # données formatées du planning
+            crenos = []
+            for po in postes:
+                crenos.append(po.UUID_poste)        # crenos : liste des creneaux du planning par poste
+            creneaux = Creneau.objects.filter(poste_id__in=crenos)       # liste des creneaux des postes du planning
+            creneaux_benevoles = get_infos_benevole(creneaux)
+            # print('{}'.format(creneaux_benevoles))
+            try:
+                data["Creneaux_Benevoles"] = creneaux_benevoles
+            except:
+                print('###### pas de creneaux sur ce planning')
+        ################
+        ### paramètres de gestion de données en base
+        ################
+        # une personne ayant le droit evenement.delete_poste supprime un poste, on recoit la valeur uuid_poste en post
+        if request.POST.get('poste_a_supprimer'):
+            print('poste {} supprimé'.format(Poste.objects.filter(UUID_poste=request.POST.get('poste_a_supprimer'))))
+            Poste.objects.filter(UUID_poste=request.POST.get('poste_a_supprimer')).delete()
+
     ''' 
     # on se garde la possibilité d'afficher sur une granulometrie par poste en plus de planning  
     if uuid_poste:  # selection d'un poste

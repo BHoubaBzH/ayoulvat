@@ -12,55 +12,11 @@
 <head>
     <meta charset="utf-8">
     <title>{% block title %}Evenement{% endblock %}</title>
-    {# ressources CSS #}
-    <link rel="stylesheet" href="{% static 'evenement/css/planning.css' %}" type="text/css" />
+    {# ressources CSS remplacée par internal CSS #}
+    <!-- link rel="stylesheet" href="{% static 'evenement/css/planning.css' %}" type="text/css" /-->
     <style>
-        /* ###############################################" */
-        /* grid pour scheduler */
-        /* ###############################################" */
-
-        /*************************
-        * GRID SCHEDULE LAYOUT
-        * partie dynamique ayant besoins de faire appel a de variables
-        *************************/
-        @media screen and (min-width:700px) {
-            .schedule {
-                overflow-x: scroll;
-                inline-size: fit-content;
-                display: grid;
-                gap: 0.3em;
-                border: 1px solid #000000;
-                padding: inherit;
-
-                {# entete des lignes de la grille planning: postes #}
-                grid-template-rows:
-                    [times] 3em
-                    {% for poste in Postes %}
-                        [poste-{{ poste.UUID_poste }}] auto
-                    {% endfor %}
-                    ;
-                {# entete des colonnes de la grille planning: heures #}
-                grid-template-columns:
-                    [postes] auto
-                    {% for dates, heures in PlanningRange.items %} 
-                        [time-{{ dates }}] auto
-                    {% endfor %}
-                    ;
-            }
-            {# colorise les créneaux en fonction du poste #}
-            {% for poste in Postes %}
-                .poste-{{ poste.UUID_poste }} {
-                    background-color: {{ poste.couleur }}aa; {# aa pour la transparence  #}
-                    color: #fff;
-                    position: relative;
-                }
-            {% endfor %}
-
-            {# utilisé si personne affecté au creneau et si pas bloqué : créneau libre */ #}
-            .creneau_libre {
-                background-color: #1fca1caa; /* aa pour la transparence */
-                background-color: var(--bs-teal);
-            }
+        {# internal CSS pour dynamique #}
+        {% include 'evenement/planning.css.html'%}
     </style>
 
     {# ressources JQUERY #}
