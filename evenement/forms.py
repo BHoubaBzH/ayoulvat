@@ -1,13 +1,19 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, HiddenInput
 from phonenumber_field.formfields import PhoneNumberField
 from evenement.models import Poste
 
 class PosteForm(ModelForm):
     class Meta:
         model = Poste
-        # exclude = ['UUID_poste']
-        fields = '__all__'
+        # exclude = [ 'planning', ]
+        # fields = '__all__'
+        # ordonne l affichage des champs
+        fields = [ 'planning', 'nom', 'description', 'couleur', 'editable', 'benevole' ]
 
+    # cache le planning vu que nous l avons deja choisi
+    def __init__(self, *args, **kwargs):
+        super(PosteForm, self).__init__(*args, **kwargs)
+        self.fields['planning'].widget = HiddenInput()
 
 
 """

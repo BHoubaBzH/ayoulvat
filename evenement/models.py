@@ -100,7 +100,8 @@ class Poste(models.Model):
     benevole = models.ManyToManyField(ProfileBenevole,
                                       related_name='BenevolesPoste',
                                       blank=True,
-                                      default='')
+                                      default='',
+                                      help_text='responsable de poste, ca n a surement pas de sens')
     nom = models.CharField(max_length=50)
     description = models.CharField(max_length=500, blank=True, default='')
     couleur = RGBColorField(default="#0d6efd")

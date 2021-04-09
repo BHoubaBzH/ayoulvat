@@ -37,6 +37,7 @@
             {# en cours + #}
                         {% csrf_token %}
                     <table class="table">
+                        
                         {{ FormPoste.as_table }}
                     </table>
             {# en cours - #}
@@ -44,6 +45,7 @@
                 </div>
 
                 <div class="modal-footer">
+                    <input name="planning" id="id_planning" value="{{ Planning.UUID_planning }}" type="hidden">
                     <input name="poste_ajouter" value="" type="hidden">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" id="poste_ajouter" class="btn btn-primary success">Ajouter</button>
