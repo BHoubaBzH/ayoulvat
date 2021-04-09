@@ -7,7 +7,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from association.models import Association
 
 from django.contrib.auth.models import AbstractUser
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 class AssoOrigine(models.Model):
     UUID_assoorigine = \

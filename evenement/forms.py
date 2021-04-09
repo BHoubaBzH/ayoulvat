@@ -1,6 +1,16 @@
-from django import forms
+from django.forms import ModelForm
 from phonenumber_field.formfields import PhoneNumberField
+from evenement.models import Poste
 
+class PosteForm(ModelForm):
+    class Meta:
+        model = Poste
+        # exclude = ['UUID_poste']
+        fields = '__all__'
+
+
+
+"""
 class CreneauDetails(forms.Form):
     date = forms.DateField()
     debut = forms.TimeField()
@@ -13,3 +23,4 @@ class CreneauDetails(forms.Form):
     asso_origine = forms.CharField(max_length=100)
     courriel = forms.EmailField()
     portable = PhoneNumberField()
+"""

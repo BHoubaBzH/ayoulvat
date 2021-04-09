@@ -7,10 +7,7 @@
     {# affiche le bouton de suppression de poste #}
     <form  id="form-poste-supprime-{{ poste.UUID_poste }}" method='post'>
         {% csrf_token %}
-        <input name="poste_a_supprimer"
-                id="poste_a_supprimer"
-                value="{{ poste.UUID_poste }}"
-                type="hidden">
+        <input name="poste_a_supprimer" value="{{ poste.UUID_poste }}" type="hidden">
         <button style=""
                 class="btn btn-danger btn-sm"
                 title="supprimer ce poste"
@@ -49,8 +46,8 @@
 
             <div class="modal-footer">
                 <!--a href="#" id="submit" class="btn btn-danger success">Oui</a-->
-                <button type="submit" id="bouton-confirme-poste-supprime-{{ poste.UUID_poste }}" class="btn btn-danger success">Oui</button>
                 <button type="button" class="btn btn-success" data-bs-dismiss="modal">Non</button>
+                <button type="submit" id="bouton-confirme-poste-supprime-{{ poste.UUID_poste }}" class="btn btn-danger success">Oui</button>
             </div>
         </div>
     </div>

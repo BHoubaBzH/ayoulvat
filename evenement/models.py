@@ -45,15 +45,15 @@ class Equipe(models.Model):
                                          related_name='ResponsableEquipe',
                                          blank=True,
                                          default = '')
-    benevole = models.ManyToManyField(ProfileBenevole,
-                                      related_name='BenevolesEquipe',
-                                      blank=True,
-                                      default='')
     nom = models.CharField(max_length=50)
     responsable_valide = models.BooleanField(help_text="les responsables doivent valider les créneaux choisis")
     responsable_creer = models.BooleanField(help_text="les responsables peuvent creer des bénévoles")
     description = models.CharField(max_length=500, blank=True, default='')
     couleur = RGBColorField(default="#0d6efd")
+    benevole = models.ManyToManyField(ProfileBenevole,
+                                      related_name='BenevolesEquipe',
+                                      blank=True,
+                                      default='')
     editable = models.BooleanField(default=True, help_text="si non editable, l'équipe est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
 

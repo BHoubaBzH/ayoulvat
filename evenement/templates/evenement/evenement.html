@@ -104,55 +104,55 @@
 {% block agenda %}
     </br>
     <H2> {{ Planning.nom }} : {{ Planning.debut|date:"d/m/Y H:i" }} - {{ Planning.fin|date:"d/m/Y H:i" }}</H2>
-    {% if Postes %}
+
         <div class="schedule" aria-labelledby="schedule-heading">
             {# affiche les entetes des colonnes du planning : les heures #}
             {% for dates, heures in PlanningRange.items %} 
                 <h2 class="time-slot" style="grid-column: time-{{ dates }}; grid-row: heures">{{ heures.0 }}</h2>
             {% endfor %}
-            
-            {% for poste in Postes %}
-                {# affiche les entetes des lignes du planning : postes #}
-{# en cours de modif : debut #}
-                <div class="poste-slot"
-                     aria-hidden="true"
-                     style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes;">
-                        <p style="margin-bottom: 0px;">{{ poste.nom }}</p>
-                </div>
-                {% if 'evenement.delete_poste'  in perms %}
-                    {% include "evenement/poste_supprime.html" %}
-                {% endif %}
-{# en cours de modif : fin #}
-                {% for creno_benevole in Creneaux_Benevoles %}
-                    {% if creno_benevole.Creneau.poste_id == poste.UUID_poste %}
-                        {# affiche le creneau dans la grid ccs#} 
-                        {% if creno_benevole.Creneau.benevole_id %} {# si un benevole est affecté au créneau #}
-                            {% include "evenement/creneau_details.html" with poste=poste creno_benevole=creno_benevole libre='non' %}
-                        {% else %} {# pas de benevole affecté au créneau #}
-                            {% include "evenement/creneau_details.html" with poste=poste creno_benevole=creno_benevole libre='oui' %}          
-                        {% endif %}
 
-                    {% endif %}
-                {% endfor %}
-
-                {# on parcour toutes les cellule de la grid css pour y appliquer un div et une decoration css #}
-                {% for dates, dateheure in PlanningRange.items %}
-                    <div class="grid-cell" style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};" >
+            {% if Postes %}
+                {% for poste in Postes %}
+                    {# affiche les entetes des lignes du planning : postes #}
+                    <div class="poste-slot"
+                        aria-hidden="true"
+                        style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes;">
+                            <p style="margin-bottom: 0px;">{{ poste.nom }}</p>
                     </div>
-                {% endfor %}
-            {% endfor %}
-            {# ajoute une ligne vide pour pouvoir ajouter des postes au besoins #}
-            {% if 'evenement.add_poste' in perms %} 
-                <span class="poste-slot" aria-hidden="true" style="grid-row: poste-add; grid-column: postes-boutons;">
-                    <button style="" class="btn btn-primary btn-sm" type="button" title="ajouter un poste">
-                        <div >
-                            <i class="bi bi-plus-circle-fill"></i>
+
+                    {# gestion de suppression de poste : debut #}
+                    {% if 'evenement.delete_poste'  in perms %}
+                        {% include "evenement/poste_supprime.html" %}
+                    {% endif %}
+
+                    {% for creno_benevole in Creneaux_Benevoles %}
+                        {% if creno_benevole.Creneau.poste_id == poste.UUID_poste %}
+                            {# affiche le creneau dans la grid ccs#} 
+                            {% if creno_benevole.Creneau.benevole_id %} {# si un benevole est affecté au créneau #}
+                                {% include "evenement/creneau_details.html" with poste=poste creno_benevole=creno_benevole libre='non' %}
+                            {% else %} {# pas de benevole affecté au créneau #}
+                                {% include "evenement/creneau_details.html" with poste=poste creno_benevole=creno_benevole libre='oui' %}          
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {# decoration css: on parcour toutes les cellule de la grid css pour y appliquer un div #}
+                    {% for dates, dateheure in PlanningRange.items %}
+                        <div class="grid-cell" style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};" >
                         </div>
-                    </button>
+                    {% endfor %}
+
+                {% endfor %}
+            {% else %}
+                <span class="poste-slot" aria-hidden="true" style="grid-row: heures; grid-column: postes-boutons;">
+                    <p> pas encore de postes définis </p>
                 </span>
             {% endif %}
+
+            {# ajoute une ligne vide pour pouvoir ajouter des postes au besoins #}
+            {% if 'evenement.add_poste' in perms %}
+                {% include "evenement/poste_ajoute.html" %}
+            {% endif %}
+
         </div>
-    {% else %}
-        <H3> pas encore de postes définis </H3> 
-    {% endif %}
 {% endblock agenda %}

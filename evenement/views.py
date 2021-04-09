@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 from django.utils.timesince import timesince
 
+from evenement.forms import PosteForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
 from benevole.models import ProfileBenevole, Personne, AssoOrigine, ProfileResponsable, ProfileOrganisateur
 
@@ -12,7 +13,7 @@ from benevole.models import ProfileBenevole, Personne, AssoOrigine, ProfileRespo
 ##      fonctions
 ################################################
 def planning_range(debut, fin, delta):
-    '''
+    """
         entree : datetime, datetime, minutes
         retour : dictionnaire des dates (cles) et en valeurs listes heures , datetime par pas de delta minutes
         dates pour les style unique et bien placer le creneau dans le ccs grid
@@ -20,7 +21,7 @@ def planning_range(debut, fin, delta):
         retour dict incrementé par delta:
         clés  : valeurs
         dates : ( heures, datetimes)
-    '''
+    """
     print('###### planning : {0} - {1}'.format(debut, fin))
     dates_heures = {}
     while debut <= fin:
@@ -33,7 +34,7 @@ def planning_range(debut, fin, delta):
 
 
 def get_infos_benevole(creneaux):
-    '''
+    """
         entree: tableau de creneaux
         donne des infos sur le benevole pour affichage dans le creneau
 
@@ -47,7 +48,7 @@ def get_infos_benevole(creneaux):
         'AssoOrigine' : benevole.AssoOrigine,
         'CreneauDuree' timesince(creneau.debut, creneau.fin):
          }
-    '''
+    """
     infos_benevole = []
     for creno in creneaux:
         if creno.benevole_id:   # il y a un benevole lié au creneau
@@ -108,13 +109,11 @@ def liste_evenements(request):
 @permission_required('evenement.view_evenement', login_url='login')
 def evenement(request, uuid_evenement):
     """
-    page d'un evenement
+        page d'un evenement
     """
     uuid_equipe = ''
     uuid_planning = ''
-    # poste_a_supprimer = '' # si seté, alors on supprime le UUID_poste
-    # uuid_poste = ''
-
+    formposte = PosteForm()
     # store dans la session le uuid de l'evenement
     # il apparait dans l'url pour pouvir donner le liens aux bénévoles par la suite
     request.session['uuid_evenement'] = uuid_evenement
@@ -127,6 +126,7 @@ def evenement(request, uuid_evenement):
         "Evenement": evenement,
         "Equipes": equipes,
         "uuid_evenement": uuid_evenement,
+        "FormPoste": formposte,
     }
 
     # log les donnees post
@@ -149,15 +149,13 @@ def evenement(request, uuid_evenement):
         ### paramètres d'affichage
         ################
         if uuid_equipe:  # selection d'une équipe
-            equipe = Equipe.objects.get(UUID_equipe=uuid_equipe)
-            plannings = Planning.objects.filter(equipe_id=uuid_equipe).order_by('debut')
-            data["Equipe"] = equipe  # recupere l'equipe selectionnée
-            data["Plannings"] = plannings  # recupere les plannings de l'equipe
+            data["Equipe"] = Equipe.objects.get(UUID_equipe=uuid_equipe)  # equipe selectionnée
+            data["Plannings"] = Planning.objects.filter(equipe_id=uuid_equipe).order_by('debut')  # plannings de l'equipe
         if uuid_planning:  # selection d'un planning
             planning = Planning.objects.get(UUID_planning=uuid_planning)
             postes = Poste.objects.filter(planning_id=uuid_planning).order_by('nom')
-            data["Planning"] = planning  # recupere le planning selectionnée
-            data["Postes"] = postes  # recupere les postes du planning
+            data["Planning"] = planning  # planning selectionnée
+            data["Postes"] = postes  # postes du planning
             data["PlanningRange"] = planning_range(planning.debut, planning.fin, planning.pas) # données formatées du planning
             crenos = []
             for po in postes:
@@ -169,6 +167,11 @@ def evenement(request, uuid_evenement):
                 data["Creneaux_Benevoles"] = creneaux_benevoles
             except:
                 print('###### pas de creneaux sur ce planning')
+
+        ################
+        ### paramètres des forms
+        ################
+
         ################
         ### paramètres de gestion de données en base
         ################
@@ -176,8 +179,13 @@ def evenement(request, uuid_evenement):
         if request.POST.get('poste_a_supprimer'):
             print('poste {} supprimé'.format(Poste.objects.filter(UUID_poste=request.POST.get('poste_a_supprimer'))))
             Poste.objects.filter(UUID_poste=request.POST.get('poste_a_supprimer')).delete()
+        if 'poste_ajouter' in request.POST:
+            formposte = PosteForm(request.POST)
+            if formposte.is_valid():
+                formposte.save()
+                print('poste ajouté')
 
-    ''' 
+    '''
     # on se garde la possibilité d'afficher sur une granulometrie par poste en plus de planning  
     if uuid_poste:  # selection d'un poste
         poste = Poste.objects.get(UUID_poste=uuid_poste)
