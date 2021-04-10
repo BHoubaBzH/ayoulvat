@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'administration.apps.AdministrationConfig',
     'evenement.apps.EvenementConfig',
     'benevole.apps.BenevoleConfig',
-    'bootstrap_modal_forms',
     'bootstrap5',
     'colorful',
 ]

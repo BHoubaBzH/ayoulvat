@@ -119,11 +119,15 @@
                         style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes;">
                             <p style="margin-bottom: 0px;">{{ poste.nom }}</p>
                     </div>
-
-                    {# gestion de suppression de poste : debut #}
-                    {% if 'evenement.delete_poste'  in perms %}
-                        {% include "evenement/poste_supprime.html" %}
+    {# modif en cours + #}
+                    {% if 'evenement.change_poste'  in perms %}
+                        <div id="boutons des postes" class="poste-bouton-slot" aria-hidden="true"
+                            style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes-boutons;">
+                            {% include "evenement/poste_change.html" %}
+                        </div>
+                        {% include "evenement/poste_change_modals.html" %}
                     {% endif %}
+    {# modif en cours - #}
 
                     {% for creno_benevole in Creneaux_Benevoles %}
                         {% if creno_benevole.Creneau.poste_id == poste.UUID_poste %}

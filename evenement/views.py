@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.utils.timesince import timesince
 
 from evenement.forms import PosteForm

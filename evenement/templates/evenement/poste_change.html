@@ -1,0 +1,38 @@
+{# evenement/poste_change.html #}
+
+{# affiche le bouton d edition de poste #}
+<form  id="form-poste-change-{{ poste.UUID_poste }}" method='post'>
+    {% csrf_token %}
+    <input name="poste_a_changer" value="{{ poste.UUID_poste }}" type="hidden">
+    <button style="padding: 1;margin-right: 5px;"
+            class="btn btn-primary btn-sm"
+            title="editer ce poste"
+            id="bouton-poste-change-{{ poste.UUID_poste }}"
+            type="button"
+            data-bs-toggle="modal" 
+            data-bs-target="#modal-poste-change-{{ poste.UUID_poste }}">
+        <div>
+            <i class="bi bi-filter-circle-fill"></i>
+        </div>
+    </button>
+</form>
+
+{# affiche le bouton de suppression de poste #}
+{% if 'evenement.delete_poste'  in perms %}
+<form  id="form-poste-supprime-{{ poste.UUID_poste }}" method='post'>
+    {% csrf_token %}
+    <input name="poste_a_supprimer" value="{{ poste.UUID_poste }}" type="hidden">
+    <button style="padding: 1;"
+            class="btn btn-danger btn-sm"
+            title="supprimer ce poste"
+            id="bouton-poste-supprime-{{ poste.UUID_poste }}"
+            type="button"
+            {# onclick="return confirm('vous voulez vraiment le supprimer?');" #}
+            data-bs-toggle="modal" 
+            data-bs-target="#modal-confirme-poste-supprime-{{ poste.UUID_poste }}">
+        <div>
+            <i class="bi bi-dash-circle-fill"></i>
+        </div>
+    </button>
+</form>
+{% endif %}

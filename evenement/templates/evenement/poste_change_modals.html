@@ -1,0 +1,118 @@
+{# evenement/poste_change_modals.html #}
+
+{# modal d edition du poste doit etre en dehors du div pour s'afficher correctement #}
+<div class="modal fade"
+     id="modal-poste-change-{{ poste.UUID_poste }}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="poste_change"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Confirmer Le changement du poste</h5>
+            </div>
+            <form  id="form-poste" method='post'>
+                <div class="modal-body">
+            {# en cours + #}
+                        {% csrf_token %}
+                    <table class="table">
+                        {#{ FormPoste.as_table }#}
+                        {{ FormPoste.nom.value|default("{{ poste.nom }}") }}
+                        <tr>
+                            <th><label for="id_nom">Nom :</label></th>
+                            <td><input type="text" name="nom" maxlength="50" required id="id_nom" value="{{ poste.nom }}"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="id_description">Description :</label></th>
+                            <td><input type="text" name="description" maxlength="500" id="id_description" value="{{ poste.description }}"></td></tr>
+                        <tr>
+                            <th><label for="id_couleur">Couleur :</label></th>
+                            <td><input type="color" name="couleur" value="{{ poste.couleur }}" maxlength="7" required id="id_couleur">
+                            <script type="text/javascript">
+                                (function($){
+                                    $(document).ready(function(){
+                                        $('#id_couleur').each(function(i, elm){
+                                            // Make sure html5 color element is not replaced
+                                            if (elm.type != 'color') $(elm).colorPicker({});
+                                        });
+                                    });
+                                })('django' in window && django.jQuery ? django.jQuery: jQuery);
+                            </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="id_editable">Editable :</label></th>
+                            <td><input type="checkbox" name="editable" id="id_editable" value="{{ poste.editable }}" checked><br><span class="helptext">si non editable, le poste est bloqué. Seul un responsable ou + peu l'éditer ou le réouvrir</span></td>
+                        </tr>
+                        <tr>
+                            <th><label for="id_benevole">Benevole :</label></th>
+                            <td><select name="benevole" id="id_benevole" multiple>
+                                    <option value="65309146-22ca-481c-8a16-8f34e72c9630">NOM Prenom</option>
+                                    <option value="6642eb33-bf12-4e92-9605-94af2e62df2b">NOM Benevole</option>
+                                    </select><br><span class="helptext">responsable de poste, ca n a surement pas de sens</span>
+                                <input type="hidden" name="planning" id="id_planning">
+                            </td>
+                        </tr>
+                    </table>
+            {# en cours - #}
+
+                </div>
+
+                <div class="modal-footer">
+                    <input name="planning" id="id_planning" value="{{ Planning.UUID_planning }}" type="hidden">
+                    <input name="poste_changer" value="" type="hidden">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" id="poste_changer" class="btn btn-primary success">Modifier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# modal de confirmation de suppression doit etre en dehors du div pour s'afficher correctement #}
+{% if 'evenement.delete_poste'  in perms %}
+<div class="modal fade"
+     id="modal-confirme-poste-supprime-{{ poste.UUID_poste }}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="poste_supprime"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Confirmer La suppression du poste</h5>
+            </div>
+            <div class="modal-body">
+                Etes-vous sur?
+                <table class="table">
+                    <tr><th>Equipe</th><td id="equipe">{{ Equipe.nom }}</td></tr>
+                    <tr><th>Planning</th><td id="equipe">{{ Planning.nom }}</td></tr>
+                    <tr><th>Poste</th><td id="poste_a_supprimer">{{ poste.nom }}</td></tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <!--a href="#" id="submit" class="btn btn-danger success">Oui</a-->
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Non</button>
+                <button type="submit" id="bouton-confirme-poste-supprime-{{ poste.UUID_poste }}" class="btn btn-danger success">Oui</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* affiche le modal de confirmation quand appuie sur le bouton type=submit */
+    $('#form-poste-supprime-{{ poste.UUID_poste }}').on('submit', function(e){
+        $('#modal-confirme-poste-supprime-{{ poste.UUID_poste }}').modal('show');
+        e.preventDefault();
+    });
+
+    /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
+    $(document).on('click', '#bouton-confirme-poste-supprime-{{ poste.UUID_poste }}', function () {
+        /* alert('submitting-{{ forloop.counter }}'); */
+        document.getElementById('form-poste-supprime-{{ poste.UUID_poste }}').submit();
+        $('#modal-confirme-poste-supprime-{{ poste.UUID_poste }}').modal('toggle');
+    });
+</script>
+{% endif %}

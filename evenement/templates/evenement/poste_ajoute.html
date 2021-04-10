@@ -1,7 +1,6 @@
 {# evenement/bouton_poste_ajoute.html #}
 
 <span class="poste-slot" aria-hidden="true" style="grid-row: poste-add; grid-column: postes-boutons;">
-
         <form  id="form-poste_ajouter" method='post'>
             {% csrf_token %}
             <button style=""
@@ -9,7 +8,7 @@
                     title="ajouter un poste"
                     id="bouton-poste_ajouter"
                     type="submit"
-                    data-bs-toggle="modal" 
+                    data-bs-toggle="modal"
                     data-bs-target="#modal-poste_ajouter">
                 <div>
                     <i class="bi bi-plus-circle-fill"></i>
@@ -37,7 +36,7 @@
             {# en cours + #}
                         {% csrf_token %}
                     <table class="table">
-                        
+
                         {{ FormPoste.as_table }}
                     </table>
             {# en cours - #}
