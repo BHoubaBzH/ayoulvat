@@ -70,7 +70,6 @@ def get_infos_benevole(creneaux):
                 assoorigineinfo = AssoOrigine.objects.get(UUID_assoorigine=personneinfo.assoorigine_id)
             except:
                 assoorigineinfo = ''
-
             infos_benevole.append({'Creneau': creno,
                                    'Benevole': benevoleinfo,
                                    'Personne': personneinfo,
@@ -88,28 +87,38 @@ def get_infos_benevole(creneaux):
                                    'CreneauDuree': timesince(creno.debut, creno.fin),})
     return infos_benevole
 
-def dic_forms_postes_init(the_plan):
+def forms_postes(the_plan, request):
     """
         entree:
-            la form des postes
-            UUID du planning ou se situent nos forms
+            le planning contenant les postes
         sortie:
             dictionnaire
             key : UUID postes
-            val : forms de postes initialisées
+            val : liste avec
+                  forms de postes initialisées
+                  objet db lié
     """
-    dic_postes_init = {}
-    for poste in Poste.objects.filter(planning_id=the_plan):
-        posteform = PosteForm(initial={"planning": the_plan,
-                                       "nom": poste.nom,
-                                       "description": poste.description,
-                                       "couleur": poste.couleur,
-                                       "editable": poste.editable,
-                                       # "benevole" : je_sais_pas,
-                                       })
-        dic_postes_init[poste.UUID_poste] = posteform
-        # print (' poste UUID : {1} form : {0}'.format(posteform, poste.UUID_poste))
-    return dic_postes_init
+    # sauvegarde notre form envoyée en POST
+    if 'poste_changer' in request.POST:
+        # objet basé sur model et pk UUID_poste
+        poste1 = Poste.objects.get(UUID_poste=request.POST.get('uuid_poste'))
+        # form en lien avec l objet précédent
+        formposte = PosteForm(request.POST, instance=poste1)
+        if formposte.is_valid():
+            formposte.save()
+        return
+    # cree dans la page toutes nos from pour les postes du planing
+    else:
+        dic_postes_init = {} # dictionnaire des forms
+        # parcours les postes du planning dans la base
+        for poste in Poste.objects.filter(planning_id=the_plan):
+            # objet basé sur model et pk UUID_poste
+            poste1 = Poste.objects.get(UUID_poste=poste.UUID_poste)
+            # form en lien avec l objet précédent
+            formposte = PosteForm(instance=poste1)
+            dic_postes_init[poste.UUID_poste] = formposte # dictionnaire des forms
+            # print (' poste UUID : {1} form : {0}'.format(posteform, poste.UUID_poste))
+        return dic_postes_init
 
 ################################################
 ##      views evenements
@@ -149,7 +158,7 @@ def evenement(request, uuid_evenement):
         "Evenement": evenement,
         "Equipes": equipes,
         # "uuid_evenement": uuid_evenement,
-        #"FormPoste": formposte,
+        # "FormPoste": formposte,
     }
 
     # log les donnees post
@@ -177,11 +186,12 @@ def evenement(request, uuid_evenement):
             data["Plannings"] = Planning.objects.filter(equipe_id=the_equipe).order_by('debut')  # plannings de l'equipe
         if the_planning:
             planning = Planning.objects.get(UUID_planning=the_planning)
-            postes = Poste.objects.filter(planning_id=the_planning).order_by('nom')
             data["Planning"] = planning  # planning selectionnée
-            data["Postes"] = postes  # postes du planning
             # en cours : on va récuperer les forms des postes du planning remplies avec les données de la table
-            dic_postes = dic_forms_postes_init(the_planning)
+            postes = Poste.objects.filter(planning_id=the_planning).order_by('nom')
+            data["Postes"] = postes  # postes du planning
+            # instances de form poste : sauvegarde modifs & liste des postes
+            dic_postes = forms_postes(the_planning, request)
             data["DicPostes"] = dic_postes
             # en cours
             data["PlanningRange"] = planning_range(planning.debut, planning.fin, planning.pas) # données formatées du planning
@@ -197,10 +207,7 @@ def evenement(request, uuid_evenement):
                 print('###### pas de creneaux sur ce planning')
 
         ################
-        ### paramètres des forms
-        ################
-        ################
-        ### paramètres de gestion de données en base
+        ### paramètres de gestion du retour des données POST
         ################
         # une personne ayant le droit evenement.delete_poste supprime un poste, on recoit la valeur uuid_poste en post
         if request.POST.get('poste_a_supprimer'):
@@ -211,11 +218,6 @@ def evenement(request, uuid_evenement):
             if formposte.is_valid():
                 formposte.save()
                 print('poste ajouté')
-        #if 'poste_changer'in request.POST:
-        #    print('poste a modifier')
-        #    if formposte.is_valid():
-        #        formposte.save()
-        #        print('poste modifié')
 
     '''
     # on se garde la possibilité d'afficher sur une granulometrie par poste en plus de planning  
