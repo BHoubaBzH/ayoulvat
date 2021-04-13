@@ -21,6 +21,11 @@
 {% if 'evenement.delete_poste'  in perms %}
 <form  id="form-poste-supprime-{{ poste.UUID_poste }}" method='post'>
     {% csrf_token %}
+    {# données pour garder le planning affiché apres submission POST#}
+    <input  name="uuid_evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
+    <input  name="uuid_equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
+    <input  name="uuid_planning" value="{{ Planning.UUID_planning }}" type="hidden">
+    
     <input name="poste_a_supprimer" value="{{ poste.UUID_poste }}" type="hidden">
     <button style="padding: 1;"
             class="btn btn-danger btn-sm"

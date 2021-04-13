@@ -23,8 +23,8 @@
                          title={{ team.nom }}>
                     <H4>{{ team.nom }}</h4>
                         {% csrf_token %}
-                        <input  name="uuid_evenement" value={{ Evenement.UUID_evenement }} type="hidden">
-                        <input  name="uuid_equipe" value={{ team.UUID_equipe }} type="hidden">
+                        <input  name="uuid_evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
+                        <input  name="uuid_equipe" value="{{ team.UUID_equipe }}" type="hidden">
                 </button>
             </form>
         {% endfor %}
@@ -40,9 +40,9 @@
                         title={{ plan.nom }}>
                     <H4>{{ plan.nom }}</H4>
                         {% csrf_token %}
-                        <input  name="uuid_evenement" value={{ Evenement.UUID_evenement }} type="hidden">
-                        <input  name="uuid_equipe" value={{ Equipe.UUID_equipe }} type="hidden">
-                        <input  name="uuid_planning" value={{ plan.UUID_planning }} type="hidden">
+                        <input  name="uuid_evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
+                        <input  name="uuid_equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
+                        <input  name="uuid_planning" value="{{ plan.UUID_planning }}" type="hidden">
                 </button>
             </form>
         {% endfor %}

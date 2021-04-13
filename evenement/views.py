@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, get_object_or_404
 from django.utils.timesince import timesince
+from django.forms import formset_factory
 
 from evenement.forms import PosteForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
@@ -87,6 +88,29 @@ def get_infos_benevole(creneaux):
                                    'CreneauDuree': timesince(creno.debut, creno.fin),})
     return infos_benevole
 
+def dic_forms_postes_init(the_plan):
+    """
+        entree:
+            la form des postes
+            UUID du planning ou se situent nos forms
+        sortie:
+            dictionnaire
+            key : UUID postes
+            val : forms de postes initialisées
+    """
+    dic_postes_init = {}
+    for poste in Poste.objects.filter(planning_id=the_plan):
+        posteform = PosteForm(initial={"planning": the_plan,
+                                       "nom": poste.nom,
+                                       "description": poste.description,
+                                       "couleur": poste.couleur,
+                                       "editable": poste.editable,
+                                       # "benevole" : je_sais_pas,
+                                       })
+        dic_postes_init[poste.UUID_poste] = posteform
+        # print (' poste UUID : {1} form : {0}'.format(posteform, poste.UUID_poste))
+    return dic_postes_init
+
 ################################################
 ##      views evenements
 ################################################
@@ -111,9 +135,8 @@ def evenement(request, uuid_evenement):
     """
         page d'un evenement
     """
-    uuid_equipe = ''
-    uuid_planning = ''
-    formposte = PosteForm()
+    the_equipe = ''
+    the_planning = ''
     # store dans la session le uuid de l'evenement
     # il apparait dans l'url pour pouvir donner le liens aux bénévoles par la suite
     request.session['uuid_evenement'] = uuid_evenement
@@ -125,37 +148,42 @@ def evenement(request, uuid_evenement):
     data = {
         "Evenement": evenement,
         "Equipes": equipes,
-        "uuid_evenement": uuid_evenement,
-        "FormPoste": formposte,
+        # "uuid_evenement": uuid_evenement,
+        #"FormPoste": formposte,
     }
 
     # log les donnees post
     for key, value in request.POST.items():
         print('{0} : {1}'.format(key, value))
 
-    # recupere les uuid en POST, but est de tout gerer dans une seule page:
+    # recupere les uuid en POST, but est de tout gerer dans une seule page
+    # et d'afficher les infos en fonction des post recus :
     if request.method == "POST":
-        if request.POST.get('uuid_equipe'):
-            uuid_equipe = request.POST.get('uuid_equipe')
-            data["uuid_equipe"] = uuid_equipe
-        if request.POST.get('uuid_planning'):
-            uuid_planning = request.POST.get('uuid_planning')
-            data["uuid_planning"] = uuid_planning
-        if request.POST.get('uuid_poste'):
-            uuid_poste = request.POST.get('uuid_poste')
-            data["uuid_poste"] = uuid_poste
+        if request.POST.get('uuid_equipe'): # selection d'une équipe
+            the_equipe = request.POST.get('uuid_equipe')
+            data["uuid_equipe"] = the_equipe
+        if request.POST.get('uuid_planning'): # selection d'un planning
+            the_planning = request.POST.get('uuid_planning')
+            data["uuid_planning"] = the_planning
+        if request.POST.get('uuid_poste'): # selection d'un poste
+            the_poste = request.POST.get('uuid_poste')
+            data["uuid_poste"] = the_poste
 
         ################
         ### paramètres d'affichage
         ################
-        if uuid_equipe:  # selection d'une équipe
-            data["Equipe"] = Equipe.objects.get(UUID_equipe=uuid_equipe)  # equipe selectionnée
-            data["Plannings"] = Planning.objects.filter(equipe_id=uuid_equipe).order_by('debut')  # plannings de l'equipe
-        if uuid_planning:  # selection d'un planning
-            planning = Planning.objects.get(UUID_planning=uuid_planning)
-            postes = Poste.objects.filter(planning_id=uuid_planning).order_by('nom')
+        if the_equipe:  # selection d'une équipe
+            data["Equipe"] = Equipe.objects.get(UUID_equipe=the_equipe)  # equipe selectionnée
+            data["Plannings"] = Planning.objects.filter(equipe_id=the_equipe).order_by('debut')  # plannings de l'equipe
+        if the_planning:
+            planning = Planning.objects.get(UUID_planning=the_planning)
+            postes = Poste.objects.filter(planning_id=the_planning).order_by('nom')
             data["Planning"] = planning  # planning selectionnée
             data["Postes"] = postes  # postes du planning
+            # en cours : on va récuperer les forms des postes du planning remplies avec les données de la table
+            dic_postes = dic_forms_postes_init(the_planning)
+            data["DicPostes"] = dic_postes
+            # en cours
             data["PlanningRange"] = planning_range(planning.debut, planning.fin, planning.pas) # données formatées du planning
             crenos = []
             for po in postes:
@@ -171,7 +199,6 @@ def evenement(request, uuid_evenement):
         ################
         ### paramètres des forms
         ################
-
         ################
         ### paramètres de gestion de données en base
         ################
@@ -184,6 +211,11 @@ def evenement(request, uuid_evenement):
             if formposte.is_valid():
                 formposte.save()
                 print('poste ajouté')
+        #if 'poste_changer'in request.POST:
+        #    print('poste a modifier')
+        #    if formposte.is_valid():
+        #        formposte.save()
+        #        print('poste modifié')
 
     '''
     # on se garde la possibilité d'afficher sur une granulometrie par poste en plus de planning  
