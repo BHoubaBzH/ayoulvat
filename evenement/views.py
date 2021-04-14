@@ -91,14 +91,18 @@ def forms_postes(the_plan, request):
     """
         entree:
             le planning contenant les postes
+            la requete (contenant les infos POST)
         sortie:
-            dictionnaire
-            key : UUID postes
-            val : liste avec
-                  forms de postes initialisées
-                  objet db lié
+            soit :
+                dictionnaire
+                key : UUID postes
+                val : liste avec
+                      forms de postes initialisées
+                      objet db lié
+            soit :
+                rien si form sauvegardée
     """
-    # sauvegarde notre form envoyée en POST
+    # sauvegarde notre form modifée envoyée en POST
     if 'poste_changer' in request.POST:
         # objet basé sur model et pk UUID_poste
         poste1 = Poste.objects.get(UUID_poste=request.POST.get('uuid_poste'))
@@ -107,6 +111,12 @@ def forms_postes(the_plan, request):
         if formposte.is_valid():
             formposte.save()
         return
+    # sauvegarde de notre nouvelle form envoyée eb POST
+    elif 'poste_ajouter' in request.POST:
+        formposte = PosteForm(request.POST)
+        if formposte.is_valid():
+            formposte.save()
+            print('poste ajouté')
     # cree dans la page toutes nos from pour les postes du planing
     else:
         dic_postes_init = {} # dictionnaire des forms
@@ -187,14 +197,15 @@ def evenement(request, uuid_evenement):
         if the_planning:
             planning = Planning.objects.get(UUID_planning=the_planning)
             data["Planning"] = planning  # planning selectionnée
-            # en cours : on va récuperer les forms des postes du planning remplies avec les données de la table
             postes = Poste.objects.filter(planning_id=the_planning).order_by('nom')
             data["Postes"] = postes  # postes du planning
             # instances de form poste : sauvegarde modifs & liste des postes
             dic_postes = forms_postes(the_planning, request)
             data["DicPostes"] = dic_postes
-            # en cours
-            data["PlanningRange"] = planning_range(planning.debut, planning.fin, planning.pas) # données formatées du planning
+            data["FormPoste"] = PosteForm() # on envoie la form pour ajout d un nouveau poste
+            # données formatées du planning
+            data["PlanningRange"] = planning_range(planning.debut, planning.fin, planning.pas)
+
             crenos = []
             for po in postes:
                 crenos.append(po.UUID_poste)        # crenos : liste des creneaux du planning par poste
@@ -213,11 +224,6 @@ def evenement(request, uuid_evenement):
         if request.POST.get('poste_a_supprimer'):
             print('poste {} supprimé'.format(Poste.objects.filter(UUID_poste=request.POST.get('poste_a_supprimer'))))
             Poste.objects.filter(UUID_poste=request.POST.get('poste_a_supprimer')).delete()
-        if 'poste_ajouter' in request.POST:
-            formposte = PosteForm(request.POST)
-            if formposte.is_valid():
-                formposte.save()
-                print('poste ajouté')
 
     '''
     # on se garde la possibilité d'afficher sur une granulometrie par poste en plus de planning  
