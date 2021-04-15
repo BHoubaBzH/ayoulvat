@@ -129,10 +129,13 @@
                     {% endif %}
     {# modif en cours - #}
 
-                    {% for creno_benevole in Creneaux_Benevoles %}
-                        {% if creno_benevole.Creneau.poste_id == poste.UUID_poste %}
+                    {#% for creno_benevole in Creneaux_Benevoles %#}
+                    {% for creno in Creneaux %}
+                        {# % if creno_benevole.Creneau.poste_id == poste.UUID_poste % #}
+                        {% if creno.poste_id == poste.UUID_poste %}
                             {# affiche le creneau dans la grid ccs#} 
-                            {% if creno_benevole.Creneau.benevole_id %} {# si un benevole est affecté au créneau #}
+                            {#% if creno_benevole.Creneau.benevole_id %#} {# si un benevole est affecté au créneau #}
+                            {% if creno.benevole_id %}
                                 {% include "evenement/creneau_details.html" with poste=poste creno_benevole=creno_benevole libre='non' %}
                             {% else %} {# pas de benevole affecté au créneau #}
                                 {% include "evenement/creneau_details.html" with poste=poste creno_benevole=creno_benevole libre='oui' %}          

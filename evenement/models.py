@@ -4,6 +4,7 @@ from association.models import Association
 from benevole.models import ProfileOrganisateur, ProfileResponsable, ProfileBenevole
 from colorful.fields import RGBColorField
 
+
 class Evenement(models.Model):
     UUID_evenement = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # supprime evenement si asso supprimée
@@ -63,7 +64,12 @@ class Equipe(models.Model):
 
 class Planning(models.Model):
     UUID_planning = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    # supprime planning si equipe supprimée
+    evenement = models.ForeignKey(Evenement,
+                                  primary_key=False,
+                                  unique=False,
+                                  default='',
+                                  null=True,
+                                  on_delete=models.CASCADE)
     equipe = models.ForeignKey(Equipe, primary_key=False,
                                unique=False,
                                default='',
@@ -91,9 +97,22 @@ class Planning(models.Model):
 # reste a gérer les postes par équipe / planning
 class Poste(models.Model):
     UUID_poste = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    # supprime poste si planning supprimé
+    evenement = models.ForeignKey(Evenement,
+                                  primary_key=False,
+                                  unique=False,
+                                  blank=False,
+                                  default='',
+                                  null=True,
+                                  on_delete=models.CASCADE)
+    equipe = models.ForeignKey(Equipe, primary_key=False,
+                               unique=False,
+                               blank=False,
+                               default='',
+                               null=False,
+                               on_delete=models.CASCADE)
     planning = models.ForeignKey(Planning,
                                  primary_key=False,
+                                 blank=False,
                                  default='',
                                  null=False,
                                  on_delete=models.CASCADE)
@@ -114,7 +133,25 @@ class Poste(models.Model):
 class Creneau(models.Model):
     UUID_creneau = \
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    # supprime creneau si poste supprimé
+    evenement = models.ForeignKey(Evenement,
+                                  primary_key=False,
+                                  unique=False,
+                                  blank=False,
+                                  default='',
+                                  null=True,
+                                  on_delete=models.CASCADE)
+    equipe = models.ForeignKey(Equipe, primary_key=False,
+                               unique=False,
+                               blank=False,
+                               default='',
+                               null=False,
+                               on_delete=models.CASCADE)
+    planning = models.ForeignKey(Planning,
+                                 primary_key=False,
+                                 blank=False,
+                                 default='',
+                                 null=False,
+                                 on_delete=models.CASCADE)
     poste = models.ForeignKey(Poste,
                               primary_key=False,
                               blank=False,
@@ -122,11 +159,11 @@ class Creneau(models.Model):
                               null=False,
                               on_delete=models.CASCADE)
     benevole = models.ForeignKey(ProfileBenevole,
-                                    related_name='BenevolesCreneau',
-                                    null=True,
-                                    blank=True,
-                                    default='',
-                                    on_delete=models.SET_NULL)
+                                 related_name='BenevolesCreneau',
+                                 null=True,
+                                 blank=True,
+                                 default='',
+                                 on_delete=models.SET_NULL)
     nom = models.CharField(max_length=80,
                            blank=True,
                            default='',

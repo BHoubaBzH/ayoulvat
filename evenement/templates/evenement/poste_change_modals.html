@@ -7,11 +7,12 @@
      role="dialog"
      aria-labelledby="poste_change"
      aria-hidden="true">
-    <div class="modal-dialog" role="document" style="z-index:1050">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Confirmer Le changement du poste</h5>
+                <h5 class="modal-title" id="ModalLabel">Modifer le poste</h5>
             </div>
+
             <form  id="form-poste"  method='post'>
                 <div class="modal-body">
                     {% csrf_token %}
@@ -31,9 +32,8 @@
                     <input  name="uuid_planning" value="{{ Planning.UUID_planning }}" type="hidden">
 
                     <input  name="uuid_poste" value="{{ poste.UUID_poste }}" type="hidden">
-                    <input name="poste_changer" value="" type="hidden">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" id="poste_changer" class="btn btn-primary success">Modifier</button>
+                    <button type="submit" id="poste_changer" name="poste_changer" class="btn btn-primary success">Modifier</button>
                 </div>
             </form>
         </div>
@@ -58,7 +58,7 @@
                 <table class="table">
                     <tr><th>Equipe</th><td id="equipe">{{ Equipe.nom }}</td></tr>
                     <tr><th>Planning</th><td id="equipe">{{ Planning.nom }}</td></tr>
-                    <tr><th>Poste</th><td id="poste_a_supprimer">{{ poste.nom }}</td></tr>
+                    <tr><th>Poste</th><td id="poste_supprimer">{{ poste.nom }}</td></tr>
                 </table>
             </div>
 

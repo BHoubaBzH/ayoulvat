@@ -3,7 +3,7 @@
 {# affiche le bouton d edition de poste #}
 <form  id="form-poste-change-{{ poste.UUID_poste }}" method='post'>
     {% csrf_token %}
-    <input name="poste_a_changer" value="{{ poste.UUID_poste }}" type="hidden">
+    <input name="poste_changer" value="{{ poste.UUID_poste }}" type="hidden">
     <button style="padding: 1;margin-right: 5px;"
             class="btn btn-primary btn-sm"
             title="editer ce poste"
@@ -26,7 +26,7 @@
     <input  name="uuid_equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
     <input  name="uuid_planning" value="{{ Planning.UUID_planning }}" type="hidden">
     
-    <input name="poste_a_supprimer" value="{{ poste.UUID_poste }}" type="hidden">
+    <input name="poste_supprimer" value="{{ poste.UUID_poste }}" type="hidden">
     <button style="padding: 1;"
             class="btn btn-danger btn-sm"
             title="supprimer ce poste"

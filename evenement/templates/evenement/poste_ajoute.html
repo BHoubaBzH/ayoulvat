@@ -69,7 +69,7 @@
     /* quand le bouton Ajouter est utilisé dans modal, submit la form et ferme le modal */
     $(document).on('click', '#poste_ajouter', function () {
         /* alert('submitting-{{ forloop.counter }}'); */
-        document.getElementById('bouton-form-poste_ajouter').submit();
+        document.getElementById('form-poste').submit();
         $('#modal-poste_ajouter').modal('toggle');
     });
 </script>

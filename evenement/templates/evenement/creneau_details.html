@@ -1,71 +1,61 @@
 {# evenement/creneau_details.html #}
 
-{# pour le placement dans la grille planning garder le filtre sur creno_benevole.Creneau.debut et creno_benevole.Creneau.fin comme la fonction planning_range de views.py : #}
+{# pour le placement dans la grille planning garder le filtre sur creno.debut et creno.fin comme la fonction planning_range de views.py : #}
 <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%} poste poste-{{ poste.UUID_poste }}" 
-         style="grid-row: poste-{{ creno_benevole.Creneau.poste_id }};
-         grid-column: time-{{ creno_benevole.Creneau.debut|date:'Y-m-d-Hi' }} /
-         time-{{ creno_benevole.Creneau.fin|date:'Y-m-d-Hi' }};"
+         style="grid-row: poste-{{ creno.poste_id }};
+         grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} /
+         time-{{ creno.fin|date:'Y-m-d-Hi' }};"
          data-bs-toggle="modal"
-         data-bs-target="#Modal-{{ creno_benevole.Creneau.UUID_creneau }}">
+         data-bs-target="#Modal-{{ creno.UUID_creneau }}">
 </button>
 
 {# modal #}
-<div class="modal fade" id="Modal-{{ creno_benevole.Creneau.UUID_creneau }}" tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
+<div class="modal fade" id="Modal-{{ creno.UUID_creneau }}" tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">{{ creno_benevole.Creneau.nom }}</h5>
+                <h5 class="modal-title" id="ModalLabel">{{ creno.nom }}</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <div class="card card-body">
+
+            <form  id="form-creneau"  method='post'>
+                <div class="modal-body">
+                    {% csrf_token %}
                     <table class="table">
-                        <tr><th>Date</th><td>{{ creno_benevole.Creneau.debut|date:'d/m/Y' }}</td></tr>
-                        <tr>
-                            <th>Début</th><td>{{ creno_benevole.Creneau.debut|date:'H:i' }}</td>
-                            <th>Fin</th><td>{{ creno_benevole.Creneau.fin|date:'H:i' }}</td>
-                            <th>Durée</th><td>{{ creno_benevole.CreneauDuree }}</td>
-                        </tr>
-                        {% if libre == 'non' %} {# si un benevole est affecté au créneau #}
-                            <tr>
-                                <th>Bénévole</th><td>{{ creno_benevole.Personne.first_name }} {{ creno_benevole.Personne.last_name }}</td>
-                            </tr>
-                            {% if 'edit_creneau'  in perms %}
-                                <tr><th>Genre</th><td>{{ creno_benevole.Personne.genre }}</td></tr>
-                                <tr><th>Date de naissance</th><td>{{ creno_benevole.Personne.date_de_naissance }}</td></tr>
-                                <tr><th>Asso Représentée</th><td>{{ creno_benevole.AssoOrigine.nom }}</td></tr>
-                                <tr><th>Courriel</th><td>{{ creno_benevole.Personne.email }}</td></tr>
-                                <tr><th>Téléphone</th><td>{{ creno_benevole.Personne.portable }}</td></tr>
+                        {% for uuid, creneauf in DicCreneaux.items %}
+                            {% if uuid|stringformat:"i" == creno.UUID_creneau|stringformat:"i" %}
+                                {{ creneauf.as_table }}
                             {% endif %}
-                        {% else %}
-                            <tr><th>Créneau Libre</th><td></td></tr>
-                        {% endif %}
+                        {% endfor %}
                     </table>
                 </div>
-            </div>
-            <div class="modal-footer">
-                {% if 'evenement.delete_creneau'  in perms %}
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" title="supprimer le créneau">Supprimer</button>
-                {% endif %}
-                {% if 'evenement.change_creneau' and 'evenement.delete_creneau' in perms or 'evenement.change_creneau' in perms and libre == 'oui'%}
-                {# les utilisateurs avec privilieges ( admin, orga, responsables) ou les bénévoles si le creneau est libre #}
-                {# creer la form, la target : si c'est un responsables ou + : il peut tout modifier #}
-                {#                            si c'est un benevole : il peut s'inscrire #}
-                    <form name="edit_creneau" target="_parent" method='POST'>
-                        {% csrf_token %}
-                        <input type="hidden" id="creneau_uuid" name="creneau_uuid" value="{{ creno_benevole.Creneau.UUID_creneau }}">
-                        <input type="hidden" id="benevole_uuid" name ="benevole_uuid" value="{{ creno_benevole.Creneau.benevole_id }}">
-                        <button type="submit" class="btn btn-primary" value="edit_creneau">Editer</button>
-                    </form>
 
-                {% endif %}
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-            </div>
+                <div class="modal-footer">
+                    {# données pour garder le planning affiché apres submission POST#}
+                    <input  name="uuid_evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
+                    <input  name="uuid_equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
+                    <input  name="uuid_planning" value="{{ Planning.UUID_planning }}" type="hidden">
+                    <input  name="uuid_poste" value="{{ poste.UUID_poste }}" type="hidden">
 
-            <div>
-            </div>
+                    <input name="uuid_creneau" value="{{ creno.UUID_creneau }}" type="hidden">
+                    <input type="hidden" id="uuid_benevole" name ="uuid_benevole" value="{{ creno.benevole_id }}">
+
+                    {% if 'evenement.delete_creneau'  in perms %} {# a deplacer sur un bouton sur les creneaux #}
+                        <button type="submit" class="btn btn-danger" name="creneau_supprimer" value="{{ creno.UUID_creneau }}" id="creneau_supprimer">Supprimer</button>
+                    {% endif %}
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    {# les utilisateurs avec privilieges ( admin, orga, responsables) ou les bénévoles si le creneau est libre #}
+                    {# creer la form, la target : si c'est un responsables ou + : il peut tout modifier #}
+                    {#                            si c'est un benevole : il peut s'inscrire #}        
+                    {% if 'evenement.change_creneau' and 'evenement.delete_creneau' in perms or 'evenement.change_creneau' in perms and libre == 'oui'%}
+                        <button type="submit" id="creneau_changer" name="creneau_changer"  class="btn btn-primary success">Modifier</button>
+
+                    {% endif %}
+                </div>
+            </form>
 
         </div>
     </div>
