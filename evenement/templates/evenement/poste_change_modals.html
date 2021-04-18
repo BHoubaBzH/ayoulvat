@@ -5,7 +5,7 @@
      id="modal-poste-change-{{ poste.UUID_poste }}"
      tabindex="-1"
      role="dialog"
-     aria-labelledby="poste_change"
+     aria-labelledby="poste"
      aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -27,13 +27,19 @@
 
                 <div class="modal-footer">
                     {# données pour garder le planning affiché apres submission POST#}
-                    <input  name="uuid_evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
-                    <input  name="uuid_equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
-                    <input  name="uuid_planning" value="{{ Planning.UUID_planning }}" type="hidden">
+                    <input  name="evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
+                    <input  name="equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
+                    <input  name="planning" value="{{ Planning.UUID_planning }}" type="hidden">
 
-                    <input  name="uuid_poste" value="{{ poste.UUID_poste }}" type="hidden">
+                    <input  name="poste" value="{{ poste.UUID_poste }}" type="hidden">
+                    
+                    <button class="btn btn-danger" title="supprimer ce poste" name="poste_supprimer"
+                            id="bouton-poste-supprime-{{ poste.UUID_poste }}" type="button"
+                            data-bs-toggle="modal" data-bs-target="#modal-confirme-poste-supprime-{{ poste.UUID_poste }}">
+                            Supprimer
+                    </button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" id="poste_changer" name="poste_changer" class="btn btn-primary success">Modifier</button>
+                    <button type="submit" id="poste_modifier" name="poste_modifier" value="modifier" class="btn btn-primary success">Modifier</button>
                 </div>
             </form>
         </div>
@@ -80,6 +86,7 @@
     /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
     $(document).on('click', '#bouton-confirme-poste-supprime-{{ poste.UUID_poste }}', function(e){
         /* alert('submitting-{{ forloop.counter }}'); */
+        $('form-poste-supprime-{{ poste.UUID_poste }}').append('<input type="hidden" name="poste_supprimer" value="">');
         document.getElementById('form-poste-supprime-{{ poste.UUID_poste }}').submit();
         $('#modal-confirme-poste-supprime-{{ poste.UUID_poste }}').modal('toggle');
         e.preventDefault();

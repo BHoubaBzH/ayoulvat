@@ -19,12 +19,12 @@
         {% for team in Equipes %}
             <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
                 <button class="list-group-item evenement-button 
-                        {% if team.UUID_equipe|stringformat:'s' == uuid_equipe|stringformat:'s' %}active{% endif %}"
+                        {% if team.UUID_equipe|stringformat:'s' == equipe|stringformat:'s' %}active{% endif %}"
                          title={{ team.nom }}>
                     <H4>{{ team.nom }}</h4>
                         {% csrf_token %}
-                        <input  name="uuid_evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
-                        <input  name="uuid_equipe" value="{{ team.UUID_equipe }}" type="hidden">
+                        <input  name="evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
+                        <input  name="equipe" value="{{ team.UUID_equipe }}" type="hidden">
                 </button>
             </form>
         {% endfor %}
@@ -36,70 +36,18 @@
         {% for plan in Plannings %}
             <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
                 <button class="list-group-item evenement-button
-                        {% if plan.UUID_planning|stringformat:'s' == uuid_planning|stringformat:'s' %}active{% endif %}"
+                        {% if plan.UUID_planning|stringformat:'s' == planning|stringformat:'s' %}active{% endif %}"
                         title={{ plan.nom }}>
                     <H4>{{ plan.nom }}</H4>
                         {% csrf_token %}
-                        <input  name="uuid_evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
-                        <input  name="uuid_equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
-                        <input  name="uuid_planning" value="{{ plan.UUID_planning }}" type="hidden">
+                        <input  name="evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
+                        <input  name="equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
+                        <input  name="planning" value="{{ plan.UUID_planning }}" type="hidden">
                 </button>
             </form>
         {% endfor %}
     </div>
 {% endblock plannings %}
-{% comment "colonne poste et creneau inutile avec le planning" %}
-{% block postes%}
-    <div class="list-group" id="liste_postes_forms">
-        {% for poste in Postes %}
-            <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
-                <button class="list-group-item evenement-button
-                        {% if poste.UUID_poste|stringformat:'s' == uuid_poste|stringformat:'s' %}active{% endif %}"
-                        title={{ poste.nom }}>
-                    <H4>{{ poste.nom }}</H4>
-                        {% csrf_token %}
-                        <input  name="uuid_evenement" value={{ Evenement.UUID_evenement }} type="hidden">
-                        <input  name="uuid_equipe" value={{ Equipe.UUID_equipe }} type="hidden">
-                        <input  name="uuid_planning" value={{ Planning.UUID_planning }} type="hidden">
-                        <input  name="uuid_poste" value={{ poste.UUID_poste }} type="hidden">
-                </button>
-            </form>
-        {% endfor %}
-    </div>
-{% endblock postes %}
-
-{% block creneaux %}
-    {% if Creneaux %}
-        <ul class="list-group" id="liste_creneaux">
-            {% for creno in Creneaux %}
-            <il class="form evenement-form">
-                {% buttons %}
-                <button class="list-group-item evenement-button list-group-item-action" \
-                            data-bs-toggle="collapse" \
-                            data-bs-target="#collapseCreneau{{ forloop.counter }}" \
-                            aria-expanded="false" \
-                            aria-controls="collapseCreneau{{ forloop.counter }}">
-                    {{ creno.debut|date:'H:i' }}-{{ creno.fin|date:'H:i' }}
-                </button>
-                {% endbuttons %}
-                <div class="collapse" id="collapseCreneau{{ forloop.counter }}">
-                <div class="card card-body">
-                    <ul class="list-group list-group-flush" style="font-size: 0.8em">
-                        <li class="list-group-item">{{ creno.nom }}</li>
-                        <li class="list-group-item"><b>debut :</b> {{ creno.debut }}</li>
-                        <li class="list-group-item"><b>fin :</b> {{ creno.fin }}</li>
-                        {% if creno.benevole_id %}
-                            <li class="list-group-item">Profile benevole uuid : {{ creno.benevole_id }}</li>
-                        {% endif %}
-                    </ul>
-                </div>
-                </div>
-            </il>
-            {% endfor %}
-        </ul>
-    {% endif %}
-{% endblock creneaux %}
-{% endcomment %}
 
 {% block agenda %}
     </br>
@@ -119,15 +67,9 @@
                         style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes;">
                             <p style="margin-bottom: 0px;">{{ poste.nom }}</p>
                     </div>
-    {# modif en cours + #}
                     {% if 'evenement.change_poste'  in perms %}
-                        <div id="boutons des postes" class="poste-bouton-slot" aria-hidden="true"
-                            style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes-boutons;">
-                            {% include "evenement/poste_change.html" %}
-                        </div>
-                        {% include "evenement/poste_change_modals.html" %}
+                        {% include "evenement/poste_change.html" %}
                     {% endif %}
-    {# modif en cours - #}
 
                     {#% for creno_benevole in Creneaux_Benevoles %#}
                     {% for creno in Creneaux %}

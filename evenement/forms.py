@@ -1,10 +1,12 @@
-from django.forms import ModelForm, HiddenInput, ModelChoiceField
+from django.forms import ModelForm, HiddenInput, ModelChoiceField, ModelMultipleChoiceField, CheckboxSelectMultiple
 from phonenumber_field.formfields import PhoneNumberField
 from evenement.models import Poste, Creneau
 from benevole.models import ProfileBenevole, Personne
 
 
 class PosteForm(ModelForm):
+    benevole = ModelMultipleChoiceField(queryset=ProfileBenevole.objects.all(), widget = CheckboxSelectMultiple, required=False)
+
     class Meta:
         model = Poste
         # exclude = [ 'planning', ]
@@ -21,9 +23,10 @@ class PosteForm(ModelForm):
 
 
 class CreneauForm(ModelForm):
-    # Query set doit prendre que les benevoles inscrits sur l envenement : a faire
+    # Query set doit prendre que les benevoles inscrits sur l evenement : a faire
     # voir aussi par équipe et par planning
     benevole = ModelChoiceField(queryset=ProfileBenevole.objects.all(), required=False, empty_label="Vide")
+
     class Meta:
         model = Creneau
         # exclude = ['benevole', ]
@@ -31,10 +34,10 @@ class CreneauForm(ModelForm):
     # cache certains champs
     def __init__(self, *args, **kwargs):
         super(CreneauForm, self).__init__(*args, **kwargs)
-        #self.fields['poste'].widget = HiddenInput()
-        #self.fields['planning'].widget = HiddenInput()
-        #self.fields['equipe'].widget = HiddenInput()
-        #self.fields['evenement'].widget = HiddenInput()
+        self.fields['poste'].widget = HiddenInput()
+        self.fields['planning'].widget = HiddenInput()
+        self.fields['equipe'].widget = HiddenInput()
+        self.fields['evenement'].widget = HiddenInput()
 
 class BenevoleForm(ModelForm):
     class Meta:

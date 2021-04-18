@@ -1,6 +1,6 @@
 {# evenement/bouton_poste_ajoute.html #}
 
-<span class="poste-slot" aria-hidden="true" style="grid-row: poste-add; grid-column: postes-boutons;">
+<span class="poste-slot" aria-hidden="true" style="grid-row: poste-add; grid-column: postes;">
         <form  id="form-poste_ajouter" method='post'>
             {% csrf_token %}
             <button style=""
@@ -18,7 +18,7 @@
     </button>
 </span>
 
-{# modal de confirmation de suppression doit etre en dehors du div pour s'afficher correctement #}
+{# modal doit etre en dehors du div pour s'afficher correctement #}
 
 <div class="modal fade"
      id="modal-poste_ajouter"
@@ -46,8 +46,8 @@
                 <div class="modal-footer">
                     {# données pour garder le planning affiché apres submission POST#}
                     <input name="planning" id="id_planning" value="{{ Planning.UUID_planning }}" type="hidden">
-                    <input  name="uuid_equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
-                    <input  name="uuid_planning" value="{{ Planning.UUID_planning }}" type="hidden">
+                    <input  name="equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
+                    <input  name="planning" value="{{ Planning.UUID_planning }}" type="hidden">
                     
                     <input name="poste_ajouter" value="" type="hidden">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>

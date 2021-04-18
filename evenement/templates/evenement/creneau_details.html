@@ -34,13 +34,13 @@
 
                 <div class="modal-footer">
                     {# données pour garder le planning affiché apres submission POST#}
-                    <input  name="uuid_evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
-                    <input  name="uuid_equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
-                    <input  name="uuid_planning" value="{{ Planning.UUID_planning }}" type="hidden">
-                    <input  name="uuid_poste" value="{{ poste.UUID_poste }}" type="hidden">
+                    <input  name="evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
+                    <input  name="equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
+                    <input  name="planning" value="{{ Planning.UUID_planning }}" type="hidden">
+                    <input  name="poste" value="{{ poste.UUID_poste }}" type="hidden">
 
-                    <input name="uuid_creneau" value="{{ creno.UUID_creneau }}" type="hidden">
-                    <input type="hidden" id="uuid_benevole" name ="uuid_benevole" value="{{ creno.benevole_id }}">
+                    <input name="creneau" value="{{ creno.UUID_creneau }}" type="hidden">
+                    <input type="hidden" id="benevole" name ="benevole" value="{{ creno.benevole_id }}">
 
                     {% if 'evenement.delete_creneau'  in perms %} {# a deplacer sur un bouton sur les creneaux #}
                         <button type="submit" class="btn btn-danger" name="creneau_supprimer" value="{{ creno.UUID_creneau }}" id="creneau_supprimer">Supprimer</button>
@@ -51,7 +51,7 @@
                     {# creer la form, la target : si c'est un responsables ou + : il peut tout modifier #}
                     {#                            si c'est un benevole : il peut s'inscrire #}        
                     {% if 'evenement.change_creneau' and 'evenement.delete_creneau' in perms or 'evenement.change_creneau' in perms and libre == 'oui'%}
-                        <button type="submit" id="creneau_changer" name="creneau_changer"  class="btn btn-primary success">Modifier</button>
+                        <button type="submit" id="creneau_modifier" name="creneau_modifier"  class="btn btn-primary success">Modifier</button>
 
                     {% endif %}
                 </div>

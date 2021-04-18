@@ -34,81 +34,20 @@ def planning_range(debut, fin, delta):
     return dates_heures
 
 
-# ancienne fonction, on utilise les forms pour recuperer les infos du creneau
-"""
-def get_infos_benevole(creneaux):
-    ""
-        entree: tableau de creneaux
-        donne des infos sur le benevole pour affichage dans le creneau
-
-        retour : liste de tableaux de dictionnaires des models et une duree Time
-        {
-        'Creneau': creno,
-        'Benevole' : benevole.ProfileBenevole,
-        'Personne' : benevole.Personne,
-        'Responsable' : benevole.ProfileResponsable,
-        'Organisateur' : benevole.ProfileOrganisateur,
-        'AssoOrigine' : benevole.AssoOrigine,
-        'CreneauDuree' timesince(creneau.debut, creneau.fin):
-         }
-    ""
-    infos_benevole = []
-    for creno in creneaux:
-        if creno.benevole_id:   # il y a un benevole lié au creneau
-            benevoleinfo = ProfileBenevole.objects.get(UUID_benevole=creno.benevole_id)
-            try:
-                personneinfo = Personne.objects.get(UUID_personne=benevoleinfo.personne_id)
-            except:
-                personneinfo = ''
-            try:
-                responsableinfo = ProfileResponsable.objects.get(personne_id=personneinfo.UUID_personne)
-            except:
-                responsableinfo = ''
-            try:
-                organisateurinfo = ProfileOrganisateur.objects.get(personne_id=personneinfo.UUID_personne)
-            except:
-                organisateurinfo = ''
-            try:
-                assoorigineinfo = AssoOrigine.objects.get(UUID_assoorigine=personneinfo.assoorigine_id)
-            except:
-                assoorigineinfo = ''
-            infos_benevole.append({'Creneau': creno,
-                                   'Benevole': benevoleinfo,
-                                   'Personne': personneinfo,
-                                   'Responsable': responsableinfo,
-                                   'Organisateur': organisateurinfo,
-                                   'AssoOrigine': assoorigineinfo,
-                                   'CreneauDuree': timesince(creno.debut, creno.fin),})
-        else:                    # pas de benevole associé au creneau
-            infos_benevole.append({'Creneau': creno,
-                                   'Benevole': '',
-                                   'Personne': '',
-                                   'Responsable': '',
-                                   'Organisateur': '',
-                                   'AssoOrigine': '',
-                                   'CreneauDuree': timesince(creno.debut, creno.fin),})
-    return infos_benevole
-"""
-
-
-def forms_postes(the_plan, request):
+def forms_postes(request, data, the_planning):
     """
         entree:
             le planning contenant les postes
             la requete (contenant les infos POST)
         sortie:
-            dictionnaire
-            key : UUID postes
-            val : liste avec
-                  forms de postes initialisées
-                  objet db lié.
+            null
         gère également la modification et la suppression de poste en fonction du contenu de POST
     """
     # sauvegarde notre form modifée envoyée en POST
-    if 'poste_changer' in request.POST:
+    if 'poste_modifier' in request.POST:
         # form en lien avec l objet basé sur model et pk UUID_poste
         formposte = PosteForm(request.POST,
-                              instance=Poste.objects.get(UUID_poste=request.POST.get('uuid_poste')))
+                              instance=Poste.objects.get(UUID_poste=request.POST.get('poste')))
         if formposte.is_valid():
             formposte.save()
     # sauvegarde de notre nouvelle form envoyée en POST
@@ -123,37 +62,36 @@ def forms_postes(the_plan, request):
         Poste.objects.filter(UUID_poste=request.POST.get('poste_supprimer')).delete()
 
     # cree dans la page toutes nos from pour les postes du planing
-    dic_postes_init = {} # dictionnaire des forms
+    dic_postes_init = {}  # dictionnaire des forms
+                          # key : UUID postes
+                          # val : liste avec forms de postes initialisées objet db lié
     # parcours les postes du planning dans la base
-    for poste in Poste.objects.filter(planning_id=the_plan):
+    for poste in Poste.objects.filter(planning_id=the_planning):
         # form en lien avec l objet basé sur model et pk UUID_poste
         formposte = PosteForm(instance=Poste.objects.get(UUID_poste=poste.UUID_poste))
         dic_postes_init[poste.UUID_poste] = formposte  # dictionnaire des forms
         # print (' poste UUID : {1} form : {0}'.format(formposte, poste.UUID_poste))
-    return dic_postes_init
+    data["DicPostes"] = dic_postes_init
+    return
 
-def forms_creneaux(postes, request):
+def forms_creneaux(request, data, postes):
     """
         entree:
             les postes affichés
             la requete (contenant les infos POST)
         sortie:
-            dictionnaire
-            key : UUID creneaux
-            val : liste avec
-                  forms de creneaux initialisées
-                  objet db lié.
+            null
         gère également la modification et la suppression de creneaux en fonction du contenu de POST
     """
-    # en cours +
-    if 'creneau_changer' in request.POST:
+    if 'creneau_modifier' in request.POST:
         # form en lien avec l objet basé sur model et pk UUID_poste
-        formcreneau = PosteForm(request.POST,
-                                instance=Creneau.objects.get(UUID_creneau=request.POST.get('uuid_creneau')))
+        # print('creneau : {}'.format(request.POST.get('uuid_creneau')))
+        formcreneau = CreneauForm(request.POST,
+                                  instance=Creneau.objects.get(UUID_creneau=request.POST.get('creneau')))
+        print(formcreneau['benevole'])
+        print(formcreneau.errors)
         if formcreneau.is_valid():
-            creneau = formcreneau.save(commit=False)
-            creneau.benevole = ProfileBenevole.object.get(UUID_benevole=creneau.benevole)
-            creneau.save()
+            formcreneau.save()
     if 'creneau_ajouter' in request.POST:
         formcreneau = CreneauForm(request.POST)
         if formcreneau.is_valid():
@@ -162,17 +100,18 @@ def forms_creneaux(postes, request):
     if request.POST.get('creneau_supprimer'):
         print('creneau {} supprimé'.format(Creneau.objects.filter(UUID_creneau=request.POST.get('creneau_supprimer'))))
         Creneau.objects.filter(UUID_creneau=request.POST.get('creneau_supprimer')).delete()
-
-    # en cours -
     # cree dans la page toutes nos from pour les creneaux du planing
-    dic_creneaux_init = {} # dictionnaire des forms
+    dic_creneaux_init = {}  # dictionnaire des forms
+                            # key : UUID postes
+                            # val : liste avec forms de postes initialisées objet db lié
     # parcours les postes du planning dans la base
     for creneau in Creneau.objects.filter(poste_id__in=postes):       # liste des creneaux des postes du planning
         # form en lien avec l objet basé sur model et pk UUID_poste
         formcreneau = CreneauForm(instance=Creneau.objects.get(UUID_creneau=creneau.UUID_creneau))
         dic_creneaux_init[creneau.UUID_creneau] = formcreneau  # dictionnaire des forms
         # print(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID_creneau))
-    return dic_creneaux_init
+    data["DicCreneaux"] = dic_creneaux_init
+    return
 
 ################################################
 ##      views evenements
@@ -211,8 +150,6 @@ def evenement(request, uuid_evenement):
     data = {
         "Evenement": evenement,
         "Equipes": equipes,
-        # "uuid_evenement": uuid_evenement,
-        # "FormPoste": formposte,
     }
 
     # log les donnees post
@@ -224,37 +161,24 @@ def evenement(request, uuid_evenement):
     # recupere les uuid en POST, but est de tout gerer dans une seule page
     # et d'afficher les infos en fonction des POST recus :
     if request.method == "POST":
-        if request.POST.get('uuid_equipe'): # selection d'une équipe
-            the_equipe = request.POST.get('uuid_equipe')
-            data["uuid_equipe"] = the_equipe
-        if request.POST.get('uuid_planning'): # selection d'un planning
-            the_planning = request.POST.get('uuid_planning')
-            data["uuid_planning"] = the_planning
-        if request.POST.get('uuid_poste'): # selection d'un poste
-            the_poste = request.POST.get('uuid_poste')
-            data["uuid_poste"] = the_poste
-        if request.POST.get('uuid_creneau'): # selection d'un poste
-            the_creneau = request.POST.get('uuid_creneau')
-            data["uuid_creneau"] = the_creneau
-
-        ################
-        ### paramètres d'affichage de la page
-        ################
-        if the_equipe:  # selection d'une équipe
+        if request.POST.get('equipe'):  # selection d'une équipe
+            the_equipe = request.POST.get('equipe')
+            data["equipe"] = the_equipe
             data["Equipe"] = Equipe.objects.get(UUID_equipe=the_equipe)  # equipe selectionnée
             data["Plannings"] = Planning.objects.filter(equipe_id=the_equipe).order_by('debut')  # plannings de l'equipe
-        if the_planning:
+        if request.POST.get('planning'): # selection d'un planning
+            the_planning = request.POST.get('planning')
+            data["planning"] = the_planning
             planning = Planning.objects.get(UUID_planning=the_planning)
             data["Planning"] = planning  # planning selectionnée
             postes = Poste.objects.filter(planning_id=the_planning).order_by('nom')
             data["Postes"] = postes  # postes du planning
-            # instances de form poste : sauvegarde modifs & suppression & liste des postes
-            dic_postes = forms_postes(the_planning, request)
-            data["DicPostes"] = dic_postes
+            # instances de form poste & creneau : sauvegarde modifs & suppression & liste des postes
+            forms_postes(request, data, the_planning)
+            forms_creneaux(request, data, postes)
 
             # données formatées du planning
             data["PlanningRange"] = planning_range(planning.debut, planning.fin, planning.pas)
-
             crenos = []
             for po in postes:
                 crenos.append(po.UUID_poste)        # crenos : liste des creneaux du planning par poste
@@ -263,19 +187,22 @@ def evenement(request, uuid_evenement):
                 data["Creneaux"] = creneaux
             except:
                 print('###### pas de creneaux sur ce planning')
-            # en cours +
-            dic_creneaux = forms_creneaux(postes, request)
-            data["DicCreneaux"] = dic_creneaux
-            # en cours -
 
-            # on envoie la form au template pour ajout d un nouveau poste
-            data["FormPoste"] = PosteForm(initial={'evenement':evenement,
-                                                   'equipe':the_equipe,
-                                                   'planning':the_planning})
-            # on envoie la form au template pour ajout d un nouveau poste
-            data["FormCreneau"] = CreneauForm(initial={'evenement':evenement,
-                                                       'equipe':the_equipe,
-                                                       'planning':the_planning})
+        if request.POST.get('poste'): # selection d'un poste
+            the_poste = request.POST.get('poste')
+            data["poste"] = the_poste
+        if request.POST.get('creneau'): # selection d'un poste
+            the_creneau = request.POST.get('creneau')
+            data["creneau"] = the_creneau
+
+        # on envoie la form non liée au template pour ajout d un nouveau poste
+        data["FormPoste"] = PosteForm(initial={'evenement': evenement,
+                                               'equipe': the_equipe,
+                                               'planning': the_planning})
+        # on envoie la form au template pour ajout d un nouveau poste
+        data["FormCreneau"] = CreneauForm(initial={'evenement': evenement,
+                                                   'equipe': the_equipe,
+                                                   'planning': the_planning})
 
     '''
     # on se garde la possibilité d'afficher sur une granulometrie par poste en plus de planning  

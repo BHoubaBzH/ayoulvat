@@ -160,6 +160,7 @@ class Creneau(models.Model):
                               on_delete=models.CASCADE)
     benevole = models.ForeignKey(ProfileBenevole,
                                  related_name='BenevolesCreneau',
+                                 primary_key=False,
                                  null=True,
                                  blank=True,
                                  default='',
