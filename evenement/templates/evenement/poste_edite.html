@@ -1,4 +1,4 @@
-{# evenement/poste_change.html #}
+{# evenement/poste_edite.html #}
 
 
 <div id="boutons des postes" class="poste-bouton-slot" aria-hidden="true"
@@ -102,13 +102,13 @@
 
 <script>
     /* affiche le modal de confirmation quand appuie sur le bouton type=submit */
-    $(document).on('click', '#poste_supprimer', function(e){
+    $('#form-poste-{{ poste.UUID_poste }}').on('click', '#poste_supprimer', function(e){
         $('#modal-confirme-poste-supprime-{{ poste.UUID_poste }}').modal('show');
         e.preventDefault();
     });
 
     /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
-    $(document).on('click', '#poste_supprimer_confirme', function(e){
+    $('#modal-confirme-poste-supprime-{{ poste.UUID_poste }}').on('click', '#poste_supprimer_confirme', function(e){
         /* alert('submitting-{{ forloop.counter }}'); */
         $('#form-poste-{{ poste.UUID_poste }}').append('<input type="hidden" name="poste_supprimer" value="{{ poste.UUID_poste }}">');
         document.getElementById('form-poste-{{ poste.UUID_poste }}').submit();
