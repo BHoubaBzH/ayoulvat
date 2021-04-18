@@ -5,8 +5,8 @@
          style="grid-row: poste-{{ creno.poste_id }};
          grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} /
          time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-         data-bs-toggle="modal"
-         data-bs-target="#Modal-{{ creno.UUID_creneau }}">
+         title="éditer le créneau"
+         data-bs-toggle="modal" data-bs-target="#Modal-{{ creno.UUID_creneau }}">
 </button>
 
 {# modal #}

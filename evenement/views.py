@@ -94,9 +94,10 @@ def forms_creneaux(request, data, postes):
             formcreneau.save()
     if 'creneau_ajouter' in request.POST:
         formcreneau = CreneauForm(request.POST)
+        print(formcreneau.errors)
         if formcreneau.is_valid():
             formcreneau.save()
-            print('poste ajouté')
+            print('creneau ajouté')
     if request.POST.get('creneau_supprimer'):
         print('creneau {} supprimé'.format(Creneau.objects.filter(UUID_creneau=request.POST.get('creneau_supprimer'))))
         Creneau.objects.filter(UUID_creneau=request.POST.get('creneau_supprimer')).delete()

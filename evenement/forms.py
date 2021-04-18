@@ -1,3 +1,4 @@
+from datetimewidget.widgets import DateTimeWidget
 from django.forms import ModelForm, HiddenInput, ModelChoiceField, ModelMultipleChoiceField, CheckboxSelectMultiple
 from phonenumber_field.formfields import PhoneNumberField
 from evenement.models import Poste, Creneau
