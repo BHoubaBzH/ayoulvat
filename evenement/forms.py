@@ -6,7 +6,9 @@ from benevole.models import ProfileBenevole, Personne
 
 
 class PosteForm(ModelForm):
-    benevole = ModelMultipleChoiceField(queryset=ProfileBenevole.objects.all(), widget = CheckboxSelectMultiple, required=False)
+    benevole = ModelMultipleChoiceField(queryset=ProfileBenevole.objects.all(),
+                                        widget = CheckboxSelectMultiple,
+                                        required=False)
 
     class Meta:
         model = Poste
@@ -40,6 +42,7 @@ class CreneauForm(ModelForm):
         self.fields['equipe'].widget = HiddenInput()
         self.fields['evenement'].widget = HiddenInput()
 
+
 class BenevoleForm(ModelForm):
     class Meta:
         model = ProfileBenevole
@@ -51,6 +54,7 @@ class PersonneForm(ModelForm):
         model = Personne
         fields = ['last_name', 'first_name', 'genre', 'date_de_naissance',
                   'assoorigine', 'email', 'portable', 'description']
+
 
 """
 class CreneauDetails(forms.Form):

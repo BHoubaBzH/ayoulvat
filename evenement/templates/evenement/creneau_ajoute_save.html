@@ -1,0 +1,51 @@
+{# evenement/bouton_creneau_ajoute.html #}
+
+{# a modifier en 1 seul modal id="modal-creneau_ajouter" alimenté par javascript #}
+
+<div class="modal fade"
+     id="modal-creneau_ajouter-{{ poste.UUID_poste }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="creneau_ajouter"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Ajout du creneau</h5>
+            </div>
+            <form  id="form-creneau" method='post'>
+                <div class="modal-body">
+            {# en cours + #}
+                        {% csrf_token %}
+                    <table class="table">
+                        {{ FormCreneau.as_table }}
+                    </table>
+            {# en cours - #}
+
+                </div>
+
+                <div class="modal-footer">
+                    {# données pour garder le planning affiché apres submission POST#}
+                    <input name="planning" id="id_planning" value="{{ Planning.UUID_planning }}" type="hidden">
+                    <input  name="equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
+                    <input  name="planning" value="{{ Planning.UUID_planning }}" type="hidden">
+                    <input  name="poste" value="{{ poste.UUID_poste  }}" type="hidden">
+                    
+                    <input name="creneau_ajouter" value="" type="hidden">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" id="modal-creneau_ajouter" class="btn btn-primary success">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    /* quand le bouton Ajouter est utilisé dans modal, submit la form et ferme le modal */
+    $('#form-creneau').on('click', '#modal-creneau_ajouter', function () {
+        /* alert('submitting-{{ forloop.counter }}'); */
+        document.getElementById('form-creneau').submit();
+        $('#modal-creneau_ajouter').modal('toggle');
+    });
+</script>

@@ -5,7 +5,7 @@
          style="grid-row: poste-{{ creno.poste_id }};
          grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} /
          time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-         title="éditer le créneau"
+         title="{%if libre == 'non'%}crénueau occupé{%else%}créneau disponible{%endif%}"
          data-bs-toggle="modal" data-bs-target="#Modal-{{ creno.UUID_creneau }}">
 </button>
 
