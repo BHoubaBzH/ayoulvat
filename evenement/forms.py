@@ -1,14 +1,13 @@
 from datetimewidget.widgets import DateTimeWidget
-from django.forms import ModelForm, HiddenInput, ModelChoiceField, ModelMultipleChoiceField, CheckboxSelectMultiple
+from django.forms import ModelForm, HiddenInput, ModelChoiceField, ModelMultipleChoiceField, RadioSelect, CheckboxSelectMultiple
 from phonenumber_field.formfields import PhoneNumberField
 from evenement.models import Poste, Creneau
-from benevole.models import ProfileBenevole, Personne
+from benevole.models import ProfileBenevole
 
 
 class PosteForm(ModelForm):
     benevole = ModelMultipleChoiceField(queryset=ProfileBenevole.objects.all(),
-                                        widget = CheckboxSelectMultiple,
-                                        required=False)
+                                        widget=CheckboxSelectMultiple)
 
     class Meta:
         model = Poste
@@ -28,7 +27,9 @@ class PosteForm(ModelForm):
 class CreneauForm(ModelForm):
     # Query set doit prendre que les benevoles inscrits sur l evenement : a faire
     # voir aussi par équipe et par planning
-    benevole = ModelChoiceField(queryset=ProfileBenevole.objects.all(), required=False, empty_label="Vide")
+    benevole = ModelChoiceField(queryset=ProfileBenevole.objects.all(),
+                                required=False,
+                                empty_label="Libre")
 
     class Meta:
         model = Creneau
@@ -41,19 +42,6 @@ class CreneauForm(ModelForm):
         self.fields['planning'].widget = HiddenInput()
         self.fields['equipe'].widget = HiddenInput()
         self.fields['evenement'].widget = HiddenInput()
-
-
-class BenevoleForm(ModelForm):
-    class Meta:
-        model = ProfileBenevole
-        fields = ['message', 'personne']
-
-
-class PersonneForm(ModelForm):
-    class Meta:
-        model = Personne
-        fields = ['last_name', 'first_name', 'genre', 'date_de_naissance',
-                  'assoorigine', 'email', 'portable', 'description']
 
 
 """

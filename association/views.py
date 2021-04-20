@@ -25,7 +25,8 @@ def detail_asso(request, uuid_asso):
     # store dans la session le uuid de l'asso
     request.session['uuid_association'] = uuid_asso
 
-    association = Association.objects.get(UUID_association= uuid_asso)
+    association = Association.objects.get(UUID_association=uuid_asso)
+    print(' asso : '.format(uuid_asso))
     data = {
         "Asso": association,
     }

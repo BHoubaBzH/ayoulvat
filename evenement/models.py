@@ -131,8 +131,7 @@ class Poste(models.Model):
 
 
 class Creneau(models.Model):
-    UUID_creneau = \
-        models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID_creneau = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     evenement = models.ForeignKey(Evenement,
                                   primary_key=False,
                                   unique=False,

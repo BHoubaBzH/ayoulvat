@@ -12,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 class AssoOrigine(models.Model):
     UUID_assoorigine = \
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    nom = models.CharField(max_length=50,
+    nom = models.CharField(max_length=50, unique='True',
                            verbose_name="association repésentée par le bénévole")
 
     def __str__(self):

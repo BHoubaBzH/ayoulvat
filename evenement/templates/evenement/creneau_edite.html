@@ -5,7 +5,7 @@
          style="grid-row: poste-{{ creno.poste_id }};
          grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} /
          time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-         title="{%if libre == 'non'%}crénueau occupé{%else%}créneau disponible{%endif%}"
+         title="{%if libre == 'non'%}créneau occupé{%else%}créneau disponible{%endif%}"
          data-bs-toggle="modal" data-bs-target="#Modal-{{ creno.UUID_creneau }}">
 </button>
 
@@ -33,15 +33,15 @@
                 </div>
 
                 <div class="modal-footer">
+                    {% comment "" %}
                     {# données pour garder le planning affiché apres submission POST#}
                     <input  name="evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
                     <input  name="equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
                     <input  name="planning" value="{{ Planning.UUID_planning }}" type="hidden">
                     <input  name="poste" value="{{ poste.UUID_poste }}" type="hidden">
+                    {% endcomment %}
 
                     <input name="creneau" value="{{ creno.UUID_creneau }}" type="hidden">
-                    <input type="hidden" id="benevole" name ="benevole" value="{{ creno.benevole_id }}">
-
                     {% if 'evenement.delete_creneau'  in perms %} {# a deplacer sur un bouton sur les creneaux #}
                         <button type="submit" class="btn btn-danger" name="creneau_supprimer" value="{{ creno.UUID_creneau }}" id="creneau_supprimer">Supprimer</button>
                     {% endif %}
