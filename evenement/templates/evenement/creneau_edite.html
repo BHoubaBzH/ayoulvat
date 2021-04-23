@@ -1,6 +1,5 @@
 {# evenement/creneau_edite.html #}
 
-
 {# pour le placement dans la grille planning garder le filtre sur creno.debut et creno.fin comme la fonction planning_range de views.py : #}
 <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%} poste poste-{{ poste.UUID_poste }}" 
          style="grid-row: poste-{{ creno.poste_id }};
@@ -34,13 +33,6 @@
                 </div>
 
                 <div class="modal-footer">
-                    {% comment "" %}
-                    {# données pour garder le planning affiché apres submission POST#}
-                    <input  name="evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
-                    <input  name="equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
-                    <input  name="planning" value="{{ Planning.UUID_planning }}" type="hidden">
-                    <input  name="poste" value="{{ poste.UUID_poste }}" type="hidden">
-                    {% endcomment %}
 
                     <input name="creneau" value="{{ creno.UUID_creneau }}" type="hidden">
                     {% if 'evenement.delete_creneau'  in perms %} 
