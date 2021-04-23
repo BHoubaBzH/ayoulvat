@@ -2,7 +2,6 @@
 {% load bootstrap5 %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
-
 {% bootstrap_messages %}
 
 {% load static %}
@@ -25,6 +24,9 @@
     <script src="{% static "evenement/js/scripts.js" %}"></script>
     {# fonts et icons BOOTSTRAP #}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+    <!-- XDSoft DateTimePicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
 
 </head>
 <body>  
@@ -35,7 +37,7 @@
         <div class="row">
             <div class="col-sm-12" title="evenement">
                 {% block evenement %}
-                {% endblock %}
+                {% endblock evenement %}
             </div> 
         </div> 
     </div>
@@ -48,7 +50,7 @@
                 </ul>
                 {%  if Equipes %}
                     {% block equipes %}
-                    {% endblock %}
+                    {% endblock equipes %}
                 {% endif %}
             </div>
             <div class="col-sm-3" title="planning">
@@ -58,9 +60,11 @@
                 {% if Equipe and Plannings %}
 
                     {% block plannings %}
-                    {% endblock %}
+                    {% endblock plannings %}
                 {% endif %}
             </div>
+        </div>
+    </div>
             {% comment "colonne poste et creneau inutile avec le planning" %}
             <div class="col-sm-4" title="poste">
                 <ul class="list-group">
@@ -80,24 +84,37 @@
             </div>    
     {% endcomment %}
 
-    <hr class="bg-danger border-2 border-top">
-        {# tabs pour montrer différentes infos #}
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link active" href="#">creneaux</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">benevoles</a>
-            </li>
-    </ul>
-    {% comment "scheduler on affiche que si un planning est selectionne" %}{% endcomment %}
-    {% if Planning or Poste %}
-        <hr class="bg-danger border-2 border-top">
-        <div class="container-fluid">
-            {% block agenda %}
-            {% endblock agenda %}
+    </br>
+        {# tabs pour afficher les différents plannings #}
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <button class="nav-link active" id="nav-creneaux-tab" data-bs-toggle="tab" 
+                        data-bs-target="#nav-creneaux" type="button" role="tab" 
+                        aria-controls="nav-creneaux" aria-selected="true">Créneaux</button>
+                <button class="nav-link" id="nav-benevoles-tab" data-bs-toggle="tab" 
+                        data-bs-target="#nav-benevoles" type="button" role="tab" 
+                        aria-controls="nav-benevoles" aria-selected="false">Bénévoles</button>
+            </div>
+        </nav>
+
+
+        <div class="tab-content" id="nav-tabContent">
+            {% comment "planning on affiche que si un planning ou un poste est selectionne" %}{% endcomment %}
+            {% if Planning or Poste %}
+                <div class="tab-pane fade show active" id="nav-creneaux" 
+                     role="tabpanel" aria-labelledby="nav-creneaux-tab">
+                    {% block planning-creneaux %}
+                    {% endblock planning-creneaux %}
+                </div>
+                <div class="tab-pane" id="nav-benevoles" 
+                     role="tabpanel" aria-labelledby="nav-benevoles-tab">
+                    {% block planning-benevoles %}
+                    {# en cours #}
+                    {% endblock planning-benevoles %}
+                </div>
+            {% endif %}
         </div>
-    {% endif %}
+
 
 
   </main>

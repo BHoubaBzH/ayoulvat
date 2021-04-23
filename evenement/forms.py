@@ -1,12 +1,13 @@
-from datetimewidget.widgets import DateTimeWidget
-from django.forms import ModelForm, HiddenInput, ModelChoiceField, ModelMultipleChoiceField, RadioSelect, CheckboxSelectMultiple
-from phonenumber_field.formfields import PhoneNumberField
+from django.forms import ModelForm, DateTimeField, HiddenInput, ModelChoiceField, ModelMultipleChoiceField, CheckboxSelectMultiple
+
 from evenement.models import Poste, Creneau
 from benevole.models import ProfileBenevole
+from evenement.customwidgets import SplitDateTimeMultiWidget
 
 
 class PosteForm(ModelForm):
     benevole = ModelMultipleChoiceField(queryset=ProfileBenevole.objects.all(),
+                                        required=False,
                                         widget=CheckboxSelectMultiple)
 
     class Meta:
@@ -30,11 +31,16 @@ class CreneauForm(ModelForm):
     benevole = ModelChoiceField(queryset=ProfileBenevole.objects.all(),
                                 required=False,
                                 empty_label="Libre")
-
+    debut = DateTimeField(widget=SplitDateTimeMultiWidget(attrs={
+                                                                 'date_attrs': {},
+                                                                 'time_attrs': {'step': (30 * 60).__str__()}
+                                                                }))
+    fin = DateTimeField(widget=SplitDateTimeMultiWidget())
     class Meta:
         model = Creneau
         # exclude = ['benevole', ]
         fields = ['debut', 'fin', 'description', 'editable', 'benevole', 'poste', 'planning', 'equipe', 'evenement' ]
+
     # cache certains champs
     def __init__(self, *args, **kwargs):
         super(CreneauForm, self).__init__(*args, **kwargs)
@@ -42,6 +48,10 @@ class CreneauForm(ModelForm):
         self.fields['planning'].widget = HiddenInput()
         self.fields['equipe'].widget = HiddenInput()
         self.fields['evenement'].widget = HiddenInput()
+        instance = getattr(self, 'instance', None)
+        if instance:
+            pass
+            #self.fields['debut'].disabled = True
 
 
 """

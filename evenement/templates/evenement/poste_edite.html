@@ -1,6 +1,5 @@
 {# evenement/poste_edite.html #}
 
-
 <div id="boutons des postes" class="poste-bouton-slot" aria-hidden="true"
     style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes-boutons;">
         {# affiche le bouton d edition de poste #}
@@ -101,11 +100,12 @@
 </div>
 
 <script>
-    /* affiche le modal de confirmation quand appuie sur le bouton type=submit */
+    /* affiche le modal de confirmation quand appuie sur le bouton type=submit 
     $('#form-poste-{{ poste.UUID_poste }}').on('click', '#poste_supprimer', function(e){
         $('#modal-confirme-poste-supprime-{{ poste.UUID_poste }}').modal('show');
+        alert('toto');
         e.preventDefault();
-    });
+    });*/
 
     /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
     $('#modal-confirme-poste-supprime-{{ poste.UUID_poste }}').on('click', '#poste_supprimer_confirme', function(e){

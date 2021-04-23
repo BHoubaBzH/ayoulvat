@@ -55,6 +55,7 @@ def forms_postes(request, data, the_planning):
     # sauvegarde de notre nouvelle form envoyée en POST
     if 'poste_ajouter' in request.POST:
         formposte = PosteForm(request.POST)
+        print(formposte.errors)
         if formposte.is_valid():
             formposte.save()
             print('poste ajouté')

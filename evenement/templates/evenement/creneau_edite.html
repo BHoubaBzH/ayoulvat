@@ -1,5 +1,6 @@
 {# evenement/creneau_edite.html #}
 
+
 {# pour le placement dans la grille planning garder le filtre sur creno.debut et creno.fin comme la fonction planning_range de views.py : #}
 <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%} poste poste-{{ poste.UUID_poste }}" 
          style="grid-row: poste-{{ creno.poste_id }};
@@ -42,8 +43,12 @@
                     {% endcomment %}
 
                     <input name="creneau" value="{{ creno.UUID_creneau }}" type="hidden">
-                    {% if 'evenement.delete_creneau'  in perms %} {# a deplacer sur un bouton sur les creneaux #}
-                        <button type="submit" class="btn btn-danger" name="creneau_supprimer" value="{{ creno.UUID_creneau }}" id="creneau_supprimer">Supprimer</button>
+                    {% if 'evenement.delete_creneau'  in perms %} 
+                        <button class="btn btn-danger" title="supprimer ce créneau" name="creneau_supprimer"
+                                id="creneau_supprimer" value="supprimer" type="button"
+                                data-bs-toggle="modal" data-bs-target="#modal-confirme-creneau-supprime-{{ creno.UUID_creneau }}">
+                                Supprimer
+                        </button>
                     {% endif %}
 
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
@@ -60,3 +65,46 @@
         </div>
     </div>
 </div>
+
+{# modal de confirmation de suppression doit etre en dehors du div pour s'afficher correctement #}
+{% if 'evenement.delete_creneau'  in perms %}
+<div class="modal fade"
+     id="modal-confirme-creneau-supprime-{{ creno.UUID_creneau }}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="creneau_supprime"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Confirmer La suppression du créneau</h5>
+            </div>
+            <div class="modal-body">
+                Etes-vous sur?
+                <table class="table">
+                    <tr><th>Equipe</th><td id="equipe">{{ Equipe.nom }}</td></tr>
+                    <tr><th>Planning</th><td id="equipe">{{ Planning.nom }}</td></tr>
+                    <tr><th>Poste</th><td id="poste">{{ poste.nom }}</td></tr>
+                    <tr><th>Créneau</th><td id="creneau_supprimer">{{ creno.nom }}</td></tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Non</button>
+                <button type="submit" id="creneau_supprimer_confirme" class="btn btn-danger success">Oui</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
+    $('#modal-confirme-creneau-supprime-{{ creno.UUID_creneau }}').on('click', '#creneau_supprimer_confirme', function(e){
+        /* alert('submitting-{{ forloop.counter }}'); */
+        $('#form-creneau').append('<input type="hidden" name="creneau_supprimer" value="{{ creno.UUID_creneau }}">');
+        document.getElementById('form-creneau').submit();
+        $('#modal-confirme-creneau-supprime-{{ creno.UUID_creneau }}').modal('toggle');
+        e.preventDefault();
+    });
+</script>
+{% endif %}
