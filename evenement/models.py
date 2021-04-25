@@ -63,6 +63,18 @@ class Equipe(models.Model):
 
 
 class Planning(models.Model):
+    class PasMinute(models.IntegerChoices):
+        quinze = 15
+        trente = 30
+        heure = 60
+
+    class CreneauMoyen(models.IntegerChoices):
+        une_heure = 60
+        une_heure_trente = 90
+        deux_heures = 120
+        deux_heures_trente = 150
+        trois_heures = 180
+
     UUID_planning = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     evenement = models.ForeignKey(Evenement,
                                   primary_key=False,
@@ -87,7 +99,10 @@ class Planning(models.Model):
                                         help_text='possibilité de bloquer l\'accès aux mineurs, ex : BAR')
     description = models.CharField(max_length=500, blank=True, default='')
     couleur = RGBColorField(default="#0d6efd")
-    pas = models.IntegerField(default="30",blank=False,help_text="pas de reglage des creneaux en minutes: 15 / 30 / 60")
+    pas = models.PositiveSmallIntegerField(choices=PasMinute.choices,blank=False, default=30,
+                                           help_text="pas de reglage des creneaux en minutes: 15 / 30 / 60")
+    creneau_moyen = models.PositiveSmallIntegerField(choices=CreneauMoyen.choices,blank=False, default=120,
+                                           help_text="duree moyen d'un creneau en minutes")
     editable = models.BooleanField(default=True, help_text="si non editable, le planning est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
     def __str__(self):

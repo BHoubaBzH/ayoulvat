@@ -100,13 +100,6 @@
 </div>
 
 <script>
-    /* affiche le modal de confirmation quand appuie sur le bouton type=submit 
-    $('#form-poste-{{ poste.UUID_poste }}').on('click', '#poste_supprimer', function(e){
-        $('#modal-confirme-poste-supprime-{{ poste.UUID_poste }}').modal('show');
-        alert('toto');
-        e.preventDefault();
-    });*/
-
     /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
     $('#modal-confirme-poste-supprime-{{ poste.UUID_poste }}').on('click', '#poste_supprimer_confirme', function(e){
         /* alert('submitting-{{ forloop.counter }}'); */
