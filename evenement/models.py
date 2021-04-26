@@ -74,6 +74,8 @@ class Planning(models.Model):
         deux_heures = 120
         deux_heures_trente = 150
         trois_heures = 180
+        trois_heures_trente = 210
+        quatre_heures = 240
 
     UUID_planning = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     evenement = models.ForeignKey(Evenement,
@@ -102,7 +104,7 @@ class Planning(models.Model):
     pas = models.PositiveSmallIntegerField(choices=PasMinute.choices,blank=False, default=30,
                                            help_text="pas de reglage des creneaux en minutes: 15 / 30 / 60")
     creneau_moyen = models.PositiveSmallIntegerField(choices=CreneauMoyen.choices,blank=False, default=120,
-                                           help_text="duree moyen d'un creneau en minutes")
+                                           help_text="duree classique d'un créneau en minutes")
     editable = models.BooleanField(default=True, help_text="si non editable, le planning est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
     def __str__(self):

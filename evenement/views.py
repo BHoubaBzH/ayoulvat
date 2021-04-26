@@ -2,12 +2,11 @@ from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, get_object_or_404
-from django.utils.timesince import timesince
-from django.forms import formset_factory
 
 from evenement.forms import PosteForm, CreneauForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
 from benevole.models import ProfileBenevole, Personne, AssoOrigine, ProfileResponsable, ProfileOrganisateur
+from association.models import Association
 
 
 ################################################
@@ -33,6 +32,23 @@ def planning_range(debut, fin, delta):
         debut += timedelta(minutes=delta)
     return dates_heures
 
+def planning_retourne_pas(request):
+    """
+    entree:
+        request
+    sortie:
+        pas
+    recuperer le pas du planning principalement pour les creneau et le choix des heures
+    """
+    if request.POST:
+        # retrouve le pas du planning à partir des infos du creneau
+        Plan=Planning.objects.get(UUID_planning=request.POST.get('planning'))
+        pas=Plan._meta.get_field('pas')
+        pas_value=pas.value_from_object(Plan)
+    else:
+        # on met une valeur par défaut d une heure au pas
+        pas_value=60
+    return pas_value
 
 def forms_postes(request, data, the_planning):
     """
@@ -87,19 +103,23 @@ def forms_creneaux(request, data, postes):
             null
         gère également la modification et la suppression de creneaux en fonction du contenu de POST
     """
+
     if 'creneau_modifier' in request.POST:
         # form en lien avec l objet basé sur model et pk UUID_poste
         # print('creneau : {}'.format(request.POST.get('uuid_creneau')))
+
         formcreneau = CreneauForm(request.POST,
-                                  instance=Creneau.objects.get(UUID_creneau=request.POST.get('creneau')))
-        print(formcreneau['benevole'])
+                                  instance=Creneau.objects.get(UUID_creneau=request.POST.get('creneau')),
+                                  pas_creneau=planning_retourne_pas(request))
+        # print(formcreneau['benevole'])
         print(formcreneau.errors)
         if formcreneau.is_valid():
             print('creneau modifié')
             formcreneau.save()
     if 'creneau_ajouter' in request.POST:
-        formcreneau = CreneauForm(request.POST)
-        print(formcreneau['benevole'])
+        formcreneau = CreneauForm(request.POST,
+                                  pas_creneau=planning_retourne_pas(request))
+        # print(formcreneau['benevole'])
         print(formcreneau.errors)
         if formcreneau.is_valid():
             print('creneau ajouté')
@@ -116,7 +136,8 @@ def forms_creneaux(request, data, postes):
     # parcours les creneaux du planning dans la base
     for creneau in Creneau.objects.filter(poste_id__in=postes):       # liste des creneaux des postes du planning
         # form en lien avec l objet basé sur model et pk UUID_poste
-        formcreneau = CreneauForm(instance=Creneau.objects.get(UUID_creneau=creneau.UUID_creneau))
+        formcreneau = CreneauForm(instance=Creneau.objects.get(UUID_creneau=creneau.UUID_creneau),
+                                  pas_creneau=planning_retourne_pas(request))
         dic_creneaux_init[creneau.UUID_creneau] = formcreneau  # dictionnaire des forms: key: UUID / val: form
         # print(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID_creneau))
     data["DicCreneaux"] = dic_creneaux_init
@@ -131,14 +152,20 @@ def liste_evenements(request):
     liste les evenements de l'asso
     """
     # récupère dans la session l'uuid de l'association
-    uuid_asso = request.session.get('uuid_association')
-    print(' asso : '.format(uuid_asso))
+    uuid_asso = request.session['uuid_association']
+    association = Association.objects.get(UUID_association=uuid_asso)
+
+    try:
+        liste_evenements = Evenement.objects.filter(association_id=uuid_asso)
+    except:
+        print('Pas encore d evenement pour cette asso, voulez-vous en creer un?')
 
     data = {
+        "Association": association,
         # on filtre les évènements sur ceux de l'asso uniquement
-        "Evenements": Evenement.objects.filter(association_id=uuid_asso),
+        "Evenements": liste_evenements,
     }
-    return render(request, "evenement/evenements_liste.html", data)
+    return render(request, "evenement/evenement.html", data)
 
 
 @login_required(login_url='login')
@@ -150,14 +177,18 @@ def evenement(request, uuid_evenement):
     the_equipe = ''
     the_planning = ''
     # store dans la session le uuid de l'evenement
-    # il apparait dans l'url pour pouvir donner le liens aux bénévoles par la suite
-    request.session['uuid_evenement'] = uuid_evenement
+    # il apparait dans l'url pour pouvoir donner le liens aux bénévoles par la suite
+    request.session['uuid_evenement'] = uuid_evenement.urn
+    # récupère dans la session l'uuid de l'association
+    uuid_asso = request.session['uuid_association']
 
     # on construit nos objet avec l'uuid de l'evenement
+    association = Association.objects.get(UUID_association=uuid_asso)
     evenement = Evenement.objects.get(UUID_evenement=uuid_evenement)
     equipes = Equipe.objects.filter(evenement_id=uuid_evenement)
 
     data = {
+        "Association": association,
         "Evenement": evenement,
         "Equipes": equipes,
     }
@@ -213,7 +244,8 @@ def evenement(request, uuid_evenement):
         data["FormCreneau"] = CreneauForm(initial={'evenement': evenement,
                                                    'equipe': the_equipe,
                                                    'planning': the_planning,
-                                                   'id_benevole': ProfileBenevole.UUID_benevole})
+                                                   'id_benevole': ProfileBenevole.UUID_benevole},
+                                          pas_creneau=planning_retourne_pas(request))
 
     '''
     # on se garde la possibilité d'afficher sur une granulometrie par poste en plus de planning  

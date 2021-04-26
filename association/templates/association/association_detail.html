@@ -2,20 +2,13 @@
 <!-- association/association_detail.html -->
 {% load bootstrap5 %}
 
-{% block content %}
+{% block asso_nom %}
+        <!--a href="/evenement/{{ asso.UUID_association }}"><H2>{{ Asso.nom }}</H2></a-->
+        <a href={% url 'liste_evenements' %}><H2>{{ Asso.nom }}</H2></a>
+{% endblock asso_nom %}
 
-<div class="container">
-    <div class="row">
-        <div class="col-sm">
-            <!-- a href="/evenement/{{ asso.UUID_association }}"><H1>{{ Asso.nom }}</H1></a-->
-            <a href={% url 'liste_evenements' %}><H2>{{ Asso.nom }}</H2></a>
-        </div>
-        <div class="col-sm">
-            <li>date de création : {{ Asso.date_creation }}</li>
-            <li>administrateur : {{ Asso.administrateur }}</li>
-            <li>ici les details de l'association</li>
-        </div>
-        <div class="col-sm"></div>
-    </div>
-</div>
-{% endblock content %}
+{% block asso_details %}
+        <li>date de création : {{ Asso.date_creation }}</li>
+        <li>administrateur : {{ Asso.administrateur }}</li>
+        <li>ici les details de l'association</li>
+{% endblock asso_details %}

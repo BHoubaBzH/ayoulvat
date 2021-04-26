@@ -14,9 +14,19 @@
 <body>
 
   <main>
-    {% block content %}
-
-    {% endblock %}
+    <div class="container">
+    <div class="row">
+        <div class="col-sm">
+          {% block asso_nom %}
+          {% endblock asso_nom %}
+        </div>
+        <div class="col-sm">
+          {% block asso_details %}
+          {% endblock asso_details %}
+         </div>
+         <div class="col-sm"></div>
+         </div>
+     </div>
   </main>
 </body>
 </html>

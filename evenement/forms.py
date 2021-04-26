@@ -31,28 +31,37 @@ class CreneauForm(ModelForm):
     benevole = ModelChoiceField(queryset=ProfileBenevole.objects.all(),
                                 required=False,
                                 empty_label="Libre")
-    debut = DateTimeField(widget=SplitDateTimeMultiWidget(attrs={
-                                                                 'date_attrs': {},
-                                                                 'time_attrs': {'step': (30 * 60).__str__()}
-                                                                }))
+    debut = DateTimeField(widget=SplitDateTimeMultiWidget())
     fin = DateTimeField(widget=SplitDateTimeMultiWidget())
+
     class Meta:
         model = Creneau
         # exclude = ['benevole', ]
         fields = ['debut', 'fin', 'description', 'editable', 'benevole', 'poste', 'planning', 'equipe', 'evenement' ]
 
-    # cache certains champs
+    # methode __init__ surcharge les definition préczdente de la class
     def __init__(self, *args, **kwargs):
+        self.pas_creneau = kwargs.pop('pas_creneau')
         super(CreneauForm, self).__init__(*args, **kwargs)
+        # cache certains champs
         self.fields['poste'].widget = HiddenInput()
         self.fields['planning'].widget = HiddenInput()
         self.fields['equipe'].widget = HiddenInput()
         self.fields['evenement'].widget = HiddenInput()
         instance = getattr(self, 'instance', None)
         if instance:
-            pass
-            #self.fields['debut'].disabled = True
-
+            pass #self.fields['debut'].disabled = True
+        # recuperer le pas du planning associé
+        # time_attr.step :  valeurs valides liées au pas du planning dans les choix en unités secondes :
+        # ex 30 * 60 = 1800 : toutes les 30 minutes sont OK
+        self.fields['debut'].widget = SplitDateTimeMultiWidget(attrs={
+                                                                     'date_attrs': {},
+                                                                     'time_attrs': {'step': (self.pas_creneau * 60).__str__()}
+                                                                     })
+        self.fields['fin'].widget = SplitDateTimeMultiWidget(attrs={
+                                                                     'date_attrs': {},
+                                                                     'time_attrs': {'step': (self.pas_creneau * 60).__str__()}
+                                                                     })
 
 """
 class CreneauDetails(forms.Form):

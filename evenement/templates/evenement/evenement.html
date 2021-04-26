@@ -1,9 +1,9 @@
 {% extends 'evenement/base.html' %}
 <!-- evenement/evenement.html -->
 {% load bootstrap5 %}
-{{ form.media }}
+
 {% block evenement %}
-    {% comment "haut de notre page avec les infos de l evenement" %}{% endcomment %}
+    {% comment "haut de notre page avec les infos de l evenement" %}
     <ul class="list-group list-group-horizontal">
         <li class="list-group-item"><H1> evenement </H1></li>
         <li class="list-group-item"><H2>{{ Evenement.nom }}</H2></li>
@@ -11,7 +11,7 @@
         <li class="list-group-item">date de fin : {{ Evenement.date_fin }}</li>
         <li class="list-group-item">ici les details de l'evenement</li>
     </ul>
-
+    {% endcomment %}
 {% endblock evenement %}
 
 {% block equipes %}
@@ -52,11 +52,9 @@
 </br>
 
 {% block planning-creneaux %}
-    <H2> {{ Planning.nom }} : {{ Planning.debut|date:"d/m/Y H:i" }} - {{ Planning.fin|date:"d/m/Y H:i" }}</H2>
     {% include "evenement/planning_creneaux.html" %}
 {% endblock planning-creneaux %}
 
 {% block planning-benevoles %}
-    <H2> {{ Planning.nom }} : {{ Planning.debut|date:"d/m/Y H:i" }} - {{ Planning.fin|date:"d/m/Y H:i" }}</H2>
     {% include "evenement/planning_benevoles.html" %}
 {% endblock planning-benevoles %}

@@ -19,7 +19,7 @@ class SplitDateTimeMultiWidget(MultiWidget):
 
             date_attrs['type'] = 'date'
             time_attrs['type'] = 'time'
-            time_attrs['step'] = '1800'
+            # time_attrs['step'] = '1800'
             time_attrs['min'] = '0'
             time_attrs['max'] = '60'
 
