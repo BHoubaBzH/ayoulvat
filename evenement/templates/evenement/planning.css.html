@@ -46,13 +46,13 @@
 		grid-template-rows:
 			[heures] 3em
 			{% for poste in Postes %}
-				[poste-{{ poste.UUID_poste }}] auto
+			[poste-{{ poste.UUID_poste }}] auto
 			{% endfor %};
 		{# construction des entete et des colonnes de la grille planning: postes puis heures puis boutons #}
 		grid-template-columns:
 			[postes] auto
 			{% for dates, heures in PlanningRange.items %}
-				[time-{{ dates }}] auto
+			[time-{{ dates }}] auto
 			{% endfor %}
 			[postes-boutons] auto
 			;

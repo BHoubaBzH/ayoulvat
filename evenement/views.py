@@ -35,18 +35,18 @@ def planning_range(debut, fin, delta):
 def planning_retourne_pas(request):
     """
     entree:
-        request
+        POST request
     sortie:
-        pas
+        pas_value : pas d'incrément du planning
     recuperer le pas du planning principalement pour les creneau et le choix des heures
     """
-    if request.POST:
+    if 'planning' in request.POST:
         # retrouve le pas du planning à partir des infos du creneau
         Plan=Planning.objects.get(UUID_planning=request.POST.get('planning'))
         pas=Plan._meta.get_field('pas')
         pas_value=pas.value_from_object(Plan)
     else:
-        # on met une valeur par défaut d une heure au pas
+        # pas possible normalement, on prévoit quand meme une valeur par défaut d une heure au pas
         pas_value=60
     return pas_value
 
@@ -61,20 +61,18 @@ def forms_postes(request, data, the_planning):
         gère également la modification et la suppression de poste en fonction du contenu de POST
     """
     # sauvegarde notre form modifée envoyée en POST
-    if 'poste_modifier' in request.POST:
+    if any(x in request.POST for x in ['poste_modifier', 'poste_ajouter']):
         # form en lien avec l objet basé sur model et pk UUID_poste
-        formposte = PosteForm(request.POST,
-                              instance=Poste.objects.get(UUID_poste=request.POST.get('poste')))
+        if 'poste_modifier' in request.POST:
+            formposte = PosteForm(request.POST,
+                                  instance=Poste.objects.get(UUID_poste=request.POST.get('poste')))
+        # nouvel objet en base
+        if 'poste_ajouter' in request.POST:
+            formposte = PosteForm(request.POST)
         if formposte.is_valid():
             formposte.save()
-            print('poste modifié')
-    # sauvegarde de notre nouvelle form envoyée en POST
-    if 'poste_ajouter' in request.POST:
-        formposte = PosteForm(request.POST)
-        print(formposte.errors)
-        if formposte.is_valid():
-            formposte.save()
-            print('poste ajouté')
+            print('poste modifié ou ajouté')
+
     # suppression du poste
     if request.POST.get('poste_supprimer'):
         print('poste {} supprimé'.format(Poste.objects.filter(UUID_poste=request.POST.get('poste_supprimer'))))
@@ -103,26 +101,23 @@ def forms_creneaux(request, data, postes):
             null
         gère également la modification et la suppression de creneaux en fonction du contenu de POST
     """
-
-    if 'creneau_modifier' in request.POST:
+    if any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter']):
         # form en lien avec l objet basé sur model et pk UUID_poste
         # print('creneau : {}'.format(request.POST.get('uuid_creneau')))
-
-        formcreneau = CreneauForm(request.POST,
-                                  instance=Creneau.objects.get(UUID_creneau=request.POST.get('creneau')),
-                                  pas_creneau=planning_retourne_pas(request))
+        if 'creneau_modifier' in request.POST:
+            formcreneau = CreneauForm(request.POST,
+                                      instance=Creneau.objects.get(UUID_creneau=request.POST.get('creneau')),
+                                      pas_creneau=planning_retourne_pas(request),
+                                      planning_uuid=request.POST.get('planning'),)
+        # nouvel objet en base
+        if 'creneau_ajouter' in request.POST:
+            formcreneau = CreneauForm(request.POST,
+                                      pas_creneau=planning_retourne_pas(request),
+                                      planning_uuid=request.POST.get('planning'),)
         # print(formcreneau['benevole'])
         print(formcreneau.errors)
         if formcreneau.is_valid():
-            print('creneau modifié')
-            formcreneau.save()
-    if 'creneau_ajouter' in request.POST:
-        formcreneau = CreneauForm(request.POST,
-                                  pas_creneau=planning_retourne_pas(request))
-        # print(formcreneau['benevole'])
-        print(formcreneau.errors)
-        if formcreneau.is_valid():
-            print('creneau ajouté')
+            print('creneau modifié ou ajouté')
             formcreneau.save()
 
     if request.POST.get('creneau_supprimer'):
@@ -137,7 +132,8 @@ def forms_creneaux(request, data, postes):
     for creneau in Creneau.objects.filter(poste_id__in=postes):       # liste des creneaux des postes du planning
         # form en lien avec l objet basé sur model et pk UUID_poste
         formcreneau = CreneauForm(instance=Creneau.objects.get(UUID_creneau=creneau.UUID_creneau),
-                                  pas_creneau=planning_retourne_pas(request))
+                                  pas_creneau=planning_retourne_pas(request),
+                                  planning_uuid=request.POST.get('planning'),)
         dic_creneaux_init[creneau.UUID_creneau] = formcreneau  # dictionnaire des forms: key: UUID / val: form
         # print(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID_creneau))
     data["DicCreneaux"] = dic_creneaux_init
@@ -245,7 +241,8 @@ def evenement(request, uuid_evenement):
                                                    'equipe': the_equipe,
                                                    'planning': the_planning,
                                                    'id_benevole': ProfileBenevole.UUID_benevole},
-                                          pas_creneau=planning_retourne_pas(request))
+                                          pas_creneau=planning_retourne_pas(request),
+                                          planning_uuid=request.POST.get('planning'),)
 
     '''
     # on se garde la possibilité d'afficher sur une granulometrie par poste en plus de planning  
