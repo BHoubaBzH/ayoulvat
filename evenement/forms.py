@@ -1,7 +1,7 @@
-from django.forms import ModelForm, DateTimeField, HiddenInput
+from django.forms import ModelForm, DateTimeField, HiddenInput, ValidationError
 from django.forms import ModelChoiceField, ModelMultipleChoiceField, CheckboxSelectMultiple
 
-from evenement.models import Poste, Creneau
+from evenement.models import Poste, Creneau, Planning
 from benevole.models import ProfileBenevole
 from evenement.customwidgets import SplitDateTimeMultiWidget
 
@@ -69,3 +69,24 @@ class CreneauForm(ModelForm):
         # on ne propose que les bénévoles etant inscrit sur le planning = fk du planning
         # il faut aussi ajouter seulement les benevoles disponibles ( non pris sur un autre creneau aux meme heures)
         self.fields['benevole'].queryset = ProfileBenevole.objects.filter(BenevolesPlanning=self.planning_uuid)
+
+    # on valided les données pour avoir de la cohérence
+    def clean_debut(self):
+        debut = self.cleaned_data['debut']
+        Plan = Planning.objects.get(UUID_planning=self.planning_uuid)
+        planning_debut = Plan._meta.get_field('debut')
+        if debut < planning_debut.value_from_object(Plan):
+            raise ValidationError("Wopolo ca peut pas etre avant le début du planning!")
+        return debut
+    def clean_fin(self):
+        fin = self.cleaned_data['fin']
+        debut = self.cleaned_data['debut']
+        Plan = Planning.objects.get(UUID_planning=self.planning_uuid)
+        planning_fin = Plan._meta.get_field('fin')
+        print("form fin : {}".format(fin))
+        print("form debut : {}".format(debut))
+        if fin > planning_fin.value_from_object(Plan):
+            raise ValidationError("Wopolo ca peut pas finir après la fin du planning!")
+        if debut >= fin:
+            raise ValidationError("Wopolo la fin du creneau c'est après son début!")
+        return fin

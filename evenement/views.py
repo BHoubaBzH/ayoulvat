@@ -60,7 +60,7 @@ def forms_postes(request, data, the_planning):
             null
         gère également la modification et la suppression de poste en fonction du contenu de POST
     """
-    # sauvegarde notre form modifée envoyée en POST
+    # sauvegarde notre form modifée et crée envoyée en POST
     if any(x in request.POST for x in ['poste_modifier', 'poste_ajouter']):
         # form en lien avec l objet basé sur model et pk UUID_poste
         if 'poste_modifier' in request.POST:
@@ -103,7 +103,6 @@ def forms_creneaux(request, data, postes):
     """
     if any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter']):
         # form en lien avec l objet basé sur model et pk UUID_poste
-        # print('creneau : {}'.format(request.POST.get('uuid_creneau')))
         if 'creneau_modifier' in request.POST:
             formcreneau = CreneauForm(request.POST,
                                       instance=Creneau.objects.get(UUID_creneau=request.POST.get('creneau')),
@@ -232,17 +231,17 @@ def evenement(request, uuid_evenement):
             the_creneau = request.POST.get('creneau')
             data["creneau"] = the_creneau
 
-        # on envoie la form non liée au template pour ajout d un nouveau poste
-        data["FormPoste"] = PosteForm(initial={'evenement': evenement,
+    # on envoie la form non liée au template pour ajout d un nouveau poste
+    data["FormPoste"] = PosteForm(initial={'evenement': evenement,
+                                           'equipe': the_equipe,
+                                           'planning': the_planning})
+    # on envoie la form non liée au template pour ajout d un nouveau creneau
+    data["FormCreneau"] = CreneauForm(initial={'evenement': evenement,
                                                'equipe': the_equipe,
-                                               'planning': the_planning})
-        # on envoie la form non liée au template pour ajout d un nouveau creneau
-        data["FormCreneau"] = CreneauForm(initial={'evenement': evenement,
-                                                   'equipe': the_equipe,
-                                                   'planning': the_planning,
-                                                   'id_benevole': ProfileBenevole.UUID_benevole},
-                                          pas_creneau=planning_retourne_pas(request),
-                                          planning_uuid=request.POST.get('planning'),)
+                                               'planning': the_planning,
+                                               'id_benevole': ProfileBenevole.UUID_benevole},
+                                      pas_creneau=planning_retourne_pas(request),
+                                      planning_uuid=request.POST.get('planning'),)
 
     '''
     # on se garde la possibilité d'afficher sur une granulometrie par poste en plus de planning  

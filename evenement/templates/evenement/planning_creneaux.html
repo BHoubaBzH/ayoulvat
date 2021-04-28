@@ -52,10 +52,9 @@
                     {% endif %}
                     {#% include "evenement/creneau_ajoute.html" %#}
                 {% else %}
-                    <div class="grid-cell"
-                            style="grid-row: poste-{{ poste.UUID_poste }};
-                                grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};">
-                    </div>
+                     {# pas de bouton pour la derniere colonne vu qu'elle apparait apres l heure de fin du planning #}
+                        <div class="{% if forloop.last %}grid-cell-last{% else %}grid-cell{% endif %}" 
+                             style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};"></div>
                 {% endif %}
             {% endfor %}
         {% endfor %}

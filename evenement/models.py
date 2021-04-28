@@ -137,7 +137,6 @@ class Poste(models.Model):
                                       related_name='BenevolesPoste',
                                       blank=True,
                                       default='',
-                                      null=True,
                                       help_text='responsable de poste, ca n a surement pas de sens')
     nom = models.CharField(max_length=50)
     description = models.CharField(max_length=500, blank=True, default='')
