@@ -38,12 +38,21 @@ class CreneauForm(ModelForm):
     class Meta:
         model = Creneau
         # exclude = ['benevole',]
-        fields = ['debut', 'fin', 'description', 'editable', 'benevole', 'poste', 'planning', 'equipe', 'evenement']
+        fields = ['debut',
+                  'fin',
+                  'description',
+                  'editable',
+                  'benevole',
+                  'poste',
+                  'planning',
+                  'equipe',
+                  'evenement']
 
     # methode __init__ surcharge les definition précédente de la class
     def __init__(self, *args, **kwargs):
         self.pas_creneau = kwargs.pop('pas_creneau')
         self.planning_uuid = kwargs.pop('planning_uuid')
+        self.poste_uuid = kwargs.pop('poste_uuid')
         super(CreneauForm, self).__init__(*args, **kwargs)
         # cache certains champs
         self.fields['poste'].widget = HiddenInput()
@@ -70,23 +79,37 @@ class CreneauForm(ModelForm):
         # il faut aussi ajouter seulement les benevoles disponibles ( non pris sur un autre creneau aux meme heures)
         self.fields['benevole'].queryset = ProfileBenevole.objects.filter(BenevolesPlanning=self.planning_uuid)
 
-    # on valided les données pour avoir de la cohérence
-    def clean_debut(self):
+    # on valide les données pour avoir de la cohérence
+    def clean(self):
+        super().clean()
         debut = self.cleaned_data['debut']
+        fin = self.cleaned_data['fin']
         Plan = Planning.objects.get(UUID_planning=self.planning_uuid)
         planning_debut = Plan._meta.get_field('debut')
-        if debut < planning_debut.value_from_object(Plan):
-            raise ValidationError("Wopolo ca peut pas etre avant le début du planning!")
-        return debut
-    def clean_fin(self):
-        fin = self.cleaned_data['fin']
-        debut = self.cleaned_data['debut']
-        Plan = Planning.objects.get(UUID_planning=self.planning_uuid)
         planning_fin = Plan._meta.get_field('fin')
-        print("form fin : {}".format(fin))
-        print("form debut : {}".format(debut))
+        # cohérence avec le planning
+        if debut < planning_debut.value_from_object(Plan):
+            raise ValidationError("Wopolo le créneau ne peut pas commencer avant le début du planning!")
         if fin > planning_fin.value_from_object(Plan):
-            raise ValidationError("Wopolo ca peut pas finir après la fin du planning!")
+            raise ValidationError("Wopolo le créneau ne peut pas finir après la fin du planning!")
         if debut >= fin:
-            raise ValidationError("Wopolo la fin du creneau c'est après son début!")
-        return fin
+            raise ValidationError("Wopolo la fin du créneau c'est après son début!")
+        # cohérence avec les autre créneaux du poste du planning
+        for Creno in Creneau.objects.filter(planning=self.planning_uuid, poste=self.poste_uuid):
+            print(' ======== ')
+            print('this creneau    : {}'.format(self.instance.UUID_creneau))
+            uuid_autre_crenofield = Creno._meta.get_field('UUID_creneau')
+            uuid_autre_creno = uuid_autre_crenofield.value_from_object(Creno)
+            print('other creneau    : {}'.format(uuid_autre_creno))
+            if self.instance.UUID_creneau != uuid_autre_creno: # ne prend pas en compte l'instant en cours
+                debut_autre_crenofield = Creno._meta.get_field('debut')
+                fin_autre_crenofield = Creno._meta.get_field('fin')
+                debut_autre_creno = debut_autre_crenofield.value_from_object(Creno)
+                fin_autre_creno = fin_autre_crenofield.value_from_object(Creno)
+                print ('autre debut  : {0}  fin : {1}'.format(debut_autre_creno, fin_autre_creno))
+                print('debut    : {}'.format(debut))
+                if debut_autre_creno < debut < fin_autre_creno:
+                    raise ValidationError("Wopolo le créneau commence sur un autre!")
+                if debut_autre_creno < fin < fin_autre_creno:
+                    raise ValidationError("Wopolo le créneau fini sur un autre!")
+

@@ -107,12 +107,14 @@ def forms_creneaux(request, data, postes):
             formcreneau = CreneauForm(request.POST,
                                       instance=Creneau.objects.get(UUID_creneau=request.POST.get('creneau')),
                                       pas_creneau=planning_retourne_pas(request),
-                                      planning_uuid=request.POST.get('planning'),)
+                                      planning_uuid=request.POST.get('planning'),
+                                      poste_uuid=request.POST.get('poste'),)
         # nouvel objet en base
         if 'creneau_ajouter' in request.POST:
             formcreneau = CreneauForm(request.POST,
                                       pas_creneau=planning_retourne_pas(request),
-                                      planning_uuid=request.POST.get('planning'),)
+                                      planning_uuid=request.POST.get('planning'),
+                                      poste_uuid=request.POST.get('poste'),)
         # print(formcreneau['benevole'])
         print(formcreneau.errors)
         if formcreneau.is_valid():
@@ -132,7 +134,8 @@ def forms_creneaux(request, data, postes):
         # form en lien avec l objet basé sur model et pk UUID_poste
         formcreneau = CreneauForm(instance=Creneau.objects.get(UUID_creneau=creneau.UUID_creneau),
                                   pas_creneau=planning_retourne_pas(request),
-                                  planning_uuid=request.POST.get('planning'),)
+                                  planning_uuid=request.POST.get('planning'),
+                                  poste_uuid=request.POST.get('poste'),)
         dic_creneaux_init[creneau.UUID_creneau] = formcreneau  # dictionnaire des forms: key: UUID / val: form
         # print(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID_creneau))
     data["DicCreneaux"] = dic_creneaux_init
@@ -241,7 +244,8 @@ def evenement(request, uuid_evenement):
                                                'planning': the_planning,
                                                'id_benevole': ProfileBenevole.UUID_benevole},
                                       pas_creneau=planning_retourne_pas(request),
-                                      planning_uuid=request.POST.get('planning'),)
+                                      planning_uuid=request.POST.get('planning'),
+                                      poste_uuid=request.POST.get('poste'),)
 
     '''
     # on se garde la possibilité d'afficher sur une granulometrie par poste en plus de planning  
