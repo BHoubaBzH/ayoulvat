@@ -146,8 +146,12 @@ class Poste(models.Model):
     def __str__(self):
         return '{0} - {1}'.format(self.planning, self.nom)
 
-
+# creneau model : stocke les creneau de l'evenement et les dispos de benevoles
 class Creneau(models.Model):
+    class Type(models.TextChoices):
+        creneau = "creneau"
+        benevole = "benevole"
+
     UUID_creneau = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     evenement = models.ForeignKey(Evenement,
                                   primary_key=False,
@@ -170,9 +174,9 @@ class Creneau(models.Model):
                                  on_delete=models.CASCADE)
     poste = models.ForeignKey(Poste,
                               primary_key=False,
-                              blank=False,
+                              blank=True, # peut etre nul pour les benevole
                               default='',
-                              null=False,
+                              null=True,
                               on_delete=models.CASCADE)
     benevole = models.ForeignKey(ProfileBenevole,
                                  related_name='BenevolesCreneau',
@@ -191,6 +195,11 @@ class Creneau(models.Model):
     description = models.CharField(max_length=500, blank=True, default='')
     editable = models.BooleanField(default=True, help_text="si non editable, le créneau est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
+    type = models.CharField(choices=Type.choices,
+                            max_length=50,
+                            blank=False,
+                            default="creneau",
+                            help_text="creneau ou dispos de bénévole")
 
     class Meta:
         verbose_name_plural = "Creneaux"

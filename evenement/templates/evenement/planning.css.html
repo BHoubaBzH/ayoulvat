@@ -28,20 +28,19 @@
 /* ###############################################" */
 
 /*************************
- * GRID SCHEDULE LAYOUT
+ * GRIDs PLANNING LAYOUT
  * 
  *************************/
 
 @media screen and (min-width:700px) {
-	.schedule {
+	{# PLANNING CRENEAUX #}
+	.planning-creneaux {
 		#overflow-x: scroll;
 		inline-size: fit-content;
 		display: grid;
 		gap: 0.3em;
 		border: 1px solid #ffffff;
 		padding: inherit;
-
-
 		{# construction des entetes et des lignes de la grille planning: heures puis postes #}
 		grid-template-rows:
 			[heures] 3em
@@ -57,6 +56,7 @@
 			[postes-boutons] auto
 			;
 	}
+
 	{# colorise les créneaux en fonction du poste et la couleur dans la table poste#}
 	{% for poste in Postes %}
 		.poste-{{ poste.UUID_poste }} {
@@ -72,24 +72,52 @@
 		background-color: var(--bs-teal);
 	}
 
-.time-slot {
-	grid-row: heures;
-	transform: rotate(-45deg);
-}
+	{# PLANNING BENEVOLES #}
+	.planning-benevoles {
+		#overflow-x: scroll;
+		inline-size: fit-content;
+		display: grid;
+		gap: 0.3em;
+		border: 1px solid #ffffff;
+		padding: inherit;
+		{# construction des entetes et des lignes de la grille planning: heures puis benevoles #}
+		grid-template-rows:
+			[heures] 3em
+			{% for benevole in Benevoles %}
+			[benevole-{{ benevole.UUID_benevole }}] auto
+			{% endfor %};
+		{# construction des entete et des colonnes de la grille planning: benevoles puis heures puis boutons #}
+		grid-template-columns:
+			[benevoles] auto
+			{% for dates, heures in PlanningRange.items %}
+			[time-{{ dates }}] auto
+			{% endfor %}
+			[benevoles-boutons] auto
+			;
+	}
 
-.poste-slot, .poste-bouton-slot {
-    #display: none; /* hidden on small screens and browsers without grid support */
-	text-align: left;
-	min-width: 100px;
-}
+	{# PLANNING PARTIE COMMUNE #}
+	.time-slot {
+		grid-row: heures;
+		transform: rotate(-45deg);
+	}
 
-.poste-bouton-slot {
-	min-width: 10px;
+	.poste-slot, .poste-bouton-slot, .benevole-slot, .benevole-bouton-slot {
+		#display: none; /* hidden on small screens and browsers without grid support */
+		text-align: left;
+		width: 100px;
+		height: 40px;
+	}
+
+	.poste-bouton-slot, .benevole-bouton-slot  {
+		min-width: 10px;
+	}
+
 }
 
 @supports( display:grid ) {
 	@media screen and (min-width:700px) {
-		.poste-slot, .poste-bouton-slot {
+		.poste-slot, .poste-bouton-slot, .benevole-slot, .benevole-bouton-slot  {
 			display: block;
 			padding: 10px 5px 5px;
 			position: sticky;
@@ -107,10 +135,11 @@
 
 @supports( display:grid ) {
 	@media screen and (min-width: 700px) {
-		.poste {
+		.poste, .benevole {
 			margin: 0;
 			z-index: 20;
 		}
+
 	}
 }
 
@@ -139,6 +168,8 @@ body {
 
 .poste-slot,
 .poste-bouton-slot,
+.benevole-slot, 
+.benevole-bouton-slot,
 .time-slot {
 	display: flex;
 	align-items: center;

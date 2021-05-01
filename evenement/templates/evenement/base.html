@@ -50,7 +50,8 @@
             </br>
                 {# si un planning a été selectionné on affiche les infos dans la page centrale #}
                 {% if Planning.UUID_planning %}
-                    <H2> {{ Planning.nom }} : {{ Planning.debut|date:"d/m/Y H:i" }} - {{ Planning.fin|date:"d/m/Y H:i" }}</H2>
+                    <H2> Equipe : {{ Equipe.nom }} , Planning : {{ Planning.nom }}</H2>
+                    <H3> Debut : {{ Planning.debut|date:"d/m/Y H:i" }} Fin : {{ Planning.fin|date:"d/m/Y H:i" }}</H3>
                     </br>
                     {# tabs pour afficher les différents plannings #}
                     <nav>

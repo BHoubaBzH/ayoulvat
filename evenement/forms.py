@@ -27,8 +27,6 @@ class PosteForm(ModelForm):
 
 
 class CreneauForm(ModelForm):
-    # Query set doit prendre que les benevoles inscrits sur l evenement : a faire
-    # voir aussi par équipe et par planning
     benevole = ModelChoiceField(queryset=ProfileBenevole.objects.all(),
                                 required=False,
                                 empty_label="Libre")
@@ -42,6 +40,7 @@ class CreneauForm(ModelForm):
                   'fin',
                   'description',
                   'editable',
+                  'type',
                   'benevole',
                   'poste',
                   'planning',
@@ -59,6 +58,7 @@ class CreneauForm(ModelForm):
         self.fields['planning'].widget = HiddenInput()
         self.fields['equipe'].widget = HiddenInput()
         self.fields['evenement'].widget = HiddenInput()
+        self.fields['type'].widget = HiddenInput()
         instance = getattr(self, 'instance', None)
         if instance:
             pass  # self.fields['debut'].disabled = True
@@ -95,19 +95,19 @@ class CreneauForm(ModelForm):
         if debut >= fin:
             raise ValidationError("Wopolo la fin du créneau c'est après son début!")
         # cohérence avec les autre créneaux du poste du planning
-        for Creno in Creneau.objects.filter(planning=self.planning_uuid, poste=self.poste_uuid):
-            print(' ======== ')
-            print('this creneau    : {}'.format(self.instance.UUID_creneau))
+        for Creno in Creneau.objects.filter(planning=self.planning_uuid, poste=self.poste_uuid, type="creneau"):
+            #print(' ======== ')
+            #print('ce creneau    : {}'.format(self.instance.UUID_creneau))
             uuid_autre_crenofield = Creno._meta.get_field('UUID_creneau')
             uuid_autre_creno = uuid_autre_crenofield.value_from_object(Creno)
-            print('other creneau    : {}'.format(uuid_autre_creno))
-            if self.instance.UUID_creneau != uuid_autre_creno: # ne prend pas en compte l'instant en cours
+            #print('autre creneau    : {}'.format(uuid_autre_creno))
+            if self.instance.UUID_creneau != uuid_autre_creno: # ne prend pas en compte l'instance en cours
                 debut_autre_crenofield = Creno._meta.get_field('debut')
                 fin_autre_crenofield = Creno._meta.get_field('fin')
                 debut_autre_creno = debut_autre_crenofield.value_from_object(Creno)
                 fin_autre_creno = fin_autre_crenofield.value_from_object(Creno)
-                print ('autre debut  : {0}  fin : {1}'.format(debut_autre_creno, fin_autre_creno))
-                print('debut    : {}'.format(debut))
+                #print ('autre debut  : {0}  fin : {1}'.format(debut_autre_creno, fin_autre_creno))
+                #print('debut    : {}'.format(debut))
                 if debut_autre_creno < debut < fin_autre_creno:
                     raise ValidationError("Wopolo le créneau commence sur un autre!")
                 if debut_autre_creno < fin < fin_autre_creno:

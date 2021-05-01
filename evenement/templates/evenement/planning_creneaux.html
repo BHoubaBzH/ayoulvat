@@ -1,6 +1,6 @@
 {# evenement/planning_creneaux.html #}
 
-<div class="schedule" aria-labelledby="schedule-heading">
+<div class="planning-creneaux" aria-labelledby="planning-heading">
     {# affiche les entetes des colonnes du planning : les heures #}
     {% for dates, heures in PlanningRange.items %}
         <h2 class="time-slot" style="grid-column: time-{{ dates }}; grid-row: heures">{{ heures.0 }}</h2>
@@ -17,14 +17,13 @@
                 {% include "evenement/poste_edite.html" %}
             {% endif %}
             {#% for creno_benevole in Creneaux_Benevoles %#}
-            {% for creno in Creneaux %}
-                    {% if creno.poste_id == poste.UUID_poste %}
-                    {# affiche le creneau dans la grid ccs#}
-                    {# si un benevole est affecté au créneau #}
-                    {% if creno.benevole_id %}
-                        {% include "evenement/creneau_edite.html" with libre='non' %}
-                    {% else %} {# pas de benevole affecté au créneau #}
-                        {% include "evenement/creneau_edite.html" with libre='oui' %}
+            {% for creno in CreneauxCreneau %}
+                    {% if creno.poste_id == poste.UUID_poste and creno.type == "creneau" %}
+                    {# AFFICHE LES CRENEAU DANS LA GRID  CSS #}
+                    {% if creno.benevole_id %} {# si un benevole est affecté au créneau #}
+                        {% include "evenement/creneau_affiche_edite.html" with libre='non' %}
+                    {% else %} {# sinon pas de benevole affecté au créneau #}
+                        {% include "evenement/creneau_affiche_edite.html" with libre='oui' %}
                     {% endif %}
                 {% endif %}
             {% endfor %}

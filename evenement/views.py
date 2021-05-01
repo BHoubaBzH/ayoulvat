@@ -202,35 +202,47 @@ def evenement(request, uuid_evenement):
     if request.method == "POST":
         if request.POST.get('equipe'):  # selection d'une équipe
             the_equipe = request.POST.get('equipe')
-            data["equipe"] = the_equipe
-            data["Equipe"] = Equipe.objects.get(UUID_equipe=the_equipe)  # equipe selectionnée
-            data["Plannings"] = Planning.objects.filter(equipe_id=the_equipe).order_by('debut')  # plannings de l'equipe
+            data["equipe"] = the_equipe # UUID equipe
+            data["Equipe"] = Equipe.objects.get(UUID_equipe=the_equipe)  # model equipe selectionnée
+            data["Plannings"] = \
+                Planning.objects.filter(equipe_id=the_equipe).order_by('debut')  # models de plannings de l'equipe
         if request.POST.get('planning'): # selection d'un planning
-            the_planning = request.POST.get('planning')
+            the_planning = request.POST.get('planning') # UUID planning
             data["planning"] = the_planning
-            planning = Planning.objects.get(UUID_planning=the_planning)
+            planning = Planning.objects.get(UUID_planning=the_planning) # model planning
             data["Planning"] = planning  # planning selectionnée
-            postes = Poste.objects.filter(planning_id=the_planning).order_by('nom')
+            postes = Poste.objects.filter(planning_id=the_planning).order_by('nom') # models de postes du planning
             data["Postes"] = postes  # postes du planning
+            benevoles = ProfileBenevole.objects.filter(BenevolesPlanning=the_planning) # models de benevoles du planning
+            data["Benevoles"] = benevoles
+            for benevole in benevoles:
+                print ('benevoles : {}'.format(benevole))
             # instances de form poste & creneau : sauvegarde modifs & suppression & liste des postes
             forms_postes(request, data, the_planning)
             forms_creneaux(request, data, postes)
 
-            # données formatées du planning
+            # données formatées du planning créneaux
             data["PlanningRange"] = planning_range(planning.debut, planning.fin, planning.pas)
             crenos = []
             for po in postes:
                 crenos.append(po.UUID_poste)        # crenos : liste des creneaux du planning par poste
-            creneaux = Creneau.objects.filter(poste_id__in=crenos)       # liste des creneaux des postes du planning
+            # liste des creneaux des postes du planning
+            creneaux = Creneau.objects.filter(poste_id__in=crenos, type="creneau")
             try:
-                data["Creneaux"] = creneaux
+                data["CreneauxCreneau"] = creneaux
             except:
                 print('###### pas de creneaux sur ce planning')
+            # liste des dispos bénévole sur le planning
+            creneaux_benevole = Creneau.objects.filter(planning_id=planning, type="benevole")
+            try:
+                data["CreneauxBenevole"] = creneaux_benevole
+            except:
+                print('###### pas de dispo bénévole sur ce planning')
 
         if request.POST.get('poste'): # selection d'un poste
             the_poste = request.POST.get('poste')
             data["poste"] = the_poste
-        if request.POST.get('creneau'): # selection d'un poste
+        if request.POST.get('creneau'): # selection d'un creneau
             the_creneau = request.POST.get('creneau')
             data["creneau"] = the_creneau
 
@@ -247,12 +259,4 @@ def evenement(request, uuid_evenement):
                                       planning_uuid=request.POST.get('planning'),
                                       poste_uuid=request.POST.get('poste'),)
 
-    '''
-    # on se garde la possibilité d'afficher sur une granulometrie par poste en plus de planning  
-    if uuid_poste:  # selection d'un poste
-        poste = Poste.objects.get(UUID_poste=uuid_poste)
-        creneaux = Creneau.objects.filter(poste_id=uuid_poste)
-        data["Poste"] = poste  # recupere le poste selectionnée
-        data["Creneaux"] = creneaux.order_by('debut')  # recupere les creneaux du poste
-    '''
     return render(request, "evenement/evenement.html", data)

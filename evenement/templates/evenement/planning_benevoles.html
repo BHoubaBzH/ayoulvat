@@ -1,71 +1,77 @@
+{# evenement/planning_creneaux.html #}
 
-{# evenement/planning_benevoles.html #}
-
-<div class="schedule" aria-labelledby="schedule-heading">
+<div class="planning-benevoles" aria-labelledby="planning-heading">
     {# affiche les entetes des colonnes du planning : les heures #}
     {% for dates, heures in PlanningRange.items %}
         <h2 class="time-slot" style="grid-column: time-{{ dates }}; grid-row: heures">{{ heures.0 }}</h2>
     {% endfor %}
-    {% if Postes %}
-        {% for poste in Postes %}
+    {% if Benevoles %}
+        {% for benevole in Benevoles %}
             {# affiche les entetes des lignes du planning : postes #}
-            <div class="poste-slot"
+            <div class="benevole-slot"
                 aria-hidden="true"
-                style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes;">
-                    <p style="margin-bottom: 0px;">{{ poste.nom }}</p>
+                style="grid-row: benevole-{{ benevole.UUID_benevole }}; grid-column: benevoles;">
+                    <p style="margin-bottom: 0px;">{{ benevole }}</p>
             </div>
             {% if 'evenement.change_poste'  in perms %}
                 {% include "evenement/poste_edite.html" %}
             {% endif %}
-            {#% for creno_benevole in Creneaux_Benevoles %#}
-            {% for creno in Creneaux %}
-                    {% if creno.poste_id == poste.UUID_poste %}
-                    {# affiche le creneau dans la grid ccs#}
-                    {# si un benevole est affecté au créneau #}
-                    {% if creno.benevole_id %}
-                        {% include "evenement/creneau_edite.html" with libre='non' %}
-                    {% else %} {# pas de benevole affecté au créneau #}
-                        {% include "evenement/creneau_edite.html" with libre='oui' %}
+            {% for creno in CreneauxBenevole %}
+                    {% if creno.benevole_id == benevole.UUID_benevole and creno.type == "benevole" %}
+                    
+                    {# AFFICHE LES CRENEAU DANS LA GRID  CSS #}
+                    {% if creno.benevole_id %} {# si un benevole est affecté au créneau #}
+                        {% include "evenement/creneau_affiche_edite.html" with libre='non' %}
+                    {% else %} {# sinon pas de benevole affecté au créneau #}
+                        {% include "evenement/creneau_affiche_edite.html" with libre='oui' %}
                     {% endif %}
                 {% endif %}
             {% endfor %}
-            {# decoration css: on parcour toutes les cellules de la grid css pour y appliquer un div #}
+            {# decoration css: on parcour toutes les cellule de la grid css pour y appliquer un div #}
             {% for dates, dateheure in PlanningRange.items %}
                 {% if 'evenement.add_creneau' in perms %}
-                    <div class="grid-cell"
-                            style="grid-row: poste-{{ poste.UUID_poste }};
-                                grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};">
-                        <form id ="form-case-bouton-planning" method="post">
-                            <input type="hidden" name="case-poste-init" value="{{ poste.UUID_poste }}">
-                            <input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'d/m/Y H:i' }}">
-                            <input type="hidden" name="creneau-moyen" value="{{ Planning.creneau_moyen }}">
-                            <button class="grid-cell" type="button" id="creneau_ajouter-{{ poste.UUID_poste }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
-                                    style="width:100%; height:100%" title="ajouter un créneau"
-                                    onClick="creneau_pre_modal_info(this.form)"
-                                    data-bs-toggle="modal" data-bs-target="#modal-creneau_ajouter">
-                            </button>
-                        </form>
-                    </div>
-                    {#% include "evenement/creneau_ajoute.html" %#}
+                    {% if not forloop.last %} {# pas de bouton pour la derniere colonne vu qu'elle apparait apres l heure de fin du planning #}
+                        <div class="grid-cell"
+                                style="grid-row: benevole-{{ benevole.UUID_benevole }};
+                                    grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};">
+                            <form id ="form-case-bouton-planning" method="post">
+                                <input type="hidden" name="case-benevole-init" value="{{ benevole.UUID_benevole }}"></a>
+                                <!--input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'d/m/Y H:i' }}"></a-->
+                                {# format du champs compatible avec SplitDateTimeMultiWidget de la form #}
+                                <input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'Y-m-d H:i' }}"></a>
+                                <input type="hidden" name="creneau-moyen" value="{{ Planning.creneau_moyen }}">
+
+                                <button class="grid-cell" type="button" id="creneau_ajouter-{{ benevole.UUID_benevole }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
+                                        style="width:100%; height:100%" title="ajouter un créneau"
+                                        onClick="creneau_pre_modal_info(this.form)"
+                                        data-bs-toggle="modal" data-bs-target="#modal-creneau_ajouter">
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                    {#% include "evenement/creneau_ajoute.html" #}
                 {% else %}
-                    <div class="grid-cell"
-                            style="grid-row: poste-{{ poste.UUID_poste }};
-                                grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};">
-                    </div>
+                        {# pas de bouton pour la derniere colonne vu qu'elle apparait apres l heure de fin du planning #}
+                        <div class="{% if forloop.last %}grid-cell-last{% else %}grid-cell{% endif %}" 
+                             style="grid-row: benevole-{{ benevole.UUID_benevole }}; grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};"></div>
                 {% endif %}
             {% endfor %}
         {% endfor %}
     {% else %}
-        <span class="poste-slot" aria-hidden="true" style="grid-row: heures; grid-column: postes-boutons;">
-            <p> pas encore de postes définis </p>
+        <span class="benevole-slot" aria-hidden="true" style="grid-row: heures; grid-column: benevoles-boutons;">
+            <p> pas encore de benevole défini </p>
         </span>
     {% endif %}
+{% comment "" %}
     {# ajoute une ligne vide pour pouvoir ajouter des postes au besoins #}
-    {% if 'evenement.add_poste' in perms %}
-        {% include "evenement/poste_ajoute.html" %}
+    {% if 'evenement.add_benevole' in perms %}
+        {% include "evenement/benevole_ajoute.html" %}
     {% endif %}
+{% endcomment %}
 </div>
-{# modal d ajout des creneau #}
-{% if 'evenement.add_creneau' in perms %}
-    {% include "evenement/creneau_ajoute.html" %}
+{# modal d ajout des benevoles #}
+{% comment "" %}
+{% if 'evenement.add_benevole' in perms %}
+    {% include "evenement/benevole_ajoute.html" %}
 {% endif %} 
+{% endcomment %}

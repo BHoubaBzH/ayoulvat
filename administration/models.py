@@ -90,7 +90,7 @@ groupe_permission = {
         'view_equipe',
         'view_planning',
         'view_poste',
-        'view_creneau', 'change_creneau',
+        'view_creneau',
     ),
 }
 ##########################################################
@@ -107,6 +107,7 @@ class Formule(models.Model):
 
 
 class Logs(models.Model):
+    UUID_log = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     jour = models.DateField()
     heure = models.TimeField()
     log = models.CharField(max_length=250)
