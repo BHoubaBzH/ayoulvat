@@ -206,8 +206,16 @@ class Creneau(models.Model):
 
     # surcharge la methode save pour mettre un nom automatiquement
     def save(self, *args, **kwargs):
+        if self.type == "creneau":
+            nom1 = str(self.poste).replace(' ', '')  # retire les espaces
+        elif self.type == "benevole":
+            nom1 = str(self.benevole)\
+                       .replace(' ', '-')\
+
+        else:
+            nom1 = "error"
         self.nom = '{0}_{1}_{2}'.format(
-            str(self.poste).replace(' ', ''),  # retire les espaces
+            nom1,
             self.debut.strftime('%H-%M'),
             self.fin.strftime('%H-%M')
         )

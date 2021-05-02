@@ -177,8 +177,15 @@ def evenement(request, uuid_evenement):
     # store dans la session le uuid de l'evenement
     # il apparait dans l'url pour pouvoir donner le liens aux bénévoles par la suite
     request.session['uuid_evenement'] = uuid_evenement.urn
-    # récupère dans la session l'uuid de l'association
-    uuid_asso = request.session['uuid_association']
+    # récupère dans la session l'uuid de l'association, si on est passé par l'asso
+    try:
+        uuid_asso = request.session['uuid_association']
+    except: # sinon si on arrive direct sur l'url de l'evenement, on recupere en base
+        Ev = Evenement.objects.get(UUID_evenement=uuid_evenement)
+        asso = Ev._meta.get_field('association_id')
+        uuid_asso = asso.value_from_object(Ev)
+        # on stock dans la session
+        request.session['uuid_association'] = uuid_asso.urn
 
     # on construit nos objet avec l'uuid de l'evenement
     association = Association.objects.get(UUID_association=uuid_asso)
