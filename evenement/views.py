@@ -213,6 +213,20 @@ def evenement(request, uuid_evenement):
             data["Equipe"] = Equipe.objects.get(UUID_equipe=the_equipe)  # model equipe selectionnée
             data["Plannings"] = \
                 Planning.objects.filter(equipe_id=the_equipe).order_by('debut')  # models de plannings de l'equipe
+        else :  # selection d'un evènement mais pas d equipe, models de planning de l evenement
+            data["Plannings"] = Planning.objects.filter(evenement_id=evenement).order_by('debut')
+            # pour l'affichage du nom de creneau
+            # on construit un dictionnaire key: uuid_equipe - val: nom equipe
+            dict_nom_creneau = {}
+            for Plan in Planning.objects.filter(evenement_id=evenement):
+                key = Plan._meta.get_field('equipe_id')
+                UUIDequipe= key.value_from_object(Plan)
+                Eq = Equipe.objects.get(UUID_equipe=UUIDequipe)
+                key = Eq._meta.get_field('nom')
+                nomequipe = key.value_from_object(Eq)
+                dict_nom_creneau[UUIDequipe] = nomequipe
+            data["DicNomCreneau"] = dict_nom_creneau
+
         if request.POST.get('planning'): # selection d'un planning
             the_planning = request.POST.get('planning') # UUID planning
             data["planning"] = the_planning
@@ -245,6 +259,9 @@ def evenement(request, uuid_evenement):
                 data["CreneauxBenevole"] = creneaux_benevole
             except:
                 print('###### pas de dispo bénévole sur ce planning')
+        elif request.POST.get('evenement'):  # selection d'un evenement uniquement
+            data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
+
 
         if request.POST.get('poste'): # selection d'un poste
             the_poste = request.POST.get('poste')
@@ -252,6 +269,7 @@ def evenement(request, uuid_evenement):
         if request.POST.get('creneau'): # selection d'un creneau
             the_creneau = request.POST.get('creneau')
             data["creneau"] = the_creneau
+
 
     # on envoie la form non liée au template pour ajout d un nouveau poste
     data["FormPoste"] = PosteForm(initial={'evenement': evenement,

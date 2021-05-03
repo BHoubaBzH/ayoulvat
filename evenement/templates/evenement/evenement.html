@@ -2,53 +2,6 @@
 <!-- evenement/evenement.html -->
 {% load bootstrap5 %}
 
-{% block evenement %}
-    {% comment "haut de notre page avec les infos de l evenement" %}
-    <ul class="list-group list-group-horizontal">
-        <li class="list-group-item"><H1> evenement </H1></li>
-        <li class="list-group-item"><H2>{{ Evenement.nom }}</H2></li>
-        <li class="list-group-item">date de début : {{ Evenement.date_debut }}</li>
-        <li class="list-group-item">date de fin : {{ Evenement.date_fin }}</li>
-        <li class="list-group-item">ici les details de l'evenement</li>
-    </ul>
-    {% endcomment %}
-{% endblock evenement %}
-
-{% block equipes %}
-    <div class="list-group" id="liste_equipes_forms">
-        {% for team in Equipes %}
-            <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
-                <button class="list-group-item evenement-button 
-                        {% if team.UUID_equipe|stringformat:'s' == equipe|stringformat:'s' %}active{% endif %}"
-                         title={{ team.nom }}>
-                    <H4>{{ team.nom }}</h4>
-                        {% csrf_token %}
-                        <input  name="evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
-                        <input  name="equipe" value="{{ team.UUID_equipe }}" type="hidden">
-                </button>
-            </form>
-        {% endfor %}
-    </div>
-{% endblock equipes %}
-
-{% block plannings %}
-    <div class="list-group" id="liste_plannings_forms">
-        {% for plan in Plannings %}
-            <form class="form evenement-form" method="post">
-                <button class="list-group-item evenement-button
-                        {% if plan.UUID_planning|stringformat:'s' == planning|stringformat:'s' %}active{% endif %}"
-                        title={{ plan.nom }}>
-                    <H4>{{ plan.nom }}</H4>
-                        {% csrf_token %}
-                        <input  name="evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
-                        <input  name="equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
-                        <input  name="planning" value="{{ plan.UUID_planning }}" type="hidden">
-                </button>
-            </form>
-        {% endfor %}
-    </div>
-{% endblock plannings %}
-
 </br>
 
 {% block planning-creneaux %}
@@ -58,3 +11,7 @@
 {% block planning-benevoles %}
     {% include "evenement/planning_benevoles.html" %}
 {% endblock planning-benevoles %}
+
+{% block planning-equipes %}
+    {% include "evenement/planning_equipes.html" %}
+{% endblock planning-equipes %}
