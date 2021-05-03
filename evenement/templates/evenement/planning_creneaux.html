@@ -5,7 +5,8 @@
     {% for dates, heures in PlanningRange.items %}
         <h2 class="time-slot" style="grid-column: time-{{ dates }}; grid-row: heures">{{ heures.0 }}</h2>
     {% endfor %}
-    {% if Postes %}
+
+    {% if Evenement and Postes %}
         {% for poste in Postes %}
             {# affiche les entetes des lignes du planning : postes #}
             <div class="poste-slot"
@@ -59,7 +60,7 @@
         {% endfor %}
     {% else %}
         <span class="poste-slot" aria-hidden="true" style="grid-row: heures; grid-column: postes-boutons;">
-            <p> pas encore de postes définis </p>
+            <p> POP </p>
         </span>
     {% endif %}
     {# ajoute une ligne vide pour pouvoir ajouter des postes au besoins #}

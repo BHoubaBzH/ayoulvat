@@ -21,10 +21,10 @@ class Evenement(models.Model):
                                       blank=True,
                                       default='')
     nom = models.CharField(max_length=50)
-    date_debut = models.DateField()
-    date_fin = models.DateField()
+    debut = models.DateTimeField(blank=False, default='')
+    fin = models.DateTimeField(blank=False, default='')
     site_web = models.URLField(blank=True, default='')
-    editable = models.BooleanField(default=True, help_text="si non editable, l'é vènement est bloqué."
+    editable = models.BooleanField(default=True, help_text="si non editable, l'évènement est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
     description = models.CharField(max_length=500, blank=True, default='')
     couleur = RGBColorField(default="#0d6efd")

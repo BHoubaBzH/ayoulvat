@@ -5,6 +5,7 @@
     {% for dates, heures in PlanningRange.items %}
         <h2 class="time-slot" style="grid-column: time-{{ dates }}; grid-row: heures">{{ heures.0 }}</h2>
     {% endfor %}
+    
     {% if Benevoles %}
         {% for benevole in Benevoles %}
             {# affiche les entetes des lignes du planning : postes #}

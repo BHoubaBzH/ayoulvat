@@ -1,0 +1,102 @@
+{# evenement/planning_affiche_edite.html #}
+
+
+{# pour le placement dans la grille planning garder le filtre sur planning.debut et planning.fin comme la fonction planning_range de views.py : #}
+<button  class="planning equipe-{{ equipe.UUID_equipe }}" 
+        style="grid-row: equipe-{{ equipe.UUID_equipe }};
+        grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|date:'Y-m-d-Hi' }};"
+        title="{{ planning.nom }} : {{ equipe.nom|upper }}"
+        data-bs-toggle="modal" data-bs-target="#Modal-{{ planning.UUID_planning }}">
+</button>
+
+{# modal #}
+<div class="modal fade" id="Modal-{{ planning.UUID_planning }}" tabindex="-1" role="dialog" aria-labelledby="Planningdetails" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">{{ planning.nom }}</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form  id="form-creneau"  method='post'>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <table class="table">
+                        {% for uuid, creneauf in DicCreneaux.items %}
+                            {% if uuid|stringformat:"i" == creno.UUID_creneau|stringformat:"i" %}
+                                {{ creneauf.as_table }}
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+
+                    <input name="creneau" value="{{ creno.UUID_creneau }}" type="hidden">
+                    {# les utilisateurs avec privilieges ( admin, orga, responsables)#}
+                    {# supprime la form #}
+                    {% if 'evenement.delete_creneau'  in perms %} 
+                        <button class="btn btn-danger" title="supprimer ce créneau" name="creneau_supprimer"
+                                id="creneau_supprimer" value="supprimer" type="button"
+                                data-bs-toggle="modal" data-bs-target="#modal-confirme-creneau-supprime-{{ creno.UUID_creneau }}">
+                                Supprimer
+                        </button>
+                    {% endif %}
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    {# les utilisateurs avec privilieges ( admin, orga, responsables)#}
+                    {# creer la form, la target : si c'est un responsables ou + : il peut tout modifier #}     
+                    {% if 'evenement.change_creneau' and 'evenement.delete_creneau' in perms or 'evenement.change_creneau' in perms and libre == 'oui'%}
+                        <button type="submit" id="creneau_modifier" name="creneau_modifier"  class="btn btn-primary success">Modifier</button>
+                    {% endif %}
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{# modal de confirmation de suppression doit etre en dehors du div pour s'afficher correctement #}
+{% if 'evenement.delete_creneau'  in perms %}
+<div class="modal fade"
+     id="modal-confirme-creneau-supprime-{{ creno.UUID_creneau }}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="creneau_supprime"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Confirmer La suppression du créneau</h5>
+            </div>
+            <div class="modal-body">
+                Etes-vous sur?
+                <table class="table">
+                    <tr><th>Equipe</th><td id="equipe">{{ Equipe.nom }}</td></tr>
+                    <tr><th>Planning</th><td id="equipe">{{ Planning.nom }}</td></tr>
+                    <tr><th>Poste</th><td id="poste">{{ poste.nom }}</td></tr>
+                    <tr><th>Créneau</th><td id="creneau_supprimer">{{ creno.nom }}</td></tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Non</button>
+                <button type="submit" id="creneau_supprimer_confirme" class="btn btn-danger success">Oui</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
+    $('#modal-confirme-creneau-supprime-{{ creno.UUID_creneau }}').on('click', '#creneau_supprimer_confirme', function(e){
+        /* alert('submitting-{{ forloop.counter }}'); */
+        $('#form-creneau').append('<input type="hidden" name="creneau_supprimer" value="{{ creno.UUID_creneau }}">');
+        document.getElementById('form-creneau').submit();
+        $('#modal-confirme-creneau-supprime-{{ creno.UUID_creneau }}').modal('toggle');
+        e.preventDefault();
+    });
+</script>
+{% endif %}

@@ -3,6 +3,7 @@ import uuid
 from django.db import models
 
 from phonenumber_field.modelfields import PhoneNumberField
+from colorful.fields import RGBColorField
 
 from association.models import Association
 
@@ -138,6 +139,7 @@ class ProfileBenevole(models.Model):
                                     null=True,
                                     on_delete=models.CASCADE)
     message = models.TextField(max_length=1000, blank=True, default='')
+    couleur = RGBColorField(default="#6610f2")
 
     def __str__(self):
         if not self.personne.last_name and not self.personne.first_name:

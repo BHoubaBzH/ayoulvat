@@ -39,35 +39,30 @@
 
     <div class="table-responsive">
         <main> 
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-sm-12" title="evenement">
-                        {% block evenement %}
-                        {% endblock evenement %}
-                    </div> 
-                </div> 
-            </div>
             </br>
                 {# si un planning a été selectionné on affiche les infos dans la page centrale #}
                 {% if Planning.UUID_planning %}
                     <table class="table">
                         <tbody>
                             <tr>
-                                <td><p class="h4"><b>Equipe :</b></p></td>
-                                <td><p class="h4">{{ Equipe.nom }}</p></td>
-                                <td><p class="h4"><b>Planning :</b></p></td>
-                                <td><p class="h4">{{ Planning.nom }}</p></td>
+                                <td class="col-md-3"><p class="h4"><b>Equipe :</b></p></td>
+                                <td class="col-md-3"><p class="h4">{{ Equipe.nom }}</p></td>
+                                <td class="col-md-3"><p class="h4"><b>Planning :</b></p></td>
+                                <td class="col-md-3"><p class="h4">{{ Planning.nom }}</p></td>
                             </tr>
                             <tr>
-                                <td><p class="h4"><b>Debut :</b></p></td>
-                                <td><p class="h4">{{ Planning.debut|date:"d/m/Y H:i" }}</b></p></td>
-                                <td><p class="h4"><b>Fin :</p></td>
-                                <td><p class="h4">{{ Planning.fin|date:"d/m/Y H:i" }}</p></td>
+                                <td class="col-md-3"><p class="h4"><b>Debut :</b></p></td>
+                                <td class="col-md-3"><p class="h4">{{ Planning.debut|date:"d/m/Y H:i" }}</b></p></td>
+                                <td class="col-md-3"><p class="h4"><b>Fin :</p></td>
+                                <td class="col-md-3"><p class="h4">{{ Planning.fin|date:"d/m/Y H:i" }}</p></td>
                             </tr>
                         </tbody>
                     </table>
                     </br>
-                    {# tabs pour afficher les différents plannings #}
+                {% endif %}
+
+                {# tabs pour afficher les différents plannings #}
+                {% if Planning or Poste %}
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
                             {# admins et orgas #}
@@ -91,7 +86,7 @@
 
                     <div class="tab-content" id="nav-tabContent">
                         {% comment "planning on affiche que si un planning ou un poste est selectionne" %}{% endcomment %}
-                        {% if Planning or Poste %}
+                        
                             <div class="tab-pane {% if 'evenement.change_planning' in perms %}fade show active{% endif %}" id="nav-creneaux" 
                                 role="tabpanel" aria-labelledby="nav-creneaux-tab">
                                 {% block planning-creneaux %}
@@ -103,7 +98,18 @@
                                 {# en cours #}
                                 {% endblock planning-benevoles %}
                             </div>
-                        {% endif %}
+                        
+                    </div>
+                {% elif Evenement %} {# planning evenement et equipes #}
+                    <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-equipes" 
+                                role="tabpanel" aria-labelledby="nav-equipes-tab">
+                                {% block planning-equipes %}
+                                {# en cours #}
+                                {% endblock planning-equipes %}
+                            </div>
+
+                        
                     </div>
                 {% endif %}
                 </br></br>

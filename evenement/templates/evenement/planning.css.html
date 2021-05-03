@@ -96,6 +96,48 @@
 			;
 	}
 
+	{# colorise les créneaux #}
+	{% for benevole in Benevoles %}
+		.benevole-{{ benevole.UUID_benevole }} {
+			background-color: {{ benevole.couleur }}aa; {# aa pour la transparence  #}
+			color: #fff;
+			position: relative;
+		}
+	{% endfor %}
+
+	{# PLANNING EQUIPES #}
+	.planning-equipes {
+		#overflow-x: scroll;
+		inline-size: fit-content;
+		display: grid;
+		gap: 0.3em;
+		border: 1px solid #ffffff;
+		padding: inherit;
+		{# construction des entetes et des lignes de la grille planning: heures puis equipes #}
+		grid-template-rows:
+			[heures] 3em
+			{% for equipe in Equipes %}
+			[equipe-{{ equipe.UUID_equipe }}] auto
+			{% endfor %};
+		{# construction des entete et des colonnes de la grille planning: equipes puis heures puis boutons #}
+		grid-template-columns:
+			[equipes] auto
+			{% for dates, heures in PlanningRange.items %}
+			[time-{{ dates }}] auto
+			{% endfor %}
+			[equipes-boutons] auto
+			;
+	}
+
+	{# colorise les plannings#}
+	{% for equipe in Equipes %}
+		.equipe-{{ equipe.UUID_equipe }} {
+			background-color: {{ equipe.couleur }}aa; {# aa pour la transparence  #}
+			color: #fff;
+			position: relative;
+		}
+	{% endfor %}
+
 	{# PLANNING PARTIE COMMUNE #}
 	.time-slot {
 		grid-row: heures;
@@ -135,7 +177,7 @@
 
 @supports( display:grid ) {
 	@media screen and (min-width: 700px) {
-		.poste, .benevole {
+		.poste, .benevole, .planning {
 			margin: 0;
 			z-index: 20;
 		}
