@@ -7,8 +7,7 @@ from administration.models import Formule
 
 
 class Association(models.Model):
-    UUID_association = \
-        models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     nom = models.CharField(max_length=50)
     adresse = models.CharField(max_length=100)
     ville = models.CharField(max_length=50)
@@ -37,8 +36,7 @@ class Association(models.Model):
 
 
 class Abonnement(models.Model):
-    UUID_abonnement = \
-        models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     association = models.ForeignKey(Association,
                                     primary_key=False,
                                     default='',

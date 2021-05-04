@@ -1,18 +1,18 @@
 {# evenement/poste_edite.html #}
 
 <div id="boutons des postes" class="poste-bouton-slot" aria-hidden="true"
-    style="grid-row: poste-{{ poste.UUID_poste }}; grid-column: postes-boutons;">
+    style="grid-row: poste-{{ poste.UUID }}; grid-column: postes-boutons;">
         {# affiche le bouton d edition de poste #}
-    <form  id="form-poste-change-{{ poste.UUID_poste }}" method='post'>
+    <form  id="form-poste-change-{{ poste.UUID }}" method='post'>
         {% csrf_token %}
-        <input name="poste_modifier" value="{{ poste.UUID_poste }}" type="hidden">
+        <input name="poste_modifier" value="{{ poste.UUID }}" type="hidden">
         <button style="padding: 1;margin-right: 5px;"
                 class="btn btn-primary btn-sm"
                 title="editer ce poste"
-                id="bouton-poste-change-{{ poste.UUID_poste }}"
+                id="bouton-poste-change-{{ poste.UUID }}"
                 type="button"
                 data-bs-toggle="modal" 
-                data-bs-target="#modal-poste-change-{{ poste.UUID_poste }}">
+                data-bs-target="#modal-poste-change-{{ poste.UUID }}">
             <div>
                 <i class="bi bi-filter-circle-fill"></i>
             </div>
@@ -23,7 +23,7 @@
 {##################### MODALS #####################}
 {# modal d edition du poste doit etre en dehors du div pour s'afficher correctement #}
 <div class="modal fade"
-     id="modal-poste-change-{{ poste.UUID_poste }}"
+     id="modal-poste-change-{{ poste.UUID }}"
      tabindex="-1"
      role="dialog"
      aria-labelledby="poste"
@@ -34,12 +34,12 @@
                 <h5 class="modal-title" id="ModalLabel">Modifer le poste</h5>
             </div>
 
-            <form  id="form-poste-{{ poste.UUID_poste }}"  method='post'>
+            <form  id="form-poste-{{ poste.UUID }}"  method='post'>
                 <div class="modal-body">
                     {% csrf_token %}
                     <table class="table">
                         {% for uuid, postef in DicPostes.items %}
-                            {% if uuid|stringformat:"i" == poste.UUID_poste|stringformat:"i" %}
+                            {% if uuid|stringformat:"i" == poste.UUID|stringformat:"i" %}
                                 {{ postef.as_table }}
                             {% endif %}
                         {% endfor %}
@@ -48,18 +48,18 @@
 
                 <div class="modal-footer">
                     {# données pour garder le planning affiché apres submission POST#}
-                    <input  name="evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
-                    {# si on vient ajouter directement un creneau au planning sans passer par equipe, nous ne connaisson pas Equipe.UUID_equipe #}
-                    <!--input name="equipe" value="{{ Equipe.UUID_equipe }}" type="hidden"-->
+                    <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                    {# si on vient ajouter directement un creneau au planning sans passer par equipe, nous ne connaisson pas Equipe.UUID #}
+                    <!--input name="equipe" value="{{ Equipe.UUID }}" type="hidden"-->
                     <input name="equipe" value="{{ Planning.equipe_id }}" type="hidden">
-                    <input  name="planning" value="{{ Planning.UUID_planning }}" type="hidden">
+                    <input  name="planning" value="{{ Planning.UUID }}" type="hidden">
 
-                    <input  name="poste" value="{{ poste.UUID_poste }}" type="hidden">
+                    <input  name="poste" value="{{ poste.UUID }}" type="hidden">
                     
                     {% if 'evenement.delete_poste'  in perms %}
                         <button class="btn btn-danger" title="supprimer ce poste" name="poste_supprimer"
                                 id="poste_supprimer" value="supprimer" type="button"
-                                data-bs-toggle="modal" data-bs-target="#modal-confirme-poste-supprime-{{ poste.UUID_poste }}">
+                                data-bs-toggle="modal" data-bs-target="#modal-confirme-poste-supprime-{{ poste.UUID }}">
                                 Supprimer
                         </button>
                     {% endif %}
@@ -74,7 +74,7 @@
 {# modal de confirmation de suppression doit etre en dehors du div pour s'afficher correctement #}
 {% if 'evenement.delete_poste'  in perms %}
 <div class="modal fade"
-     id="modal-confirme-poste-supprime-{{ poste.UUID_poste }}"
+     id="modal-confirme-poste-supprime-{{ poste.UUID }}"
      tabindex="-1"
      role="dialog"
      aria-labelledby="poste_supprime"
@@ -103,11 +103,11 @@
 
 <script>
     /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
-    $('#modal-confirme-poste-supprime-{{ poste.UUID_poste }}').on('click', '#poste_supprimer_confirme', function(e){
+    $('#modal-confirme-poste-supprime-{{ poste.UUID }}').on('click', '#poste_supprimer_confirme', function(e){
         /* alert('submitting-{{ forloop.counter }}'); */
-        $('#form-poste-{{ poste.UUID_poste }}').append('<input type="hidden" name="poste_supprimer" value="{{ poste.UUID_poste }}">');
-        document.getElementById('form-poste-{{ poste.UUID_poste }}').submit();
-        $('#modal-confirme-poste-supprime-{{ poste.UUID_poste }}').modal('toggle');
+        $('#form-poste-{{ poste.UUID }}').append('<input type="hidden" name="poste_supprimer" value="{{ poste.UUID }}">');
+        document.getElementById('form-poste-{{ poste.UUID }}').submit();
+        $('#modal-confirme-poste-supprime-{{ poste.UUID }}').modal('toggle');
         e.preventDefault();
     });
 

@@ -19,11 +19,11 @@
                 {# affiche les entetes des lignes du planning : equipes #}
                 <div class="poste-slot"
                     aria-hidden="true"
-                    style="grid-row: equipe-{{ equipe.UUID_equipe }}; grid-column: equipes;">
+                    style="grid-row: equipe-{{ equipe.UUID }}; grid-column: equipes;">
                         <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
                 </div>
                 {% for planning in Plannings %}
-                        {% if planning.equipe_id == equipe.UUID_equipe %}
+                        {% if planning.equipe_id == equipe.UUID %}
                         {# AFFICHE LES PLANNINGS DANS LA GRID CSS #}
                             {% include "evenement/planning_affiche_edite.html" with equipe=equipe %}
                     {% endif %}
@@ -34,16 +34,16 @@
                     {% if 'evenement.add_creneau' in perms %}
                         {% if not forloop.last %} {# pas de bouton pour la derniere colonne vu qu'elle apparait apres l heure de fin du planning #}
                             <div class="grid-cell"
-                                    style="grid-row: equipe-{{ equipe.UUID_equipe }};
+                                    style="grid-row: equipe-{{ equipe.UUID }};
                                         grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};">
                                 <form id ="form-case-bouton-planning" method="post">
-                                    <input type="hidden" name="case-equipe-init" value="{{ equipe.UUID_equipe }}"></a>
+                                    <input type="hidden" name="case-equipe-init" value="{{ equipe.UUID }}"></a>
                                     <!--input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'d/m/Y H:i' }}"></a-->
                                     {# format du champs compatible avec SplitDateTimeMultiWidget de la form #}
                                     <input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'Y-m-d H:i' }}"></a>
                                     <input type="hidden" name="creneau-moyen" value="{{ Planning.creneau_moyen }}">
 
-                                    <button class="grid-cell" type="button" id="creneau_ajouter-{{ equipe.UUID_equipe }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
+                                    <button class="grid-cell" type="button" id="creneau_ajouter-{{ equipe.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
                                             style="width:100%; height:100%" title="ajouter un créneau"
                                             onClick="creneau_pre_modal_info(this.form)"
                                             data-bs-toggle="modal" data-bs-target="#modal-creneau_ajouter">
@@ -55,7 +55,7 @@
                     {% else %}
                             {# pas de bouton pour la derniere colonne vu qu'elle apparait apres l heure de fin du planning #}
                             <div class="{% if forloop.last %}grid-cell-last{% else %}grid-cell{% endif %}" 
-                                    style="grid-row: equipe-{{ equipe.UUID_equipe }}; grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};"></div>
+                                    style="grid-row: equipe-{{ equipe.UUID }}; grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};"></div>
                     {% endif %}
                 {% endfor %}
             {% endfor %}
@@ -65,11 +65,11 @@
             {# affiche les entetes des lignes du planning : equipes #}
             <div class="poste-slot"
                 aria-hidden="true"
-                style="grid-row: equipe-{{ Equipe.UUID_equipe }}; grid-column: equipes;">
+                style="grid-row: equipe-{{ Equipe.UUID }}; grid-column: equipes;">
                     <p style="margin-bottom: 0px;">{{ Equipe.nom|capfirst }}</p>
             </div>
             {% for planning in Plannings %}
-                    {% if planning.equipe_id == Equipe.UUID_equipe %}
+                    {% if planning.equipe_id == Equipe.UUID %}
                     {# AFFICHE LES PLANNINGS DANS LA GRID CSS #}
                         {% include "evenement/planning_affiche_edite.html" with equipe=Equipe%}
                 {% endif %}
@@ -80,16 +80,16 @@
                 {% if 'evenement.add_creneau' in perms %}
                     {% if not forloop.last %} {# pas de bouton pour la derniere colonne vu qu'elle apparait apres l heure de fin du planning #}
                         <div class="grid-cell"
-                                style="grid-row: equipe-{{ Equipe.UUID_equipe }};
+                                style="grid-row: equipe-{{ Equipe.UUID }};
                                     grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};">
                             <form id ="form-case-bouton-planning" method="post">
-                                <input type="hidden" name="case-equipe-init" value="{{ Equipe.UUID_equipe }}"></a>
+                                <input type="hidden" name="case-equipe-init" value="{{ Equipe.UUID }}"></a>
                                 <!--input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'d/m/Y H:i' }}"></a-->
                                 {# format du champs compatible avec SplitDateTimeMultiWidget de la form #}
                                 <input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'Y-m-d H:i' }}"></a>
                                 <input type="hidden" name="creneau-moyen" value="{{ Planning.creneau_moyen }}">
 
-                                <button class="grid-cell" type="button" id="creneau_ajouter-{{ Equipe.UUID_equipe }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
+                                <button class="grid-cell" type="button" id="creneau_ajouter-{{ Equipe.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
                                         style="width:100%; height:100%" title="ajouter un créneau"
                                         onClick="creneau_pre_modal_info(this.form)"
                                         data-bs-toggle="modal" data-bs-target="#modal-creneau_ajouter">
@@ -101,7 +101,7 @@
                 {% else %}
                         {# pas de bouton pour la derniere colonne vu qu'elle apparait apres l heure de fin du planning #}
                         <div class="{% if forloop.last %}grid-cell-last{% else %}grid-cell{% endif %}" 
-                                style="grid-row: equipe-{{ Equipe.UUID_equipe }}; grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};"></div>
+                                style="grid-row: equipe-{{ Equipe.UUID }}; grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};"></div>
                 {% endif %}
             {% endfor %}
         {% endif %}

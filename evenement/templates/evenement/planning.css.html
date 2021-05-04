@@ -46,7 +46,7 @@
 		grid-template-rows:
 			[heures] 3em
 			{% for poste in Postes %}
-			[poste-{{ poste.UUID_poste }}] auto
+			[poste-{{ poste.UUID }}] auto
 			{% endfor %};
 		{# construction des entete et des colonnes de la grille planning: postes puis heures puis boutons #}
 		grid-template-columns:
@@ -60,7 +60,7 @@
 
 	{# colorise les créneaux en fonction du poste et la couleur dans la table poste#}
 	{% for poste in Postes %}
-		.poste-{{ poste.UUID_poste }} {
+		.poste-{{ poste.UUID }} {
 			background-color: {{ poste.couleur }}aa; {# aa pour la transparence  #}
 			color: #fff;
 			position: relative;
@@ -85,7 +85,7 @@
 		grid-template-rows:
 			[heures] 3em
 			{% for benevole in Benevoles %}
-			[benevole-{{ benevole.UUID_benevole }}] auto
+			[benevole-{{ benevole.UUID }}] auto
 			{% endfor %};
 		{# construction des entete et des colonnes de la grille planning: benevoles puis heures puis boutons #}
 		grid-template-columns:
@@ -99,7 +99,7 @@
 
 	{# colorise les créneaux #}
 	{% for benevole in Benevoles %}
-		.benevole-{{ benevole.UUID_benevole }} {
+		.benevole-{{ benevole.UUID }} {
 			background-color: {{ benevole.couleur }}aa; {# aa pour la transparence  #}
 			color: #fff;
 			position: relative;
@@ -118,7 +118,7 @@
 		grid-template-rows:
 			[heures] 3em
 			{% for equipe in Equipes %}
-			[equipe-{{ equipe.UUID_equipe }}] auto
+			[equipe-{{ equipe.UUID }}] auto
 			{% endfor %};
 		{# construction des entete et des colonnes de la grille planning: equipes puis heures puis boutons #}
 		grid-template-columns:
@@ -132,7 +132,7 @@
 
 	{# colorise les plannings#}
 	{% for equipe in Equipes %}
-		.equipe-{{ equipe.UUID_equipe }} {
+		.equipe-{{ equipe.UUID }} {
 			background-color: {{ equipe.couleur }}aa; {# aa pour la transparence  #}
 			color: #fff;
 			position: relative;

@@ -53,7 +53,7 @@ def create_or_update_profiles(sender, instance, **kwargs):
     print('change or create on {0} hooked'.format(sender.__name__))
     if kwargs.get('created', True):  # creation
         the_group = check_group(sender.__name__)
-        pers = Personne.objects.get(UUID_personne=instance.personne_id)
+        pers = Personne.objects.get(UUID=instance.personne_id)
         the_group.user_set.add(pers)
 
 @receiver(post_delete, sender=ProfileAdministrateur)
@@ -63,5 +63,5 @@ def create_or_update_profiles(sender, instance, **kwargs):
 def delete_profiles(sender, instance, **kwargs):
     print('delete on {0} hooked'.format(sender.__name__))
     the_group = check_group(sender.__name__)
-    pers = Personne.objects.get(UUID_personne=instance.personne_id)
+    pers = Personne.objects.get(UUID=instance.personne_id)
     the_group.user_set.remove(pers)

@@ -97,7 +97,7 @@ groupe_permission = {
 
 
 class Formule(models.Model):
-    UUID_formule = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     nom = models.CharField(max_length=100)
     cout = models.IntegerField(default=0)
     description = models.CharField(max_length=500, blank=True, default='')
@@ -107,10 +107,10 @@ class Formule(models.Model):
 
 
 class Logs(models.Model):
-    UUID_log = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     jour = models.DateField()
     heure = models.TimeField()
-    log = models.CharField(max_length=250)
+    log = models.CharField(max_length=500)
 
     def __str__(self):
         return self.log

@@ -6,7 +6,7 @@ from colorful.fields import RGBColorField
 
 
 class Evenement(models.Model):
-    UUID_evenement = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # supprime evenement si asso supprimée
     association = models.ForeignKey(Association,
                                     primary_key=False,
@@ -34,7 +34,7 @@ class Evenement(models.Model):
 
 
 class Equipe(models.Model):
-    UUID_equipe = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # supprime equipe si evenement supprimé
     evenement = models.ForeignKey(Evenement,
                                   primary_key=False,
@@ -77,7 +77,7 @@ class Planning(models.Model):
         trois_heures_trente = 210
         quatre_heures = 240
 
-    UUID_planning = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     evenement = models.ForeignKey(Evenement,
                                   primary_key=False,
                                   unique=False,
@@ -113,7 +113,7 @@ class Planning(models.Model):
 
 # reste a gérer les postes par équipe / planning
 class Poste(models.Model):
-    UUID_poste = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     evenement = models.ForeignKey(Evenement,
                                   primary_key=False,
                                   unique=False,
@@ -152,7 +152,7 @@ class Creneau(models.Model):
         creneau = "creneau"
         benevole = "benevole"
 
-    UUID_creneau = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     evenement = models.ForeignKey(Evenement,
                                   primary_key=False,
                                   unique=False,

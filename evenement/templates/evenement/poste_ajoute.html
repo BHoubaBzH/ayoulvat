@@ -45,11 +45,11 @@
 
                 <div class="modal-footer">
                     {# données pour garder le planning affiché apres submission POST#}
-                    <input name="planning" id="id_planning" value="{{ Planning.UUID_planning }}" type="hidden">
-                    {# si on vient ajouter directement un creneau au planning sans passer par equipe, nous ne connaisson pas Equipe.UUID_equipe #}
-                    <!--input name="equipe" value="{{ Equipe.UUID_equipe }}" type="hidden"-->
+                    <input name="planning" id="id_planning" value="{{ Planning.UUID }}" type="hidden">
+                    {# si on vient ajouter directement un creneau au planning sans passer par equipe, nous ne connaisson pas Equipe.UUID #}
+                    <!--input name="equipe" value="{{ Equipe.UUID }}" type="hidden"-->
                     <input name="equipe" value="{{ Planning.equipe_id }}" type="hidden">
-                    <input  name="planning" value="{{ Planning.UUID_planning }}" type="hidden">
+                    <input  name="planning" value="{{ Planning.UUID }}" type="hidden">
                     
                     <input name="poste_ajouter" value="" type="hidden">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>

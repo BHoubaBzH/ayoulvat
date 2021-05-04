@@ -42,7 +42,7 @@ def planning_retourne_pas(request):
     """
     if 'planning' in request.POST:
         # retrouve le pas du planning à partir des infos du creneau
-        Plan=Planning.objects.get(UUID_planning=request.POST.get('planning'))
+        Plan=Planning.objects.get(UUID=request.POST.get('planning'))
         pas=Plan._meta.get_field('pas')
         pas_value=pas.value_from_object(Plan)
     else:
@@ -62,10 +62,10 @@ def forms_postes(request, data, the_planning):
     """
     # sauvegarde notre form modifée et crée envoyée en POST
     if any(x in request.POST for x in ['poste_modifier', 'poste_ajouter']):
-        # form en lien avec l objet basé sur model et pk UUID_poste
+        # form en lien avec l objet basé sur model et pk UUID poste
         if 'poste_modifier' in request.POST:
             formposte = PosteForm(request.POST,
-                                  instance=Poste.objects.get(UUID_poste=request.POST.get('poste')))
+                                  instance=Poste.objects.get(UUID=request.POST.get('poste')))
         # nouvel objet en base
         if 'poste_ajouter' in request.POST:
             formposte = PosteForm(request.POST)
@@ -75,8 +75,8 @@ def forms_postes(request, data, the_planning):
 
     # suppression du poste
     if request.POST.get('poste_supprimer'):
-        print('poste {} supprimé'.format(Poste.objects.filter(UUID_poste=request.POST.get('poste_supprimer'))))
-        Poste.objects.filter(UUID_poste=request.POST.get('poste_supprimer')).delete()
+        print('poste {} supprimé'.format(Poste.objects.filter(UUID=request.POST.get('poste_supprimer'))))
+        Poste.objects.filter(UUID=request.POST.get('poste_supprimer')).delete()
 
     # cree dans la page toutes nos from pour les postes du planing
     dic_postes_init = {}  # dictionnaire des forms
@@ -84,10 +84,10 @@ def forms_postes(request, data, the_planning):
                           # val : form de poste initialisée objet db lié
     # parcours les postes du planning dans la base
     for poste in Poste.objects.filter(planning_id=the_planning):
-        # form en lien avec l objet basé sur model et pk UUID_poste
-        formposte = PosteForm(instance=Poste.objects.get(UUID_poste=poste.UUID_poste))
-        dic_postes_init[poste.UUID_poste] = formposte  # dictionnaire des forms
-        # print (' poste UUID : {1} form : {0}'.format(formposte, poste.UUID_poste))
+        # form en lien avec l objet basé sur model et pk UUID poste
+        formposte = PosteForm(instance=Poste.objects.get(UUID=poste.UUID))
+        dic_postes_init[poste.UUID] = formposte  # dictionnaire des forms
+        # print (' poste UUID : {1} form : {0}'.format(formposte, poste.UUID))
     data["DicPostes"] = dic_postes_init
     return
 
@@ -102,10 +102,10 @@ def forms_creneaux(request, data, postes):
         gère également la modification et la suppression de creneaux en fonction du contenu de POST
     """
     if any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter']):
-        # form en lien avec l objet basé sur model et pk UUID_poste
+        # form en lien avec l objet basé sur model et pk UUID creneau
         if 'creneau_modifier' in request.POST:
             formcreneau = CreneauForm(request.POST,
-                                      instance=Creneau.objects.get(UUID_creneau=request.POST.get('creneau')),
+                                      instance=Creneau.objects.get(UUID=request.POST.get('creneau')),
                                       pas_creneau=planning_retourne_pas(request),
                                       planning_uuid=request.POST.get('planning'),
                                       poste_uuid=request.POST.get('poste'),)
@@ -122,8 +122,8 @@ def forms_creneaux(request, data, postes):
             formcreneau.save()
 
     if request.POST.get('creneau_supprimer'):
-        print('creneau {} supprimé'.format(Creneau.objects.filter(UUID_creneau=request.POST.get('creneau_supprimer'))))
-        Creneau.objects.filter(UUID_creneau=request.POST.get('creneau_supprimer')).delete()
+        print('creneau {} supprimé'.format(Creneau.objects.filter(UUID=request.POST.get('creneau_supprimer'))))
+        Creneau.objects.filter(UUID=request.POST.get('creneau_supprimer')).delete()
 
     # cree dans la page toutes nos from pour les creneaux du planing
     dic_creneaux_init = {}  # dictionnaire des forms
@@ -131,13 +131,13 @@ def forms_creneaux(request, data, postes):
                             # val : form de creneau initialisée objet db lié
     # parcours les creneaux du planning dans la base
     for creneau in Creneau.objects.filter(poste_id__in=postes):       # liste des creneaux des postes du planning
-        # form en lien avec l objet basé sur model et pk UUID_poste
-        formcreneau = CreneauForm(instance=Creneau.objects.get(UUID_creneau=creneau.UUID_creneau),
+        # form en lien avec l objet basé sur model et pk UUID creneau
+        formcreneau = CreneauForm(instance=Creneau.objects.get(UUID=creneau.UUID),
                                   pas_creneau=planning_retourne_pas(request),
                                   planning_uuid=request.POST.get('planning'),
                                   poste_uuid=request.POST.get('poste'),)
-        dic_creneaux_init[creneau.UUID_creneau] = formcreneau  # dictionnaire des forms: key: UUID / val: form
-        # print(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID_creneau))
+        dic_creneaux_init[creneau.UUID] = formcreneau  # dictionnaire des forms: key: UUID / val: form
+        # print(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID))
     data["DicCreneaux"] = dic_creneaux_init
     return
 
@@ -151,7 +151,7 @@ def liste_evenements(request):
     """
     # récupère dans la session l'uuid de l'association
     uuid_asso = request.session['uuid_association']
-    association = Association.objects.get(UUID_association=uuid_asso)
+    association = Association.objects.get(UUID=uuid_asso)
 
     try:
         liste_evenements = Evenement.objects.filter(association_id=uuid_asso)
@@ -181,15 +181,15 @@ def evenement(request, uuid_evenement):
     try:
         uuid_asso = request.session['uuid_association']
     except: # sinon si on arrive direct sur l'url de l'evenement, on recupere en base
-        Ev = Evenement.objects.get(UUID_evenement=uuid_evenement)
+        Ev = Evenement.objects.get(UUID=uuid_evenement)
         asso = Ev._meta.get_field('association_id')
         uuid_asso = asso.value_from_object(Ev)
         # on stock dans la session
         request.session['uuid_association'] = uuid_asso.urn
 
     # on construit nos objet avec l'uuid de l'evenement
-    association = Association.objects.get(UUID_association=uuid_asso)
-    evenement = Evenement.objects.get(UUID_evenement=uuid_evenement)
+    association = Association.objects.get(UUID=uuid_asso)
+    evenement = Evenement.objects.get(UUID=uuid_evenement)
     equipes = Equipe.objects.filter(evenement_id=uuid_evenement)
 
     data = {
@@ -210,7 +210,7 @@ def evenement(request, uuid_evenement):
         if request.POST.get('equipe'):  # selection d'une équipe
             the_equipe = request.POST.get('equipe')
             data["equipe"] = the_equipe # UUID equipe
-            data["Equipe"] = Equipe.objects.get(UUID_equipe=the_equipe)  # model equipe selectionnée
+            data["Equipe"] = Equipe.objects.get(UUID=the_equipe)  # model equipe selectionnée
             data["Plannings"] = \
                 Planning.objects.filter(equipe_id=the_equipe).order_by('debut')  # models de plannings de l'equipe
         else :  # selection d'un evènement mais pas d equipe, models de planning de l evenement
@@ -221,7 +221,7 @@ def evenement(request, uuid_evenement):
             for Plan in Planning.objects.filter(evenement_id=evenement):
                 key = Plan._meta.get_field('equipe_id')
                 UUIDequipe= key.value_from_object(Plan)
-                Eq = Equipe.objects.get(UUID_equipe=UUIDequipe)
+                Eq = Equipe.objects.get(UUID=UUIDequipe)
                 key = Eq._meta.get_field('nom')
                 nomequipe = key.value_from_object(Eq)
                 dict_nom_creneau[UUIDequipe] = nomequipe
@@ -230,7 +230,7 @@ def evenement(request, uuid_evenement):
         if request.POST.get('planning'): # selection d'un planning
             the_planning = request.POST.get('planning') # UUID planning
             data["planning"] = the_planning
-            planning = Planning.objects.get(UUID_planning=the_planning) # model planning
+            planning = Planning.objects.get(UUID=the_planning) # model planning
             data["Planning"] = planning  # planning selectionnée
             postes = Poste.objects.filter(planning_id=the_planning).order_by('nom') # models de postes du planning
             data["Postes"] = postes  # postes du planning
@@ -246,7 +246,7 @@ def evenement(request, uuid_evenement):
             data["PlanningRange"] = planning_range(planning.debut, planning.fin, planning.pas)
             crenos = []
             for po in postes:
-                crenos.append(po.UUID_poste)        # crenos : liste des creneaux du planning par poste
+                crenos.append(po.UUID)        # crenos : liste des creneaux du planning par poste
             # liste des creneaux des postes du planning
             creneaux = Creneau.objects.filter(poste_id__in=crenos, type="creneau")
             try:
@@ -277,7 +277,7 @@ def evenement(request, uuid_evenement):
     data["FormCreneau"] = CreneauForm(initial={'evenement': evenement,
                                                'equipe': the_equipe,
                                                'planning': the_planning,
-                                               'id_benevole': ProfileBenevole.UUID_benevole},
+                                               'id_benevole': ProfileBenevole.UUID},
                                       pas_creneau=planning_retourne_pas(request),
                                       planning_uuid=request.POST.get('planning'),
                                       poste_uuid=request.POST.get('poste'),)

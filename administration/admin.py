@@ -12,7 +12,7 @@ class FormulesListe(admin.ModelAdmin):
         ('Details', {'fields': ['description']}),
     ]
     # partie affichage des formules
-    list_display = ['nom', 'cout', 'description', 'UUID_formule']
+    list_display = ['nom', 'cout', 'description', 'UUID']
     # range par defaut par cout croissant a l'affichage
 
     class Meta:

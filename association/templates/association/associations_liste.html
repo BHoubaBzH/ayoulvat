@@ -2,6 +2,6 @@
 <!-- association/association_liste.html -->
 {% block asso_nom %}
     {% for asso in Assos %}
-        <a href="{{ asso.UUID_association }}"><H2>{{ asso.nom }}</H2></a>
+        <a href="{{ asso.UUID }}"><H2>{{ asso.nom }}</H2></a>
     {% endfor %}
 {% endblock asso_nom %}

@@ -11,7 +11,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
 class AssoOrigine(models.Model):
-    UUID_assoorigine = \
+    UUID = \
         models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     nom = models.CharField(max_length=50, unique='True',
                            verbose_name="association repésentée par le bénévole")
@@ -31,7 +31,7 @@ class Personne(AbstractUser):
         (NSP, 'Ne se prononce pas'),
     ]
 
-    UUID_personne = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # on oblige a rentrer un nom et un prenom et on retire username
     last_name = models.CharField(_('last name'), max_length=30, blank=False, unique=False)
     first_name = models.CharField(_('first name'), max_length=30, blank=False, unique=False)
@@ -62,7 +62,7 @@ class Personne(AbstractUser):
 
 # paramètres specifiques administrateurs de l'asso
 class ProfileAdministrateur(models.Model):
-    UUID_administrateur = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # supprime l administrateur si l'entree personne est supprimee
     personne = models.OneToOneField(Personne,
                                     default='',
@@ -86,7 +86,7 @@ class ProfileAdministrateur(models.Model):
 
 # paramètres specifiques organisateur de l'evenement
 class ProfileOrganisateur(models.Model):
-    UUID_organisateur = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # supprime l'organisateur si l'entree personne est supprimee
     personne = models.OneToOneField(Personne,
                                     default='',
@@ -109,7 +109,7 @@ class ProfileOrganisateur(models.Model):
 
 # paramètres specifiques responsable d'equipe
 class ProfileResponsable(models.Model):
-    UUID_responsable = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # supprime le responsable si l'entree personne est supprimee
     personne = models.OneToOneField(Personne,
                                     default='',
@@ -132,7 +132,7 @@ class ProfileResponsable(models.Model):
 
 # paramètres specifiques benevole
 class ProfileBenevole(models.Model):
-    UUID_benevole = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # supprime le benevole si l'entree personne est supprimee
     personne = models.OneToOneField(Personne,
                                     default='',

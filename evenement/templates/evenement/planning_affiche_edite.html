@@ -2,15 +2,15 @@
 
 
 {# pour le placement dans la grille planning garder le filtre sur planning.debut et planning.fin comme la fonction planning_range de views.py : #}
-<button  class="planning equipe-{{ equipe.UUID_equipe }}" 
-        style="grid-row: equipe-{{ equipe.UUID_equipe }};
+<button  class="planning equipe-{{ equipe.UUID }}" 
+        style="grid-row: equipe-{{ equipe.UUID }};
         grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|date:'Y-m-d-Hi' }};"
         title="{{ planning.nom }} : {{ equipe.nom|upper }}"
-        data-bs-toggle="modal" data-bs-target="#Modal-{{ planning.UUID_planning }}">
+        data-bs-toggle="modal" data-bs-target="#Modal-{{ planning.UUID }}">
 </button>
 
 {# modal #}
-<div class="modal fade" id="Modal-{{ planning.UUID_planning }}" tabindex="-1" role="dialog" aria-labelledby="Planningdetails" aria-hidden="true">
+<div class="modal fade" id="Modal-{{ planning.UUID }}" tabindex="-1" role="dialog" aria-labelledby="Planningdetails" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -25,7 +25,7 @@
                     {% csrf_token %}
                     <table class="table">
                         {% for uuid, creneauf in DicCreneaux.items %}
-                            {% if uuid|stringformat:"i" == creno.UUID_creneau|stringformat:"i" %}
+                            {% if uuid|stringformat:"i" == creno.UUID|stringformat:"i" %}
                                 {{ creneauf.as_table }}
                             {% endif %}
                         {% endfor %}
@@ -34,13 +34,13 @@
 
                 <div class="modal-footer">
 
-                    <input name="creneau" value="{{ creno.UUID_creneau }}" type="hidden">
+                    <input name="creneau" value="{{ creno.UUID }}" type="hidden">
                     {# les utilisateurs avec privilieges ( admin, orga, responsables)#}
                     {# supprime la form #}
                     {% if 'evenement.delete_creneau'  in perms %} 
                         <button class="btn btn-danger" title="supprimer ce créneau" name="creneau_supprimer"
                                 id="creneau_supprimer" value="supprimer" type="button"
-                                data-bs-toggle="modal" data-bs-target="#modal-confirme-creneau-supprime-{{ creno.UUID_creneau }}">
+                                data-bs-toggle="modal" data-bs-target="#modal-confirme-creneau-supprime-{{ creno.UUID }}">
                                 Supprimer
                         </button>
                     {% endif %}
@@ -61,7 +61,7 @@
 {# modal de confirmation de suppression doit etre en dehors du div pour s'afficher correctement #}
 {% if 'evenement.delete_creneau'  in perms %}
 <div class="modal fade"
-     id="modal-confirme-creneau-supprime-{{ creno.UUID_creneau }}"
+     id="modal-confirme-creneau-supprime-{{ creno.UUID }}"
      tabindex="-1"
      role="dialog"
      aria-labelledby="creneau_supprime"
@@ -91,11 +91,11 @@
 
 <script>
     /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
-    $('#modal-confirme-creneau-supprime-{{ creno.UUID_creneau }}').on('click', '#creneau_supprimer_confirme', function(e){
+    $('#modal-confirme-creneau-supprime-{{ creno.UUID }}').on('click', '#creneau_supprimer_confirme', function(e){
         /* alert('submitting-{{ forloop.counter }}'); */
-        $('#form-creneau').append('<input type="hidden" name="creneau_supprimer" value="{{ creno.UUID_creneau }}">');
+        $('#form-creneau').append('<input type="hidden" name="creneau_supprimer" value="{{ creno.UUID }}">');
         document.getElementById('form-creneau').submit();
-        $('#modal-confirme-creneau-supprime-{{ creno.UUID_creneau }}').modal('toggle');
+        $('#modal-confirme-creneau-supprime-{{ creno.UUID }}').modal('toggle');
         e.preventDefault();
     });
 </script>

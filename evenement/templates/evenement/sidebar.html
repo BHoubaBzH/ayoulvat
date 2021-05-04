@@ -6,7 +6,7 @@
       <div class="position-sticky pt-3">
 
         {# si un evenement a été selectionné on affiche les equipes et planning dans la sidebar #}
-        {% if Evenement.UUID_evenement %}
+        {% if Evenement.UUID %}
 
           {# liste équipes #}
           <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -21,7 +21,7 @@
                   <button class="list-group-item evenement-button {% if not equipe %}active{% endif %}" title="planning global">
                       <a>Toutes</a>
                       {% csrf_token %}
-                      <input  name="evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
+                      <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                   </button>
               </form>
             </li>
@@ -29,12 +29,12 @@
               <li class="nav-item">
                 <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
                     <button class="list-group-item evenement-button 
-                            {% if team.UUID_equipe|stringformat:'s' == equipe|stringformat:'s' %}active{% endif %}"
+                            {% if team.UUID|stringformat:'s' == equipe|stringformat:'s' %}active{% endif %}"
                             title={{ team.nom }}>
                         <a>{{ team.nom|capfirst }}</a>
                             {% csrf_token %}
-                            <input  name="evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
-                            <input  name="equipe" value="{{ team.UUID_equipe }}" type="hidden">
+                            <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                            <input  name="equipe" value="{{ team.UUID }}" type="hidden">
                     </button>
                 </form>
               </li>
@@ -53,13 +53,13 @@
               <li class="nav-item">
                 <form class="form evenement-form" method="post">
                   <button class="list-group-item evenement-button
-                        {% if plan.UUID_planning|stringformat:'s' == planning|stringformat:'s' %}active{% endif %}"
+                        {% if plan.UUID|stringformat:'s' == planning|stringformat:'s' %}active{% endif %}"
                         title={{ plan.nom }}>
                     <a>{{ plan.nom }}{% if not equipe %} : {{ DicNomCreneau|get_item:plan.equipe_id }}{% endif %}</a>
                         {% csrf_token %}
-                        <input  name="evenement" value="{{ Evenement.UUID_evenement }}" type="hidden">
-                        <input  name="equipe" value="{{ Equipe.UUID_equipe }}" type="hidden">
-                        <input  name="planning" value="{{ plan.UUID_planning }}" type="hidden">
+                        <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                        <input  name="equipe" value="{{ Equipe.UUID }}" type="hidden">
+                        <input  name="planning" value="{{ plan.UUID }}" type="hidden">
                   </button>
                 </form>
               </li>
@@ -77,7 +77,7 @@
           <ul class="nav flex-column mb-2">
             {% for event in Evenements %}
               <li class="nav-item">
-                <form class="form evenement-form" method="get" action="{% url 'evenement' uuid_evenement=event.UUID_evenement %}">
+                <form class="form evenement-form" method="get" action="{% url 'evenement' uuid_evenement=event.UUID %}">
                   <button class="list-group-item evenement-button">
                     <a>{{ event.nom }}</a>
                   </button>

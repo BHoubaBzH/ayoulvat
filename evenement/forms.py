@@ -84,7 +84,7 @@ class CreneauForm(ModelForm):
         super().clean()
         debut = self.cleaned_data['debut']
         fin = self.cleaned_data['fin']
-        Plan = Planning.objects.get(UUID_planning=self.planning_uuid)
+        Plan = Planning.objects.get(UUID=self.planning_uuid)
         planning_debut = Plan._meta.get_field('debut')
         planning_fin = Plan._meta.get_field('fin')
         # cohérence avec le planning
@@ -97,11 +97,11 @@ class CreneauForm(ModelForm):
         # cohérence avec les autre créneaux du poste du planning
         for Creno in Creneau.objects.filter(planning=self.planning_uuid, poste=self.poste_uuid, type="creneau"):
             #print(' ======== ')
-            #print('ce creneau    : {}'.format(self.instance.UUID_creneau))
-            uuid_autre_crenofield = Creno._meta.get_field('UUID_creneau')
+            #print('ce creneau    : {}'.format(self.instance.UUID))
+            uuid_autre_crenofield = Creno._meta.get_field('UUID')
             uuid_autre_creno = uuid_autre_crenofield.value_from_object(Creno)
             #print('autre creneau    : {}'.format(uuid_autre_creno))
-            if self.instance.UUID_creneau != uuid_autre_creno: # ne prend pas en compte l'instance en cours
+            if self.instance.UUID != uuid_autre_creno: # ne prend pas en compte l'instance en cours
                 debut_autre_crenofield = Creno._meta.get_field('debut')
                 fin_autre_crenofield = Creno._meta.get_field('fin')
                 debut_autre_creno = debut_autre_crenofield.value_from_object(Creno)
