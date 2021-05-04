@@ -38,7 +38,7 @@
     {% include "evenement/sidebar.html" %}
 
     <div class="table-responsive">
-        <main> 
+        <main>
             </br>
                 {# si un planning a été selectionné on affiche les infos dans la page centrale #}
                 {% if Planning.UUID_planning %}
@@ -86,7 +86,7 @@
 
                     <div class="tab-content" id="nav-tabContent">
                         {% comment "planning on affiche que si un planning ou un poste est selectionne" %}{% endcomment %}
-                        
+
                             <div class="tab-pane {% if 'evenement.change_planning' in perms %}fade show active{% endif %}" id="nav-creneaux" 
                                 role="tabpanel" aria-labelledby="nav-creneaux-tab">
                                 {% block planning-creneaux %}
@@ -98,11 +98,11 @@
                                 {# en cours #}
                                 {% endblock planning-benevoles %}
                             </div>
-                        
+
                     </div>
                 {% elif Evenement %} {# planning evenement et equipes #}
                     <div class="tab-content" id="nav-tabContent">
-                            <div class="tab-pane fade show active" id="nav-equipes" 
+                            <div class="tab-pane fade show active" id="nav-equipes"
                                 role="tabpanel" aria-labelledby="nav-equipes-tab">
                                 {% block planning-equipes %}
                                 {# en cours #}
