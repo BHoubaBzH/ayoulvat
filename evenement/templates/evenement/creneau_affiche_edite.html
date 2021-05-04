@@ -1,6 +1,5 @@
 {# evenement/creneau_affiche_edite.html #}
 
-
 {# pour le placement dans la grille planning garder le filtre sur creno.debut et creno.fin comme la fonction planning_range de views.py : #}
 {% if creno.type == "creneau" %}
     <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%} poste poste-{{ poste.UUID_poste }}" 

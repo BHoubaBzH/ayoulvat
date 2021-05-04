@@ -262,14 +262,12 @@ def evenement(request, uuid_evenement):
         elif request.POST.get('evenement'):  # selection d'un evenement uniquement
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
 
-
         if request.POST.get('poste'): # selection d'un poste
             the_poste = request.POST.get('poste')
             data["poste"] = the_poste
         if request.POST.get('creneau'): # selection d'un creneau
             the_creneau = request.POST.get('creneau')
             data["creneau"] = the_creneau
-
 
     # on envoie la form non liée au template pour ajout d un nouveau poste
     data["FormPoste"] = PosteForm(initial={'evenement': evenement,
