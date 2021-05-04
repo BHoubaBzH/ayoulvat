@@ -1,0 +1,41 @@
+{# evenement/gridplan_equipes.html #}
+
+<div class="planning-equipes" aria-labelledby="planning-heading">
+    {# affiche les entetes des colonnes du planning : les heures #}
+    {% for dates, heures in PlanningRange.items %}
+        <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">
+            <h8 class="time-slot">
+                {% if heures.0|stringformat:'s' != "00:00" %}
+                    {{ heures.0 }}
+                {% else %} {# affiche le jour au lieu de 00:00 #}
+                    <b>{{ heures.1|date:'d/m/y' }}</b>
+                {% endif %}
+            </h8>
+        </div>
+    {% endfor %}
+
+    {% if Evenement and not Postes %}
+        {% for equipe in Equipes %}
+            {# affiche les entetes des lignes du planning : equipes #}
+            <div class="poste-slot"
+                aria-hidden="true"
+                style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;">
+                    <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
+            </div>
+            {% for planning in Plannings %}
+                    {% if planning.equipe_id == equipe.UUID %}
+                    {# AFFICHE LES PLANNINGS DANS LA GRID CSS #}
+                        {% include "evenement/planning_affiche_edite.html" with equipe=equipe %}
+                {% endif %}
+            {% endfor %}
+            
+            {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" message_title='ajouter une planning commençant à {{ dateheure.0 }}' %}
+
+        {% endfor %}
+            
+    {% else %}
+        <span class="benevole-slot" aria-hidden="true" style="grid-row: heures; grid-column: benevoles-boutons;">
+            <p> pas encore d'équipe défini </p>
+        </span>
+    {% endif %}
+</div>

@@ -188,14 +188,11 @@ def evenement(request, uuid_evenement):
         request.session['uuid_association'] = uuid_asso.urn
 
     # on construit nos objet avec l'uuid de l'evenement
-    association = Association.objects.get(UUID=uuid_asso)
     evenement = Evenement.objects.get(UUID=uuid_evenement)
-    equipes = Equipe.objects.filter(evenement_id=uuid_evenement)
-
     data = {
-        "Association": association,
+        "Association": Association.objects.get(UUID=uuid_asso),
         "Evenement": evenement,
-        "Equipes": equipes,
+        "Equipes": Equipe.objects.filter(evenement_id=uuid_evenement),
     }
 
     # log les donnees post
@@ -209,16 +206,16 @@ def evenement(request, uuid_evenement):
     if request.method == "POST":
         if request.POST.get('equipe'):  # selection d'une équipe
             the_equipe = request.POST.get('equipe')
-            data["equipe"] = the_equipe # UUID equipe
-            data["Equipe"] = Equipe.objects.get(UUID=the_equipe)  # model equipe selectionnée
+            data["equipe"] = the_equipe  # UUID equipe selectionnée
+            # data["Equipe"] = Equipe.objects.filter(UUID=the_equipe)  # model equipe selectionnée
             data["Plannings"] = \
                 Planning.objects.filter(equipe_id=the_equipe).order_by('debut')  # models de plannings de l'equipe
         else :  # selection d'un evènement mais pas d equipe, models de planning de l evenement
-            data["Plannings"] = Planning.objects.filter(evenement_id=evenement).order_by('debut')
+            data["Plannings"] = Planning.objects.filter(evenement_id=uuid_evenement).order_by('debut')
             # pour l'affichage du nom de creneau
             # on construit un dictionnaire key: uuid_equipe - val: nom equipe
             dict_nom_creneau = {}
-            for Plan in Planning.objects.filter(evenement_id=evenement):
+            for Plan in Planning.objects.filter(evenement_id=uuid_evenement):
                 key = Plan._meta.get_field('equipe_id')
                 UUIDequipe= key.value_from_object(Plan)
                 Eq = Equipe.objects.get(UUID=UUIDequipe)

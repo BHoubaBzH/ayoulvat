@@ -3,17 +3,15 @@
 {# pour le placement dans la grille planning garder le filtre sur creno.debut et creno.fin comme la fonction planning_range de views.py : #}
 {% if creno.type == "creneau" %}
     <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%} poste poste-{{ poste.UUID }}" 
-            style="grid-row: poste-{{ creno.poste_id }};
-            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} /
-            time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+            style="grid-row: ligne-{{ creno.poste_id }};
+            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
             title="{%if libre == 'non'%}créneau occupé{%else%}créneau disponible{%endif%}"
             data-bs-toggle="modal" data-bs-target="#Modal-{{ creno.UUID }}">
     </button>
 {% elif creno.type == "benevole" %}
     <button  class="creneau benevole benevole-{{ benevole.UUID }}" 
-            style="grid-row: benevole-{{ creno.benevole_id }};
-            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} /
-            time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+            style="grid-row: ligne-{{ creno.benevole_id }};
+            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
             title="benevole"
             data-bs-toggle="modal" data-bs-target="#Modal-{{ creno.UUID }}">
     </button>

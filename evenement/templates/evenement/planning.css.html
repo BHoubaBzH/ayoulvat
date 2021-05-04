@@ -46,7 +46,7 @@
 		grid-template-rows:
 			[heures] 3em
 			{% for poste in Postes %}
-			[poste-{{ poste.UUID }}] auto
+			[ligne-{{ poste.UUID }}] auto
 			{% endfor %};
 		{# construction des entete et des colonnes de la grille planning: postes puis heures puis boutons #}
 		grid-template-columns:
@@ -85,7 +85,7 @@
 		grid-template-rows:
 			[heures] 3em
 			{% for benevole in Benevoles %}
-			[benevole-{{ benevole.UUID }}] auto
+			[ligne-{{ benevole.UUID }}] auto
 			{% endfor %};
 		{# construction des entete et des colonnes de la grille planning: benevoles puis heures puis boutons #}
 		grid-template-columns:
@@ -118,7 +118,7 @@
 		grid-template-rows:
 			[heures] 3em
 			{% for equipe in Equipes %}
-			[equipe-{{ equipe.UUID }}] auto
+			[ligne-{{ equipe.UUID }}] auto
 			{% endfor %};
 		{# construction des entete et des colonnes de la grille planning: equipes puis heures puis boutons #}
 		grid-template-columns:
@@ -140,9 +140,10 @@
 	{% endfor %}
 
 	{# PLANNING PARTIE COMMUNE #}
+
 	.time-slot {
 		grid-row: heures;
-		transform: rotate(-45deg);
+		transform: rotate(-50deg);
 	}
 
 	.poste-slot, .poste-bouton-slot, .benevole-slot, .benevole-bouton-slot {
@@ -164,6 +165,7 @@
 			display: block;
 			padding: 10px 5px 5px;
 			position: sticky;
+			height: 2em;
 			top: 0;
 			z-index: 20;
 			background-color: rgb(255, 255, 255);
@@ -202,11 +204,17 @@ body {
 	border-left: inherit; 
 	border-bottom: inherit; 
 	border-color: lightgray;
+	background-color: transparent;
+	border-top: transparent;
+	border-right: transparent;
 }
 
 .grid-cell-last {
 	border-left: inherit; 
 	border-color: lightgray;
+	background-color: transparent;
+	border-top: transparent;
+	border-right: transparent;
 }
 
 .poste-slot,
@@ -221,6 +229,10 @@ body {
 	font-size:.75em;
 }
 
+.planning-head {
+	display: inline-grid;
+	width: 1.5em;
+}
 
 .text {
 	max-width: 750px;

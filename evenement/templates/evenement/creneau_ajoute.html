@@ -1,4 +1,4 @@
-{# evenement/bouton_creneau_ajoute.html #}
+{# evenement/creneau_ajoute.html #}
 
 <script>
     /* permet d'afficher les mois, les jours, les heure et les minute sur 2 digits, en ajoutant un zero si besoins*/
@@ -37,7 +37,8 @@
         $("input[name=fin_0][id=id_fin_0]").val(fin_details[0]);
         $("input[name=fin_1][id=id_fin_1]").val(fin_details[1]);
 
-        var poste = formData.get('case-poste-init');
+        /* au click sur la cellule, recupere le uuid du poste */
+        var poste = formData.get('case-ligne-init');
         $("input[name=poste][id=id_poste]").val(poste);
         /* alert ('poste : ' + poste); */
     }
@@ -68,7 +69,6 @@
                     {# si on vient ajouter directement un creneau au planning sans passer par equipe, nous ne connaisson pas Equipe.UUID #}
                     <!--input name="equipe" value="{{ Equipe.UUID }}" type="hidden"-->
                     <input name="equipe" value="{{ Planning.equipe_id }}" type="hidden">
-                    <input name="planning" value="{{ Planning.UUID }}" type="hidden">
                     
                     <input name="type" value="creneau" type="hidden">
                     <input name="creneau_ajouter" value="" type="hidden">

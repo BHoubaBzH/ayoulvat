@@ -1,7 +1,7 @@
 {# evenement/poste_edite.html #}
 
 <div id="boutons des postes" class="poste-bouton-slot" aria-hidden="true"
-    style="grid-row: poste-{{ poste.UUID }}; grid-column: postes-boutons;">
+    style="grid-row: ligne-{{ poste.UUID }}; grid-column: postes-boutons;">
         {# affiche le bouton d edition de poste #}
     <form  id="form-poste-change-{{ poste.UUID }}" method='post'>
         {% csrf_token %}

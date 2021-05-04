@@ -58,7 +58,7 @@
                     <a>{{ plan.nom }}{% if not equipe %} : {{ DicNomCreneau|get_item:plan.equipe_id }}{% endif %}</a>
                         {% csrf_token %}
                         <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                        <input  name="equipe" value="{{ Equipe.UUID }}" type="hidden">
+                        <input  name="equipe" value="{{ plan.equipe_id }}" type="hidden"-->
                         <input  name="planning" value="{{ plan.UUID }}" type="hidden">
                   </button>
                 </form>

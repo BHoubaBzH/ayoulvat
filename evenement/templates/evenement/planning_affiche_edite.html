@@ -3,7 +3,7 @@
 
 {# pour le placement dans la grille planning garder le filtre sur planning.debut et planning.fin comme la fonction planning_range de views.py : #}
 <button  class="planning equipe-{{ equipe.UUID }}" 
-        style="grid-row: equipe-{{ equipe.UUID }};
+        style="grid-row: ligne-{{ equipe.UUID }};
         grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|date:'Y-m-d-Hi' }};"
         title="{{ planning.nom }} : {{ equipe.nom|upper }}"
         data-bs-toggle="modal" data-bs-target="#Modal-{{ planning.UUID }}">

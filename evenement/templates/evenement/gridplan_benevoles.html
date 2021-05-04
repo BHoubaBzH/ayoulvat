@@ -1,0 +1,54 @@
+{# evenement/planning_benevoles.html #}
+
+<div class="planning-benevoles" aria-labelledby="planning-heading">
+    {# affiche les entetes des colonnes du planning : les heures #}
+    {% for dates, heures in PlanningRange.items %}
+        <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">
+            <h8 class="time-slot">{{ heures.0 }}</h8>
+        </div>
+    {% endfor %}
+    
+    {% if Benevoles %}
+        {% for benevole in Benevoles %}
+            {# affiche les entetes des lignes du planning : postes #}
+            <div class="benevole-slot"
+                aria-hidden="true"
+                style="grid-row: ligne-{{ benevole.UUID }}; grid-column: benevoles;">
+                    <p style="margin-bottom: 0px;">{{ benevole }}</p>
+            </div>
+            {% if 'evenement.change_poste'  in perms %}
+                {% include "evenement/poste_edite.html" %}
+            {% endif %}
+            {% for creno in CreneauxBenevole %}
+                    {% if creno.benevole_id == benevole.UUID and creno.type == "benevole" %}
+                    
+                    {# AFFICHE LES CRENEAU DANS LA GRID  CSS #}
+                    {% if creno.benevole_id %} {# si un benevole est affecté au créneau #}
+                        {% include "evenement/creneau_affiche_edite.html" with libre='non' %}
+                    {% else %} {# sinon pas de benevole affecté au créneau #}
+                        {% include "evenement/creneau_affiche_edite.html" with libre='oui' %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% include "evenement/grid_cellules.html" with row_type=benevole ligne="benevole" message_title='ajouter une disponibilité commençant à {{ dateheure.0 }}' %}
+
+        {% endfor %}
+    {% else %}
+        <span class="benevole-slot" aria-hidden="true" style="grid-row: heures; grid-column: benevoles-boutons;">
+            <p> pas encore de benevole défini </p>
+        </span>
+    {% endif %}
+{% comment "" %}
+    {# ajoute une ligne vide pour pouvoir ajouter des postes au besoins #}
+    {% if 'evenement.add_benevole' in perms %}
+        {% include "evenement/benevole_ajoute.html" %}
+    {% endif %}
+{% endcomment %}
+</div>
+{# modal d ajout des benevoles #}
+{% comment "" %}
+{% if 'evenement.add_benevole' in perms %}
+    {% include "evenement/benevole_ajoute.html" %}
+{% endif %} 
+{% endcomment %}
