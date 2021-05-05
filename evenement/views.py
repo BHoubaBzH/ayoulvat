@@ -50,6 +50,34 @@ def planning_retourne_pas(request):
         pas_value=60
     return pas_value
 
+def tous_creneaux_entre_2_heures(debut, fin, uuid_evenement):
+    """
+    entree:
+        date de début et de fin
+        uuid de evenement
+    sortie:
+        creneaux : liste de creneaux
+    donne tous les créneaux entre 2 date pour savor si un benevole est deja occupé
+    """
+    crenos_out = [] # liste
+    crenos = Creneau.objects.filter(evenement_id=uuid_evenement)
+    for creno in crenos:
+        if debut <= creno.debut < fin and debut < creno.fin <= fin:
+            crenos_out.append(creno)
+        if creno.debut < debut and debut < creno.fin <= fin:
+            creno.debut = debut
+            crenos_out.append(creno)
+        if debut <= creno.debut < fin and fin < creno.fin:
+            creno.fin = fin
+            crenos_out.append(creno)
+        if creno.debut < debut and fin < creno.fin:
+            creno.debut = debut
+            creno.fin = fin
+            crenos_out.append(creno)
+        print(' creno : {}'.format(creno.nom))
+    return crenos_out
+
+
 def forms_postes(request, data, the_planning):
     """
         entree:
@@ -108,13 +136,17 @@ def forms_creneaux(request, data, postes):
                                       instance=Creneau.objects.get(UUID=request.POST.get('creneau')),
                                       pas_creneau=planning_retourne_pas(request),
                                       planning_uuid=request.POST.get('planning'),
-                                      poste_uuid=request.POST.get('poste'),)
+                                      poste_uuid=request.POST.get('poste'),
+                                      benevole_uuid=request.POST.get('benevole'),
+                                      type=request.POST.get('type'),)
         # nouvel objet en base
         if 'creneau_ajouter' in request.POST:
             formcreneau = CreneauForm(request.POST,
                                       pas_creneau=planning_retourne_pas(request),
                                       planning_uuid=request.POST.get('planning'),
-                                      poste_uuid=request.POST.get('poste'),)
+                                      poste_uuid=request.POST.get('poste'),
+                                      benevole_uuid=request.POST.get('benevole'),
+                                      type=request.POST.get('type'),)
         # print(formcreneau['benevole'])
         print(formcreneau.errors)
         if formcreneau.is_valid():
@@ -204,10 +236,11 @@ def evenement(request, uuid_evenement):
     # recupere les uuid en POST, but est de tout gerer dans une seule page
     # et d'afficher les infos en fonction des POST recus :
     if request.method == "POST":
+        uuid_evenement = request.POST.get('evenement')
         if request.POST.get('equipe'):  # selection d'une équipe
             the_equipe = request.POST.get('equipe')
             data["equipe"] = the_equipe  # UUID equipe selectionnée
-            # data["Equipe"] = Equipe.objects.filter(UUID=the_equipe)  # model equipe selectionnée
+            # data["Equipe"] = Equipe.objects.filter(UUID=the_equipe)  # model de l equipe selectionnée
             data["Plannings"] = \
                 Planning.objects.filter(equipe_id=the_equipe).order_by('debut')  # models de plannings de l'equipe
         else :  # selection d'un evènement mais pas d equipe, models de planning de l evenement
@@ -234,29 +267,26 @@ def evenement(request, uuid_evenement):
             benevoles = ProfileBenevole.objects.filter(BenevolesPlanning=the_planning) # models de benevoles du planning
             data["Benevoles"] = benevoles
             for benevole in benevoles:
-                print ('benevoles : {}'.format(benevole))
+                print('benevoles : {}'.format(benevole))
             # instances de form poste & creneau : sauvegarde modifs & suppression & liste des postes
             forms_postes(request, data, the_planning)
             forms_creneaux(request, data, postes)
 
-            # données formatées du planning créneaux
+            # heures formatées du planning
             data["PlanningRange"] = planning_range(planning.debut, planning.fin, planning.pas)
             crenos = []
             for po in postes:
                 crenos.append(po.UUID)        # crenos : liste des creneaux du planning par poste
             # liste des creneaux des postes du planning
-            creneaux = Creneau.objects.filter(poste_id__in=crenos, type="creneau")
             try:
-                data["CreneauxCreneau"] = creneaux
+                data["Creneaux_planning"] = Creneau.objects.filter(planning_id=planning)
             except:
-                print('###### pas de creneaux sur ce planning')
-            # liste des dispos bénévole sur le planning
-            creneaux_benevole = Creneau.objects.filter(planning_id=planning, type="benevole")
-            try:
-                data["CreneauxBenevole"] = creneaux_benevole
-            except:
-                print('###### pas de dispo bénévole sur ce planning')
-        elif request.POST.get('evenement'):  # selection d'un evenement uniquement
+                pass
+            # retourne les creneaux sur une plage et sur tous les plannings :
+            data["Creneaux_plage"] = tous_creneaux_entre_2_heures(planning.debut, planning.fin, uuid_evenement)
+
+
+        else:  # selection d'un evenement uniquement
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
 
         if request.POST.get('poste'): # selection d'un poste
@@ -277,6 +307,8 @@ def evenement(request, uuid_evenement):
                                                'id_benevole': ProfileBenevole.UUID},
                                       pas_creneau=planning_retourne_pas(request),
                                       planning_uuid=request.POST.get('planning'),
-                                      poste_uuid=request.POST.get('poste'),)
+                                      poste_uuid=request.POST.get('poste'),
+                                      benevole_uuid=request.POST.get('benevole'),
+                                      type=request.POST.get('type'),)
 
     return render(request, "evenement/evenement.html", data)

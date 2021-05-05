@@ -1,30 +1,6 @@
 {# evenement/planning.css.html #}
 
 /* ###############################################" */
-/* variables */
-/* ###############################################" */
-
-.evenement-button {
-	/* width: -webkit-fill-available; */
-	width: 100%;
-	text-align: left;
-}
-
-.evenement-form {
-	margin: inherit;
-}
-
-
-.creneau, .creneau_libre {
-	box-shadow: 3px 2px #888;
-	display: block;
-	color: rgb(0, 0, 0);
-}
-
-.creneau_libre {
-	background-color: teal;
-}
-/* ###############################################" */
 /* grid pour le planning */
 /* ###############################################" */
 
@@ -66,12 +42,6 @@
 			position: relative;
 		}
 	{% endfor %}
-
-	{# utilisé si personne affecté au creneau et si pas bloqué : créneau libre */ #}
-	.creneau_libre {
-		background-color: #1fca1caa; /* aa pour la transparence */
-		background-color: var(--bs-teal);
-	}
 
 	{# PLANNING BENEVOLES #}
 	.planning-benevoles {
@@ -251,4 +221,42 @@ body {
 
 hr {
 	margin: 40px 0;
+}
+
+.form_grid_button {
+	margin: 0;
+}
+
+.form_grid_button .planning {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.evenement-button {
+	/* width: -webkit-fill-available; */
+	width: 100%;
+	text-align: left;
+}
+
+.evenement-form {
+	margin: inherit;
+}
+
+
+.creneau, .creneau_libre {
+	box-shadow: 3px 2px #888;
+	display: block;
+	color: rgb(0, 0, 0);
+}
+
+{# utilisé si personne affecté au creneau et si pas bloqué : créneau libre */ #}
+.creneau_libre {
+	background-color: #1fca1caa; /* aa pour la transparence */
+	background-color: var(--bs-teal);
+}
+
+.creneau_occupe {
+	background-color: #1fca1caa; /* aa pour la transparence */
+	background-color: var(--bs-dark);
 }

@@ -51,7 +51,21 @@ class CreneauForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self.pas_creneau = kwargs.pop('pas_creneau')
         self.planning_uuid = kwargs.pop('planning_uuid')
-        self.poste_uuid = kwargs.pop('poste_uuid')
+        try:
+            self.poste_uuid = kwargs.pop('poste_uuid')
+        except:
+            pass
+        try:
+            self.benevole_uuid = kwargs.pop('benevole_uuid')
+        except:
+            pass
+        try:
+            self.type = kwargs.pop('type')
+        except:
+            pass
+        # si type = creneau et poste_uuid et benevole_uuid , creneau avec benevole affecté
+        # si type = creneau et poste_uuid , creneau disponible
+        # si type = benevole et benevole_uuid, dispo du benevole
         super(CreneauForm, self).__init__(*args, **kwargs)
         # cache certains champs
         self.fields['poste'].widget = HiddenInput()
@@ -79,6 +93,24 @@ class CreneauForm(ModelForm):
         # il faut aussi ajouter seulement les benevoles disponibles ( non pris sur un autre creneau aux meme heures)
         self.fields['benevole'].queryset = ProfileBenevole.objects.filter(BenevolesPlanning=self.planning_uuid)
 
+    def controle_coherence_creneaux(self, Creno, debut, fin):
+        print(' ======== ')
+        print('ce creneau    : {}'.format(self.instance.UUID))
+        uuid_autre_crenofield = Creno._meta.get_field('UUID')
+        uuid_autre_creno = uuid_autre_crenofield.value_from_object(Creno)
+        print('autre creneau    : {}'.format(uuid_autre_creno))
+        if self.instance.UUID != uuid_autre_creno:  # ne prend pas en compte l'instance en cours
+            debut_autre_crenofield = Creno._meta.get_field('debut')
+            fin_autre_crenofield = Creno._meta.get_field('fin')
+            debut_autre_creno = debut_autre_crenofield.value_from_object(Creno)
+            fin_autre_creno = fin_autre_crenofield.value_from_object(Creno)
+            print ('autre debut  : {0}  fin : {1}'.format(debut_autre_creno, fin_autre_creno))
+            print('debut    : {}'.format(debut))
+            if debut_autre_creno < debut < fin_autre_creno:
+                raise ValidationError("Wopolo le créneau commence sur un autre!")
+            if debut_autre_creno < fin < fin_autre_creno:
+                raise ValidationError("Wopolo le créneau fini sur un autre!")
+
     # on valide les données pour avoir de la cohérence
     def clean(self):
         super().clean()
@@ -95,21 +127,10 @@ class CreneauForm(ModelForm):
         if debut >= fin:
             raise ValidationError("Wopolo la fin du créneau c'est après son début!")
         # cohérence avec les autre créneaux du poste du planning
-        for Creno in Creneau.objects.filter(planning=self.planning_uuid, poste=self.poste_uuid, type="creneau"):
-            #print(' ======== ')
-            #print('ce creneau    : {}'.format(self.instance.UUID))
-            uuid_autre_crenofield = Creno._meta.get_field('UUID')
-            uuid_autre_creno = uuid_autre_crenofield.value_from_object(Creno)
-            #print('autre creneau    : {}'.format(uuid_autre_creno))
-            if self.instance.UUID != uuid_autre_creno: # ne prend pas en compte l'instance en cours
-                debut_autre_crenofield = Creno._meta.get_field('debut')
-                fin_autre_crenofield = Creno._meta.get_field('fin')
-                debut_autre_creno = debut_autre_crenofield.value_from_object(Creno)
-                fin_autre_creno = fin_autre_crenofield.value_from_object(Creno)
-                #print ('autre debut  : {0}  fin : {1}'.format(debut_autre_creno, fin_autre_creno))
-                #print('debut    : {}'.format(debut))
-                if debut_autre_creno < debut < fin_autre_creno:
-                    raise ValidationError("Wopolo le créneau commence sur un autre!")
-                if debut_autre_creno < fin < fin_autre_creno:
-                    raise ValidationError("Wopolo le créneau fini sur un autre!")
-
+        if self.poste_uuid and self.type=="creneau":
+            for Creno in Creneau.objects.filter(planning=self.planning_uuid, poste=self.poste_uuid, type="creneau"):
+                self.controle_coherence_creneaux(Creno, debut, fin)
+        # cohérence avec les autre créneaux du benevole et du planning
+        if self.benevole_uuid and self.type=="benevole":
+            for Creno in Creneau.objects.filter(planning=self.planning_uuid, benevole=self.benevole_uuid, type="benevole"):
+                self.controle_coherence_creneaux(Creno, debut, fin)

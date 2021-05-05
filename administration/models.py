@@ -78,12 +78,11 @@ groupe_permission = {
         'add_creneau', 'view_creneau', 'change_creneau', 'delete_creneau',
     ),
     'Benevole': (  # custom user : personne
-        'add_personne', 'view_personne', 'change_personne',
+        'view_personne', 'change_personne',
         'view_profileadministrateur',
         'view_profileorganisateur',
         'view_profileresponsable',
-        'add_profilebenevole', 'view_profilebenevole', 'change_profilebenevole',
-        'delete_profilebenevole',
+        'view_profilebenevole',
         'view_assoorigine',
         # evenement
         'view_evenement',

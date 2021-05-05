@@ -19,19 +19,18 @@
             {% if 'evenement.change_poste'  in perms %}
                 {% include "evenement/poste_edite.html" %}
             {% endif %}
-            {#% for creno_benevole in Creneaux_Benevoles %#}
-            {% for creno in CreneauxCreneau %}
+            {% for creno in Creneaux_planning %}
                     {% if creno.poste_id == poste.UUID and creno.type == "creneau" %}
-                    {# AFFICHE LES CRENEAU DANS LA GRID  CSS #}
+                    {# AFFICHE LES CRENEAU DANS LA GRID  CSS et construit les modals associés #}
                     {% if creno.benevole_id %} {# si un benevole est affecté au créneau #}
-                        {% include "evenement/creneau_affiche_edite.html" with libre='non' %}
+                        {% include "evenement/creneau_affiche_edite.html" with libre='non' type="creneau" %}
                     {% else %} {# sinon pas de benevole affecté au créneau #}
-                        {% include "evenement/creneau_affiche_edite.html" with libre='oui' %}
+                        {% include "evenement/creneau_affiche_edite.html" with libre='oui' type="creneau" %}
                     {% endif %}
                 {% endif %}
             {% endfor %}
 
-            {% include "evenement/grid_cellules.html" with row_type=poste ligne="poste" postemessage_title='ajouter un créneau commençant à {{ dateheure.0 }}, poste {{ poste.nom }}' %}
+            {% include "evenement/grid_cellules.html" with row_type=poste ligne="poste" %}
             
         {% endfor %}
     {% else %}
@@ -44,7 +43,7 @@
         {% include "evenement/poste_ajoute.html" %}
     {% endif %}
 </div>
-{# modal d ajout des creneau #}
+{# modal d ajout des creneaux type=creneau #}
 {% if 'evenement.add_creneau' in perms %}
     {% include "evenement/creneau_ajoute.html" %}
 {% endif %} 

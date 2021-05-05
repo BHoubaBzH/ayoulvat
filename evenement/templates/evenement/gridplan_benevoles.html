@@ -8,37 +8,59 @@
         </div>
     {% endfor %}
     
-    {% if Benevoles %}
-        {% for benevole in Benevoles %}
-            {# affiche les entetes des lignes du planning : postes #}
-            <div class="benevole-slot"
-                aria-hidden="true"
-                style="grid-row: ligne-{{ benevole.UUID }}; grid-column: benevoles;">
-                    <p style="margin-bottom: 0px;">{{ benevole }}</p>
-            </div>
-            {% if 'evenement.change_poste'  in perms %}
-                {% include "evenement/poste_edite.html" %}
-            {% endif %}
-            {% for creno in CreneauxBenevole %}
-                    {% if creno.benevole_id == benevole.UUID and creno.type == "benevole" %}
-                    
-                    {# AFFICHE LES CRENEAU DANS LA GRID  CSS #}
-                    {% if creno.benevole_id %} {# si un benevole est affecté au créneau #}
-                        {% include "evenement/creneau_affiche_edite.html" with libre='non' %}
-                    {% else %} {# sinon pas de benevole affecté au créneau #}
-                        {% include "evenement/creneau_affiche_edite.html" with libre='oui' %}
-                    {% endif %}
+    {# si gestionnaire : affiche la liste des benevoles du planning #}
+    {% if 'benevole.change_profilebenevole' in perms %}
+        {% if Benevoles %}
+            {% for benevole in Benevoles %}
+                {# affiche les entetes des lignes du planning : postes #}
+                <div class="benevole-slot"
+                    aria-hidden="true"
+                    style="grid-row: ligne-{{ benevole.UUID }}; grid-column: benevoles;">
+                        <p style="margin-bottom: 0px;">{{ benevole }}</p>
+                </div>
+                {% if 'evenement.change_poste'  in perms %}
+                    {% include "evenement/poste_edite.html" %}
                 {% endif %}
+                {% for creno in Creneaux_plage %}
+                    {% if creno.benevole_id == benevole.UUID %}
+                        {# AFFICHE LES CRENEAU DANS LA GRID  CSS #}
+                        {% include "evenement/creneau_affiche_edite.html" with type="benevole" %}
+                    {% endif %}
+                {% endfor %}
+
+                {% include "evenement/grid_cellules.html" with row_type=benevole ligne="benevole" %}
+
             {% endfor %}
+        {% else %}
+            <span class="benevole-slot" aria-hidden="true" style="grid-row: heures; grid-column: benevoles-boutons;">
+                <p> pas encore de benevole défini </p>
+            </span>
+        {% endif %}
 
-            {% include "evenement/grid_cellules.html" with row_type=benevole ligne="benevole" message_title='ajouter une disponibilité commençant à {{ dateheure.0 }}' %}
-
-        {% endfor %}
+    {# si benevole : affiche son planning perso , on se base sur les infos de la personne connectée : user. #}
     {% else %}
-        <span class="benevole-slot" aria-hidden="true" style="grid-row: heures; grid-column: benevoles-boutons;">
-            <p> pas encore de benevole défini </p>
-        </span>
+        {# affiche les entetes des lignes du planning : postes #}
+        <div class="benevole-slot"
+            aria-hidden="true"
+            style="grid-row: ligne-{{ user.profilebenevole.UUID }}; grid-column: benevoles;">
+                <p style="margin-bottom: 0px;">{{ user.last_name|upper }} {{ user.first_name|capfirst }}</p>
+        </div>
+        {% comment "" %}
+        {% if 'evenement.change_poste'  in perms %}
+            {% include "evenement/poste_edite.html" %}
+        {% endif %}
+        {% endcomment %}
+        {% for creno in Creneaux_plage %}
+            {# si le benevole du creneau correspond au benevole connecté et creneau de type benevole #}
+            {% if creno.benevole_id == user.profilebenevole.UUID %}
+                {# AFFICHE LES CRENEAU DANS LA GRID  CSS #}
+                {% include "evenement/creneau_affiche_edite.html" with type="benevole" %}
+            {% endif %}
+        {% endfor %}
+
+        {% include "evenement/grid_cellules.html" with row_type=benevole ligne="benevole" le_benevole="oui"%}
     {% endif %}
+
 {% comment "" %}
     {# ajoute une ligne vide pour pouvoir ajouter des postes au besoins #}
     {% if 'evenement.add_benevole' in perms %}
@@ -46,9 +68,9 @@
     {% endif %}
 {% endcomment %}
 </div>
-{# modal d ajout des benevoles #}
-{% comment "" %}
-{% if 'evenement.add_benevole' in perms %}
-    {% include "evenement/benevole_ajoute.html" %}
-{% endif %} 
-{% endcomment %}
+{# modal d ajout des creneaux type=benevole #}
+{# il est dejà présent si admin, orga, on rajoute si benevole uniquement #}
+{% comment "" %}{% endcomment %}
+{% if not 'benevole.change_benevole' in perms %}
+    {% include "evenement/creneau_ajoute.html" %}
+{% endif %}

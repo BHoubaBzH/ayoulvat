@@ -37,10 +37,25 @@
         $("input[name=fin_0][id=id_fin_0]").val(fin_details[0]);
         $("input[name=fin_1][id=id_fin_1]").val(fin_details[1]);
 
-        /* au click sur la cellule, recupere le uuid du poste */
-        var poste = formData.get('case-ligne-init');
-        $("input[name=poste][id=id_poste]").val(poste);
-        /* alert ('poste : ' + poste); */
+        /* au click sur la cellule, recupere le type de creneau
+           le uuid du poste ou du benevole et cree les inputs pour la form */
+        var type = formData.get('type');
+        $("input[name=type][id=id_type]").val(type);
+        var ligne = formData.get('case-ligne-init');
+        if (type == "creneau") {
+            $("input[name=poste][id=id_poste]").val(ligne);
+            $("input[name=benevole][id=id_benevole]").val("");
+            /* alert ('poste : ' + ligne); */
+        }
+        else if (type == "benevole") {
+            $("input[name=poste][id=id_poste]").val("");
+            $("input[name=benevole][id=id_benevole]").val(ligne);
+            /* alert ('benevole : ' + ligne); */
+        }
+        else {
+            alert ('ce type de créneau n\'existe pas !');
+        }
+
     }
 </script>
 
@@ -65,13 +80,12 @@
 
                 <div class="modal-footer">
                     {# données pour garder le planning affiché apres submission POST#}
-                    <input name="planning" id="id_planning" value="{{ Planning.UUID }}" type="hidden">
+                    <input type="hidden" name="planning" id="id_planning" value="{{ Planning.UUID }}">
                     {# si on vient ajouter directement un creneau au planning sans passer par equipe, nous ne connaisson pas Equipe.UUID #}
                     <!--input name="equipe" value="{{ Equipe.UUID }}" type="hidden"-->
-                    <input name="equipe" value="{{ Planning.equipe_id }}" type="hidden">
+                    <input type="hidden" name="equipe" value="{{ Planning.equipe_id }}">
                     
-                    <input name="type" value="creneau" type="hidden">
-                    <input name="creneau_ajouter" value="" type="hidden">
+                    <input type="hidden" name="creneau_ajouter" value="" >
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" id="bouton-modal-creneau_ajouter" class="btn btn-primary success">
                         Ajouter

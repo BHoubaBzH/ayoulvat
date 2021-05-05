@@ -1,21 +1,27 @@
 {# evenement/creneau_affiche_edite.html #}
 
 {# pour le placement dans la grille planning garder le filtre sur creno.debut et creno.fin comme la fonction planning_range de views.py : #}
-{% if creno.type == "creneau" %}
+{# affiche le creneau sur le planning avec poste en ordonnées #}
+{% if type == "creneau" %}
     <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%} poste poste-{{ poste.UUID }}" 
             style="grid-row: ligne-{{ creno.poste_id }};
             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
             title="{%if libre == 'non'%}créneau occupé{%else%}créneau disponible{%endif%}"
             data-bs-toggle="modal" data-bs-target="#Modal-{{ creno.UUID }}">
     </button>
-{% elif creno.type == "benevole" %}
-    <button  class="creneau benevole benevole-{{ benevole.UUID }}" 
+
+{# affiche le creneau sur le planning avec benevole en ordonnées #}
+{% elif type == "benevole" %}
+    <button  class="{%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe{%endif%} benevole benevole-{{ benevole.UUID }}" 
             style="grid-row: ligne-{{ creno.benevole_id }};
             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-            title="benevole"
+            title="{%if le_benevole == "oui" %}{{ user.last_name|upper }} {{ user.first_name|capfirst }}
+                   {%else%}{{ benevole }}{%endif%}
+                   {%if creno.type == 'benevole'%} disponible{%else%} ocupé {{ creno.planning_id.nom }}{%endif%}"
             data-bs-toggle="modal" data-bs-target="#Modal-{{ creno.UUID }}">
     </button>
 {% endif %}
+
 {# modal #}
 <div class="modal fade" id="Modal-{{ creno.UUID }}" tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">

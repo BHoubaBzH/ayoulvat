@@ -28,13 +28,13 @@
             {% for team in Equipes %}
               <li class="nav-item">
                 <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
+                    {% csrf_token %}
+                    <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                    <input  name="equipe" value="{{ team.UUID }}" type="hidden">
                     <button class="list-group-item evenement-button 
                             {% if team.UUID|stringformat:'s' == equipe|stringformat:'s' %}active{% endif %}"
                             title={{ team.nom }}>
                         <a>{{ team.nom|capfirst }}</a>
-                            {% csrf_token %}
-                            <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                            <input  name="equipe" value="{{ team.UUID }}" type="hidden">
                     </button>
                 </form>
               </li>
@@ -52,14 +52,14 @@
             {% for plan in Plannings %}
               <li class="nav-item">
                 <form class="form evenement-form" method="post">
+                  {% csrf_token %}
+                  <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                  <input  name="equipe" value="{{ plan.equipe_id }}" type="hidden"-->
+                  <input  name="planning" value="{{ plan.UUID }}" type="hidden">
                   <button class="list-group-item evenement-button
                         {% if plan.UUID|stringformat:'s' == planning|stringformat:'s' %}active{% endif %}"
                         title={{ plan.nom }}>
                     <a>{{ plan.nom }}{% if not equipe %} : {{ DicNomCreneau|get_item:plan.equipe_id }}{% endif %}</a>
-                        {% csrf_token %}
-                        <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                        <input  name="equipe" value="{{ plan.equipe_id }}" type="hidden"-->
-                        <input  name="planning" value="{{ plan.UUID }}" type="hidden">
                   </button>
                 </form>
               </li>
