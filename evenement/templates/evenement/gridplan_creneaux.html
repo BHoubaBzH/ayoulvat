@@ -20,8 +20,8 @@
                 {% if 'evenement.change_poste'  in perms %}
                     {% include "evenement/poste_edite.html" %}
                 {% endif %}
-                {% for creno in Creneaux_planning %}
-                        {% if creno.poste_id == poste.UUID and creno.type == "creneau" %}
+                 {% for creno in Creneaux %}
+                    {% if creno.planning_id|stringformat:'s' == planning_uuid|stringformat:'s' and creno.poste_id == poste.UUID and creno.type == "creneau" %}
                         {# AFFICHE LES CRENEAU DANS LA GRID  CSS et construit les modals associés #}
                         {% if creno.benevole_id %} {# si un benevole est affecté au créneau #}
                             {% include "evenement/creneau_affiche_edite.html" with libre='non' type="creneau" %}

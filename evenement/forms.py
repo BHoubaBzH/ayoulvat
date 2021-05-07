@@ -91,22 +91,22 @@ class CreneauForm(ModelForm):
                                             })
         # on ne propose que les bénévoles etant inscrit sur le planning = fk du planning
         # il faut aussi ajouter seulement les benevoles disponibles ( non pris sur un autre creneau aux meme heures)
+        # self.fields['benevole'].queryset = ProfileBenevole.objects.filter(BenevolesPlanning=self.planning_uuid)
 
-        self.fields['benevole'].queryset = ProfileBenevole.objects.filter(BenevolesPlanning=self.planning_uuid)
 
     def controle_coherence_creneaux(self, Creno, debut, fin):
-        print(' ======== ')
-        print('ce creneau    : {}'.format(self.instance.UUID))
+        # print(' ======== ')
+        # print('ce creneau    : {}'.format(self.instance.UUID))
         uuid_autre_crenofield = Creno._meta.get_field('UUID')
         uuid_autre_creno = uuid_autre_crenofield.value_from_object(Creno)
-        print('autre creneau    : {}'.format(uuid_autre_creno))
+        # print('autre creneau    : {}'.format(uuid_autre_creno))
         if self.instance.UUID != uuid_autre_creno:  # ne prend pas en compte l'instance en cours
             debut_autre_crenofield = Creno._meta.get_field('debut')
             fin_autre_crenofield = Creno._meta.get_field('fin')
             debut_autre_creno = debut_autre_crenofield.value_from_object(Creno)
             fin_autre_creno = fin_autre_crenofield.value_from_object(Creno)
-            print ('autre debut  : {0}  fin : {1}'.format(debut_autre_creno, fin_autre_creno))
-            print('debut    : {}'.format(debut))
+            # print ('autre debut  : {0}  fin : {1}'.format(debut_autre_creno, fin_autre_creno))
+            # print('debut    : {}'.format(debut))
             if debut_autre_creno < debut < fin_autre_creno:
                 raise ValidationError("Wopolo le créneau commence sur un autre!")
             if debut_autre_creno < fin < fin_autre_creno:
