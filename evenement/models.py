@@ -19,7 +19,7 @@ class Evenement(models.Model):
     benevole = models.ManyToManyField(ProfileBenevole,
                                       related_name='BenevolesEvenement',
                                       blank=True,
-                                      default='')
+                                      default='les benevoles peuvent s inscrire a l envenement')
     nom = models.CharField(max_length=50)
     debut = models.DateTimeField(blank=False, default='')
     fin = models.DateTimeField(blank=False, default='')
@@ -54,7 +54,7 @@ class Equipe(models.Model):
     benevole = models.ManyToManyField(ProfileBenevole,
                                       related_name='BenevolesEquipe',
                                       blank=True,
-                                      default='')
+                                      default='les benevoles peuvent s inscrire a l equipe')
     editable = models.BooleanField(default=True, help_text="si non editable, l'équipe est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
 
@@ -92,7 +92,7 @@ class Planning(models.Model):
     benevole = models.ManyToManyField(ProfileBenevole,
                                       related_name='BenevolesPlanning',
                                       blank=True,
-                                      default='')
+                                      default='les benevoles peuvent s inscrire au planning')
     nom = models.CharField(max_length=50)
     debut = models.DateTimeField(blank=False, default='')
     fin = models.DateTimeField(blank=False, default='')

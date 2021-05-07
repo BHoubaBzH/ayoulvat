@@ -68,7 +68,11 @@
     <div class="modal-dialog" role="document" style="z-index:1050">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Ajout d'un creneau</h5>
+                
+                <h5 class="modal-title" id="ModalLabel">
+                {% if type == "creneau" %}Ajout d'un creneau
+                {% elif type == "benevole" %}Ajout d'un disponibilité{% endif %}
+                </h5>
             </div>
             <form  id="form-creneau" class="form-creneau" method='post'>
                 <div class="modal-body">

@@ -7,23 +7,23 @@
             style="grid-row: ligne-{{ creno.poste_id }};
             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
             title="{%if libre == 'non'%}créneau occupé{%else%}créneau disponible{%endif%}"
-            data-bs-toggle="modal" data-bs-target="#Modal-{{ creno.UUID }}">
+            data-bs-toggle="modal" data-bs-target="#modal-creneau_editer-{{ creno.UUID }}">
     </button>
 
 {# affiche le creneau sur le planning avec benevole en ordonnées #}
 {% elif type == "benevole" %}
-    <button  class="{%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe{%endif%} benevole benevole-{{ benevole.UUID }}" 
+    <button  class="creneau {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe{%endif%} benevole benevole-{{ benevole.UUID }}" 
             style="grid-row: ligne-{{ creno.benevole_id }};
             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
             title="{%if le_benevole == "oui" %}{{ user.last_name|upper }} {{ user.first_name|capfirst }}
                    {%else%}{{ benevole }}{%endif%}
                    {%if creno.type == 'benevole'%} disponible{%else%} ocupé {{ creno.planning_id.nom }}{%endif%}"
-            data-bs-toggle="modal" data-bs-target="#Modal-{{ creno.UUID }}">
+            data-bs-toggle="modal" data-bs-target="#modal-creneau_editer-{{ creno.UUID }}">
     </button>
 {% endif %}
 
 {# modal #}
-<div class="modal fade" id="Modal-{{ creno.UUID }}" tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
+<div class="modal fade" id="modal-creneau_editer-{{ creno.UUID }}" tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -38,7 +38,7 @@
                     {% csrf_token %}
                     <table class="table">
                         {% for uuid, creneauf in DicCreneaux.items %}
-                            {% if uuid|stringformat:"i" == creno.UUID|stringformat:"i" %}
+                            {% if uuid|stringformat:"s" == creno.UUID|stringformat:"s" %}
                                 {{ creneauf.as_table }}
                             {% endif %}
                         {% endfor %}

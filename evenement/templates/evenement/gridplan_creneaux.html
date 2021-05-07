@@ -10,27 +10,29 @@
 
     {% if Evenement and Postes %}
         {% for poste in Postes %}
-            {# affiche les entetes des lignes du planning : postes #}
-            <div class="poste-slot"
-                aria-hidden="true"
-                style="grid-row: ligne-{{ poste.UUID }}; grid-column: postes;">
-                    <p style="margin-bottom: 0px;">{{ poste.nom }}</p>
-            </div>
-            {% if 'evenement.change_poste'  in perms %}
-                {% include "evenement/poste_edite.html" %}
-            {% endif %}
-            {% for creno in Creneaux_planning %}
-                    {% if creno.poste_id == poste.UUID and creno.type == "creneau" %}
-                    {# AFFICHE LES CRENEAU DANS LA GRID  CSS et construit les modals associés #}
-                    {% if creno.benevole_id %} {# si un benevole est affecté au créneau #}
-                        {% include "evenement/creneau_affiche_edite.html" with libre='non' type="creneau" %}
-                    {% else %} {# sinon pas de benevole affecté au créneau #}
-                        {% include "evenement/creneau_affiche_edite.html" with libre='oui' type="creneau" %}
-                    {% endif %}
+            {% if poste.planning_id|stringformat:'s' == planning_uuid|stringformat:'s' %}
+                {# affiche les entetes des lignes du planning : postes #}
+                <div class="poste-slot"
+                    aria-hidden="true"
+                    style="grid-row: ligne-{{ poste.UUID }}; grid-column: postes;">
+                        <p style="margin-bottom: 0px;">{{ poste.nom }}</p>
+                </div>
+                {% if 'evenement.change_poste'  in perms %}
+                    {% include "evenement/poste_edite.html" %}
                 {% endif %}
-            {% endfor %}
+                {% for creno in Creneaux_planning %}
+                        {% if creno.poste_id == poste.UUID and creno.type == "creneau" %}
+                        {# AFFICHE LES CRENEAU DANS LA GRID  CSS et construit les modals associés #}
+                        {% if creno.benevole_id %} {# si un benevole est affecté au créneau #}
+                            {% include "evenement/creneau_affiche_edite.html" with libre='non' type="creneau" %}
+                        {% else %} {# sinon pas de benevole affecté au créneau #}
+                            {% include "evenement/creneau_affiche_edite.html" with libre='oui' type="creneau" %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                {% include "evenement/grid_cellules.html" with row_type=poste ligne="poste" %}
+            {% endif %}
 
-            {% include "evenement/grid_cellules.html" with row_type=poste ligne="poste" %}
             
         {% endfor %}
     {% else %}

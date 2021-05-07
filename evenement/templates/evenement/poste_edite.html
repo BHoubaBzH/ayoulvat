@@ -39,7 +39,7 @@
                     {% csrf_token %}
                     <table class="table">
                         {% for uuid, postef in DicPostes.items %}
-                            {% if uuid|stringformat:"i" == poste.UUID|stringformat:"i" %}
+                            {% if uuid|stringformat:"s" == poste.UUID|stringformat:"s" %}
                                 {{ postef.as_table }}
                             {% endif %}
                         {% endfor %}

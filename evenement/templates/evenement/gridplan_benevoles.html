@@ -8,9 +8,9 @@
         </div>
     {% endfor %}
     
-    {# si gestionnaire : affiche la liste des benevoles du planning #}
+    {# si gestionnaire ou orga : affiche la liste des benevoles du planning #}
     {% if 'benevole.change_profilebenevole' in perms %}
-        {% if Benevoles %}
+        {% if Benevoles %} 
             {% for benevole in Benevoles %}
                 {# affiche les entetes des lignes du planning : postes #}
                 <div class="benevole-slot"
@@ -43,7 +43,7 @@
         <div class="benevole-slot"
             aria-hidden="true"
             style="grid-row: ligne-{{ user.profilebenevole.UUID }}; grid-column: benevoles;">
-                <p style="margin-bottom: 0px;">{{ user.last_name|upper }} {{ user.first_name|capfirst }}</p>
+                <p style="margin-bottom: 0px;">Mon Planning</p>
         </div>
         {% comment "" %}
         {% if 'evenement.change_poste'  in perms %}
@@ -54,7 +54,7 @@
             {# si le benevole du creneau correspond au benevole connecté et creneau de type benevole #}
             {% if creno.benevole_id == user.profilebenevole.UUID %}
                 {# AFFICHE LES CRENEAU DANS LA GRID  CSS #}
-                {% include "evenement/creneau_affiche_edite.html" with type="benevole" %}
+                {% include "evenement/creneau_affiche_edite.html" with type="benevole" le_benevole="oui"%}
             {% endif %}
         {% endfor %}
 

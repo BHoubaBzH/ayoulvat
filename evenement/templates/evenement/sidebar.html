@@ -7,7 +7,6 @@
 
         {# si un evenement a été selectionné on affiche les equipes et planning dans la sidebar #}
         {% if Evenement.UUID %}
-
           {# liste équipes #}
           <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
             <span>Liste des équipes: </span>
@@ -32,7 +31,7 @@
                     <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                     <input  name="equipe" value="{{ team.UUID }}" type="hidden">
                     <button class="list-group-item evenement-button 
-                            {% if team.UUID|stringformat:'s' == equipe|stringformat:'s' %}active{% endif %}"
+                            {% if team.UUID|stringformat:'s' == equipe_uuid|stringformat:'s' %}active{% endif %}"
                             title={{ team.nom }}>
                         <a>{{ team.nom|capfirst }}</a>
                     </button>
@@ -48,21 +47,22 @@
             </a>
           </h6>
           <ul class="nav flex-column mb-2">
-
             {% for plan in Plannings %}
-              <li class="nav-item">
-                <form class="form evenement-form" method="post">
-                  {% csrf_token %}
-                  <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                  <input  name="equipe" value="{{ plan.equipe_id }}" type="hidden"-->
-                  <input  name="planning" value="{{ plan.UUID }}" type="hidden">
-                  <button class="list-group-item evenement-button
-                        {% if plan.UUID|stringformat:'s' == planning|stringformat:'s' %}active{% endif %}"
-                        title={{ plan.nom }}>
-                    <a>{{ plan.nom }}{% if not equipe %} : {{ DicNomCreneau|get_item:plan.equipe_id }}{% endif %}</a>
-                  </button>
-                </form>
-              </li>
+              {% if  plan.equipe_id|stringformat:'s' == equipe_uuid|stringformat:'s' %}
+                <li class="nav-item">
+                  <form class="form evenement-form" method="post">
+                    {% csrf_token %}
+                    <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                    <input  name="equipe" value="{{ plan.equipe_id }}" type="hidden"-->
+                    <input  name="planning" value="{{ plan.UUID }}" type="hidden">
+                    <button class="list-group-item evenement-button
+                          {% if plan.UUID|stringformat:'s' == planning_uuid|stringformat:'s' %}active{% endif %}"
+                          title={{ plan.nom }}>
+                      <a>{{ plan.nom }}{% if not equipe_uuid %} : {{ DicNomCreneau|get_item:plan.equipe_id }}{% endif %}</a>
+                    </button>
+                  </form>
+                </li>
+              {% endif %}
             {% endfor %}
           </ul>
 

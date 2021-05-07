@@ -64,7 +64,7 @@ class CreneauForm(ModelForm):
         except:
             pass
         # si type = creneau et poste_uuid et benevole_uuid , creneau avec benevole affecté
-        # si type = creneau et poste_uuid , creneau disponible
+        # si type = creneau et poste_uuid sans benevole_uuid, creneau disponible
         # si type = benevole et benevole_uuid, dispo du benevole
         super(CreneauForm, self).__init__(*args, **kwargs)
         # cache certains champs
@@ -91,6 +91,7 @@ class CreneauForm(ModelForm):
                                             })
         # on ne propose que les bénévoles etant inscrit sur le planning = fk du planning
         # il faut aussi ajouter seulement les benevoles disponibles ( non pris sur un autre creneau aux meme heures)
+
         self.fields['benevole'].queryset = ProfileBenevole.objects.filter(BenevolesPlanning=self.planning_uuid)
 
     def controle_coherence_creneaux(self, Creno, debut, fin):

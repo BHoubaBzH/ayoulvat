@@ -26,7 +26,7 @@
                         {% csrf_token %}
                         <table class="table">
                             {% for uuid, creneauf in DicCreneaux.items %}
-                                {% if uuid|stringformat:"i" == creno.UUID|stringformat:"i" %}
+                                {% if uuid|stringformat:"s" == creno.UUID|stringformat:"s" %}
                                     {{ creneauf.as_table }}
                                 {% endif %}
                             {% endfor %}

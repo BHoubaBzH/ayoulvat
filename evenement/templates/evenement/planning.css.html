@@ -15,14 +15,16 @@
 		#overflow-x: scroll;
 		inline-size: fit-content;
 		display: grid;
-		gap: 0.3em;
+		gap: 0.2em;
 		border: 1px solid #ffffff;
 		padding: inherit;
 		{# construction des entetes et des lignes de la grille planning: heures puis postes #}
 		grid-template-rows:
 			[heures] 3em
 			{% for poste in Postes %}
-			[ligne-{{ poste.UUID }}] auto
+				{% if poste.planning_id|stringformat:'s' == planning_uuid|stringformat:'s' %}
+					[ligne-{{ poste.UUID }}] auto
+				{% endif %}
 			{% endfor %};
 		{# construction des entete et des colonnes de la grille planning: postes puis heures puis boutons #}
 		grid-template-columns:
@@ -36,11 +38,13 @@
 
 	{# colorise les créneaux en fonction du poste et la couleur dans la table poste#}
 	{% for poste in Postes %}
-		.poste-{{ poste.UUID }} {
-			background-color: {{ poste.couleur }}aa; {# aa pour la transparence  #}
-			color: #fff;
-			position: relative;
-		}
+		{% if poste.planning_id|stringformat:'s' == planning_uuid|stringformat:'s' %}
+			.poste-{{ poste.UUID }} {
+				background-image: linear-gradient(to bottom, var(--bs-light) 0px, {{ poste.couleur }} 50%);
+				color: #fff;
+				position: relative;
+			}
+		{% endif %}
 	{% endfor %}
 
 	{# PLANNING BENEVOLES #}
@@ -48,7 +52,7 @@
 		#overflow-x: scroll;
 		inline-size: fit-content;
 		display: grid;
-		gap: 0.3em;
+		gap: 0.2em;
 		border: 1px solid #ffffff;
 		padding: inherit;
 		{# construction des entetes et des lignes de la grille planning: heures puis benevoles #}
@@ -70,7 +74,7 @@
 	{# colorise les créneaux #}
 	{% for benevole in Benevoles %}
 		.benevole-{{ benevole.UUID }} {
-			background-color: {{ benevole.couleur }}aa; {# aa pour la transparence  #}
+			background-image: linear-gradient(to bottom, var(--bs-light) 0px, {{ benevole.couleur }} 50%);
 			color: #fff;
 			position: relative;
 		}
@@ -81,7 +85,7 @@
 		#overflow-x: scroll;
 		inline-size: fit-content;
 		display: grid;
-		gap: 0.3em;
+		gap: 0.2em;
 		border: 1px solid #ffffff;
 		padding: inherit;
 		{# construction des entetes et des lignes de la grille planning: heures puis equipes #}
@@ -103,7 +107,7 @@
 	{# colorise les plannings#}
 	{% for equipe in Equipes %}
 		.equipe-{{ equipe.UUID }} {
-			background-color: {{ equipe.couleur }}aa; {# aa pour la transparence  #}
+			background-image: linear-gradient(to bottom, var(--bs-light) 0px, {{ equipe.couleur }} 50%);
 			color: #fff;
 			position: relative;
 		}
@@ -196,7 +200,7 @@ body {
 	align-items: center;
 	justify-content: center;
 	font-weight: bold;
-	font-size:.75em;
+	#font-size:.75em;
 }
 
 .planning-head {
@@ -244,19 +248,32 @@ hr {
 }
 
 
-.creneau, .creneau_libre {
+.creneau, .creneau_libre, .planning {
 	box-shadow: 3px 2px #888;
-	display: block;
-	color: rgb(0, 0, 0);
+	#display: block;
+	#color: rgb(0, 0, 0);
+
+	border-top: 1px solid #b2dba1;
+	border-bottom: 1px solid #b2dba1;
+	# background-image: linear-gradient(to bottom, #dff0d8 0px, #c8e5bc 100%);
+	background-repeat: repeat-x;
+	border-width: 1px;
+	font-size: .75em;
+	padding: 0 .75em;
+	line-height: 2em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 1px;
+	border-radius: 110px;
 }
 
-{# utilisé si personne affecté au creneau et si pas bloqué : créneau libre */ #}
+{# utilisé si personne affecté au creneau et si pas bloqué : créneau libre #}
 .creneau_libre {
-	background-color: #1fca1caa; /* aa pour la transparence */
-	background-color: var(--bs-teal);
+	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-teal) 50%);
 }
-
+{# créneau occupé dans la vue planning benevole(s) #}
 .creneau_occupe {
-	background-color: #1fca1caa; /* aa pour la transparence */
-	background-color: var(--bs-dark);
+	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-dark) 70%);
+	z-index: 50;
 }

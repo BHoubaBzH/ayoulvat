@@ -10,7 +10,7 @@
             <tbody>
                 <tr>
                     <td class="col-md-3"><p class="h4"><b>Equipe :</b></p></td>
-                    <td class="col-md-3"><p class="h4">{{ Equipe.nom }}</p></td>
+                    <td class="col-md-3"><p class="h4">{{ Planning.equipe.nom }}</p></td>
                     <td class="col-md-3"><p class="h4"><b>Planning :</b></p></td>
                     <td class="col-md-3"><p class="h4">{{ Planning.nom }}</p></td>
                 </tr>
@@ -40,17 +40,16 @@
                 {% else%} {# benevoles uniquement #}
                     <button class="nav-link active" id="nav-benevoles-tab" data-bs-toggle="tab" 
                             data-bs-target="#nav-benevoles" type="button" role="tab" 
-                            aria-controls="nav-benevoles" aria-selected="true">Mon Planning</button>
+                            aria-controls="nav-benevoles" aria-selected="true">Mes Disponibilités</button>
                     <button class="nav-link" id="nav-creneaux-tab" data-bs-toggle="tab" 
                             data-bs-target="#nav-creneaux" type="button" role="tab" 
-                            aria-controls="nav-creneaux" aria-selected="false">Créneaux</button>
+                            aria-controls="nav-creneaux" aria-selected="false">Créneaux du Planning</button>
                 {% endif %}
             </div>
         </nav>
 
         <div class="tab-content" id="nav-tabContent">
             {% comment "planning on affiche que si un planning ou un poste est selectionne" %}{% endcomment %}
-
                 <div class="tab-pane {% if 'evenement.change_planning' in perms %}fade show active{% endif %}" id="nav-creneaux" 
                     role="tabpanel" aria-labelledby="nav-creneaux-tab">
                         {% include "evenement/gridplan_creneaux.html" %}
