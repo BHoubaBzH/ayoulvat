@@ -48,8 +48,8 @@
             /* alert ('poste : ' + ligne); */
         }
         else if (type == "benevole") {
-            $("input[name=poste][id=id_poste]").val("");
             $("input[name=benevole][id=id_benevole]").val(ligne);
+            $("input[name=poste][id=id_poste]").val("");
             /* alert ('benevole : ' + ligne); */
         }
         else {
@@ -68,10 +68,10 @@
     <div class="modal-dialog" role="document" style="z-index:1050">
         <div class="modal-content">
             <div class="modal-header">
-                
                 <h5 class="modal-title" id="ModalLabel">
-                {% if type == "creneau" %}Ajout d'un creneau
-                {% elif type == "benevole" %}Ajout d'un disponibilité{% endif %}
+                {# ca ne marche pas trouver autre chose #}
+                {% if type == "poste" %}Ajout d'un creneau
+                {% elif type == "benevole" %}Ajout d'une disponibilité{% endif %}
                 </h5>
             </div>
             <form  id="form-creneau" class="form-creneau" method='post'>
@@ -86,7 +86,6 @@
                     {# données pour garder le planning affiché apres submission POST#}
                     <input type="hidden" name="planning" id="id_planning" value="{{ Planning.UUID }}">
                     {# si on vient ajouter directement un creneau au planning sans passer par equipe, nous ne connaisson pas Equipe.UUID #}
-                    <!--input name="equipe" value="{{ Equipe.UUID }}" type="hidden"-->
                     <input type="hidden" name="equipe" value="{{ Planning.equipe_id }}">
                     
                     <input type="hidden" name="creneau_ajouter" value="" >

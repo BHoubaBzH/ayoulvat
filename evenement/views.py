@@ -45,8 +45,7 @@ def planning_retourne_pas(request):
     if 'planning' in request.POST:
         # retrouve le pas du planning à partir des infos du creneau
         Plan = Planning.objects.get(UUID=request.POST.get('planning'))
-        pas = Plan._meta.get_field('pas')
-        pas_value = pas.value_from_object(Plan)
+        pas_value = Plan._meta.get_field('pas').value_from_object(Plan)
     else:
         # pas possible normalement, on prévoit quand meme une valeur par défaut d une heure au pas
         pas_value = 60
@@ -142,6 +141,7 @@ def forms_creneaux(request, data, uuid_evenement):
                                       planning_uuid=request.POST.get('planning'),
                                       poste_uuid=request.POST.get('poste'),
                                       benevole_uuid=request.POST.get('benevole'),
+                                      personne_connectee=request.user,
                                       type=request.POST.get('type'), )
         # nouvel objet en base
         if 'creneau_ajouter' in request.POST:
@@ -150,6 +150,7 @@ def forms_creneaux(request, data, uuid_evenement):
                                       planning_uuid=request.POST.get('planning'),
                                       poste_uuid=request.POST.get('poste'),
                                       benevole_uuid=request.POST.get('benevole'),
+                                      personne_connectee=request.user,
                                       type=request.POST.get('type'), )
         # print(formcreneau['benevole'])
         print(formcreneau.errors)
@@ -171,7 +172,10 @@ def forms_creneaux(request, data, uuid_evenement):
         formcreneau = CreneauForm(instance=Creneau.objects.get(UUID=creneau.UUID),
                                   pas_creneau=planning_retourne_pas(request),
                                   planning_uuid=request.POST.get('planning'),
-                                  poste_uuid=request.POST.get('poste'), )
+                                  poste_uuid=request.POST.get('poste'),
+                                  benevole_uuid=request.POST.get('benevole'),
+                                  personne_connectee=request.user,
+                                  type=creneau._meta.get_field('type').value_from_object(creneau), )
         dic_creneaux_init[creneau.UUID] = formcreneau  # dictionnaire des forms: key: UUID / val: form
         # print(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID))
     data["DicCreneaux"] = dic_creneaux_init
@@ -227,7 +231,7 @@ def evenement(request, uuid_evenement):
     data = {
         "Association": Association.objects.get(UUID=uuid_asso),
         "Evenement": evenement,
-        "Equipes": Equipe.objects.filter(evenement_id=uuid_evenement), # objets equipes de l'evenement
+        "Equipes": Equipe.objects.filter(evenement_id=uuid_evenement),  # objets equipes de l'evenement
         "Plannings": "",  # objets planning de l'evenement
         "Postes": "",  # objets postes de l'evenement
         "Creneaux": "",  # objets creneaux de l'evenement
@@ -242,7 +246,7 @@ def evenement(request, uuid_evenement):
         "DicPoste": "",  # dictionnaire des formes de poste de l'evenement liées au objets de la db
         "FormPoste": "",  # form non liée au template pour ajout d un nouveau poste
         "DicCreneau": "",  # dictionnaire des formes de creneau de l'evenement liées au objets de la db
-        "FormCreneau": "", # form non liée au template pour ajout d un nouveau creneau
+        "FormCreneau": "",  # form non liée au template pour ajout d un nouveau creneau
     }
 
     # log les donnees post
@@ -270,12 +274,9 @@ def evenement(request, uuid_evenement):
         if request.POST.get('planning'):  # selection d'un planning
             data["planning_uuid"] = request.POST.get('planning')
             data["Planning"] = Planning.objects.get(UUID=request.POST.get('planning'))  # planning selectionnée
-            for benevole in data["Benevoles"]:
-                print('benevoles : {}'.format(benevole))
             # instances de form poste & creneau : sauvegarde modifs & suppression & liste des postes
             forms_postes(request, data, uuid_evenement)
             forms_creneaux(request, data, uuid_evenement)
-
             # heures formatées du planning
             data["PlanningRange"] = planning_range(Planning.objects.get(UUID=request.POST.get('planning')).debut,
                                                    Planning.objects.get(UUID=request.POST.get('planning')).fin,
@@ -283,8 +284,8 @@ def evenement(request, uuid_evenement):
             # retourne les creneaux sur une plage et sur tous les plannings :
             data["Creneaux_plage"] = \
                 tous_creneaux_entre_2_heures(Planning.objects.get(UUID=request.POST.get('planning')).debut,
-                                                                  Planning.objects.get(UUID=request.POST.get('planning')).fin,
-                                                                  uuid_evenement)
+                                             Planning.objects.get(UUID=request.POST.get('planning')).fin,
+                                             uuid_evenement)
 
         else:  # selection d'un evenement uniquement
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
@@ -302,6 +303,7 @@ def evenement(request, uuid_evenement):
                                       planning_uuid=request.POST.get('planning'),
                                       poste_uuid=request.POST.get('poste'),
                                       benevole_uuid=request.POST.get('benevole'),
+                                      personne_connectee=request.user,
                                       type=request.POST.get('type'), )
 
     return render(request, "evenement/evenement.html", data)

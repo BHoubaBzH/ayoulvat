@@ -6,6 +6,7 @@ from benevole.models import ProfileBenevole
 from evenement.customwidgets import SplitDateTimeMultiWidget
 
 
+################################################################################################
 class PosteForm(ModelForm):
     benevole = ModelMultipleChoiceField(queryset=ProfileBenevole.objects.all(),
                                         required=False,
@@ -26,6 +27,7 @@ class PosteForm(ModelForm):
         self.fields['evenement'].widget = HiddenInput()
 
 
+################################################################################################
 class CreneauForm(ModelForm):
     benevole = ModelChoiceField(queryset=ProfileBenevole.objects.all(),
                                 required=False,
@@ -45,12 +47,12 @@ class CreneauForm(ModelForm):
                   'poste',
                   'planning',
                   'equipe',
-                  'evenement']
-
+                  'evenement',]
     # methode __init__ surcharge les definition précédente de la class
     def __init__(self, *args, **kwargs):
         self.pas_creneau = kwargs.pop('pas_creneau')
         self.planning_uuid = kwargs.pop('planning_uuid')
+
         try:
             self.poste_uuid = kwargs.pop('poste_uuid')
         except:
@@ -58,11 +60,18 @@ class CreneauForm(ModelForm):
         try:
             self.benevole_uuid = kwargs.pop('benevole_uuid')
         except:
+            self.benevole_uuid = Creneau.objects.get(UUID=self.UUID)
+            self.benevole_uuid = ""
             pass
         try:
             self.type = kwargs.pop('type')
         except:
             pass
+        try:
+            self.personne_connectee = kwargs.pop('personne_connectee')
+        except:
+            pass
+
         # si type = creneau et poste_uuid et benevole_uuid , creneau avec benevole affecté
         # si type = creneau et poste_uuid sans benevole_uuid, creneau disponible
         # si type = benevole et benevole_uuid, dispo du benevole
@@ -73,26 +82,56 @@ class CreneauForm(ModelForm):
         self.fields['equipe'].widget = HiddenInput()
         self.fields['evenement'].widget = HiddenInput()
         self.fields['type'].widget = HiddenInput()
-        instance = getattr(self, 'instance', None)
-        if instance:
-            pass  # self.fields['debut'].disabled = True
+
         # recuperer le pas du planning associé
         # time_attr.step :  valeurs valides liées au pas du planning dans les choix en unités secondes :
         # ex 30 * 60 = 1800 : toutes les 30 minutes sont OK
-        self.fields['debut'].widget = \
-            SplitDateTimeMultiWidget(attrs={
-                                            'date_attrs': {},
-                                            'time_attrs': {'step': (self.pas_creneau * 60).__str__()}
-                                            })
-        self.fields['fin'].widget = \
-            SplitDateTimeMultiWidget(attrs={
-                                            'date_attrs': {},
-                                            'time_attrs': {'step': (self.pas_creneau * 60).__str__()}
-                                            })
+        for trig in ('debut', 'fin'):
+            self.fields[trig].widget = \
+                SplitDateTimeMultiWidget(attrs={
+                                                'date_attrs': {},
+                                                'time_attrs': {'step': (self.pas_creneau * 60).__str__()}
+                                                })
         # on ne propose que les bénévoles etant inscrit sur le planning = fk du planning
         # il faut aussi ajouter seulement les benevoles disponibles ( non pris sur un autre creneau aux meme heures)
         # self.fields['benevole'].queryset = ProfileBenevole.objects.filter(BenevolesPlanning=self.planning_uuid)
 
+        # si self.personne_connectee.profilebenevole et not perms evenement.change_creneau
+        # alors si le creneaucreneau est vide, on peut se l'affecter ( benevole contient moi et vide)
+        #       si le creneaucreneau est assigné à moi, alors on peut le passer à vide
+
+        # formulaire ayant une instance, on va travailler dessus pour afficher le fomulaire comme il faut
+        # en fonction du profile utilisateur
+        instance = getattr(self, 'instance', None)
+        # print('benevole asso : {}'.format(self.personne_connectee.assoorigine_id))
+        if instance:
+            # la personne est uniquement un benevole ( ni orga, ni admin, ni responsable )
+            if hasattr(self.personne_connectee, 'profilebenevole') \
+                and not self.personne_connectee.has_perm('evenement.change_creneau'):
+
+                if self.type == "creneau": # si le creneau est vraiment un creneau (pas une dispo "benvole")
+                    # gere l'affichage des champs
+                    for champs in self.fields:
+                        self.fields[champs].widget.attrs['readonly'] = True
+                    self.fields['editable'].widget = HiddenInput()
+
+                    # si le creneau est dispo ou affecté a ce benevole , il doit pouvoir le modifier avec les bons champs
+                    if self.instance.benevole_id == self.personne_connectee.profilebenevole.UUID or \
+                            self.instance.benevole_id == None and self.instance.type == "creneau" :
+                        # affiche que le benevole ou libre dans la liste des benevoles
+                        self.fields['benevole'].queryset = \
+                            ProfileBenevole.objects.filter(UUID=self.personne_connectee.profilebenevole.UUID)
+                        self.fields['description'].widget.attrs['readonly'] = False
+                        #print('liste benevoles : {}'.format(self.personne_connectee.profilebenevole.UUID))
+                    else: # si creneau déjà pris il doit juste voir les champs sans pouvoir les modifier
+                        self.fields['benevole'].widget.attrs['disabled'] = True
+
+                else: #ajout ou modif d'une disponibilité d'un bénévole
+                    # affiche que le benevole ou libre dans la liste des benevoles
+                    self.fields['benevole'].queryset = \
+                        ProfileBenevole.objects.filter(UUID=self.personne_connectee.profilebenevole.UUID)
+                    self.fields['benevole'].initial = ProfileBenevole.objects.get(UUID=self.personne_connectee.profilebenevole.UUID)
+                    self.fields['benevole'].empty_label = None
 
     def controle_coherence_creneaux(self, Creno, debut, fin):
         # print(' ======== ')
@@ -101,10 +140,8 @@ class CreneauForm(ModelForm):
         uuid_autre_creno = uuid_autre_crenofield.value_from_object(Creno)
         # print('autre creneau    : {}'.format(uuid_autre_creno))
         if self.instance.UUID != uuid_autre_creno:  # ne prend pas en compte l'instance en cours
-            debut_autre_crenofield = Creno._meta.get_field('debut')
-            fin_autre_crenofield = Creno._meta.get_field('fin')
-            debut_autre_creno = debut_autre_crenofield.value_from_object(Creno)
-            fin_autre_creno = fin_autre_crenofield.value_from_object(Creno)
+            debut_autre_creno = Creno._meta.get_field('debut').value_from_object(Creno)
+            fin_autre_creno = Creno._meta.get_field('fin').value_from_object(Creno)
             # print ('autre debut  : {0}  fin : {1}'.format(debut_autre_creno, fin_autre_creno))
             # print('debut    : {}'.format(debut))
             if debut_autre_creno < debut < fin_autre_creno:
@@ -129,9 +166,13 @@ class CreneauForm(ModelForm):
             raise ValidationError("Wopolo la fin du créneau c'est après son début!")
         # cohérence avec les autre créneaux du poste du planning
         if self.poste_uuid and self.type=="creneau":
-            for Creno in Creneau.objects.filter(planning=self.planning_uuid, poste=self.poste_uuid, type="creneau"):
+            for Creno in Creneau.objects.filter(planning=self.planning_uuid,
+                                                poste=self.poste_uuid,
+                                                type="creneau"):
                 self.controle_coherence_creneaux(Creno, debut, fin)
         # cohérence avec les autre créneaux du benevole et du planning
         if self.benevole_uuid and self.type=="benevole":
-            for Creno in Creneau.objects.filter(planning=self.planning_uuid, benevole=self.benevole_uuid, type="benevole"):
+            for Creno in Creneau.objects.filter(planning=self.planning_uuid,
+                                                benevole=self.benevole_uuid,
+                                                type="benevole"):
                 self.controle_coherence_creneaux(Creno, debut, fin)

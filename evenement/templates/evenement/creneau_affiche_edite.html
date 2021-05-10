@@ -48,9 +48,9 @@
                 <div class="modal-footer">
 
                     <input name="creneau" value="{{ creno.UUID }}" type="hidden">
-                    {# les utilisateurs avec privilieges ( admin, orga, responsables)#}
-                    {# supprime la form #}
-                    {% if 'evenement.delete_creneau'  in perms %} 
+                    {# les utilisateurs avec privilieges ( admin, orga, responsables) peuvent supprimer les creneaux#}
+                     {# les benevoles peuvent supprimer les creneaux type "benevoles" qu'il occupe  #}
+                    {% if 'evenement.delete_creneau'  in perms or creno.benevole_id == user.profilebenevole.UUID and creno.type == "benevole" %} 
                         <button class="btn btn-danger" title="supprimer ce créneau" name="creneau_supprimer"
                                 id="creneau_supprimer" value="supprimer" type="button"
                                 data-bs-toggle="modal" data-bs-target="#modal-confirme-creneau-supprime-{{ creno.UUID }}">
@@ -59,9 +59,9 @@
                     {% endif %}
 
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    {# les utilisateurs avec privilieges ( admin, orga, responsables)#}
-                    {# creer la form, la target : si c'est un responsables ou + : il peut tout modifier #}     
-                    {% if 'evenement.change_creneau' and 'evenement.delete_creneau' in perms or 'evenement.change_creneau' in perms and libre == 'oui'%}
+                    {# les utilisateurs avec privilieges ( admin, orga, responsables) peuvent modifier les creneaux #}
+                    {# le benevole peuvent modifier les creneaux disponibles et les creneaux qu'il occupe  #}
+                    {% if 'evenement.change_creneau' and 'evenement.delete_creneau' in perms or libre == 'oui' or creno.benevole_id == user.profilebenevole.UUID %}
                         <button type="submit" id="creneau_modifier" name="creneau_modifier"  class="btn btn-primary success">Modifier</button>
                     {% endif %}
                 </div>
@@ -72,7 +72,6 @@
 </div>
 
 {# modal de confirmation de suppression doit etre en dehors du div pour s'afficher correctement #}
-{% if 'evenement.delete_creneau'  in perms %}
 <div class="modal fade"
      id="modal-confirme-creneau-supprime-{{ creno.UUID }}"
      tabindex="-1"
@@ -112,4 +111,3 @@
         e.preventDefault();
     });
 </script>
-{% endif %}
