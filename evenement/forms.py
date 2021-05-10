@@ -96,10 +96,6 @@ class CreneauForm(ModelForm):
         # il faut aussi ajouter seulement les benevoles disponibles ( non pris sur un autre creneau aux meme heures)
         # self.fields['benevole'].queryset = ProfileBenevole.objects.filter(BenevolesPlanning=self.planning_uuid)
 
-        # si self.personne_connectee.profilebenevole et not perms evenement.change_creneau
-        # alors si le creneaucreneau est vide, on peut se l'affecter ( benevole contient moi et vide)
-        #       si le creneaucreneau est assigné à moi, alors on peut le passer à vide
-
         # formulaire ayant une instance, on va travailler dessus pour afficher le fomulaire comme il faut
         # en fonction du profile utilisateur
         instance = getattr(self, 'instance', None)
@@ -108,8 +104,8 @@ class CreneauForm(ModelForm):
             # la personne est uniquement un benevole ( ni orga, ni admin, ni responsable )
             if hasattr(self.personne_connectee, 'profilebenevole') \
                 and not self.personne_connectee.has_perm('evenement.change_creneau'):
-
-                if self.type == "creneau": # si le creneau est vraiment un creneau (pas une dispo "benvole")
+                # si le creneau est vraiment un creneau (pas une dispo "benvole") et pas une creation
+                if self.type == "creneau" and not self.poste_uuid == "":
                     # gere l'affichage des champs
                     for champs in self.fields:
                         self.fields[champs].widget.attrs['readonly'] = True
@@ -125,12 +121,13 @@ class CreneauForm(ModelForm):
                         #print('liste benevoles : {}'.format(self.personne_connectee.profilebenevole.UUID))
                     else: # si creneau déjà pris il doit juste voir les champs sans pouvoir les modifier
                         self.fields['benevole'].widget.attrs['disabled'] = True
-
-                else: #ajout ou modif d'une disponibilité d'un bénévole
-                    # affiche que le benevole ou libre dans la liste des benevoles
+                # modif d'une disponibilité d'un bénévole ou creation de créneau
+                else :
+                    # affiche uniquement le benevole ou libre dans la liste des benevoles
                     self.fields['benevole'].queryset = \
                         ProfileBenevole.objects.filter(UUID=self.personne_connectee.profilebenevole.UUID)
-                    self.fields['benevole'].initial = ProfileBenevole.objects.get(UUID=self.personne_connectee.profilebenevole.UUID)
+                    self.fields['benevole'].initial = \
+                        ProfileBenevole.objects.get(UUID=self.personne_connectee.profilebenevole.UUID)
                     self.fields['benevole'].empty_label = None
 
     def controle_coherence_creneaux(self, Creno, debut, fin):
