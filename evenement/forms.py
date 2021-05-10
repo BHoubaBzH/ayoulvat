@@ -92,8 +92,8 @@ class CreneauForm(ModelForm):
                                                 'date_attrs': {},
                                                 'time_attrs': {'step': (self.pas_creneau * 60).__str__()}
                                                 })
-        # on ne propose que les bénévoles etant inscrit sur le planning = fk du planning
-        # il faut aussi ajouter seulement les benevoles disponibles ( non pris sur un autre creneau aux meme heures)
+
+        # on ne propose que les bénévoles dispo sur le planning au heures qui vont bien = fk du planning
         # self.fields['benevole'].queryset = ProfileBenevole.objects.filter(BenevolesPlanning=self.planning_uuid)
 
         # formulaire ayant une instance, on va travailler dessus pour afficher le fomulaire comme il faut
