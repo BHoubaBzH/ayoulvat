@@ -7,7 +7,7 @@
             style="grid-row: ligne-{{ creno.poste_id }};
             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
             title="{%if libre == 'non'%}créneau occupé{%else%}créneau disponible{%endif%}"
-            data-bs-toggle="modal" data-bs-target="#modal-creneau_editer-{{ creno.UUID }}">
+            data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}">
     </button>
 
 {# affiche le creneau sur le planning avec benevole en ordonnées #}
@@ -18,12 +18,12 @@
             title="{%if le_benevole == "oui" %}{{ user.last_name|upper }} {{ user.first_name|capfirst }}
                    {%else%}{{ benevole }}{%endif%}
                    {%if creno.type == 'benevole'%} disponible{%else%} ocupé {{ creno.planning_id.nom }}{%endif%}"
-            data-bs-toggle="modal" data-bs-target="#modal-creneau_editer-{{ creno.UUID }}">
+            data-bs-toggle="modal" data-bs-target="#modal-creneau_benevole_editer-{{ creno.UUID }}">
     </button>
 {% endif %}
 
 {# modal #}
-<div class="modal fade" id="modal-creneau_editer-{{ creno.UUID }}" tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
+<div class="modal fade" id="modal-creneau_{% if type == "creneau" %}creneau{% elif type == "benevole" %}benevole{% endif %}_editer-{{ creno.UUID }}" tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
