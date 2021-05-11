@@ -129,7 +129,6 @@ class CreneauForm(ModelForm):
             elif self.personne_connectee.has_perm('evenement.change_creneau'):
                 # self.fields['benevole'].queryset = \
                 #    ProfileBenevole.objects.filter(BenevolesPlanning=self.planning_uuid)
-                # print('creneau : {} - benevole : {} - type : {}'.format(self.instance.nom, self.instance.benevole_id, self.instance.type))
                 print('planning instance : {} - planning page : {} - type : {}'.format(self.instance.planning_id, self.planning_uuid, self.instance.type))
                 if self.instance.benevole_id and self.instance.type == "benevole" and self.instance.planning_id == self.planning_uuid:
                     print('benevole : {} - type : {}'.format(self.instance.benevole_id, self.instance.type))
