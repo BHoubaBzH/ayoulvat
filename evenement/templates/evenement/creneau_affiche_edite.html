@@ -106,7 +106,8 @@
     $('#modal-confirme-creneau-supprime-{{ creno.UUID }}').on('click', '#creneau_supprimer_confirme', function(e){
         /* alert('submitting-{{ forloop.counter }}'); */
         $('#form-creneau').append('<input type="hidden" name="creneau_supprimer" value="{{ creno.UUID }}">');
-        $('#form-creneau').append('<input type="hidden" name="type" value="{{ creno.type }}">');
+        /* pour le traitement view et form on envoi le type de creneau qu on supprime */
+        $('#form-creneau').append('<input type="hidden" name="type" value="{{ creno.type }}">'); 
         document.getElementById('form-creneau').submit();
         $('#modal-confirme-creneau-supprime-{{ creno.UUID }}').modal('toggle');
         e.preventDefault();
