@@ -72,7 +72,7 @@
                     <button class="list-group-item evenement-button
                           {% if plan.UUID|stringformat:'s' == planning_uuid|stringformat:'s' %}active{% endif %}"
                           title={{ plan.nom }}>
-                      <a>{{ plan.equipe.nom }} : {{ plan.nom }} </a>
+                      <a>{{ plan.equipe.nom }} <i class="bi bi-chevron-right"></i> {{ plan.nom }} </a>
                     </button>
                   </form
               {% endif %}
@@ -113,7 +113,7 @@
         <table class="table">
           <thead>
             <tr class="table-dark">
-              <td class="col-md-3"><p class="h2"><b>Evenement :</b></p></td>
+              <td class="col-md-3"><p class="h2"><b>Evenement <i class="bi bi-chevron-right"></i></b></p></td>
               <td class="col-md-3"><p class="h2">{{ Evenement.nom }}</p></td>
               <td class="col-md-3"><p class="h2"><b></b></p></td>
               <td class="col-md-3"><p class="">
