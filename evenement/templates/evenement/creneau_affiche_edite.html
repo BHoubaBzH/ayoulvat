@@ -47,7 +47,7 @@
 
                 <div class="modal-footer">
 
-                    <input name="creneau" value="{{ creno.UUID }}" type="hidden">
+                    <input type="hidden" name="creneau" value="{{ creno.UUID }}">
                     {# les utilisateurs avec privilieges ( admin, orga, responsables) peuvent supprimer les creneaux#}
                      {# les benevoles peuvent supprimer les creneaux type "benevoles" qu'il occupe  #}
                     {% if 'evenement.delete_creneau'  in perms or creno.benevole_id == user.profilebenevole.UUID and creno.type == "benevole" %} 
@@ -106,6 +106,7 @@
     $('#modal-confirme-creneau-supprime-{{ creno.UUID }}').on('click', '#creneau_supprimer_confirme', function(e){
         /* alert('submitting-{{ forloop.counter }}'); */
         $('#form-creneau').append('<input type="hidden" name="creneau_supprimer" value="{{ creno.UUID }}">');
+        $('#form-creneau').append('<input type="hidden" name="type" value="{{ creno.type }}">');
         document.getElementById('form-creneau').submit();
         $('#modal-confirme-creneau-supprime-{{ creno.UUID }}').modal('toggle');
         e.preventDefault();

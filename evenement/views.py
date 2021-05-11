@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 
 from evenement.forms import PosteForm, CreneauForm
@@ -290,20 +291,22 @@ def evenement(request, uuid_evenement):
         else:  # selection d'un evenement uniquement
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
 
-    # on envoie la form non liée au template pour ajout d un nouveau poste
-    data["FormPoste"] = PosteForm(initial={'evenement': evenement,
-                                           'equipe': data["equipe_uuid"],
-                                           'planning': data["planning_uuid"]})
-    # on envoie la form non liée au template pour ajout d un nouveau creneau
-    data["FormCreneau"] = CreneauForm(initial={'evenement': evenement,
-                                               'equipe': data["equipe_uuid"],
-                                               'planning': data["planning_uuid"],
-                                               'id_benevole': ProfileBenevole.UUID},
-                                      pas_creneau=planning_retourne_pas(request),
-                                      planning_uuid=request.POST.get('planning'),
-                                      poste_uuid=request.POST.get('poste'),
-                                      benevole_uuid=request.POST.get('benevole'),
-                                      personne_connectee=request.user,
-                                      type=request.POST.get('type'), )
-
+        # on envoie la form non liée au template pour ajout d un nouveau poste
+        data["FormPoste"] = PosteForm(initial={'evenement': evenement,
+                                            'equipe': data["equipe_uuid"],
+                                            'planning': data["planning_uuid"]})
+                        
+        # on envoie la form non liée au template pour ajout d un nouveau creneau
+        print('POST TYPE : {}'.format(request.POST.get('type')))
+        data["FormCreneau"] = CreneauForm(initial={'evenement': evenement,
+                                                'equipe': data["equipe_uuid"],
+                                                'planning': data["planning_uuid"],
+                                                'id_benevole': ProfileBenevole.UUID},
+                                        pas_creneau=planning_retourne_pas(request),
+                                        planning_uuid=request.POST.get('planning'),
+                                        poste_uuid=request.POST.get('poste'),
+                                        benevole_uuid=request.POST.get('benevole'),
+                                        personne_connectee=request.user,
+                                        type=request.POST.get('type'), )
+                                        
     return render(request, "evenement/evenement.html", data)
