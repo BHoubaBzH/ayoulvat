@@ -27,7 +27,7 @@
                         {% for creno in Creneaux_plage %}
                             {% if creno.benevole_id == benevole.UUID %}
                                 {# AFFICHE LES CRENEAU DANS LA GRID  CSS #}
-                                {% include "evenement/creneau_affiche_edite.html" with type="benevole" %}
+                                {% include "evenement/creneau_affiche_edite.html" with source_type="benevole" %}
                             {% endif %}
                         {% endfor %}
                             {% include "evenement/grid_cellules.html" with row_type=benevole ligne="benevole" %}
@@ -57,10 +57,10 @@
             {# si le benevole du creneau correspond au benevole connecté et creneau de type benevole dans ce planning #}
             {% if creno.benevole_id == user.profilebenevole.UUID and creno.planning_id|stringformat:'s' == planning_uuid|stringformat:'s' and creno.type == "benevole" %}
                 {# AFFICHE LES CRENEAU de dispo DANS LA GRID  CSS uniquement ceux du planning choisi par le benevole #}
-                {% include "evenement/creneau_affiche_edite.html" with type="benevole" le_benevole="oui"%}
+                {% include "evenement/creneau_affiche_edite.html" with source_type="benevole" le_benevole="oui"%}
             {% elif creno.benevole_id == user.profilebenevole.UUID and creno.type == "creneau" %}
                 {# AFFICHE TOUS LES CRENEAU occupés du bénévoles DANS LA GRID  CSS #}
-                {% include "evenement/creneau_affiche_edite.html" with type="benevole" le_benevole="oui"%}
+                {% include "evenement/creneau_affiche_edite.html" with source_type="benevole" le_benevole="oui"%}
             {% endif %}
         {% endfor %}
 

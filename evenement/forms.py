@@ -48,7 +48,9 @@ class CreneauForm(ModelForm):
                   'planning',
                   'equipe',
                   'evenement',]
-    # methode __init__ surcharge les definition précédente de la class
+
+    ################ methode __init__
+    # surcharge les definition précédente de la class et permet de gerer les champs a afficher ou non
     def __init__(self, *args, **kwargs):
         self.pas_creneau = kwargs.pop('pas_creneau')
         self.planning_uuid = kwargs.pop('planning_uuid')
@@ -100,23 +102,21 @@ class CreneauForm(ModelForm):
             # la personne est uniquement un benevole ( ni orga, ni admin, ni responsable )
             if hasattr(self.personne_connectee, 'profilebenevole') \
                     and not self.personne_connectee.has_perm('evenement.change_creneau'):
-                # par default, le benevole n'a pas accès a ce champs
+                # par default, le benevole n'a pas accès a ces champs
+                for champs in self.fields:
+                    self.fields[champs].widget.attrs['readonly'] = True
                 self.fields['editable'].widget = HiddenInput()
                 # par default, la liste des benevoles présentée est : vide + le benevole connecté
                 self.fields['benevole'].queryset = \
                     ProfileBenevole.objects.filter(UUID=self.personne_connectee.profilebenevole.UUID)
-
-                # si le creneau est de  type créneau et deja créé, le benevole ne peut pas modifier les heures:
-                if self.type == "creneau" and self.poste_uuid is not None:
-                    # print('édite creneau de type creneau et deja créé')
-                    for champs in self.fields:
-                        self.fields[champs].widget.attrs['readonly'] = True
                 # si on edite une proposition de dispo benevole ou si on en cree une,
-                # on retire vide dans la liste benevoles
+                # on retire vide dans la liste benevoles et on permet de modifier les heures
                 if self.instance.type == "benevole" or self.type == "benevole" or self.type is None:
+                    self.fields['benevole'].empty_label = None
                     self.fields['benevole'].initial = \
                         ProfileBenevole.objects.get(UUID=self.personne_connectee.profilebenevole.UUID)
-                    self.fields['benevole'].empty_label = None
+                    self.fields['debut'].widget.attrs['readonly'] = False
+                    self.fields['fin'].widget.attrs['readonly'] = False
                 # si c'est un creneau affecté à un autre benevole, on affiche juste ce benevole
                 if self.instance.benevole_id != self.personne_connectee.profilebenevole.UUID and \
                         self.instance.benevole_id is not None and self.instance.benevole_id != "":
@@ -125,17 +125,34 @@ class CreneauForm(ModelForm):
                     self.fields['benevole'].empty_label = None 
 
             # orga, admin, responsable : on propose uniquement les bénévoles qui ont une
-            # dispo sur le planning au heures qui vont bien = fk du planning
-            elif self.personne_connectee.has_perm('evenement.change_creneau'):
-                # self.fields['benevole'].queryset = \
-                #    ProfileBenevole.objects.filter(BenevolesPlanning=self.planning_uuid)
-                print('planning instance : {} - planning page : {} - type : {}'.format(self.instance.planning_id, self.planning_uuid, self.instance.type))
-                if self.instance.benevole_id and self.instance.type == "benevole" and self.instance.planning_id == self.planning_uuid:
-                    print('benevole : {} - type : {}'.format(self.instance.benevole_id, self.instance.type))
-                    self.fields['benevole'].queryset = \
-                        ProfileBenevole.objects.filter(UUID=self.instance.benevole_id)
+            # dispo sur le planning au heures qui vont bien et sur les plannning deja créés donc avec un self.instance.planning_id
+            elif self.personne_connectee.has_perm('evenement.change_creneau') and self.instance.planning_id:
+                liste_benevoles_inscrits = []
+                # pour les benevoles ayant mis une dispo (Creno) sur ce creneau
+                print('************************************************')
+                for Creno in Creneau.objects.filter(planning_id=self.instance.planning_id, type="benevole"):
+                    # si le creneau est dans le l'interval de dispo alors on propose le benevole dispo
+                    if Creno.debut <= self.instance.debut and self.instance.fin <= Creno.fin :
+                        liste_benevoles_inscrits.append(Creno.benevole_id)
+                    print('liste benevole ayant mis une dispo sur cet intervale : {}'.format(liste_benevoles_inscrits))
+                # on retraite la liste des benevole disponible, et si ils ont déjà un creneau
+                # où ils sont inscrit au meme moment, on retire le bénévole de la liste
+                for Creno in Creneau.objects.filter(benevole_id__in=liste_benevoles_inscrits, type="creneau"):
+                    # si le debut ou la fin du creneau est dans l'intervale d'un creneau affecté au bénévole, 
+                    # ou si le benevole a deja un créneau affecté comris intégralement dans celui-ci
+                    if Creno.debut <= self.instance.debut < Creno.fin or Creno.fin < self.instance.fin <= Creno.fin \
+                        or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin:
+                        print('benevole ayant mis une dispo sur cet intervale et etant deja reservé sur un autre creneau : {}'.format(Creno.benevole_id))
+                        try:
+                            liste_benevoles_inscrits.remove(Creno.benevole_id)
+                        except:
+                            pass
+                print('liste benevole proposée du coup : {}'.format(liste_benevoles_inscrits))
+                self.fields['benevole'].queryset = \
+                    ProfileBenevole.objects.filter(UUID__in=liste_benevoles_inscrits)
+            # A FAIRE : filter sur la dispo benevole en +        
 
-
+    ################ methode controle_coherence_creneaux
     def controle_coherence_creneaux(self, Creno, debut, fin):
         # print(' ======== ')
         # print('ce creneau    : {}'.format(self.instance.UUID))
@@ -152,6 +169,7 @@ class CreneauForm(ModelForm):
             if debut_autre_creno < fin < fin_autre_creno:
                 raise ValidationError("Wopolo le créneau fini sur un autre!")
 
+    ################ methode clean
     # on valide les données pour avoir de la cohérence
     def clean(self):
         super().clean()
@@ -167,15 +185,24 @@ class CreneauForm(ModelForm):
             raise ValidationError("Wopolo le créneau ne peut pas finir après la fin du planning!")
         if debut >= fin:
             raise ValidationError("Wopolo la fin du créneau c'est après son début!")
-        # cohérence avec les autre créneaux du poste du planning
+        # cohérence avec les autre créneaux du poste sur le planning
         if self.poste_uuid and self.type=="creneau":
             for Creno in Creneau.objects.filter(planning=self.planning_uuid,
                                                 poste=self.poste_uuid,
                                                 type="creneau"):
                 self.controle_coherence_creneaux(Creno, debut, fin)
-        # cohérence avec les autre créneaux du benevole et du planning
+        # cohérence avec les autre créneaux du benevole sur le planning 
         if self.benevole_uuid and self.type=="benevole":
             for Creno in Creneau.objects.filter(planning=self.planning_uuid,
                                                 benevole=self.benevole_uuid,
                                                 type="benevole"):
                 self.controle_coherence_creneaux(Creno, debut, fin)
+        # cohérence : le benevole ne peut pas s'inscrire sur deux créneaux aux meme heures
+        if self.benevole_uuid and self.type=="creneau":
+            for Creno in Creneau.objects.filter(benevole=self.benevole_uuid,
+                                                type="creneau"):
+                self.controle_coherence_creneaux(Creno, debut, fin)                                
+        # pas de créneau type benevole sans benevole associé
+        if self.type == "benevole" and self.benevole_uuid == "":
+            raise ValidationError("Wopolo une dispo benevole sans benevole associé!")
+

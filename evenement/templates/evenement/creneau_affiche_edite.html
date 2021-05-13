@@ -2,7 +2,7 @@
 
 {# pour le placement dans la grille planning garder le filtre sur creno.debut et creno.fin comme la fonction planning_range de views.py : #}
 {# affiche le creneau sur le planning avec poste en ordonnées #}
-{% if type == "creneau" %}
+{% if source_type == "creneau" %}
     <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%} poste poste-{{ poste.UUID }}" 
             style="grid-row: ligne-{{ creno.poste_id }};
             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
@@ -11,7 +11,7 @@
     </button>
 
 {# affiche le creneau sur le planning avec benevole en ordonnées #}
-{% elif type == "benevole" %}
+{% elif source_type == "benevole" %}
     <button  class="creneau {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe{%endif%} benevole benevole-{{ benevole.UUID }}" 
             style="grid-row: ligne-{{ creno.benevole_id }};
             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
@@ -23,7 +23,7 @@
 {% endif %}
 
 {# modal #}
-<div class="modal fade" id="modal-creneau_{% if type == "creneau" %}creneau{% elif type == "benevole" %}benevole{% endif %}_editer-{{ creno.UUID }}" tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
+<div class="modal fade" id="modal-creneau_{% if source_type == "creneau" %}creneau{% elif source_type == "benevole" %}benevole{% endif %}_editer-{{ creno.UUID }}" tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
