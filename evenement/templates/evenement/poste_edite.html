@@ -6,15 +6,15 @@
     <form  id="form-poste-change-{{ poste.UUID }}" method='post'>
         {% csrf_token %}
         <input name="poste_modifier" value="{{ poste.UUID }}" type="hidden">
-        <button style="padding: 1;margin-right: 5px;"
-                class="btn btn-primary btn-sm"
+        <button style=""
+                class="bouton_edite_poste btn btn-sm"
                 title="editer ce poste"
                 id="bouton-poste-change-{{ poste.UUID }}"
                 type="button"
                 data-bs-toggle="modal" 
                 data-bs-target="#modal-poste-change-{{ poste.UUID }}">
             <div>
-                <i class="bi bi-filter-circle-fill"></i>
+                <i class="bi bi-chevron-down"></i>
             </div>
         </button>
     </form>

@@ -28,8 +28,8 @@
 			{% endfor %};
 		{# construction des entete et des colonnes de la grille planning: postes puis heures puis boutons #}
 		grid-template-columns:
-			[postes-boutons] auto
 			[postes] auto
+			[postes-boutons] auto
 			{% for dates, heures in PlanningRange.items %}
 			[time-{{ dates }}] auto
 			{% endfor %}
@@ -63,8 +63,8 @@
 			{% endfor %};
 		{# construction des entete et des colonnes de la grille planning: benevoles puis heures puis boutons #}
 		grid-template-columns:
-			[benevoles-boutons] auto
 			[benevoles] auto
+			[benevoles-boutons] auto
 			{% for dates, heures in PlanningRange.items %}
 			[time-{{ dates }}] auto
 			{% endfor %}
@@ -96,8 +96,8 @@
 			{% endfor %};
 		{# construction des entete et des colonnes de la grille planning: equipes puis heures puis boutons #}
 		grid-template-columns:
-			[equipes-boutons] auto
 			[equipes] auto
+			[equipes-boutons] auto
 			{% for dates, heures in PlanningRange.items %}
 			[time-{{ dates }}] auto
 			{% endfor %}
@@ -136,7 +136,7 @@
 
 @supports( display:grid ) {
 	@media screen and (min-width:700px) {
-		.poste-slot, .poste-bouton-slot, .benevole-slot, .benevole-bouton-slot  {
+		.poste-slot, .benevole-slot, .poste-bouton-slot, .benevole-bouton-slot   {
 			display: block;
 			padding: 10px 5px 5px;
 			position: sticky;
@@ -144,6 +144,12 @@
 			top: 0;
 			z-index: 20;
 			background-color: rgb(255, 255, 255);
+		}
+
+		.bouton_edite_poste  {
+			padding: 1;
+			margin-left: -5px;
+			margin-top: 5px;
 		}
 	}
 }
