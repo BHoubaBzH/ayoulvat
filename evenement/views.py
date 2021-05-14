@@ -297,7 +297,8 @@ def evenement(request, uuid_evenement):
                                             'planning': data["planning_uuid"]})
                         
         # on envoie la form non liée au template pour ajout d un nouveau creneau
-        print('POST TYPE : {}'.format(request.POST.get('type')))
+        # si pas de creneau selectionné : type = "", sinon type = "creneau" ou "benevole" 
+        # print('POST TYPE : {}'.format(request.POST.get('type')))
         data["FormCreneau"] = CreneauForm(initial={'evenement': evenement,
                                                 'equipe': data["equipe_uuid"],
                                                 'planning': data["planning_uuid"],

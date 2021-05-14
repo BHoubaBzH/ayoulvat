@@ -17,7 +17,7 @@
           <ul class="nav flex-column">
             <li class="nav-item">
               <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
-                  <button class="list-group-item evenement-button {% if not equipe %}active{% endif %}" title="planning global">
+                  <button class="list-group-item evenement-button {% if not equipe_uuid %}active{% endif %}" title="planning global">
                       <a>Toutes</a>
                       {% csrf_token %}
                       <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
