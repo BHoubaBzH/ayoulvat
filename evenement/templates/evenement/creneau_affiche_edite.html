@@ -8,22 +8,25 @@
             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
             title="{%if libre == 'non'%}créneau occupé{%else%}créneau disponible{%endif%}"
             data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}">
+            {%if libre == 'non'%}<a><b>{{ creno.benevole }}</b></a>
+            {%else%}<a><b>Disponible</b></a>{%endif%}
     </button>
 
 {# affiche le creneau sur le planning avec benevole en ordonnées #}
 {% elif source_type == "benevole" %}
-    <button  class="creneau {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe{%endif%} benevole benevole-{{ benevole.UUID }}" 
+    <button  class="creneau {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe{%endif%} benevole benevole-{{ creno.benevole_id }}" 
             style="grid-row: ligne-{{ creno.benevole_id }};
             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-            title="{%if le_benevole == "oui" %}{{ user.last_name|upper }} {{ user.first_name|capfirst }}
+            title="{%if le_benevole == 'oui' %}{{ user.last_name|upper }} {{ user.first_name|capfirst }}
                    {%else%}{{ benevole }}{%endif%}
                    {%if creno.type == 'benevole'%} disponible{%else%} ocupé {{ creno.planning_id.nom }}{%endif%}"
             data-bs-toggle="modal" data-bs-target="#modal-creneau_benevole_editer-{{ creno.UUID }}">
+                <a>{{ creno.equipe.nom }}{%if creno.poste%} <i class="bi bi-chevron-right"></i> {{ creno.poste.nom }}{%endif%}</a>
     </button>
 {% endif %}
 
 {# modal #}
-<div class="modal fade" id="modal-creneau_{% if source_type == "creneau" %}creneau{% elif source_type == "benevole" %}benevole{% endif %}_editer-{{ creno.UUID }}" tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
+<div class="modal fade" id="modal-creneau_{% if source_type == 'creneau' %}creneau{% elif source_type == 'benevole' %}benevole{% endif %}_editer-{{ creno.UUID }}" tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">

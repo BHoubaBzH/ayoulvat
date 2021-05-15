@@ -1,2 +1,9 @@
 Django~=3.2
 ordering~=0.2.0
+python-decouple~=3.4
+django-bootstrap-v5~=1.0.3
+colorful~=0.5.4
+mysqlclient~=2.0.3
+django-phonenumber-field~=5.1.0
+phonenumbers~=8.12.23
+django-colorful~=1.3

@@ -3,9 +3,40 @@ from django.forms import ModelForm, DateTimeField, HiddenInput, ValidationError
 from django.forms import ModelChoiceField, ModelMultipleChoiceField, CheckboxSelectMultiple
 from django.db.models import Q
 
-from evenement.models import Poste, Creneau, Planning
+from evenement.models import Equipe, Planning, Poste, Creneau
 from benevole.models import ProfileBenevole
 from evenement.customwidgets import SplitDateTimeMultiWidget
+
+
+################################################################################################
+class EquipeForm(ModelForm):
+    class Meta:
+        model = Equipe
+        fields = ['nom',
+                  'responsable_valide',
+                  'responsable_creer',
+                  'description',
+                  'editable',
+                  'couleur',
+                  'evenement',]
+
+
+################################################################################################
+class PlanningForm(ModelForm):
+    class Meta:
+        model = Planning
+        fields = ['nom',
+                  'debut',
+                  'fin',
+                  'creneaux',
+                  'ouvert_mineur',
+                  'pas',
+                  'creneau_moyen',
+                  'description',
+                  'editable',
+                  'couleur',
+                  'equipe',
+                  'evenement',]
 
 
 ################################################################################################
@@ -19,7 +50,14 @@ class PosteForm(ModelForm):
         # exclude = [ 'planning', ]
         # fields = '__all__'
         # ordonne l affichage des champs
-        fields = ['nom', 'description', 'couleur', 'editable', 'benevole', 'planning', 'equipe', 'evenement']
+        fields = ['nom', 
+                  'description', 
+                  'couleur', 
+                  'editable', 
+                  'benevole', 
+                  'planning', 
+                  'equipe', 
+                  'evenement']
 
     # cache certains champs
     def __init__(self, *args, **kwargs):

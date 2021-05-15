@@ -244,9 +244,9 @@ def evenement(request, uuid_evenement):
         "planning_uuid": "",  # par defaut, pas de planning selectionée
         "PlanningRange": "",  # dictionnaire formaté des dates heures de l'objet selectionné
 
-        "DicPoste": "",  # dictionnaire des formes de poste de l'evenement liées au objets de la db
+        "DicPoste": "",  # dictionnaire des formes de poste de l'evenement liées aux objets de la db
         "FormPoste": "",  # form non liée au template pour ajout d un nouveau poste
-        "DicCreneau": "",  # dictionnaire des formes de creneau de l'evenement liées au objets de la db
+        "DicCreneau": "",  # dictionnaire des formes de creneau de l'evenement liées aux objets de la db
         "FormCreneau": "",  # form non liée au template pour ajout d un nouveau creneau
     }
 
