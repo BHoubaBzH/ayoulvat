@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 
-from evenement.forms import PosteForm, CreneauForm
+from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
 from benevole.models import ProfileBenevole, Personne, AssoOrigine, ProfileResponsable, ProfileOrganisateur
 from association.models import Association
@@ -37,11 +37,11 @@ def planning_range(debut, fin, delta):
 
 def planning_retourne_pas(request):
     """
-    entree:
-        POST request
-    sortie:
-        pas_value : pas d'incrément du planning
-    recuperer le pas du planning principalement pour les creneau et le choix des heures
+        entree:
+            POST request
+        sortie:
+            pas_value : pas d'incrément du planning
+        recuperer le pas du planning principalement pour les creneau et le choix des heures
     """
     if 'planning' in request.POST:
         # retrouve le pas du planning à partir des infos du creneau
@@ -55,12 +55,12 @@ def planning_retourne_pas(request):
 
 def tous_creneaux_entre_2_heures(debut, fin, uuid_evenement):
     """
-    entree:
-        date de début et de fin
-        uuid de evenement
-    sortie:
-        creneaux : liste de creneaux
-    donne tous les créneaux entre 2 date pour savor si un benevole est deja occupé
+        entree:
+            date de début et de fin
+            uuid de evenement
+        sortie:
+            creneaux : liste de creneaux
+        donne tous les créneaux d'un evenement entre 2 date pour savor si un benevole est deja occupé
     """
     crenos_out = []  # liste
     crenos = Creneau.objects.filter(evenement_id=uuid_evenement)
@@ -81,15 +81,66 @@ def tous_creneaux_entre_2_heures(debut, fin, uuid_evenement):
     return crenos_out
 
 
+def forms_equipe(request, data, uuid_evenement):
+    """
+        entree:
+            la requete (contenant les infos POST)
+            l'objet data renvoyé au template
+            l'uid de l'evenement
+        sortie:
+            null
+        gère la création, modification et suppression des equipes en fonction du contenu de POST
+    """
+    if any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter']):
+        if 'equipe_modifier' in request.POST:
+            formequipe = EquipeForm(request.POST,
+                                  instance=Equipe.objects.get(UUID=request.POST.get('equipe')))
+        # nouvel objet en base
+        if 'equipe_ajouter' in request.POST:
+            formequipe = EquipeForm(request.POST)
+            print(formequipe.errors)
+        if formequipe.is_valid():
+            print('equipe modifié ou ajouté')
+            formequipe.save()
+
+    if request.POST.get('planning_supprimer'):
+        Equipe.objects.filter(UUID=request.POST.get('equipe_supprimer')).delete()
+
+def forms_planning(request, data, uuid_evenement):
+    """
+        entree:
+            la requete (contenant les infos POST)
+            l'objet data renvoyé au template
+            l'uid de l'evenement
+        sortie:
+            null
+        gère la création, modification et suppression des plannings en fonction du contenu de POST
+    """
+    if any(x in request.POST for x in ['planning_modifier', 'planning_ajouter']):
+        if 'equipe_modifier' in request.POST:
+            formplanning = PlanningForm(request.POST,
+                                  instance=Planning.objects.get(UUID=request.POST.get('planning')))
+        # nouvel objet en base
+        if 'planning_ajouter' in request.POST:
+            formplanning = PlanningForm(request.POST)
+            print(formplanning.errors)
+        if formplanning.is_valid():
+            print('planning modifié ou ajouté')
+            formplanning.save()
+
+    if request.POST.get('planning_supprimer'):
+        Planning.objects.filter(UUID=request.POST.get('planning_supprimer')).delete()
+
+
 def forms_postes(request, data, uuid_evenement):
     """
         entree:
             la requete (contenant les infos POST)
             l'objet data renvoyé au template
-            le planning contenant les postes
+            l'uid de l'evenement
         sortie:
-            null
-        gère également la modification et la suppression de poste en fonction du contenu de POST
+            dictionnaire des forms postes: key: UUID / val: form
+        gère la création, modification et suppression de poste en fonction du contenu de POST
     """
     # sauvegarde notre form modifée et crée envoyée en POST
     if any(x in request.POST for x in ['poste_modifier', 'poste_ajouter']):
@@ -119,8 +170,7 @@ def forms_postes(request, data, uuid_evenement):
         formposte = PosteForm(instance=Poste.objects.get(UUID=poste.UUID))
         dic_postes_init[poste.UUID] = formposte  # dictionnaire des forms
         # print (' poste UUID : {1} form : {0}'.format(formposte, poste.UUID))
-    data["DicPostes"] = dic_postes_init
-    return
+    return dic_postes_init
 
 
 def forms_creneaux(request, data, uuid_evenement):
@@ -128,10 +178,10 @@ def forms_creneaux(request, data, uuid_evenement):
         entree:
             la requete (contenant les infos POST)
             l'objet data renvoyé au template
-            la liste des postes
+            l'uid de l'evenement
         sortie:
-            null
-        gère également la modification et la suppression de creneaux en fonction du contenu de POST
+            dictionnaire des forms creneaux: key: UUID / val: form
+        gère la création, modification et suppression de creneaux en fonction du contenu de POST
     """
     if any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter']):
         # form en lien avec l objet basé sur model et pk UUID creneau
@@ -179,9 +229,7 @@ def forms_creneaux(request, data, uuid_evenement):
                                   type=creneau._meta.get_field('type').value_from_object(creneau), )
         dic_creneaux_init[creneau.UUID] = formcreneau  # dictionnaire des forms: key: UUID / val: form
         # print(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID))
-    data["DicCreneaux"] = dic_creneaux_init
-    return
-
+    return dic_creneaux_init
 
 ################################################
 #            views evenements
@@ -244,6 +292,8 @@ def evenement(request, uuid_evenement):
         "planning_uuid": "",  # par defaut, pas de planning selectionée
         "PlanningRange": "",  # dictionnaire formaté des dates heures de l'objet selectionné
 
+        "FormEquipe": "", # form non liée au template pour ajout d une nouvelle equipe
+        "FormPlanning" : "", # form non liée au template pour ajout d un nouveau planning
         "DicPoste": "",  # dictionnaire des formes de poste de l'evenement liées aux objets de la db
         "FormPoste": "",  # form non liée au template pour ajout d un nouveau poste
         "DicCreneau": "",  # dictionnaire des formes de creneau de l'evenement liées aux objets de la db
@@ -267,22 +317,18 @@ def evenement(request, uuid_evenement):
         data["Benevoles"] = ProfileBenevole.objects.filter(BenevolesEvenement=uuid_evenement)
         if request.POST.get('equipe'):  # selection d'une équipe
             data["equipe_uuid"] = request.POST.get('equipe')  # UUID equipe selectionnée
-            # data["Plannings"] = \
-            #    Planning.objects.filter(equipe_id=data["equipe_uuid"]).order_by('debut')  # models de plannings de l'equipe
-        else:  # selection d'un evènement mais pas d equipe, models de planning de l evenement
-            data["Plannings"] = Planning.objects.filter(evenement_id=uuid_evenement).order_by('debut')
 
         if request.POST.get('planning'):  # selection d'un planning
             data["planning_uuid"] = request.POST.get('planning')
             data["Planning"] = Planning.objects.get(UUID=request.POST.get('planning'))  # planning selectionnée
-            # instances de form poste & creneau : sauvegarde modifs & suppression & liste des postes
-            forms_postes(request, data, uuid_evenement)
-            forms_creneaux(request, data, uuid_evenement)
+            # instances de form poste & creneau liées : modifs & suppression & liste des postes
+            data["DicPostes"] = forms_postes(request, data, uuid_evenement)
+            data["DicCreneaux"] = forms_creneaux(request, data, uuid_evenement)
             # heures formatées du planning
             data["PlanningRange"] = planning_range(Planning.objects.get(UUID=request.POST.get('planning')).debut,
                                                    Planning.objects.get(UUID=request.POST.get('planning')).fin,
                                                    Planning.objects.get(UUID=request.POST.get('planning')).pas)
-            # retourne les creneaux sur une plage et sur tous les plannings :
+            # retourne les creneaux d'un evenement sur une plage et sur tous les plannings :
             data["Creneaux_plage"] = \
                 tous_creneaux_entre_2_heures(Planning.objects.get(UUID=request.POST.get('planning')).debut,
                                              Planning.objects.get(UUID=request.POST.get('planning')).fin,
@@ -291,23 +337,29 @@ def evenement(request, uuid_evenement):
         else:  # selection d'un evenement uniquement
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
 
+        
+        data["FormEquipe"] = EquipeForm(initial={'evenement': evenement})
+        forms_planning(request, data, uuid_evenement)
+        data["FormPlanning"] = PlanningForm(initial={'evenement': evenement,
+                                                     'equipe': data["equipe_uuid"]})
+
         # on envoie la form non liée au template pour ajout d un nouveau poste
         data["FormPoste"] = PosteForm(initial={'evenement': evenement,
-                                            'equipe': data["equipe_uuid"],
-                                            'planning': data["planning_uuid"]})
+                                               'equipe': data["equipe_uuid"],
+                                               'planning': data["planning_uuid"]})
                         
         # on envoie la form non liée au template pour ajout d un nouveau creneau
         # si pas de creneau selectionné : type = "", sinon type = "creneau" ou "benevole" 
         # print('POST TYPE : {}'.format(request.POST.get('type')))
         data["FormCreneau"] = CreneauForm(initial={'evenement': evenement,
-                                                'equipe': data["equipe_uuid"],
-                                                'planning': data["planning_uuid"],
-                                                'id_benevole': ProfileBenevole.UUID},
-                                        pas_creneau=planning_retourne_pas(request),
-                                        planning_uuid=request.POST.get('planning'),
-                                        poste_uuid=request.POST.get('poste'),
-                                        benevole_uuid=request.POST.get('benevole'),
-                                        personne_connectee=request.user,
-                                        type=request.POST.get('type'), )
+                                                   'equipe': data["equipe_uuid"],
+                                                   'planning': data["planning_uuid"],
+                                                   'id_benevole': ProfileBenevole.UUID},
+                                          pas_creneau=planning_retourne_pas(request),
+                                          planning_uuid=request.POST.get('planning'),
+                                          poste_uuid=request.POST.get('poste'),
+                                          benevole_uuid=request.POST.get('benevole'),
+                                          personne_connectee=request.user,
+                                          type=request.POST.get('type'), )
                                         
     return render(request, "evenement/evenement.html", data)

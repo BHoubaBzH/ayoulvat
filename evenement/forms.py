@@ -1,7 +1,6 @@
 from uuid import UUID
 from django.forms import ModelForm, DateTimeField, HiddenInput, ValidationError
 from django.forms import ModelChoiceField, ModelMultipleChoiceField, CheckboxSelectMultiple
-from django.db.models import Q
 
 from evenement.models import Equipe, Planning, Poste, Creneau
 from benevole.models import ProfileBenevole
@@ -12,6 +11,7 @@ from evenement.customwidgets import SplitDateTimeMultiWidget
 class EquipeForm(ModelForm):
     class Meta:
         model = Equipe
+        fields = '__all__'
         fields = ['nom',
                   'responsable_valide',
                   'responsable_creer',
@@ -23,6 +23,8 @@ class EquipeForm(ModelForm):
 
 ################################################################################################
 class PlanningForm(ModelForm):
+    debut = DateTimeField(widget=SplitDateTimeMultiWidget())
+    fin = DateTimeField(widget=SplitDateTimeMultiWidget())
     class Meta:
         model = Planning
         fields = ['nom',
@@ -37,6 +39,7 @@ class PlanningForm(ModelForm):
                   'couleur',
                   'equipe',
                   'evenement',]
+
 
 
 ################################################################################################

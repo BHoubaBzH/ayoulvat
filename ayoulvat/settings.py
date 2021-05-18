@@ -30,6 +30,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'modeltranslation',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,17 +39,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'bootstrap5',
+    'colorful',
+
     'association.apps.AssociationsConfig',
     'administration.apps.AdministrationConfig',
     'evenement.apps.EvenementConfig',
     'benevole.apps.BenevoleConfig',
-    'bootstrap5',
-    'colorful',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -121,6 +125,14 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = False # False pour resoudre les pb de timezone sur les plannings
 DATE_INPUT_FORMATS = ['%d/%m/%Y %H:%M']
+
+gettext = lambda s: s
+LANGUAGES = (
+    ('fr', gettext('Français')),
+    ('br', gettext('Brezhoneg')),
+    ('en',gettext('English')),
+)
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/

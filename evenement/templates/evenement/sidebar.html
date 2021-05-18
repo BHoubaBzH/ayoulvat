@@ -74,11 +74,10 @@
                           title={{ plan.nom }}>
                       <a>{{ plan.equipe.nom }} <i class="bi bi-chevron-right"></i> {{ plan.nom }} </a>
                     </button>
-                  </form
+                  </form>
               {% endif %}
             {% endfor %}
           </ul>
-
         {# sinon si on a plusieurs evenement, on affiche les evenements dans la sidebar#}
         {% elif Evenements %}
           <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -107,6 +106,12 @@
 
       </div>
     </nav>
+
+    {#################################EN COURS############################################""#}
+    {# ajoute d'un planning #}
+    {% if 'evenement.add_planning' in perms %}
+        {% include "evenement/planning_ajoute.html" %}
+    {% endif %}
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">

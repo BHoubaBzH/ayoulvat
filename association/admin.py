@@ -1,12 +1,13 @@
 from django.contrib import admin
 
 from .models import Association, Abonnement
-# from benevole.models import ProfileBenevole
+from modeltranslation.admin import TranslationAdmin
 
 
 class AbonnementInLine(admin.TabularInline):
     model = Abonnement
     extra = 0
+
 
 '''
 class ProfileAdministrateurInLine(admin.TabularInline):
@@ -18,24 +19,15 @@ class ProfileAdministrateurInLine(admin.TabularInline):
 '''
 
 
-class AssociationDetails(admin.ModelAdmin):
+#class AssociationDetails(admin.ModelAdmin):
+class AssociationDetails(TranslationAdmin):
     # details affichés de l'asso dans la liste
     list_display = ['nom', 'description', 'courriel']
     inlines = [AbonnementInLine, ]
 
 
-'''
-class AdministrateurDetails(UserAdmin):
-    inlines = [ProfileAdministrateurInLine, ]
-    list_display = ('last_name', )
-    # va chercher last_name dans la class user liée par ManyToMany
-    def last_name(self, obj):
-        return obj.user.last_name
-    def get_inline_instances(self, request, obj=None):
-        if not obj:
-            return list()
-        return super(AdministrateurDetails, self).get_inline_instances(request, obj)
-'''
+class AbonnementAdmin(TranslationAdmin):
+    pass
 
 
 admin.site.register(Association, AssociationDetails)
@@ -68,5 +60,4 @@ class ProfileInline(admin.StackedInline):
 
 
 admin.site.register(ProfileAdministrateur, ProfileAdministrateurAdmin)
-
 '''

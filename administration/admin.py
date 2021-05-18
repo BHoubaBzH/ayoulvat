@@ -2,9 +2,10 @@ import ordering as ordering
 from django.contrib import admin
 
 from .models import Formule
+from modeltranslation.admin import TranslationAdmin
 
-
-class FormulesListe(admin.ModelAdmin):
+#class FormulesListe(admin.ModelAdmin):
+class FormulesListe(TranslationAdmin):
     # partie édition
     fieldsets = [
         ('Nom', {'fields': ['nom']}),

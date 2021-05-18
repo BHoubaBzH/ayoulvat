@@ -11,6 +11,7 @@ class Association(models.Model):
     nom = models.CharField(max_length=50)
     adresse = models.CharField(max_length=100)
     ville = models.CharField(max_length=50)
+    pays = models.CharField(max_length=50)
     code_postal = models.IntegerField()
     courriel = models.EmailField(default='')
     fixe = PhoneNumberField(null=True, blank=True,
@@ -48,6 +49,7 @@ class Abonnement(models.Model):
     facture_nom = models.CharField(max_length=50)
     facture_adresse = models.CharField(max_length=100)
     facture_ville = models.CharField(max_length=50)
+    facture_pays = models.CharField(max_length=50, default="France")
     facture_code_postal = models.IntegerField()
     facture_courriel = models.EmailField(default='')
     description = models.CharField(max_length=500, blank=True, default='')
@@ -60,5 +62,4 @@ class Abonnement(models.Model):
 
     def __bool__(self):
         return self.a_jour
-
 

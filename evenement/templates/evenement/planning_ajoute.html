@@ -1,15 +1,16 @@
 {# evenement/poste_ajoute.html #}
-
+    
+{% comment "bouton d ajout mis en commentaire, on garde au cas où" %}
 <span class="poste-slot" aria-hidden="true" style="grid-row: poste-add; grid-column: postes;">
-        <form  id="form-poste_ajouter" method='post'>
+        <form  id="form-planning_ajouter" method='post'>
             {% csrf_token %}
             <button style=""
                     class="btn btn-sm"
-                    title="ajouter un poste"
-                    id="bouton-poste_ajouter"
+                    title="ajouter un planning"
+                    id="bouton-planning_ajouter"
                     type="submit"
                     data-bs-toggle="modal"
-                    data-bs-target="#modal-poste_ajouter">
+                    data-bs-target="#modal-planning_ajouter">
                 <div>
                     <i class="bi bi-plus-circle-fill"></i>
                 </div>
@@ -17,36 +18,33 @@
         </form>
     </button>
 </span>
+{% endcomment %} 
 
 {# modal doit etre en dehors du div pour s'afficher correctement #}
-
 <div class="modal fade"
-     id="modal-poste_ajouter"
+     id="modal-planning_ajouter"
      tabindex="-1"
      role="dialog"
-     aria-labelledby="poste_ajouter"
+     aria-labelledby="planning_ajouter"
      aria-hidden="true">
     <div class="modal-dialog" role="document" style="z-index:1050">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Ajout d'un poste</h5>
+                <h5 class="modal-title" id="ModalLabel">Ajout d'un planning</h5>
             </div>
-            <form  id="form-poste" method='post'>
+            <form  id="form-planning" method='post'>
                 <div class="modal-body">
                         {% csrf_token %}
                     <table class="table">
-
-                        {{ FormPoste.as_table }}
+                        {{ FormPlanning.as_table }}
                     </table>
                 </div>
 
                 <div class="modal-footer">
                     {# données pour garder le planning affiché apres submission POST#}
-                    <input name="equipe" value="{{ Planning.equipe_id }}" type="hidden">
-                    <input  name="planning" value="{{ Planning.UUID }}" type="hidden">
-                    
-                    <input name="type" value="benevole" type="hidden">
-                    <input name="poste_ajouter" value="" type="hidden">
+                    <!--input name="equipe" value="{{ Planning.equipe_id }}" type="hidden"-->
+                      
+                    <input name="planning_ajouter" value="" type="hidden">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" id="poste_ajouter" class="btn btn-primary success">Ajouter</button>
                 </div>
@@ -57,16 +55,16 @@
 
 <script>
     /* affiche le modal de confirmation quand appuie sur le bouton type=submit */
-    $('#form-poste_ajouter').on('submit', function(e){
+    $('#form-planning_ajouter').on('submit', function(e){
         /* alert('modal'); */
-        $('#modal-poste_ajouter').modal('show');
+        $('#modal-planning_ajouter').modal('show');
         e.preventDefault();
     });
 
     /* quand le bouton Ajouter est utilisé dans modal, submit la form et ferme le modal */
-    $(document).on('click', '#poste_ajouter', function () {
+    $(document).on('click', '#planning_ajouter', function () {
         /* alert('submitting-{{ forloop.counter }}'); */
-        document.getElementById('form-poste').submit();
+        document.getElementById('form-planning').submit();
         $('#modal-poste_ajouter').modal('toggle');
     });
 </script>
