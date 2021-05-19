@@ -22,6 +22,9 @@
                 style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;">
                     <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
             </div>
+            {% if 'evenement.change_equipe'  in perms %}
+                    {% include "evenement/equipe_edite.html" %}
+            {% endif %}
             {% for planning in Plannings %}
                     {% if planning.equipe_id == equipe.UUID %}
                     {# AFFICHE LES PLANNINGS DANS LA GRID CSS #}
@@ -30,8 +33,11 @@
             {% endfor %}
             
             {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" %}
-
         {% endfor %}
+        {# ajoute une ligne vide pour pouvoir ajouter des equipes au besoins #}
+        {% if 'evenement.add_poste'%}
+            {% include "evenement/equipe_ajoute.html" %}
+        {% endif %}
     {% elif equipe_uuid %} {# une equipe de selectionnée, on affiche que cette équipe dans le planning #}
         {% for equipe in Equipes %}
             {% if  equipe.UUID|stringformat:'s' == equipe_uuid|stringformat:'s'%}

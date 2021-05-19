@@ -120,7 +120,7 @@
 		transform: rotate(-50deg);
 	}
 
-	.poste-slot, .poste-bouton-slot {
+	.poste-slot, .poste-bouton-slot, .equipe-slot {
 		# display: none; /* hidden on small screens and browsers without grid support */
 		text-align: left;
 		width: 100px;
@@ -136,7 +136,7 @@
 
 @supports( display:grid ) {
 	@media screen and (min-width:700px) {
-		.poste-slot, .benevole-slot, .poste-bouton-slot, .benevole-bouton-slot   {
+		.poste-slot, .benevole-slot, .equipe-slot, .poste-bouton-slot, .benevole-bouton-slot   {
 			display: block;
 			padding: 10px 5px 5px;
 			position: sticky;
@@ -199,6 +199,7 @@ body {
 }
 
 .poste-slot,
+.equipe-slot,
 .benevole-slot, 
 .time-slot {
 	display: flex;

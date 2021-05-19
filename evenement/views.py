@@ -103,8 +103,20 @@ def forms_equipe(request, data, uuid_evenement):
             print('equipe modifié ou ajouté')
             formequipe.save()
 
-    if request.POST.get('planning_supprimer'):
+    if request.POST.get('equipe_supprimer'):
         Equipe.objects.filter(UUID=request.POST.get('equipe_supprimer')).delete()
+
+    # cree dans la page toutes nos from pour les equipes
+    dic_equipe_init = {}  # dictionnaire des forms
+    # key : UUID postes
+    # val : form de poste initialisée objet db lié
+    # parcours les equipes de l'evenement dans la base
+    for equipe in Equipe.objects.filter(evenement_id=uuid_evenement):
+        # form en lien avec l objet basé sur model et pk UUID equipe
+        formequipe = EquipeForm(instance=Equipe.objects.get(UUID=equipe.UUID))
+        dic_equipe_init[equipe.UUID] = formequipe  # dictionnaire des forms
+        # print (' equipe UUID : {}'.format(equipe.UUID))
+    return dic_equipe_init
 
 def forms_planning(request, data, uuid_evenement):
     """
@@ -117,7 +129,7 @@ def forms_planning(request, data, uuid_evenement):
         gère la création, modification et suppression des plannings en fonction du contenu de POST
     """
     if any(x in request.POST for x in ['planning_modifier', 'planning_ajouter']):
-        if 'equipe_modifier' in request.POST:
+        if 'planning_modifier' in request.POST:
             formplanning = PlanningForm(request.POST,
                                   instance=Planning.objects.get(UUID=request.POST.get('planning')))
         # nouvel objet en base
@@ -131,6 +143,17 @@ def forms_planning(request, data, uuid_evenement):
     if request.POST.get('planning_supprimer'):
         Planning.objects.filter(UUID=request.POST.get('planning_supprimer')).delete()
 
+    # cree dans la page toutes nos from pour les postes du planning
+    dic_planning_init = {}  # dictionnaire des forms
+    # key : UUID postes
+    # val : form de poste initialisée objet db lié
+    # parcours les plannings de l'evenement dans la base
+    for planning in Planning.objects.filter(evenement_id=uuid_evenement):
+        # form en lien avec l objet basé sur model et pk UUID equipe
+        formplanning = PlanningForm(instance=Planning.objects.get(UUID=planning.UUID))
+        dic_planning_init[planning.UUID] = formplanning  # dictionnaire des forms
+        # print (' planning UUID : {}'.format(planning.UUID))
+    return dic_planning_init
 
 def forms_postes(request, data, uuid_evenement):
     """
@@ -149,7 +172,7 @@ def forms_postes(request, data, uuid_evenement):
             formposte = PosteForm(request.POST,
                                   instance=Poste.objects.get(UUID=request.POST.get('poste')))
         # nouvel objet en base
-        if 'poste_ajouter' in request.POST:
+        if 'poste_ajouter' in request.POST: 
             formposte = PosteForm(request.POST)
         if formposte.is_valid():
             formposte.save()
@@ -160,11 +183,11 @@ def forms_postes(request, data, uuid_evenement):
         print('poste {} supprimé'.format(Poste.objects.filter(UUID=request.POST.get('poste_supprimer'))))
         Poste.objects.filter(UUID=request.POST.get('poste_supprimer')).delete()
 
-    # cree dans la page toutes nos from pour les postes du planing
+    # cree dans la page toutes nos from pour les postes du planning
     dic_postes_init = {}  # dictionnaire des forms
     # key : UUID postes
     # val : form de poste initialisée objet db lié
-    # parcours les postes du planning dans la base
+    # parcours les postes de l'evenement dans la base
     for poste in Poste.objects.filter(evenement_id=uuid_evenement):
         # form en lien avec l objet basé sur model et pk UUID poste
         formposte = PosteForm(instance=Poste.objects.get(UUID=poste.UUID))
@@ -217,7 +240,7 @@ def forms_creneaux(request, data, uuid_evenement):
     dic_creneaux_init = {}  # dictionnaire des forms
     # key : UUID postes
     # val : form de creneau initialisée objet db lié
-    # parcours les creneaux du planning dans la base
+    # parcours les creneaux de l'evenement dans la base
     for creneau in Creneau.objects.filter(evenement_id=uuid_evenement):  # liste des creneaux de l'evenement
         # form en lien avec l objet basé sur model et pk UUID creneau
         formcreneau = CreneauForm(instance=Creneau.objects.get(UUID=creneau.UUID),
@@ -292,12 +315,14 @@ def evenement(request, uuid_evenement):
         "planning_uuid": "",  # par defaut, pas de planning selectionée
         "PlanningRange": "",  # dictionnaire formaté des dates heures de l'objet selectionné
 
-        "FormEquipe": "", # form non liée au template pour ajout d une nouvelle equipe
+        "FormEquipe" : "", # form non liée au template pour ajout d une nouvelle equipe
+        "DicEquipes" : "",
         "FormPlanning" : "", # form non liée au template pour ajout d un nouveau planning
-        "DicPoste": "",  # dictionnaire des formes de poste de l'evenement liées aux objets de la db
-        "FormPoste": "",  # form non liée au template pour ajout d un nouveau poste
-        "DicCreneau": "",  # dictionnaire des formes de creneau de l'evenement liées aux objets de la db
-        "FormCreneau": "",  # form non liée au template pour ajout d un nouveau creneau
+        "DicPlannings" : "",
+        "DicPostes" : "",  # dictionnaire des formes de poste de l'evenement liées aux objets de la db
+        "FormPoste" : "",  # form non liée au template pour ajout d un nouveau poste
+        "DicCreneaux" : "",  # dictionnaire des formes de creneau de l'evenement liées aux objets de la db
+        "FormCreneau" : "",  # form non liée au template pour ajout d un nouveau creneau
     }
 
     # log les donnees post
@@ -337,9 +362,10 @@ def evenement(request, uuid_evenement):
         else:  # selection d'un evenement uniquement
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
 
-        
+
+        data["DicEquipes"] = forms_equipe(request, data, uuid_evenement)
         data["FormEquipe"] = EquipeForm(initial={'evenement': evenement})
-        forms_planning(request, data, uuid_evenement)
+        data["DicPlannings"] = forms_planning(request, data, uuid_evenement)
         data["FormPlanning"] = PlanningForm(initial={'evenement': evenement,
                                                      'equipe': data["equipe_uuid"]})
 

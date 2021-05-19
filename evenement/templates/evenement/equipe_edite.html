@@ -1,0 +1,109 @@
+{# evenement/equipe_edite.html #}
+
+<div id="boutons des equipes" class="equipe-bouton-slot" aria-hidden="true"
+    style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes-boutons;">
+        {# affiche le bouton d edition de equipe #}
+    <form  id="form-equipe-change-{{ equipe.UUID }}" method='post'>
+        {% csrf_token %}
+        <input name="equipe_modifier" value="{{ equipe.UUID }}" type="hidden">
+        <button style=""
+                class="bouton_edite_equipe btn btn-sm"
+                title="editer cette equipe"
+                id="bouton-equipe-change-{{ equipe.UUID }}"
+                type="button"
+                data-bs-toggle="modal" 
+                data-bs-target="#modal-equipe-change-{{ equipe.UUID }}">
+            <div>
+                <i class="bi bi-chevron-down"></i>
+            </div>
+        </button>
+    </form>
+</div>
+
+{##################### MODALS #####################}
+{# modal d edition d equipe doit etre en dehors du div pour s'afficher correctement #}
+<div class="modal fade"
+     id="modal-equipe-change-{{ equipe.UUID }}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="equipe"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Modifer l'équipe</h5>
+            </div>
+
+            <form  id="form-equipe-{{ equipe.UUID }}"  method='post'>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <table class="table">
+                        {% for uuid, equipef in DicEquipes.items %}
+                            {% if uuid|stringformat:"s" == equipe.UUID|stringformat:"s" %}
+                                {{ equipef.as_table }}
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+                    {# données pour garder le planning affiché apres submission POST#}
+                    <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+
+                    <input  name="equipe" value="{{ equipe.UUID }}" type="hidden">
+                    
+                    {% if 'evenement.delete_equipe'  in perms %}
+                        <button class="btn btn-danger" title="supprimer cette equipe" name="equipe_supprimer"
+                                id="equipe_supprimer" value="supprimer" type="button"
+                                data-bs-toggle="modal" data-bs-target="#modal-confirme-equipe-supprime-{{ equipe.UUID }}">
+                                Supprimer
+                        </button>
+                    {% endif %}
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" id="equipe_modifier" name="equipe_modifier" value="modifier" class="btn btn-primary success">Modifier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# modal de confirmation de suppression doit etre en dehors du div pour s'afficher correctement #}
+{% if 'evenement.delete_equipe'  in perms %}
+<div class="modal fade"
+     id="modal-confirme-equipe-supprime-{{ equipe.UUID }}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="equipe_supprime"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Confirmer La suppression de l'équipe</h5>
+            </div>
+            <div class="modal-body">
+                Etes-vous sur?
+                <table class="table">
+                    <tr><th>Equipe</th><td id="equipe">{{ Equipe.nom }}</td></tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Non</button>
+                <button type="submit" id="equipe_supprimer_confirme" class="btn btn-danger success">Oui</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
+    $('#modal-confirme-equipe-supprime-{{ equipe.UUID }}').on('click', '#equipe_supprimer_confirme', function(e){
+        /* alert('submitting-{{ forloop.counter }}'); */
+        $('#form-equipe-{{ equipe.UUID }}').append('<input type="hidden" name="equipe_supprimer" value="{{ equipe.UUID }}">');
+        document.getElementById('form-equipe-{{ equipe.UUID }}').submit();
+        $('#modal-confirme-equipe-supprime-{{ equipe.UUID }}').modal('toggle');
+        e.preventDefault();
+    });
+
+</script>
+{% endif %}
