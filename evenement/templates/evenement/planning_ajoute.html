@@ -1,24 +1,4 @@
 {# evenement/planning_ajoute.html #}
-    
-{% comment "bouton d ajout mis en commentaire, on garde au cas où" %}
-<span class="poste-slot" aria-hidden="true" style="grid-row: poste-add; grid-column: postes;">
-        <form  id="form-planning_ajouter" method='post'>
-            {% csrf_token %}
-            <button style=""
-                    class="btn btn-sm"
-                    title="ajouter un planning"
-                    id="bouton-planning_ajouter"
-                    type="submit"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modal-planning_ajouter">
-                <div>
-                    <i class="bi bi-plus-circle-fill"></i>
-                </div>
-            </button>
-        </form>
-    </button>
-</span>
-{% endcomment %} 
 
 {# modal doit etre en dehors du div pour s'afficher correctement #}
 <div class="modal fade"

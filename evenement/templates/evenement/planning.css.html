@@ -181,7 +181,15 @@ body {
 	line-height: 1.5;
 }
 
-.grid-cell {
+.grid-cell-last {
+	border-left: inherit; 
+	border-color: lightgray;
+	background-color: transparent;
+	border-top: transparent;
+	border-right: transparent;
+}
+
+.grid-cell, .grid-cell-minuit {
 	border-left: inherit; 
 	border-bottom: inherit; 
 	border-color: lightgray;
@@ -190,12 +198,9 @@ body {
 	border-right: transparent;
 }
 
-.grid-cell-last {
-	border-left: inherit; 
-	border-color: lightgray;
-	background-color: transparent;
-	border-top: transparent;
-	border-right: transparent;
+.grid-cell-minuit{
+	# border-left-color: black;
+	border-left-width: 2px;
 }
 
 .poste-slot,
@@ -209,10 +214,14 @@ body {
 	# font-size:.75em;
 }
 
-.planning-head {
+.planning-head, .planning-head-equipes {
 	display: inline-grid;
 	# width: 1.5em;
 	max-width: 2em;
+}
+
+.planning-head-equipes {
+	max-width: 1em;
 }
 
 .text {

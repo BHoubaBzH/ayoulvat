@@ -23,7 +23,7 @@
     {# sources scripts #}
     <script src="{% static "evenement/js/scripts.js" %}"></script>
     {# fonts et icons BOOTSTRAP #}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <!-- XDSoft DateTimePicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
@@ -36,14 +36,13 @@
 <div class="container-fluid">
   <div class="row">
     {% include "evenement/sidebar.html" %}
-
-    <div class="table-responsive">
-        <main>
-            {% block evenement %}
-            {% endblock evenement %}
-            </br></br>
-        </main>
-    </div>
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-3">
+      <div class="table-responsive ">
+              {% block evenement %}
+              {% endblock evenement %}
+              </br></br>
+      </div>
+    </main>
   </div>
 </div>
 </body>

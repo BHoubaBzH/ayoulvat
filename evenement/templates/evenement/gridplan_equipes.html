@@ -3,7 +3,7 @@
 <div class="planning-equipes" aria-labelledby="planning-heading">
     {# affiche les entetes des colonnes du planning : les heures #}
     {% for dates, heures in PlanningRange.items %}
-        <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">
+        <div class="planning-head-equipes" style="grid-column: time-{{ dates }}; grid-row: heures">
             <h8 class="time-slot">
                 {% if heures.0|stringformat:'s' != "00:00" %}
                     {{ heures.0 }}
@@ -17,7 +17,7 @@
     {% if Evenement and not equipe_uuid %}
         {% for equipe in Equipes %}
             {# affiche les entetes des lignes du planning : equipes #}
-            <div class="poste-slot"
+            <div class="equipe-slot"
                 aria-hidden="true"
                 style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;">
                     <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
@@ -35,22 +35,22 @@
             {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" %}
         {% endfor %}
         {# ajoute une ligne vide pour pouvoir ajouter des equipes au besoins #}
-        {% if 'evenement.add_poste'%}
+        {% if 'evenement.add_equipe' in perms %}
             {% include "evenement/equipe_ajoute.html" %}
         {% endif %}
     {% elif equipe_uuid %} {# une equipe de selectionnée, on affiche que cette équipe dans le planning #}
         {% for equipe in Equipes %}
             {% if  equipe.UUID|stringformat:'s' == equipe_uuid|stringformat:'s'%}
                 {# affiche les entetes des lignes du planning : equipes #}
-                <div class="poste-slot"
+                <div class="equipe-slot"
                     aria-hidden="true"
                     style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;">
                         <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
                 </div>
                 {% for planning in Plannings %}
-                        {% if planning.equipe_id == equipe.UUID %}
-                        {# AFFICHE LES PLANNINGS DANS LA GRID CSS #}
-                            {% include "evenement/planning_affiche_edite.html" with equipe=equipe %}
+                    {% if planning.equipe_id == equipe.UUID %}
+                    {# AFFICHE LES PLANNINGS DANS LA GRID CSS #}
+                        {% include "evenement/planning_affiche_edite.html" with equipe=equipe %}
                     {% endif %}
                 {% endfor %}
                 

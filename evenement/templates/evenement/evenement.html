@@ -4,16 +4,11 @@
 
 
 {% block evenement %}
-{# si un planning a été selectionné on affiche les infos dans la page centrale #}
+
+    {# si un planning a été selectionné on affiche les infos dans la page centrale #}
     {% if Planning.UUID %}
         <table class="table">
             <tbody>
-                <tr>
-                    <td class="col-md-3"><p class="h4"><b>Equipe :</b></p></td>
-                    <td class="col-md-3"><p class="h4">{{ Planning.equipe.nom }}</p></td>
-                    <td class="col-md-3"><p class="h4"><b>Planning :</b></p></td>
-                    <td class="col-md-3"><p class="h4">{{ Planning.nom }}</p></td>
-                </tr>
                 <tr>
                     <td class="col-md-3"><p class="h4"><b>Debut :</b></p></td>
                     <td class="col-md-3"><p class="h4">{{ Planning.debut|date:"d/m/Y H:i" }}</b></p></td>

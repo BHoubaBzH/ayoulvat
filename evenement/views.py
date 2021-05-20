@@ -314,7 +314,7 @@ def evenement(request, uuid_evenement):
         "equipe_uuid": "",  # par defaut, pas d'equipe selectionée
         "planning_uuid": "",  # par defaut, pas de planning selectionée
         "PlanningRange": "",  # dictionnaire formaté des dates heures de l'objet selectionné
-
+        
         "FormEquipe" : "", # form non liée au template pour ajout d une nouvelle equipe
         "DicEquipes" : "",
         "FormPlanning" : "", # form non liée au template pour ajout d un nouveau planning

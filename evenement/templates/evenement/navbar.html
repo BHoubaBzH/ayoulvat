@@ -2,10 +2,20 @@
 {% load bootstrap5 %}
 
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" {% if 'change_evenement'  in perms %} href="{% url 'liste_evenements' %}" {% endif %}>{{ Association.nom }}</a>
-    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+      <div class="navbar-brand col-md-3 col-lg-2 me-0 px-3">
+        {% if 'change_evenement'  in perms %}<a  href="{% url 'liste_evenements' %}">{{ Association.nom }}</a>{% endif %}
+        {%if Evenement.nom%}<a> {% if 'change_evenement'  in perms %}<i class="bi bi-chevron-right"></i>{% endif %} {{ Evenement.nom }}</a>{%endif%}
+        {% for team in Equipes %}
+          {%if equipe_uuid|stringformat:'s' == team.UUID|stringformat:'s'%}<a> <i class="bi bi-chevron-right"></i> {{ team.nom }}</a>{%endif%}
+        {% endfor %}
+        {% for plan in Plannings %}
+          {%if planning_uuid|stringformat:'s' == plan.UUID|stringformat:'s'%}<a> <i class="bi bi-chevron-right"></i> {{ plan.nom }}</a>{%endif%}
+        {% endfor %}
+      </div>
+      
+      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
     <!--input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"-->
     <ul class="navbar-nav px-3">
       <li class="nav-item text-nowrap">
@@ -14,7 +24,20 @@
     </ul>
     <ul class="navbar-nav px-3">
       <li class="nav-item text-nowrap">
-        <a class="nav-link" href="/logout">Déconnexion</a>
+        <div class="btn-group me-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+          <span data-feather="calendar"></span>
+          This week
+        </button>
+      </li>
+    </ul>
+    <ul class="navbar-nav px-3">
+      <li class="nav-item text-nowrap">
+        <a class="btn btn-sm btn-outline-secondary" href="/logout">Déconnexion</a>
+        <!--a class="nav-link" href="/logout">Déconnexion</a-->
       </li>
     </ul>
   </header>

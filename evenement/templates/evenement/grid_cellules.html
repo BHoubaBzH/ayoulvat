@@ -3,8 +3,8 @@
 {# decoration css: on parcour toutes les cellule de la grid css pour y appliquer un div #}
 {% for dates, dateheure in PlanningRange.items %}
     {% if not forloop.last %} {# pas de bouton pour la derniere colonne vu qu'elle apparait apres l heure de fin du planning #}
-        <div class="grid-cell"
-                style="grid-row: ligne-{% if le_benevole == "oui" %}{{ user.profilebenevole.UUID }}{% else %}{{ row_type.UUID }}{% endif %};
+        <div class="{%if dateheure.1|date:'Hi' == '0000'%}grid-cell-minuit{%else%}grid-cell{%endif%}"
+                style="grid-row: ligne-{% if le_benevole == 'oui' %}{{ user.profilebenevole.UUID }}{% else %}{{ row_type.UUID }}{% endif %};
                     grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};">
 
             {# si utilisateur a le droit, on presente les form pour ajouter un creneau (creneau type creneau) sur le poste #}
@@ -68,7 +68,7 @@
     {% else %}
         {# pas de bouton pour la derniere colonne vu qu'elle apparait apres l heure de fin du planning #}
         <div class="{% if forloop.last %}grid-cell-last{% else %}grid-cell{% endif %}" 
-                style="grid-row: ligne-{% if le_benevole == "oui" %}{{ user.profilebenevole.UUID }}{% else %}{{ row_type.UUID }}{% endif %};
+                style="grid-row: ligne-{% if le_benevole == 'oui' %}{{ user.profilebenevole.UUID }}{% else %}{{ row_type.UUID }}{% endif %};
                 grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};"></div>
     {% endif %}
 {% endfor %}
