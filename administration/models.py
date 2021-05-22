@@ -36,7 +36,7 @@ groupe_permission = {
         'delete_profileresponsable',
         'add_profilebenevole', 'view_profilebenevole', 'change_profilebenevole',
         'delete_profilebenevole',
-        'add_assoorigine', 'view_assoorigine', 'change_assoorigine', 'delete_assoorigine',
+        'add_assopartenaire', 'view_assopartenaire', 'change_assopartenaire', 'delete_assopartenaire',
         # evenement
         'add_evenement', 'view_evenement', 'change_evenement', 'delete_evenement',
         'add_equipe', 'view_equipe', 'change_equipe', 'delete_equipe',
@@ -53,7 +53,7 @@ groupe_permission = {
         'delete_profileresponsable',
         'add_profilebenevole', 'view_profilebenevole', 'change_profilebenevole',
         'delete_profilebenevole',
-        'add_assoorigine', 'view_assoorigine', 'change_assoorigine', 'delete_assoorigine',
+        'add_assopartenaire', 'view_assopartenaire', 'change_assopartenaire', 'delete_assopartenaire',
         # evenement
         'add_evenement', 'view_evenement', 'change_evenement', 'delete_evenement',
         'add_equipe', 'view_equipe', 'change_equipe', 'delete_equipe',
@@ -69,7 +69,7 @@ groupe_permission = {
         'delete_profileresponsable',
         'add_profilebenevole', 'view_profilebenevole', 'change_profilebenevole',
         'delete_profilebenevole',
-        'view_assoorigine',
+        'view_assopartenaire',
         # evenement
         'view_evenement',
         'add_equipe', 'view_equipe', 'change_equipe', 'delete_equipe',
@@ -83,7 +83,7 @@ groupe_permission = {
         'view_profileorganisateur',
         'view_profileresponsable',
         'view_profilebenevole',
-        'view_assoorigine',
+        'view_assopartenaire',
         # evenement
         'view_evenement',
         'view_equipe',

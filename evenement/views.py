@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404
 
 from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
-from benevole.models import ProfileBenevole, Personne, AssoOrigine, ProfileResponsable, ProfileOrganisateur
+from benevole.models import ProfileBenevole, Personne, ProfileResponsable, ProfileOrganisateur
 from association.models import Association
 
 

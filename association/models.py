@@ -63,3 +63,16 @@ class Abonnement(models.Model):
     def __bool__(self):
         return self.a_jour
 
+class AssoPartenaire(models.Model):
+    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    Association = models.ForeignKey(Association,   # les assos partenaires sont définies par asso organisatrice 
+                            primary_key=False, 
+                            default="None",
+                            null=False,
+                            blank=False,
+                            on_delete=models.CASCADE,)
+    nom = models.CharField(max_length=50, unique='True',
+                           verbose_name="association repésentée par le bénévole")
+
+    def __str__(self):
+        return self.nom

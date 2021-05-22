@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Association, Abonnement
+from .models import AssoPartenaire, Association, Abonnement
 from modeltranslation.admin import TranslationAdmin
 
 
@@ -32,6 +32,7 @@ class AbonnementAdmin(TranslationAdmin):
 
 admin.site.register(Association, AssociationDetails)
 admin.site.register(Abonnement)
+admin.site.register(AssoPartenaire)
 # on Désenregistre le model User pour le replacer par le profile Administrateur
 # admin.site.unregister(User)
 # admin.site.register(User, AdministrateurDetails)

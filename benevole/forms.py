@@ -24,4 +24,4 @@ class PersonneForm(ModelForm):
     class Meta:
         model = Personne
         fields = ['last_name', 'first_name', 'genre', 'date_de_naissance',
-                  'assoorigine', 'email', 'portable', 'description']
+                  'assopartenaire', 'email', 'portable', 'description']

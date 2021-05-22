@@ -1,23 +1,15 @@
 import uuid
 
 from django.db import models
+from django.db.models.fields.related import ForeignKey
 
 from phonenumber_field.modelfields import PhoneNumberField
 from colorful.fields import RGBColorField
 
-from association.models import Association
+from association.models import AssoPartenaire, Association
 
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
-
-class AssoOrigine(models.Model):
-    UUID = \
-        models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    nom = models.CharField(max_length=50, unique='True',
-                           verbose_name="association repésentée par le bénévole")
-
-    def __str__(self):
-        return self.nom
 
 class Personne(AbstractUser):
     MIN = "MINEUR"
@@ -39,7 +31,7 @@ class Personne(AbstractUser):
 
     # on ne peut pas supprimer une asso origine tant
     # qu'une personne en fait partie
-    assoorigine = models.ForeignKey(AssoOrigine,
+    assopartenaire = models.ForeignKey(AssoPartenaire,
                                 primary_key=False,
                                 null=True,
                                 blank=True,

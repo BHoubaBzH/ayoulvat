@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Personne, AssoOrigine, ProfileAdministrateur, ProfileResponsable, ProfileOrganisateur, \
+from .models import Personne, ProfileAdministrateur, ProfileResponsable, ProfileOrganisateur, \
     ProfileBenevole
 from django.contrib.auth.admin import UserAdmin
 
@@ -33,4 +33,3 @@ admin.site.register(ProfileAdministrateur)
 admin.site.register(ProfileOrganisateur)
 admin.site.register(ProfileResponsable)
 admin.site.register(ProfileBenevole)
-admin.site.register(AssoOrigine)

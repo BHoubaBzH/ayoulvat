@@ -140,7 +140,7 @@ class CreneauForm(ModelForm):
         # formulaire ayant une instance, on va travailler dessus pour afficher le fomulaire comme il faut
         # en fonction du profile utilisateur
         instance = getattr(self, 'instance', None)
-        # print('benevole asso : {}'.format(self.personne_connectee.assoorigine_id))
+        # print('benevole asso : {}'.format(self.personne_connectee.assopartenaire_id))
         if instance:
             # la personne est uniquement un benevole ( ni orga, ni admin, ni responsable )
             if hasattr(self.personne_connectee, 'profilebenevole') \
