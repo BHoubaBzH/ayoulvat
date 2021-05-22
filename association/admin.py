@@ -25,14 +25,19 @@ class AssociationDetails(TranslationAdmin):
     list_display = ['nom', 'description', 'courriel']
     inlines = [AbonnementInLine, ]
 
+class AssoPartenairesDetails(admin.ModelAdmin):
+    def asso_nom(self):
+        return Association.objects.get(UUID=self.Association_id).nom
+    list_display = ['nom', asso_nom]
 
-class AbonnementAdmin(TranslationAdmin):
+
+class AbonnementAdmin(admin.ModelAdmin):
     pass
 
 
 admin.site.register(Association, AssociationDetails)
 admin.site.register(Abonnement)
-admin.site.register(AssoPartenaire)
+admin.site.register(AssoPartenaire, AssoPartenairesDetails)
 # on Désenregistre le model User pour le replacer par le profile Administrateur
 # admin.site.unregister(User)
 # admin.site.register(User, AdministrateurDetails)

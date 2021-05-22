@@ -5,9 +5,9 @@
     {% for dates, heures in PlanningRange.items %}
         <div class="planning-head-equipes" style="grid-column: time-{{ dates }}; grid-row: heures">
             <h8 class="time-slot">
-                {% if heures.0|stringformat:'s' != "00:00" %}
-                    {{ heures.0 }}
-                {% else %} {# affiche le jour au lieu de 00:00 #}
+                {% if heures.0|stringformat:'s' != "00:00" and heures.1|date:'i' == '00'%}
+                    {{ heures.0 }} {# affiche les heures pleines #}
+                {% elif heures.0|stringformat:'s' == "00:00" %} {# affiche le jour a minuit #}
                     <b>{{ heures.1|date:'d/m/y' }}</b>
                 {% endif %}
             </h8>

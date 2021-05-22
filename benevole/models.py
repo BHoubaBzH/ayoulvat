@@ -32,12 +32,12 @@ class Personne(AbstractUser):
     # on ne peut pas supprimer une asso origine tant
     # qu'une personne en fait partie
     assopartenaire = models.ForeignKey(AssoPartenaire,
-                                primary_key=False,
-                                null=True,
-                                blank=True,
-                                default='',
-                                on_delete=models.PROTECT,
-                                help_text='association pour la quelle le benevole travaille')
+                                    primary_key=False,
+                                    null=True,
+                                    blank=True,
+                                    default='',
+                                    on_delete=models.PROTECT,
+                                    help_text='associations partenaires des evenements de cette association')
     role = models.CharField(max_length=50, blank=True, default='')
     genre = models.CharField(max_length=50, choices=genreListe, default=NSP)
     date_de_naissance = models.DateField(default='2000-01-01')

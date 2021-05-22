@@ -1,6 +1,6 @@
 import uuid
 from django.db import models
-from association.models import Association
+from association.models import AssoPartenaire, Association
 from benevole.models import ProfileOrganisateur, ProfileResponsable, ProfileBenevole
 from colorful.fields import RGBColorField
 
@@ -12,6 +12,11 @@ class Evenement(models.Model):
                                     primary_key=False,
                                     default='',
                                     on_delete=models.CASCADE)
+    assopartenaire = models.ManyToManyField(AssoPartenaire,
+                                            primary_key=False,
+                                            blank=True,
+                                            default='',
+                                            help_text='associations partenaires de \'évèmenement ')
     organisateur = models.ManyToManyField(ProfileOrganisateur,
                                           related_name='OrganisateurEvenement',
                                           blank=True,

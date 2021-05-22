@@ -71,8 +71,9 @@ class AssoPartenaire(models.Model):
                             null=False,
                             blank=False,
                             on_delete=models.CASCADE,)
-    nom = models.CharField(max_length=50, unique='True',
-                           verbose_name="association repésentée par le bénévole")
+    nom = models.CharField(max_length=50, 
+                           unique=False,
+                           verbose_name="association partenaire")
 
     def __str__(self):
         return self.nom
