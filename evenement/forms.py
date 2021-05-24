@@ -183,29 +183,37 @@ class CreneauForm(ModelForm):
 
             # orga, admin, responsable : on propose uniquement les bénévoles qui ont une
             # dispo sur le planning au heures qui vont bien et sur les plannning deja créés donc avec un self.instance.planning_id
-            elif self.personne_connectee.has_perm('evenement.change_creneau') and self.instance.planning_id:
+            elif self.personne_connectee.has_perm('evenement.change_creneau'): # and self.instance.planning_id:
                 liste_benevoles_inscrits = []
                 # print('************************************************')
                 # liste les benevoles ayant mis une dispo (Creno) englobant ce creneau
-                for Creno in Creneau.objects.filter(planning_id=self.instance.planning_id, type="benevole"):
-                    # si le creneau est dans l'interval d'une dispo alors on propose le benevole dispo
-                    if Creno.debut <= self.instance.debut and self.instance.fin <= Creno.fin :
-                        liste_benevoles_inscrits.append(Creno.benevole_id)
-                    # print('liste benevole ayant mis une dispo sur cet intervale : {}'.format(liste_benevoles_inscrits))
-                # retraite la liste des benevole disponible, et si ils sont déjà inscrits sur un creneau
-                # au meme moment, on retire le bénévole de la liste sauf si c'est le bénévole du creneau actuel
-                for Creno in Creneau.objects.filter(benevole_id__in=liste_benevoles_inscrits, type="creneau"):
-                    # si c'est le creneau ou le benevole est pris, on propose le benevole dans la liste, sinon
-                    if str(self.instance.benevole_id) != str(Creno.benevole_id):
-                        # si le debut ou la fin du creneau est dans l'intervale d'un creneau affecté au bénévole, 
-                        # ou si le benevole a deja un créneau affecté compris intégralement dans celui-ci
-                        if Creno.debut <= self.instance.debut < Creno.fin or Creno.debut < self.instance.fin <= Creno.fin \
-                            or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin:
-                            # print('benevole ayant mis une dispo sur cet intervale et etant deja reservé sur un autre creneau : {}'.format(Creno.benevole_id))
-                            try:
-                                liste_benevoles_inscrits.remove(Creno.benevole_id)
-                            except:
-                                pass
+                try:
+                    instance_planning = self.instance.planning_id
+                except:
+                    instance_planning = None
+                if instance_planning:
+                    for Creno in Creneau.objects.filter(planning_id=self.instance.planning_id, type="benevole"):
+                        # si le creneau est dans l'interval d'une dispo alors on propose le benevole dispo
+                        if Creno.debut <= self.instance.debut and self.instance.fin <= Creno.fin :
+                            liste_benevoles_inscrits.append(Creno.benevole_id)
+                        # print('liste benevole ayant mis une dispo sur cet intervale : {}'.format(liste_benevoles_inscrits))
+                    # retraite la liste des benevole disponible, et si ils sont déjà inscrits sur un creneau
+                    # au meme moment, on retire le bénévole de la liste sauf si c'est le bénévole du creneau actuel
+                    for Creno in Creneau.objects.filter(benevole_id__in=liste_benevoles_inscrits, type="creneau"):
+                        # si c'est le creneau ou le benevole est pris, on propose le benevole dans la liste, sinon
+                        if str(self.instance.benevole_id) != str(Creno.benevole_id):
+                            # si le debut ou la fin du creneau est dans l'intervale d'un creneau affecté au bénévole, 
+                            # ou si le benevole a deja un créneau affecté compris intégralement dans celui-ci
+                            if Creno.debut <= self.instance.debut < Creno.fin or Creno.debut < self.instance.fin <= Creno.fin \
+                                or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin:
+                                # print('benevole ayant mis une dispo sur cet intervale et etant deja reservé sur un autre creneau : {}'.format(Creno.benevole_id))
+                                try:
+                                    liste_benevoles_inscrits.remove(Creno.benevole_id)
+                                except:
+                                    pass
+                else: # nouveau creneau
+                    pass # les nouveau créneau sont créés sans bénévole (libre)
+                
                 # print('liste benevole proposée du coup : {}'.format(liste_benevoles_inscrits))
                 self.fields['benevole'].queryset = \
                     ProfileBenevole.objects.filter(UUID__in=liste_benevoles_inscrits)

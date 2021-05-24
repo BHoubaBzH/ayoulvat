@@ -254,8 +254,9 @@ def forms_creneaux(request, data, uuid_evenement):
         # print(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID))
     return dic_creneaux_init
 
+
 ################################################
-#            views evenements
+#            views 
 ################################################
 @login_required(login_url='login')
 def liste_evenements(request):
@@ -266,17 +267,16 @@ def liste_evenements(request):
     uuid_asso = request.session['uuid_association']
     association = Association.objects.get(UUID=uuid_asso)
 
-    try:
+    try: # on filtre les évènements sur ceux de l'asso uniquement
         liste_evenements = Evenement.objects.filter(association_id=uuid_asso)
     except:
-        print('Pas encore d evenement pour cette asso, voulez-vous en creer un?')
+        print('Pas encore d\'évènement pour cette asso, voulez-vous en creer un?')
 
     data = {
         "Association": association,
-        # on filtre les évènements sur ceux de l'asso uniquement
         "Evenements": liste_evenements,
     }
-    return render(request, "evenement/evenement.html", data)
+    return render(request, "evenement/evenement_plannings.html", data)
 
 
 @login_required(login_url='login')
@@ -303,11 +303,11 @@ def evenement(request, uuid_evenement):
     data = {
         "Association": Association.objects.get(UUID=uuid_asso),
         "Evenement": evenement,
-        "Equipes": Equipe.objects.filter(evenement_id=uuid_evenement),  # objets equipes de l'evenement
-        "Plannings": "",  # objets planning de l'evenement
-        "Postes": "",  # objets postes de l'evenement
-        "Creneaux": "",  # objets creneaux de l'evenement
-        "Benevoles": "",  # objets benevoles de l'evenement
+        "Equipes": Equipe.objects.filter(evenement_id=evenement),  # objets equipes de l'evenement
+        "Plannings": Planning.objects.filter(evenement_id=evenement).order_by('debut'),  # objets planning de l'evenement
+        "Postes": Poste.objects.filter(evenement_id=evenement).order_by('nom'),  # objets postes de l'evenement
+        "Creneaux": Creneau.objects.filter(evenement_id=evenement),  # objets creneaux de l'evenement
+        "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=evenement),  # objets benevoles de l'evenement
 
         "Planning": "",  # objet planning selectionné
         "Creneaux_plage": "",  # objets creneaux de l'evenement entre 2 dateheure
@@ -335,11 +335,6 @@ def evenement(request, uuid_evenement):
     # et d'afficher les infos en fonction des POST recus :
     if request.method == "POST":
         uuid_evenement = request.POST.get('evenement')
-        # models des objets de l'evenement
-        data["Postes"] = Poste.objects.filter(evenement_id=uuid_evenement).order_by('nom')
-        data["Plannings"] = Planning.objects.filter(evenement_id=uuid_evenement).order_by('debut')
-        data["Creneaux"] = Creneau.objects.filter(evenement_id=uuid_evenement)
-        data["Benevoles"] = ProfileBenevole.objects.filter(BenevolesEvenement=uuid_evenement)
         if request.POST.get('equipe'):  # selection d'une équipe
             data["equipe_uuid"] = request.POST.get('equipe')  # UUID equipe selectionnée
 
@@ -387,5 +382,14 @@ def evenement(request, uuid_evenement):
                                           benevole_uuid=request.POST.get('benevole'),
                                           personne_connectee=request.user,
                                           type=request.POST.get('type'), )
-                                        
-    return render(request, "evenement/evenement.html", data)
+        # si le benevole appuie sur le bouton "mon planning"
+        if request.POST.get('planning_perso'):
+            data["planning_perso"] = "oui"
+    # si pas de données post, affiche le planning global de l'evenement
+    else:
+        data["PlanningRange"] = planning_range(evenement.debut,
+                                               evenement.fin,
+                                               30)
+                       
+    return render(request, "evenement/evenement_plannings.html", data)
+ 

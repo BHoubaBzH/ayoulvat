@@ -1,19 +1,20 @@
 {% extends 'evenement/base.html' %}
-<!-- evenement/evenement.html -->
+<!-- evenement/evenement_plannings.html -->
 {% load bootstrap5 %}
 
 
-{% block evenement %}
+{% block evenement_plannings %}
 
     {# si un planning a été selectionné on affiche les infos dans la page centrale #}
     {% if Planning.UUID %}
         <table class="table">
             <tbody>
                 <tr>
-                    <td class="col-md-3"><p class="h4"><b>Debut :</b></p></td>
-                    <td class="col-md-3"><p class="h4">{{ Planning.debut|date:"d/m/Y H:i" }}</b></p></td>
-                    <td class="col-md-3"><p class="h4"><b>Fin :</p></td>
-                    <td class="col-md-3"><p class="h4">{{ Planning.fin|date:"d/m/Y H:i" }}</p></td>
+                    <td class="col-md-2"><p class="h4"><b>Debut :</b></p></td>
+                    <td class="col-md-2"><p class="h4">{{ Planning.debut|date:"d/m/Y H:i" }}</b></p></td>
+                    <td class="col-md-2"><p class="h4"><b>Fin :</p></td>
+                    <td class="col-md-2"><p class="h4">{{ Planning.fin|date:"d/m/Y H:i" }}</p></td>
+                    <td class="col-md-4"></td>
                 </tr>
             </tbody>
         </table>
@@ -47,22 +48,28 @@
             {% comment "planning on affiche que si un planning ou un poste est selectionne" %}{% endcomment %}
                 <div class="tab-pane {% if 'evenement.change_planning' in perms %}fade show active{% endif %}" id="nav-creneaux" 
                     role="tabpanel" aria-labelledby="nav-creneaux-tab">
-                        {% include "evenement/gridplan_creneaux.html" %}
+                        {% include "evenement/gridplan_postes.html" %}
                 </div>
                 <div class="tab-pane {% if 'evenement.change_planning' not in perms %}fade show active{% endif %}" id="nav-benevoles" 
                     role="tabpanel" aria-labelledby="nav-benevoles-tab">
-                        {# en cours #}
                         {% include "evenement/gridplan_benevoles.html" %}
                 </div>
 
         </div>
+    {% elif planning_perso %} {# plannings perso du benevole #}
+    <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-equipes"
+                role="tabpanel" aria-labelledby="nav-equipes-tab">
+                    {# en cours #}
+                    {% include "evenement/gridplan_planningperso.html" %}
+            </div>
+    </div>
     {% elif Evenement %} {# plannings  evenement et equipes #}
-        <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="nav-equipes"
-                    role="tabpanel" aria-labelledby="nav-equipes-tab">
-                        {# en cours #}
-                        {% include "evenement/gridplan_equipes.html" %}
-                </div>
-        </div>
+    <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-equipes"
+                role="tabpanel" aria-labelledby="nav-equipes-tab">
+                    {% include "evenement/gridplan_evenement.html" %}
+            </div>
+    </div>
     {% endif %}
-{% endblock evenement %}
+{% endblock evenement_plannings %}
