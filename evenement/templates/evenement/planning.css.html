@@ -243,16 +243,7 @@ hr {
 	margin: 40px 0;
 }
 
-.form_grid_button {
-	margin: 0;
-}
-
-.form_grid_button .planning {
-	display: block;
-	width: 100%;
-	height: 100%;
-}
-
+{# styles evenement #}
 .evenement-button {
 	/* width: -webkit-fill-available; */
 	width: 100%;
@@ -263,6 +254,7 @@ hr {
 	margin: inherit;
 }
 
+{# styles des creneaux #}
 
 .creneau, .creneau_libre, .planning {
 	box-shadow: 3px 2px #888;
@@ -292,4 +284,23 @@ hr {
 .creneau_occupe {
 	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-dark) 70%);
 	z-index: 50;
+}
+
+.form_grid_button {
+	margin: 0;
+}
+
+.form_grid_button .planning, .form_grid_button_planningperso .planningperso {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.equipe-slot-planningperso {
+	height: 5em;
+}
+
+.form_grid_button_planningperso .planningperso { 
+	background-image: linear-gradient(to bottom, #dff0d82b 0px, #bce5d636 100%);
+	position: relative;
 }

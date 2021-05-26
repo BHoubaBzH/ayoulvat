@@ -1,4 +1,5 @@
 {# evenement/gridplan_planningperso.html #}
+{# page du planning du benevole #}
 <div class="planning-equipes" aria-labelledby="planning-heading">
     {# affiche les entetes des colonnes du planning : les heures #}
     {% for dates, heures in PlanningRange.items %}
@@ -13,50 +14,48 @@
         </div>
     {% endfor %}
 
-    {% if Evenement and not equipe_uuid %}
+    {% if Evenement and not equipe_uuid %} {# affiche toutes les equipes #}
         {% for equipe in Equipes %}
             {# affiche les entetes des lignes du planning : equipes #}
-            <div class="equipe-slot"
+            <div class="equipe-slot-planningperso"
                 aria-hidden="true"
                 style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;">
                     <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
             </div>
-            {% if 'evenement.change_equipe'  in perms %}
-                    {% include "evenement/equipe_edite.html" %}
-            {% endif %}
             {% for planning in Plannings %}
                     {% if planning.equipe_id == equipe.UUID %}
-                    {# AFFICHE LES PLANNINGS DANS LA GRID CSS #}
-                        {% include "evenement/planning_affiche_edite.html" with equipe=equipe %}
+                    {# AFFICHE LES PLANNINGS DES EQUIPES DANS LA GRID CSS #}
+                        <form class="form_grid_button_planningperso" style="grid-row: ligne-{{ equipe.UUID }}; 
+                            grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|date:'Y-m-d-Hi' }};" method="post">
+                            {% csrf_token %}
+                            <input  name="evenement" value="{{ equipe.evenement.UUID }}" type="hidden">
+                            <input  name="equipe" value="{{ equipe.UUID }}" type="hidden">
+                            <input  name="planning" value="{{ planning.UUID }}" type="hidden">
+                            <button  class="planningperso" 
+                            title="{{ equipe.nom|upper }} > {{ planning.nom }}"
+                            type="submit">
+                            <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
+                            </button>
+                        </form>
                 {% endif %}
             {% endfor %}
-            
+
+            {% for creno in Creneaux %}
+                {% if creno.benevole_id == user.profilebenevole.UUID and creno.equipe_id == equipe.UUID %}
+                    <button  class="creneau {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe{%endif%} equipe equipe-{{ equipe.UUID }}" 
+                            style="grid-row: ligne-{{ equipe.UUID }};
+                            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                            title="{%if le_benevole == 'oui' %}{{ user.last_name|upper }} {{ user.first_name|capfirst }}
+                                {%else%}{{ benevole }}{%endif%}
+                                {%if creno.type == 'benevole'%} disponible{%else%} ocupé {{ creno.planning_id.nom }}{%endif%}"
+                            data-bs-toggle="modal" data-bs-target="#modal-creneau_benevole_editer-{{ creno.UUID }}">
+                                <a>{{ creno.equipe.nom }}{%if creno.poste%} <i class="bi bi-chevron-right"></i> {{ creno.poste.nom }}{%endif%}</a>
+                    </button>
+                {% endif %}
+            {% endfor %}
+
             {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" %}
         {% endfor %}
-        {# ajoute une ligne vide pour pouvoir ajouter des equipes au besoins #}
-        {% if 'evenement.add_equipe' in perms %}
-            {% include "evenement/equipe_ajoute.html" %}
-        {% endif %}
-    {% elif equipe_uuid %} {# une equipe de selectionnée, on affiche que cette équipe dans le planning #}
-        {% for equipe in Equipes %}
-            {% if  equipe.UUID|stringformat:'s' == equipe_uuid|stringformat:'s'%}
-                {# affiche les entetes des lignes du planning : equipes #}
-                <div class="equipe-slot"
-                    aria-hidden="true"
-                    style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;">
-                        <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
-                </div>
-                {% for planning in Plannings %}
-                    {% if planning.equipe_id == equipe.UUID %}
-                    {# AFFICHE LES PLANNINGS DANS LA GRID CSS #}
-                        {% include "evenement/planning_affiche_edite.html" with equipe=equipe %}
-                    {% endif %}
-                {% endfor %}
-                
-                {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" %}
-            {% endif %}
-        {% endfor %}
-
     {% else %}
         <span class="benevole-slot" aria-hidden="true" style="grid-row: heures; grid-column: benevoles-boutons;">
             <p> pas encore d'équipe défini </p>
