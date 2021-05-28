@@ -315,7 +315,7 @@ def evenement(request, uuid_evenement):
         "planning_uuid": "",  # par defaut, pas de planning selectionée
         "PlanningRange": "",  # dictionnaire formaté des dates heures de l'objet selectionné
         
-        "FormEquipe" : "", # form non liée au template pour ajout d une nouvelle equipe
+        "FormEquipe" : EquipeForm(initial={'evenement': evenement}), # form non liée au template pour ajout d une nouvelle equipe
         "DicEquipes" : "",
         "FormPlanning" : "", # form non liée au template pour ajout d un nouveau planning
         "DicPlannings" : "",
@@ -324,6 +324,11 @@ def evenement(request, uuid_evenement):
         "DicCreneaux" : "",  # dictionnaire des formes de creneau de l'evenement liées aux objets de la db
         "FormCreneau" : "",  # form non liée au template pour ajout d un nouveau creneau
     }
+
+    data["DicEquipes"] = forms_equipe(request, data, evenement)
+    data["FormEquipe"] = EquipeForm(initial={'evenement': evenement})
+    data["DicPlannings"] = forms_planning(request, data, evenement)
+    data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})  
 
     # log les donnees post
     print('#########################################################')
@@ -357,13 +362,6 @@ def evenement(request, uuid_evenement):
         else:  # selection d'un evenement uniquement
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
 
-
-        data["DicEquipes"] = forms_equipe(request, data, uuid_evenement)
-        data["FormEquipe"] = EquipeForm(initial={'evenement': evenement})
-        data["DicPlannings"] = forms_planning(request, data, uuid_evenement)
-        data["FormPlanning"] = PlanningForm(initial={'evenement': evenement,
-                                                     'equipe': data["equipe_uuid"]})
-
         # on envoie la form non liée au template pour ajout d un nouveau poste
         data["FormPoste"] = PosteForm(initial={'evenement': evenement,
                                                'equipe': data["equipe_uuid"],
@@ -390,6 +388,6 @@ def evenement(request, uuid_evenement):
         data["PlanningRange"] = planning_range(evenement.debut,
                                                evenement.fin,
                                                30)
-                       
+             
     return render(request, "evenement/evenement_plannings.html", data)
  

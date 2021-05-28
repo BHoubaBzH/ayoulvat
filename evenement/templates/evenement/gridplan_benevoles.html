@@ -1,10 +1,12 @@
 {# evenement/gridplan_benevoles.html #}
-
+{% if not 'benevole.change_profilebenevole' in perms %}
+    <h2>Merci d'indiquer une disponibilité en cliquant sur un case du planning</h2> 
+{% endif %}
 <div class="planning-benevoles" aria-labelledby="planning-heading">
     {# affiche les entetes des colonnes du planning : les heures #}
     {% for dates, heures in PlanningRange.items %}
         <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">
-            <h8 class="time-slot">{{ heures.0 }}</h8>
+            <h6 class="time-slot">{{ heures.0 }}</h6>
         </div>
     {% endfor %}
     
@@ -46,7 +48,7 @@
         <div class="benevole-slot"
             aria-hidden="true"
             style="grid-row: ligne-{{ user.profilebenevole.UUID }}; grid-column: benevoles;">
-                <p style="margin-bottom: 0px;">Mon Planning</p>
+                <p style="margin-bottom: 0px;">Mes Infos</p>
         </div>
         {% comment "" %}
         {% if 'evenement.change_poste'  in perms %}

@@ -6,6 +6,7 @@
 {% block evenement_plannings %}
 
     {# si un planning a été selectionné on affiche les infos dans la page centrale #}
+    {% comment "" %}
     {% if Planning.UUID %}
         <table class="table">
             <tbody>
@@ -20,55 +21,56 @@
         </table>
         <br>
     {% endif %}
+    {% endcomment %}
 
     {# tabs pour afficher les différents plannings #}
     {% if Planning or Poste %}
-        <nav>
-            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                {# admins et orgas #}
-                {% if 'benevole.change_profilebenevole' in perms %}
+        {% if 'benevole.change_profilebenevole' in perms %} {# admins et orgas #}
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
                     <button class="nav-link active" id="nav-creneaux-tab" data-bs-toggle="tab" 
                             data-bs-target="#nav-creneaux" type="button" role="tab" 
                             aria-controls="nav-creneaux" aria-selected="true">Créneaux</button>
                     <button class="nav-link" id="nav-benevoles-tab" data-bs-toggle="tab" 
                             data-bs-target="#nav-benevoles" type="button" role="tab" 
-                            aria-controls="nav-benevoles" aria-selected="false">Bénévoles</button>
-                {% else%} {# benevoles uniquement #}
-                    <button class="nav-link active" id="nav-benevoles-tab" data-bs-toggle="tab" 
-                            data-bs-target="#nav-benevoles" type="button" role="tab" 
-                            aria-controls="nav-benevoles" aria-selected="true">Mon Planning</button>
-                    <button class="nav-link" id="nav-creneaux-tab" data-bs-toggle="tab" 
-                            data-bs-target="#nav-creneaux" type="button" role="tab" 
-                            aria-controls="nav-creneaux" aria-selected="false">Créneaux de l'équipe</button>
-                {% endif %}
-            </div>
-        </nav>
-
-        <div class="tab-content" id="nav-tabContent">
-            {% comment "planning on affiche que si un planning ou un poste est selectionne" %}{% endcomment %}
-                <div class="tab-pane {% if 'evenement.change_planning' in perms %}fade show active{% endif %}" id="nav-creneaux" 
+                            aria-controls="nav-benevoles" aria-selected="false">Bénévoles</button>    
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                {# planning on affiche que si un planning ou un poste est selectionn #}
+                <div class="tab-pane fade show active" id="nav-creneaux" 
                     role="tabpanel" aria-labelledby="nav-creneaux-tab">
                         {% include "evenement/gridplan_postes.html" %}
                 </div>
-                <div class="tab-pane {% if 'evenement.change_planning' not in perms %}fade show active{% endif %}" id="nav-benevoles" 
+                <div class="tab-pane" id="nav-benevoles" 
                     role="tabpanel" aria-labelledby="nav-benevoles-tab">
                         {% include "evenement/gridplan_benevoles.html" %}
                 </div>
-
-        </div>
-    {% elif planning_perso %} {# plannings perso du benevole #}
-    <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-equipes"
-                role="tabpanel" aria-labelledby="nav-equipes-tab">
-                    {# en cours #}
-                    {% include "evenement/gridplan_planningperso.html" %}
             </div>
-    </div>
-    {% elif Evenement %} {# plannings  evenement et equipes #}
+        {% else %} {# benevoles #}
+            <div class="tab-content" id="nav-tabContent">
+                {% include "evenement/gridplan_postes.html" %}
+            </div>
+        {% endif %}
+    {# page par defaut admin: plannings  evenement et equipes #}
+    {# page pour benevole: planning de l equipe  #}
+    {% elif Evenement and 'evenement.change_planning' in perms %} 
     <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-equipes"
                 role="tabpanel" aria-labelledby="nav-equipes-tab">
                     {% include "evenement/gridplan_evenement.html" %}
+            </div>
+    </div>
+    {# page par defaut benevole: son planning sur l evenement #}
+    {% elif Evenement and not 'evenement.change_planning' in perms or planning_perso %}
+    <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-equipes"
+                role="tabpanel" aria-labelledby="nav-equipes-tab">
+                {%if equipe_uuid%}
+                    {% include "evenement/gridplan_evenement.html" %}
+                {% else %}
+                    {% include "evenement/gridplan_planningperso.html" %}
+                {% endif %}
             </div>
     </div>
     {% endif %}

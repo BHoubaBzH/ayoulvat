@@ -4,7 +4,7 @@
     {# affiche les entetes des colonnes du planning : les heures #}
     {% for dates, heures in PlanningRange.items %}
         <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">
-            <h8 class="time-slot">{{ heures.0 }}</h8>
+            <h6 class="time-slot">{{ heures.0 }}</h6>
         </div>
     {% endfor %}
 
