@@ -1,6 +1,7 @@
 from uuid import UUID
 from django.forms import ModelForm, DateTimeField, HiddenInput, ValidationError
 from django.forms import ModelChoiceField, ModelMultipleChoiceField, CheckboxSelectMultiple
+from django_range_slider.fields import RangeSliderField
 
 from evenement.models import Equipe, Planning, Poste, Creneau
 from benevole.models import ProfileBenevole
@@ -93,7 +94,7 @@ class CreneauForm(ModelForm):
                   'evenement',]
 
     ################ methode __init__
-    # surcharge les definition précédente de la class et permet de gerer les champs a afficher ou non
+    # surcharge les definition précédente de la class et permet de gerer les champs
     def __init__(self, *args, **kwargs):
         self.pas_creneau = kwargs.pop('pas_creneau')
         self.planning_uuid = kwargs.pop('planning_uuid')
@@ -179,6 +180,11 @@ class CreneauForm(ModelForm):
                                     ProfileBenevole.objects.filter(UUID=None)
                         except:
                             print('nouveau creneau , sans dates')
+                # slider pour choix des début et fin de planning a voir plus tard
+                # champs en plus par rapport à la form, but: creer un slider pour les heures du creneau dans planning perso
+                # min : debut planning / max : fin planning 
+                # print('pas : {}'.format(self.pas_creneau))
+                # self.fields['extra_field'] = RangeSliderField(minimum=10,step=self.pas_creneau,maximum=500,name="slider")
 
 
             # orga, admin, responsable : on propose uniquement les bénévoles qui ont une

@@ -206,7 +206,7 @@ def forms_creneaux(request, data, uuid_evenement):
             dictionnaire des forms creneaux: key: UUID / val: form
         gère la création, modification et suppression de creneaux en fonction du contenu de POST
     """
-    if any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter']):
+    if any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter']) and not request.POST.get('creneau_supprimer'):
         # form en lien avec l objet basé sur model et pk UUID creneau
         if 'creneau_modifier' in request.POST:
             formcreneau = CreneauForm(request.POST,
@@ -383,6 +383,7 @@ def evenement(request, uuid_evenement):
         # si le benevole appuie sur le bouton "mon planning"
         if request.POST.get('planning_perso'):
             data["planning_perso"] = "oui"
+            
     # si pas de données post, affiche le planning global de l'evenement
     else:
         data["PlanningRange"] = planning_range(evenement.debut,

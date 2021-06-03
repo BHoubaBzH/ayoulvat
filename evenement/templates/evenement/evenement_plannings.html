@@ -2,7 +2,6 @@
 <!-- evenement/evenement_plannings.html -->
 {% load bootstrap5 %}
 
-
 {% block evenement_plannings %}
 
     {# si un planning a été selectionné on affiche les infos dans la page centrale #}
@@ -23,7 +22,7 @@
     {% endif %}
     {% endcomment %}
 
-    {# tabs pour afficher les différents plannings #}
+    {# si planning selectionné, on affiche #}
     {% if Planning or Poste %}
         {% if 'benevole.change_profilebenevole' in perms %} {# admins et orgas #}
             <nav>
