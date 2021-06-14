@@ -23,8 +23,8 @@
                             {% include "evenement/poste_edite.html" %}
                         {% endif %}
                         {% for creno in Creneaux_plage %}
-                            {% if creno.benevole_id == benevole.UUID %}
-                                {# AFFICHE LES CRENEAU DANS LA GRID  CSS #}
+                            {# {% if creno.benevole_id == benevole.UUID %} AFFICHE TOUS LES CRENEAU DANS LA GRID  CSS #}
+                            {% if creno.benevole_id == benevole.UUID and creno.planning_id|stringformat:'s' == planning_uuid|stringformat:'s' %} {# AFFICHE LES CRENEAU du planning DANS LA GRID  CSS #}
                                 {% include "evenement/creneau_affiche_edite.html" with source_type="benevole" %}
                             {% endif %}
                         {% endfor %}

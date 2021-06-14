@@ -309,6 +309,8 @@ def evenement(request, uuid_evenement):
         "Creneaux": Creneau.objects.filter(evenement_id=evenement),  # objets creneaux de l'evenement
         "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=evenement),  # objets benevoles de l'evenement
 
+        "dispo_actif": "False", # active ou non la gestion des disponibilités des bénévoles; par défaut désactivé
+
         "Planning": "",  # objet planning selectionné
         "Creneaux_plage": "",  # objets creneaux de l'evenement entre 2 dateheure
         "equipe_uuid": "",  # par defaut, pas d'equipe selectionée
@@ -383,6 +385,9 @@ def evenement(request, uuid_evenement):
         # si le benevole appuie sur le bouton "mon planning"
         if request.POST.get('planning_perso'):
             data["planning_perso"] = "oui"
+            data["PlanningRange"] = planning_range(evenement.debut,
+                                                   evenement.fin,
+                                                   30)
             
     # si pas de données post, affiche le planning global de l'evenement
     else:
