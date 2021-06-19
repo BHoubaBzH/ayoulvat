@@ -1,16 +1,35 @@
 {# evenement/creneau_affiche_edite.html #}
 
 {# pour le placement dans la grille planning garder le filtre sur creno.debut et creno.fin comme la fonction planning_range de views.py : #}
+
 {# affiche le creneau sur le planning avec poste en ordonnées #}
 {% if source_type == "creneau" %}
-    <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%} poste poste-{{ poste.UUID }}" 
-            style="grid-row: ligne-{{ creno.poste_id }};
-            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-            title="{%if libre == 'non'%}créneau occupé{%else%}créneau disponible{%endif%}"
-            data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}">
-            {%if libre == 'non'%}<a><b>{{ creno.benevole }}</b></a>
-            {%else%}<a><b>Disponible</b></a>{%endif%}
-    </button>
+    {# on cherche si le bénévole connecté est proposé dans la liste des benevoles, au quel cas, il peut prendre le créneau #}
+    {% for uuid, creneauf in DicCreneaux.items %}
+        {% if uuid|stringformat:"s" == creno.UUID|stringformat:"s" %}
+            {% for benevole in creneauf.benevole %}
+                {% if user.profilebenevole|stringformat:"s" in benevole|stringformat:"s" %}
+                    <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%} poste poste-{{ poste.UUID }}" 
+                            style="grid-row: ligne-{{ creno.poste_id }};
+                            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                            title="{%if libre == 'non'%}créneau occupé{%else%}créneau disponible{%endif%}"
+                            data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}" >
+                            {%if libre == 'non'%}<a><b>{{ creno.benevole }}</b></a>
+                            {%else%}<a><b>Disponible</b></a>{%endif%}
+                    </button>
+                {% else %}
+                    {# sinon, pas dans la liste des benevoles on désactive le bouton #}
+                    <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre_moi_occupe{%endif%} poste poste-{{ poste.UUID }}" 
+                            style="grid-row: ligne-{{ creno.poste_id }};
+                            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                            title="{%if libre == 'non'%}créneau occupé{%else%}je suis déjà occupé sur cet horaire{%endif%}"
+                            data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}" disabled>
+                            {%if libre == 'non'%}<a><b>{{ creno.benevole }}</b></a>{%endif%}
+                    </button>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
 
 {# affiche le creneau sur le planning avec benevole en ordonnées #}
 {% elif source_type == "benevole" %}

@@ -256,7 +256,7 @@ hr {
 
 {# styles des creneaux #}
 
-.creneau, .creneau_libre, .planning {
+.creneau, .creneau_libre, .creneau_libre_moi_occupe, .planning {
 	box-shadow: 3px 2px #888;
 	#display: block;
 	#color: rgb(0, 0, 0);
@@ -280,11 +280,16 @@ hr {
 .creneau_libre {
 	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-teal) 50%);
 }
+{# utilisé si personne affecté au creneau et si pas bloqué mais que le bénévole ne peut pas le prendre#}
+.creneau_libre_moi_occupe {
+	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-teal) 200%);
+}
 {# créneau occupé dans la vue planning benevole(s) #}
 .creneau_occupe {
 	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-dark) 70%);
 	z-index: 50;
 }
+
 
 .form_grid_button {
 	margin: 0;

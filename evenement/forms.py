@@ -170,16 +170,15 @@ class CreneauForm(ModelForm):
                 # si le bénévole est déjà positionné sur un Creno au meme heures que celui-ci, on ne lui propose pas de prendre celui-ci
                 elif self.instance.benevole_id != self.personne_connectee.profilebenevole.UUID:
                     for Creno in Creneau.objects.filter(benevole_id=self.personne_connectee.profilebenevole.UUID, type="creneau"):
-                        # si le debut ou la fin du creneau est dans l'intervale d'un creneau affecté a ce bénévole, 
+                        # si le debut ou la fin de l'instance est dans l'intervale d'un creneau affecté a ce bénévole, 
                         # ou si le benevole a deja un créneau affecté compris intégralement dans celui-ci
                         try :
                             self.instance.debut
                             if Creno.debut <= self.instance.debut < Creno.fin or Creno.debut < self.instance.fin <= Creno.fin \
                                 or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin:
-                                self.fields['benevole'].queryset = \
-                                    ProfileBenevole.objects.filter(UUID=None)
+                                self.fields['benevole'].queryset = ProfileBenevole.objects.filter(UUID=None)
                         except:
-                            print('nouveau creneau , sans dates')
+                            print('nouveau creneau, sans dates')
                 # slider pour choix des début et fin de planning a voir plus tard
                 # champs en plus par rapport à la form, but: creer un slider pour les heures du creneau dans planning perso
                 # min : debut planning / max : fin planning 
