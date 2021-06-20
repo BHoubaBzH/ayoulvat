@@ -143,14 +143,14 @@ class CreneauForm(ModelForm):
         instance = getattr(self, 'instance', None)
         # print('benevole asso : {}'.format(self.personne_connectee.assopartenaire_id))
         if instance:
-            # la personne est uniquement un benevole ( ni orga, ni admin, ni responsable )
-            if hasattr(self.personne_connectee, 'profilebenevole') \
-                    and not self.personne_connectee.has_perm('evenement.change_creneau'):
+            # la personne est un benevole
+            if hasattr(self.personne_connectee, 'profilebenevole'):
                 liste_benevoles_inscrits = []
-                # par default, le benevole n'a pas accès a ces champs
-                for champs in self.fields:
-                    self.fields[champs].widget.attrs['readonly'] = True
-                self.fields['editable'].widget = HiddenInput()
+                # si non admin/responsable, le benevole n'a pas accès a ces champs
+                if not self.personne_connectee.has_perm('evenement.change_creneau'):
+                    for champs in self.fields:
+                        self.fields[champs].widget.attrs['readonly'] = True
+                    self.fields['editable'].widget = HiddenInput()
                 # par default, la liste des benevoles présentée est : vide + le benevole connecté
                 self.fields['benevole'].queryset = ProfileBenevole.objects.filter(UUID=self.personne_connectee.profilebenevole.UUID)
                 # si on edite une proposition de dispo benevole ou si on en cree une,

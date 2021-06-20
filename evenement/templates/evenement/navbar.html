@@ -22,7 +22,8 @@
     </ul>
     <ul class="navbar-nav px-3">
       <li class="nav-item text-nowrap" id="boutons_navbar">
-        {% if not 'benevole.change_profilebenevole' in perms%} {# si c'est uniquement un bénévole #}
+        {# si c'est un bénévole inscrit à l'evenement, il peut consulter son planning perso #}
+        {% if user.profilebenevole in Benevoles %}
           <div class="btn-group me-2">
             <button type="submit" id="planning_perso" class="btn btn-sm btn-outline-secondary" >Mon Planning</button>
           </div>
