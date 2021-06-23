@@ -143,7 +143,7 @@ class CreneauForm(ModelForm):
         instance = getattr(self, 'instance', None)
         # print('benevole asso : {}'.format(self.personne_connectee.assopartenaire_id))
         if instance:
-            # la personne est un benevole
+            # la personne est aussi un benevole
             if hasattr(self.personne_connectee, 'profilebenevole'):
                 liste_benevoles_inscrits = []
                 # si non admin/responsable, le benevole n'a pas accès a ces champs
@@ -166,7 +166,9 @@ class CreneauForm(ModelForm):
                         self.instance.benevole_id is not None and self.instance.benevole_id != "":
                     self.fields['benevole'].queryset = \
                         ProfileBenevole.objects.filter(UUID=self.instance.benevole_id)
-                    self.fields['benevole'].empty_label = None 
+                    # un admin peut enlever un benevole d un creneau, on ne lui retire pas vide de la liste des benevoles
+                    if not self.personne_connectee.has_perm('evenement.change_creneau'):
+                        self.fields['benevole'].empty_label = None 
                 # si le bénévole est déjà positionné sur un Creno au meme heures que celui-ci, on ne lui propose pas de prendre celui-ci
                 elif self.instance.benevole_id != self.personne_connectee.profilebenevole.UUID:
                     for Creno in Creneau.objects.filter(benevole_id=self.personne_connectee.profilebenevole.UUID, type="creneau"):
@@ -178,7 +180,7 @@ class CreneauForm(ModelForm):
                                 or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin:
                                 self.fields['benevole'].queryset = ProfileBenevole.objects.filter(UUID=None)
                         except:
-                            print('nouveau creneau, sans dates')
+                            print('nouveau creneau')
                 # slider pour choix des début et fin de planning a voir plus tard
                 # champs en plus par rapport à la form, but: creer un slider pour les heures du creneau dans planning perso
                 # min : debut planning / max : fin planning 
@@ -220,21 +222,21 @@ class CreneauForm(ModelForm):
                     pass # les nouveau créneau sont créés sans bénévole (libre)
                 
                 # print('liste benevole proposée du coup : {}'.format(liste_benevoles_inscrits))
-                self.fields['benevole'].queryset = \
-                    ProfileBenevole.objects.filter(UUID__in=liste_benevoles_inscrits)
+                self.fields['benevole'].queryset = ProfileBenevole.objects.filter(UUID__in=liste_benevoles_inscrits)
 
     ################ methode controle_coherence_creneaux
     def controle_coherence_creneaux(self, Creno, debut, fin):
         # print(' ======== ')
-        # print('ce creneau    : {}'.format(self.instance.UUID))
+        print('ce creneau    : {}'.format(self.instance.UUID))
         uuid_autre_crenofield = Creno._meta.get_field('UUID')
         uuid_autre_creno = uuid_autre_crenofield.value_from_object(Creno)
         # print('autre creneau    : {}'.format(uuid_autre_creno))
         if self.instance.UUID != uuid_autre_creno:  # ne prend pas en compte l'instance en cours
             debut_autre_creno = Creno._meta.get_field('debut').value_from_object(Creno)
             fin_autre_creno = Creno._meta.get_field('fin').value_from_object(Creno)
-            # print ('autre debut  : {0}  fin : {1}'.format(debut_autre_creno, fin_autre_creno))
-            # print('debut    : {}'.format(debut))
+            print('autre creneau : {}'.format( Creno._meta.get_field('UUID').value_from_object(Creno)))
+            print ('autre debut  : {0}  fin : {1}'.format(debut_autre_creno, fin_autre_creno))
+            print('debut    : {}'.format(debut))
             if debut_autre_creno <= debut < fin_autre_creno:
                 raise ValidationError("Wopolo le créneau commence sur un autre!")
             if debut_autre_creno < fin < fin_autre_creno:

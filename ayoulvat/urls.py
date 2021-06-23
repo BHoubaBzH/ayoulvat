@@ -22,7 +22,7 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', TemplateView.as_view(template_name='benevole/home.html'), name='home'),
     # tout ce qui touche à l'authent
     path('', include('django.contrib.auth.urls')),
     # nos app

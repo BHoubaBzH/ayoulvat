@@ -1,4 +1,4 @@
-<!-- benevole/base.html -->
+<!-- templates/benevole/base.html -->
 {% load bootstrap5 %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
@@ -6,15 +6,47 @@
 {% bootstrap_messages %}
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>{% block title %}benevoles{% endblock %}</title>
+    <title>AYOULVAT</title>
+   
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
-<body>
-  <main>
-    {% block content %}
-    {% endblock %}
-  </main>
+<body class="override">
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">AYOULVAT</a>
+            </div>
+           
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/login">Connexion</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+   
+    <div class="container">
+        <div class="row">
+          <div class="container">
+            <div class="col-md-8 col-md-offset-2">
+              {% block content %}{% endblock %}
+            </div>
+          </div>
+        </div>
+    </div>
+   
+   {% include "benevole/footer.html" %}
+
 </body>
 </html>

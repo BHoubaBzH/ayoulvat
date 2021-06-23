@@ -1,0 +1,21 @@
+<!-- templates/benevole/home.html : page par default du site -->
+{% extends 'benevole/base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <H1>connecté</H1>
+  {% if user.last_name or user.first.name %}
+    Bonjour {{ user.last_name }} {{ user.first_name}} !
+  {% else %}
+    Bonjour {{ user.username }}
+  {% endif %}
+  <p><a href="{% url 'logout' %}">Deconnexion</a></p>
+{% else %}
+  <H1>Vous n'etes pas connecté</H1>
+  <p><a href="{% url 'login' %}">Connexion</a></p>
+  <p><a href="{% url 'inscription' %}">Inscription</a></p>
+{% endif %}
+</br>
+</br>
+    <li>A partir d'ici , la présentation du site</li>
+{% endblock %}

@@ -1,16 +1,21 @@
-<!-- templates/registration/signup.html -->
+<!-- templates/benevole/inscription.html -->
 {% extends 'benevole/base.html' %}
 {% load bootstrap5 %}
 
 {% block title %}Inscription{% endblock %}
 
 {% block content %}
-  <h2>Inscription</h2>
-  <form method="post">
-    {% csrf_token %}
-    {% bootstrap_form form %}
-    {% buttons %}
-      <button type="submit" class="btn btn-primary btn-lg">Inscription</button>
-    {% endbuttons %}
-  </form>
+  <div class="panel panel-default">
+    <div class="panel-heading">Inscription</div>
+    <div class="panel-body">
+      <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+          <button type="submit" class="btn btn-primary btn-lg">Inscription</button>
+        {% endbuttons %}
+      </form>
+    </div>
+    </div>
+  </div>
 {% endblock %}

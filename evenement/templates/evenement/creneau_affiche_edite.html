@@ -4,30 +4,39 @@
 
 {# affiche le creneau sur le planning avec poste en ordonnées #}
 {% if source_type == "creneau" %}
-    {# on cherche si le bénévole connecté est proposé dans la liste des benevoles, au quel cas, il peut prendre le créneau #}
+    {# on cherche si le bénévole connecté est proposé dans la liste des benevoles : creneau pris par le benevole ou creneau dispo pour le benevole #}
     {% for uuid, creneauf in DicCreneaux.items %}
         {% if uuid|stringformat:"s" == creno.UUID|stringformat:"s" %}
-            {% for benevole in creneauf.benevole %}
-                {% if user.profilebenevole|stringformat:"s" in benevole|stringformat:"s" %}
+                {% if user.profilebenevole|stringformat:"s" in creneauf.benevole|stringformat:"s" %}
+                    {# le benevole est dans la liste des benevoles du creneau, il peut prendre le créneau #}
                     <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%} poste poste-{{ poste.UUID }}" 
                             style="grid-row: ligne-{{ creno.poste_id }};
                             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                            title="{%if libre == 'non'%}créneau occupé{%else%}créneau disponible{%endif%}"
+                            title="{%if libre == 'non'%}mon créneau{%else%}créneau disponible{%endif%}"
                             data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}" >
                             {%if libre == 'non'%}<a><b>{{ creno.benevole }}</b></a>
                             {%else%}<a><b>Disponible</b></a>{%endif%}
                     </button>
                 {% else %}
-                    {# sinon, pas dans la liste des benevoles on désactive le bouton #}
-                    <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre_moi_occupe{%endif%} poste poste-{{ poste.UUID }}" 
-                            style="grid-row: ligne-{{ creno.poste_id }};
-                            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                            title="{%if libre == 'non'%}créneau occupé{%else%}tu es déjà occupé sur cet horaire{%endif%}"
-                            data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}" >
-                            {%if libre == 'non'%}<a><b>{{ creno.benevole }}</b></a>{%endif%}
-                    </button>
+                    {# sinon, le benevole n'est pas dans la liste des benevoles proposés on désactive le bouton #}
+                    {% if libre == 'non' %}
+                        <button  class="creneau_autre_occupe poste {% if 'evenement.delete_creneau' in perms %}poste-{{ poste.UUID }}{%endif%}" 
+                                style="grid-row: ligne-{{ creno.poste_id }};
+                                grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                                title="créneau occupé"
+                                data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}" {%if not 'evenement.delete_creneau' in perms%}disabled{%endif%}>
+                                <a><b>{{ creno.benevole }}</b></a>
+                        </button>
+                    {% else %}
+                        <button  class="creneau_libre_moi_occupe poste poste-{{ poste.UUID }}" 
+                                style="grid-row: ligne-{{ creno.poste_id }};
+                                grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                                title="tu es déjà occupé sur cet horaire"
+                                data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}" {%if not 'evenement.delete_creneau' in perms%}disabled{%endif%}>
+                                <a><b></b></a>
+                        </button>
+                    {% endif %}
                 {% endif %}
-            {% endfor %}
         {% endif %}
     {% endfor %}
 
@@ -44,94 +53,267 @@
     </button>
 {% endif %}
 
-{# modal #}
-<div class="modal fade" id="modal-creneau_{% if source_type == 'creneau' %}creneau{% elif source_type == 'benevole' %}benevole{% endif %}_editer-{{ creno.UUID }}" tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">{{ creno.equipe.nom }} {% if creno.poste.nom %}<i class="bi bi-chevron-right"></i> {{ creno.poste.nom }}{% endif %}</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <form  id="form-creneau"  method='post'>
-                <div class="modal-body">
-                    {% csrf_token %}
-                    <table class="table">
-                        {% for uuid, creneauf in DicCreneaux.items %}
-                            {% if uuid|stringformat:"s" == creno.UUID|stringformat:"s" %}
-                                {{ creneauf.as_table }}
-                            {% endif %}
-                        {% endfor %}
-                    </table>
+{# modal admin de modification des creneaux#}
+{# si admin, affiche les details et les boutons d action #}
+{% if 'evenement.delete_creneau' in perms %}
+    <div class="modal fade" 
+         id="modal-creneau_{% if source_type == 'creneau' %}creneau{% elif source_type == 'benevole' %}benevole{% endif %}_editer-{{ creno.UUID }}" 
+         tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">{{ creno.equipe.nom }} {% if creno.poste.nom %}<i class="bi bi-chevron-right"></i> {{ creno.poste.nom }}{% endif %}</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
 
-                <div class="modal-footer">
+                <form  id="form-creneau"  method='post'>
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        <table class="table">
+                            {% for uuid, creneauf in DicCreneaux.items %}
+                                {% if uuid|stringformat:"s" == creno.UUID|stringformat:"s" %}
+                                    {{ creneauf.as_table }}
+                                {% endif %}
+                            {% endfor %}
+                        </table>
+                    </div>
 
-                    <input type="hidden" name="creneau" value="{{ creno.UUID }}">
-                    {# les utilisateurs avec privilieges ( admin, orga, responsables) peuvent supprimer les creneaux#}
-                     {# les benevoles peuvent supprimer les creneaux type "benevoles" qu'il occupe  #}
-                    {% if 'evenement.delete_creneau'  in perms or creno.benevole_id == user.profilebenevole.UUID and creno.type == "benevole" %} 
+                    <div class="modal-footer">
+
+                        <input type="hidden" name="creneau" value="{{ creno.UUID }}">
+
                         <button class="btn btn-danger" title="supprimer ce créneau" name="creneau_supprimer"
                                 id="creneau_supprimer" value="supprimer" type="button"
                                 data-bs-toggle="modal" data-bs-target="#modal-confirme-creneau-supprime-{{ creno.UUID }}">
                                 Supprimer
                         </button>
-                    {% endif %}
-
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    {# les utilisateurs avec privilieges ( admin, orga, responsables) peuvent modifier les creneaux #}
-                    {# le benevole peuvent modifier les creneaux disponibles et les creneaux qu'il occupe  #}
-                    {% if 'evenement.change_creneau' and 'evenement.delete_creneau' in perms or libre == 'oui' or creno.benevole_id == user.profilebenevole.UUID %}
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                         <button type="submit" id="creneau_modifier" name="creneau_modifier"  class="btn btn-primary success">Modifier</button>
-                    {% endif %}
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    {# modal de confirmation de suppression #}
+    <div class="modal fade"
+        id="modal-confirme-creneau-supprime-{{ creno.UUID }}"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="creneau_supprime"
+        aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document" style="z-index:1050">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">Confirmer La suppression du créneau</h5>
                 </div>
-            </form>
+                <div class="modal-body">
+                    Etes-vous sur?
+                    <table class="table">
+                        <tr><th>Equipe</th><td id="equipe">{{ creno.equipe.nom }}</td></tr>
+                        <tr><th>Planning</th><td id="equipe">{{ Planning.nom }}</td></tr>
+                        <tr><th>Poste</th><td id="poste">{{ poste.nom }}</td></tr>
+                        <tr><th>Créneau</th><td id="creneau_supprimer">{{ creno.nom }}</td></tr>
+                    </table>
+                </div>
 
-        </div>
-    </div>
-</div>
-
-{# modal de confirmation de suppression doit etre en dehors du div pour s'afficher correctement #}
-<div class="modal fade"
-     id="modal-confirme-creneau-supprime-{{ creno.UUID }}"
-     tabindex="-1"
-     role="dialog"
-     aria-labelledby="creneau_supprime"
-     aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document" style="z-index:1050">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Confirmer La suppression du créneau</h5>
-            </div>
-            <div class="modal-body">
-                Etes-vous sur?
-                <table class="table">
-                    <tr><th>Equipe</th><td id="equipe">{{ creno.equipe.nom }}</td></tr>
-                    <tr><th>Planning</th><td id="equipe">{{ Planning.nom }}</td></tr>
-                    <tr><th>Poste</th><td id="poste">{{ poste.nom }}</td></tr>
-                    <tr><th>Créneau</th><td id="creneau_supprimer">{{ creno.nom }}</td></tr>
-                </table>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Non</button>
-                <button type="submit" id="creneau_supprimer_confirme" class="btn btn-danger success">Oui</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Non</button>
+                    <button type="submit" id="creneau_supprimer_confirme" class="btn btn-danger success">Oui</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
-    $('#modal-confirme-creneau-supprime-{{ creno.UUID }}').on('click', '#creneau_supprimer_confirme', function(e){
-        /* alert('submitting-{{ forloop.counter }}'); */
-        $('#form-creneau').append('<input type="hidden" name="creneau_supprimer" value="{{ creno.UUID }}">');
-        /* pour le traitement view et form on envoi le type de creneau qu on supprime */
-        $('#form-creneau').append('<input type="hidden" name="type" value="{{ creno.type }}">'); 
-        document.getElementById('form-creneau').submit();
-        $('#modal-confirme-creneau-supprime-{{ creno.UUID }}').modal('toggle');
-        e.preventDefault();
-    });
-</script>
+    <script>
+        /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
+        $('#modal-confirme-creneau-supprime-{{ creno.UUID }}').on('click', '#creneau_supprimer_confirme', function(e){
+            /* alert('submitting-{{ forloop.counter }}'); */
+            $('#form-creneau').append('<input type="hidden" name="creneau_supprimer" value="{{ creno.UUID }}">');
+            /* pour le traitement view et form on envoi le type de creneau qu on supprime */
+            $('#form-creneau').append('<input type="hidden" name="type" value="{{ creno.type }}">'); 
+            document.getElementById('form-creneau').submit();
+            $('#modal-confirme-creneau-supprime-{{ creno.UUID }}').modal('toggle');
+            e.preventDefault();
+        });
+    </script>
+
+{# modals benevole #}
+{# si non admin, affiche pas les details et on permet juste de prendre le créneau #}
+{% elif creno.benevole == None %}
+    <div class="modal fade" 
+         id="modal-creneau_{% if source_type == 'creneau' %}creneau{% elif source_type == 'benevole' %}benevole{% endif %}_editer-{{ creno.UUID }}" 
+         tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
+
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">prendre le creneau ?</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table">
+                        <tr>
+                            <th>
+                                <label for="id_debut_0">Date</label>
+                            </th>
+                            <td>
+                                {{ creno.debut|date:'d/m/Y' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="id_debut_0">Equipe</label>
+                            </th>
+                            <td>
+                                {{ creno.equipe.nom }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="id_debut_0">Planning</label>
+                            </th>
+                            <td>
+                                {{ creno.planning.nom }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="id_debut_0">Poste</label>
+                            </th>
+                            <td>
+                                {{ creno.poste.nom }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="id_debut_0">Horaires</label>
+                            </th>
+                            <td>
+                                {{ creno.debut|date:'H:i' }} <i class="bi bi-chevron-right"></i> {{ creno.fin|date:'H:i' }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                    
+                <div class="modal-footer">
+                    <form  id="form-creneau"  method='post'>
+                        {% csrf_token %}
+                        <input type="hidden" name="debut_0" value="{{ creno.debut|date:'Y-m-d' }}">
+                        <input type="hidden" name="debut_1" value="{{ creno.debut|date:'H:i' }}">
+                        <input type="hidden" name="fin_0" value="{{ creno.fin|date:'Y-m-d' }}">
+                        <input type="hidden" name="fin_1" value="{{ creno.fin|date:'H:i' }}">
+                        <input type="hidden" name="description" value="{{ creno.description }}">
+                        <input type="hidden" name="editable" value="{{ creno.editable }}">
+                        <input type="hidden" name="type" value="{{ creno.type }}">
+                        <input type="hidden" name="benevole" value="{{ user.profilebenevole.UUID }}">
+                        <input type="hidden" name="creneau" value="{{ creno.UUID }}">
+                        <input type="hidden" name="poste" value="{{ creno.poste.UUID }}">
+                        <input type="hidden" name="planning" value="{{ creno.planning.UUID }}">
+                        <input type="hidden" name="equipe" value="{{ creno.equipe.UUID }}">
+                        <input type="hidden" name="evenement" value="{{ creno.evenement.UUID }}">
+
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+                        <button type="submit" id="creneau_modifier" name="creneau_modifier"  class="btn btn-primary success">Oui</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+{# si non admin, affiche pas les details et on permet juste de libérer le créneau #}
+{% elif creno.benevole|stringformat:"s" == user.profilebenevole|stringformat:"s" %}
+    <div class="modal fade" 
+         id="modal-creneau_{% if source_type == 'creneau' %}creneau{% elif source_type == 'benevole' %}benevole{% endif %}_editer-{{ creno.UUID }}" 
+         tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
+
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">etes-vous sûr de vouloir libérer le creneau ?</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table">
+                        <tr>
+                            <th>
+                                <label for="id_debut_0">Date</label>
+                            </th>
+                            <td>
+                                {{ creno.debut|date:'d/m/Y' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="id_debut_0">Equipe</label>
+                            </th>
+                            <td>
+                                {{ creno.equipe.nom }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="id_debut_0">Planning</label>
+                            </th>
+                            <td>
+                                {{ creno.planning.nom }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="id_debut_0">Poste</label>
+                            </th>
+                            <td>
+                                {{ creno.poste.nom }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="id_debut_0">Horaires</label>
+                            </th>
+                            <td>
+                                {{ creno.debut|date:'H:i' }} <i class="bi bi-chevron-right"></i> {{ creno.fin|date:'H:i' }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                    
+                <div class="modal-footer">
+                    <form  id="form-creneau"  method='post'>
+                        {% csrf_token %}
+                        <input type="hidden" name="debut_0" value="{{ creno.debut|date:'Y-m-d' }}">
+                        <input type="hidden" name="debut_1" value="{{ creno.debut|date:'H:i' }}">
+                        <input type="hidden" name="fin_0" value="{{ creno.fin|date:'Y-m-d' }}">
+                        <input type="hidden" name="fin_1" value="{{ creno.fin|date:'H:i' }}">
+                        <input type="hidden" name="description" value="{{ creno.description }}">
+                        <input type="hidden" name="editable" value="{{ creno.editable }}">
+                        <input type="hidden" name="type" value="{{ creno.type }}">
+                        <input type="hidden" name="benevole" value="">
+                        <input type="hidden" name="creneau" value="{{ creno.UUID }}">
+                        <input type="hidden" name="poste" value="{{ creno.poste.UUID }}">
+                        <input type="hidden" name="planning" value="{{ creno.planning.UUID }}">
+                        <input type="hidden" name="equipe" value="{{ creno.equipe.UUID }}">
+                        <input type="hidden" name="evenement" value="{{ creno.evenement.UUID }}">
+
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+                        <button type="submit" id="creneau_modifier" name="creneau_modifier"  class="btn btn-primary success">Oui</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+{% endif %}

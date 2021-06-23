@@ -256,7 +256,7 @@ hr {
 
 {# styles des creneaux #}
 
-.creneau, .creneau_libre, .creneau_libre_moi_occupe, .planning {
+.creneau, .creneau_libre, .creneau_libre_moi_occupe, .creneau_autre_occupe, .creneau_occupe, .planning {
 	box-shadow: 3px 2px #888;
 	#display: block;
 	#color: rgb(0, 0, 0);
@@ -284,9 +284,13 @@ hr {
 .creneau_libre_moi_occupe {
 	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-teal) 200%);
 }
+{# pour les non admin, utilisé pour l'affichage des creneaux occupé par d'autre benevole #}
+.creneau_autre_occupe {
+	#background-color: var(--bs-secondary);
+}
 {# créneau occupé dans la vue planning benevole(s) #}
 .creneau_occupe {
-	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-dark) 70%);
+	# background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-dark) 70%);
 	z-index: 50;
 }
 
@@ -308,4 +312,10 @@ hr {
 .form_grid_button_planningperso .planningperso { 
 	background-image: linear-gradient(to bottom, #dff0d82b 0px, #bce5d636 100%);
 	position: relative;
+}
+
+{# sidebar #}
+.list-group-item.active {
+	background-color: #601eb0;
+	border-color: #601eb0;
 }
