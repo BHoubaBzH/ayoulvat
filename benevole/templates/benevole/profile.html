@@ -1,0 +1,24 @@
+<!-- benevole/profile.html -->
+{% extends 'benevole/base.html' %}
+{% load bootstrap5 %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<form method="post">
+  <div class="row card card-default">
+    <div class="card-header">Mon Profile</div>
+    <div class="card-body">
+        <div class="modal-body">
+            {% csrf_token %}
+            <table class="table">
+              {{ FormPersonne.as_table }}
+              {% if Evenement %}
+                {{ Evenement.nom }}
+              {% endif %}
+            </table>
+        </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

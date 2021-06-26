@@ -1,10 +1,11 @@
 from django import views
-from django.contrib import admin
-from django.urls import path, include
-from django.views.generic import TemplateView
+from django.urls import path
 
 from benevole.views import InscriptionView
+from . import views
 
 urlpatterns = [
     path('inscription/', InscriptionView.as_view(), name='inscription'),
+    path('profile', views.Profile, name='profile'),
 ]
+

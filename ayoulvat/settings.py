@@ -138,6 +138,13 @@ LANGUAGES = (
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+# gestion des medias
+MEDIA_ROOT = 'media'
+MEDIA_URL = '/media/'
 
 # authent personnalisée
 AUTH_USER_MODEL = 'benevole.Personne'

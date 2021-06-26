@@ -1,11 +1,18 @@
 import uuid
 from django.db import models
+from django.urls.base import set_urlconf
 from association.models import AssoPartenaire, Association
 from benevole.models import ProfileOrganisateur, ProfileResponsable, ProfileBenevole
 from colorful.fields import RGBColorField
 
 
 class Evenement(models.Model):
+    # défini le format de sauvegarde de la vignette
+    def upload_dir_vignette(self, filename):
+        nom_propre = [character for character in str(self.nom) if character.isalnum()]
+        nom_propre = "".join(nom_propre)
+        return '{0}/{1}/{2}'.format(nom_propre, self.debut.year, filename)
+
     UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # supprime evenement si asso supprimée
     association = models.ForeignKey(Association,
@@ -32,6 +39,7 @@ class Evenement(models.Model):
     editable = models.BooleanField(default=True, help_text="si non editable, l'évènement est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
     description = models.CharField(max_length=500, blank=True, default='')
+    vignette = models.ImageField(upload_to=upload_dir_vignette, blank=True)
     couleur = RGBColorField(default="#0d6efd")
 
     def __str__(self):

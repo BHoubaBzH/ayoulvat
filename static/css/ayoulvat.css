@@ -1,0 +1,13 @@
+
+
+.footer, .sidebar {
+    background-color: #dbd8d8;
+}
+
+.footer {
+    margin-top: 2em;
+}
+
+.footer .right {
+    text-align: right;
+}

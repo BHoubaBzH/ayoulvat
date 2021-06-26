@@ -5,17 +5,16 @@
 {% block title %}Inscription{% endblock %}
 
 {% block content %}
-  <div class="panel panel-default">
-    <div class="panel-heading">Inscription</div>
-    <div class="panel-body">
-      <form method="post">
+<form method="post">
+  <div class="row card card-default">
+    <div class="card-header">Inscription</div>
+    <div class="card-body">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
           <button type="submit" class="btn btn-primary btn-lg">Inscription</button>
         {% endbuttons %}
-      </form>
-    </div>
     </div>
   </div>
+</form>
 {% endblock %}

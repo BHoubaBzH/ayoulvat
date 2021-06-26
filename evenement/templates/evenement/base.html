@@ -11,11 +11,10 @@
 <head>
     <meta charset="utf-8">
     <title>{% block title %}Evenement{% endblock %}</title>
-    {# ressources CSS remplacée par internal CSS #}
-    <!-- link rel="stylesheet" href="{% static 'evenement/css/planning.css' %}" type="text/css" /-->
+    <link rel="stylesheet" href="{% static 'css/ayoulvat.css' %}" type="text/css" />
     <style>
         {# internal CSS pour dynamique #}
-        {% include 'evenement/planning.css.html'%}
+        {% include 'evenement/evenement.css.html'%}
     </style>
 
     {# ressources JQUERY #}
@@ -34,7 +33,7 @@
 </head>
 <body class="override">  
 
-  {% include "evenement/navbar.html" %}
+  {% include "benevole/navbar.html" %}
 
 <div class="container-fluid">
   <div class="row"> 

@@ -8,9 +8,9 @@
 {% block content %}
   <form action="{% url 'login' %}" method="post">
         {% csrf_token %}
-        <div class="panel panel-default">
-          <div class="panel-heading">Connexion</div>
-          <div class="panel-body">
+        <div class="row card card-default">
+          <div class="card-header">Connexion</div>
+          <div class="card-body">
               {% if error_message %}
                   <p class="bg-danger p-d ml-b">{{ error_message }}</p>
               {% endif %}
@@ -27,12 +27,14 @@
                   </div>
               </div>
               <div class="col-md-6 col-md-offset-4">
+                  <!-- retourne a la page precedent si login ok, si ko HS a voir-->
+                  <input type="hidden" name="next" value="{{ request.GET.next }}"/> 
                   <input name="login" type="submit" value="Connexion" class="btn btn-success" /> &nbsp;
                   <a href="{% url 'inscription' %}">ou Creer un Compte</a>
               </div>
               <div class="col-md-6 col-md-offset-4">
                   <a href="{% url 'password_reset' %}">Mot de passe perdu?</a>
             </div>
-          </div>
+        </div>
   </form>
 {% endblock %}
