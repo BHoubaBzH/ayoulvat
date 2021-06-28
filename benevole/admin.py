@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.models import User
 
 from .models import Personne, ProfileAdministrateur, ProfileResponsable, ProfileOrganisateur, \
     ProfileBenevole
@@ -10,6 +11,9 @@ class PersonneInLine(admin.TabularInline):
     verbose_name = 'Bénévoles'
     # fk_name = 'user'
     extra = 1
+
+class PersonneDetails(admin.ModelAdmin):
+    list_display = ("last_name", "first_name", "is_superuser")
 
 '''
 class BenevoleDetails(UserAdmin):
@@ -28,7 +32,7 @@ class BenevoleDetails(UserAdmin):
 #admin.site.unregister(User)
 #admin.site.register(User, BenevoleDetails)
 
-admin.site.register(Personne)
+admin.site.register(Personne, PersonneDetails)
 admin.site.register(ProfileAdministrateur)
 admin.site.register(ProfileOrganisateur)
 admin.site.register(ProfileResponsable)

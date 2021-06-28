@@ -1,0 +1,42 @@
+<!-- benevole/homepage.html : page principale du benevole -->
+<div class="row card card-default">
+    <div class="card-header">Bienvenue {% if user.last_name or user.first.name %}{{ user.first_name|capfirst }} {{ user.last_name|upper }}{% else %}{{ user.username }}{% endif %} !</div>
+    <div class="card-body">
+        Bienvenue sur le site AYOULVAT. Tu vas pouvoir t'inscrire comme bénévole sur des évènements créés ici.<br>
+        Pour revenir sur cette page click sur "home" dans la barre du haut. <br>
+        Pour éditer tes informations, click sur "mon profile" dans la barre du haut.<br><br>
+        Choisis un evenement dans la liste pour y participer.
+    </div>
+</div>
+
+{# prepare les forms pour acceder aux evenements#}
+{% for EV in Evenements %}
+    <form action="{% url 'evenement' uuid_evenement=EV.UUID %}" method='POST' id="{{ EV }}">
+        {% csrf_token %}
+        {# par defaut, on arrive sur le planning perso du benevole #}
+        <input type="hidden" name="planning_perso" value="oui"> 
+    </form>
+{% endfor %}
+{# on va creer une carte par evenement ou le benevole est enregistré #}
+<div class="evenements">
+    <div class="container overflow-hidden">
+        <div class="row gy-5 gx-5" style="margin-top: 0px;">
+            {% for EV in Evenements %}
+                <div class="col card card-default">
+                    <div class="card-header" style="text-align: center;">{{ EV.nom }}</div>
+                    <a href="">
+                    <div class="card-body">
+                        <button type="submit" name="evenement-{{ EV }}" form="{{ EV }}" title="vers {{ EV }}">
+                        {% if EV.vignette %}
+                            <img src="{{ EV.vignette.url }}" form="{{ EV }}" alt="vers {{ EV }}" style="max-width: 100%;max-height: 100%;"/>
+                        {% else %}
+                            <img src="/media/empty.jpg" form="{{ EV }}" alt="vers {{ EV }}" style="max-width: 100%;max-height: 100%;"/> 
+                        {% endif %}
+                        </button>
+                    </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

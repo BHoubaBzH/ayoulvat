@@ -84,10 +84,11 @@ class CreneauForm(ModelForm):
         # exclude = ['benevole',]
         fields = ['debut',
                   'fin',
+                  'benevole',
                   'description',
                   'editable',
+                  'valide_present',
                   'type',
-                  'benevole',
                   'poste',
                   'planning',
                   'equipe',
@@ -180,7 +181,8 @@ class CreneauForm(ModelForm):
                                 or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin:
                                 self.fields['benevole'].queryset = ProfileBenevole.objects.filter(UUID=None)
                         except:
-                            print('nouveau creneau')
+                            pass
+                            # print('nouveau creneau')
                 # slider pour choix des début et fin de planning a voir plus tard
                 # champs en plus par rapport à la form, but: creer un slider pour les heures du creneau dans planning perso
                 # min : debut planning / max : fin planning 
@@ -227,16 +229,16 @@ class CreneauForm(ModelForm):
     ################ methode controle_coherence_creneaux
     def controle_coherence_creneaux(self, Creno, debut, fin):
         # print(' ======== ')
-        print('ce creneau    : {}'.format(self.instance.UUID))
+        # print('ce creneau    : {}'.format(self.instance.UUID))
         uuid_autre_crenofield = Creno._meta.get_field('UUID')
         uuid_autre_creno = uuid_autre_crenofield.value_from_object(Creno)
         # print('autre creneau    : {}'.format(uuid_autre_creno))
         if self.instance.UUID != uuid_autre_creno:  # ne prend pas en compte l'instance en cours
             debut_autre_creno = Creno._meta.get_field('debut').value_from_object(Creno)
             fin_autre_creno = Creno._meta.get_field('fin').value_from_object(Creno)
-            print('autre creneau : {}'.format( Creno._meta.get_field('UUID').value_from_object(Creno)))
-            print ('autre debut  : {0}  fin : {1}'.format(debut_autre_creno, fin_autre_creno))
-            print('debut    : {}'.format(debut))
+            # print('autre creneau : {}'.format( Creno._meta.get_field('UUID').value_from_object(Creno)))
+            # print ('autre debut  : {0}  fin : {1}'.format(debut_autre_creno, fin_autre_creno))
+            # print('debut    : {}'.format(debut))
             if debut_autre_creno <= debut < fin_autre_creno:
                 raise ValidationError("Wopolo le créneau commence sur un autre!")
             if debut_autre_creno < fin < fin_autre_creno:

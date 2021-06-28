@@ -11,6 +11,8 @@ from association.models import AssoPartenaire, Association
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
+
+
 class Personne(AbstractUser):
     MIN = "MINEUR"
     HOM = "HOMME"
@@ -28,19 +30,9 @@ class Personne(AbstractUser):
     last_name = models.CharField(_('last name'), max_length=30, blank=False, unique=False)
     first_name = models.CharField(_('first name'), max_length=30, blank=False, unique=False)
     email = models.EmailField(_('email address'), unique=True)
-
-    # on ne peut pas supprimer une asso origine tant
-    # qu'une personne en fait partie
-    assopartenaire = models.ForeignKey(AssoPartenaire,
-                                    primary_key=False,
-                                    null=True,
-                                    blank=True,
-                                    default='',
-                                    on_delete=models.PROTECT,
-                                    help_text='associations partenaires des evenements de cette association')
     role = models.CharField(max_length=50, blank=True, default='')
     genre = models.CharField(max_length=50, choices=genreListe, default=NSP)
-    date_de_naissance = models.DateField(default='2000-01-01')
+    date_de_naissance = models.DateField(null=True)
     fixe = PhoneNumberField(null=True,
                             blank=True,
                             unique=False,
@@ -133,6 +125,15 @@ class ProfileBenevole(models.Model):
     message = models.TextField(max_length=1000, blank=True, default='')
     couleur = RGBColorField(default="#6610f2")
 
+    # on ne peut pas supprimer une asso origine tant
+    # qu'une personne en fait partie, le bénévole choisi son asso partenaire
+    assopartenaire = models.ForeignKey(AssoPartenaire,
+                                    primary_key=False,
+                                    null=True,
+                                    blank=True,
+                                    default='',
+                                    on_delete=models.PROTECT,
+                                    help_text='associations partenaires de l evenement')
     def __str__(self):
         if not self.personne.last_name and not self.personne.first_name:
             return "{0}".format(self.personne.username)

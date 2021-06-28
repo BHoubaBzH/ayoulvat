@@ -5,14 +5,17 @@
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap shadow">
       <div class="navbar-brand col-md-3 col-lg-2 me-0 px-3">
         {% if Evenement %}
+          {% if Evenement.vignette %}<img src="{{ Evenement.vignette.url }}" style="max-width: 40px;max-height: 40px;">{% endif %}
           {% if 'change_evenement'  in perms %}<a  href="{% url 'liste_evenements' %}">{{ Association.nom }}</a>{% endif %}
           {%if Evenement.nom%}<a> {% if 'change_evenement'  in perms %}<i class="bi bi-chevron-right"></i>{% endif %} {{ Evenement.nom }}</a>{%endif%}
+      {% comment "prend trop de place dans la navbar, et l'info est dans la sidebar" %}
           {% for team in Equipes %}
             {%if equipe_uuid|stringformat:'s' == team.UUID|stringformat:'s'%}<a> <i class="bi bi-chevron-right"></i> {{ team.nom }}</a>{%endif%}
           {% endfor %}
           {% for plan in Plannings %}
             {%if planning_uuid|stringformat:'s' == plan.UUID|stringformat:'s'%}<a> <i class="bi bi-chevron-right"></i> {{ plan.nom }}</a>{%endif%}
           {% endfor %}
+      {% endcomment %}
         {% else %}
           AYOULVAT
         {% endif %}
@@ -28,14 +31,16 @@
         <li class="nav-item text-nowrap" id="boutons_navbar">
           {# si c'est un bénévole inscrit à l'evenement, il peut consulter son planning perso #}
           {% if Evenement and user.profilebenevole in Benevoles %}
+            {% comment "ancien accès a mon planning. déporté sur la sidebar" %}
             <div class="btn-group me-2">
               <button type="submit" id="planning_perso" class="btn btn-sm btn-outline-secondary"
                 formaction="{% url 'evenement' uuid_evenement=Evenement.UUID %}">Mon Planning</button>
             </div>
+            {% endcomment %}
           {% endif %}
             <div class="btn-group me-2">
               <button type="submit" id="profile" class="btn btn-sm btn-outline-secondary"
-                formaction="{% url 'profile' %}">Mon Profile</button>
+                formaction="{% url 'home' %}">Home</button>
             </div>
           <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
             <span data-feather="calendar"></span>
@@ -47,7 +52,15 @@
 
     <ul class="navbar-nav px-3">
       <li class="nav-item text-nowrap">
+        {% if user.is_authenticated %}
+        <div class="btn-group me-2">
+          <button type="submit" id="profile" class="btn btn-sm btn-outline-secondary"
+            formaction="{% url 'profile' %}">Mon Profile</button>
+        </div>
         <a class="btn btn-sm btn-outline-secondary" href="{% url 'logout' %}">Déconnexion</a>
+        {% else %}
+        <a class="btn btn-sm btn-outline-secondary" href="{% url 'login' %}">connexion</a>
+        {% endif %}
       </li>
     </ul>
   </header>                                                 

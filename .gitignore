@@ -1,3 +1,4 @@
 .env
 sent_emails
 media/*
+!media/empty.jpg

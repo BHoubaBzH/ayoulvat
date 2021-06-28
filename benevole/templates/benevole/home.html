@@ -4,14 +4,12 @@
 {% block content %}
 
     {% if user.is_authenticated %}
-      {% include 'benevole/frontpage.html'%}
+      {% include 'benevole/homepage.html'%}
     {% else %}
-      <H1>Vous n'etes pas connecté</H1>
-      <p><a href="{% url 'login' %}">Connexion</a></p>
-      <p><a href="{% url 'inscription' %}">Inscription</a></p>
+      {% include 'benevole/connexion.html'%}
     {% endif %}
     </br>
     </br>
-        <li>A partir d'ici , la présentation du site</li>
+    <li>présentation du site</li>
 
 {% endblock %}

@@ -31,7 +31,7 @@ class Evenement(models.Model):
     benevole = models.ManyToManyField(ProfileBenevole,
                                       related_name='BenevolesEvenement',
                                       blank=True,
-                                      default='les benevoles peuvent s inscrire a l envenement')
+                                      default='les benevoles peuvent s inscrire a l envenement',)
     nom = models.CharField(max_length=50)
     debut = models.DateTimeField(blank=False, default='')
     fin = models.DateTimeField(blank=False, default='')
@@ -208,6 +208,7 @@ class Creneau(models.Model):
     description = models.CharField(max_length=500, blank=True, default='')
     editable = models.BooleanField(default=True, help_text="si non editable, le créneau est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
+    valide_present = models.BooleanField(blank=True, default=False, help_text="à valider si le bénévole s'est bien présenté")
     type = models.CharField(choices=Type.choices,
                             max_length=50,
                             blank=False,
