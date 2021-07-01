@@ -24,7 +24,7 @@
     {% if user.is_authenticated %}
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          <a class="nav-link">Bienvenue {{ request.user.username|capfirst }}</a>
+          <a class="nav-link">Bienvenue {%if request.user.first_name%}{{ request.user.first_name|capfirst }}{%endif%}</a>
         </li>
       </ul>
       <ul class="navbar-nav px-3">
@@ -42,10 +42,12 @@
               <button type="submit" id="profile" class="btn btn-sm btn-outline-secondary"
                 formaction="{% url 'home' %}">Home</button>
             </div>
+        {% comment "garde pour exemple" %}
           <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
             <span data-feather="calendar"></span>
             This week
           </button>
+        {% endcomment %}
         </li>
       </ul>
     {% endif %}

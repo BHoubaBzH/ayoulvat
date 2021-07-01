@@ -52,16 +52,34 @@ def Profile(request):
     if request.method == "POST" and request.POST.get('personne'):
         # si on a de donnes post, on sauvegarde les formulaires
         FormPersonne = PersonneForm(request.POST, instance=Personne.objects.get(UUID=request.POST.get('personne')))
-        FormBenevole = BenevoleForm(request.POST, instance=ProfileBenevole.objects.get(personne_id=request.user.UUID))
-        if FormBenevole.is_valid() and FormPersonne.is_valid():
+        try:
+            # on a un profile bénévole déjà cree, on le recupere
+            FormBenevole = BenevoleForm(request.POST, instance=ProfileBenevole.objects.get(personne_id=request.POST.get('personne')))
             print('bénévole modifié')
-            FormBenevole.save()
-            FormPersonne.save()    
+        except:
+            # nouveau profile benevole
+            FormBenevole = BenevoleForm(request.POST,
+                                        #personne_id=request.POST.get('personne'),
+                                        #assopartenaire_id=request.POST.get('assopartenaire'),
+                                        #message=request.POST.get('message'), 
+                                        )
+            print('nouveau benevole')
+
+        if FormPersonne.is_valid() and FormBenevole.is_valid():
+            FormPersonne.save()   
+            FormBenevole.save(Personne.objects.get(UUID=request.POST.get('personne'))) 
 
     # on construit nos objets a passer au template dans le dictionnaire data
+    try : 
+        profile_benevole = BenevoleForm(instance=ProfileBenevole.objects.get(personne_id=request.user.UUID))  # form benevole liée
+    except :
+        # sinon initial, on va lier le profile à l evenement
+        # profile_benevole = BenevoleForm(initial={'evenement' : [i.id for i in Evenement_inst.evenement.all()]})
+        profile_benevole = BenevoleForm()
+
     data = {
         "FormPersonne" : PersonneForm(instance=Personne.objects.get(UUID=request.user.UUID)),  # form personne liée
-        "FormBenevole" : BenevoleForm(instance=ProfileBenevole.objects.get(personne_id=request.user.UUID)), # form benevole liée
+        "FormBenevole" : profile_benevole, # form benevole liée
         "Evenements" : "",  # liste de tous les evenements
     }
 

@@ -15,6 +15,7 @@
               {{ FormPersonne.as_table }}
               {{ FormBenevole.as_table }}
             </table>
+          <input type="hidden" name="username" value="{{ user.username }}">
           <input type="hidden" name="personne" value="{{ user.UUID }}">
           <button type="submit" id="profile" class="btn btn-primary success">Modifier</button>
         </div>

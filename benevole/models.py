@@ -135,8 +135,4 @@ class ProfileBenevole(models.Model):
                                     on_delete=models.PROTECT,
                                     help_text='associations partenaires de l evenement')
     def __str__(self):
-        if not self.personne.last_name and not self.personne.first_name:
-            return "{0}".format(self.personne.username)
-        else:
-            return "{0} {1}".format(self.personne.last_name.upper(), \
-                                    self.personne.first_name.capitalize())
+        return "{0} {1}".format(self.personne.last_name.upper(), self.personne.first_name.capitalize())
