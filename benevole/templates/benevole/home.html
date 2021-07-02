@@ -3,13 +3,11 @@
 
 {% block content %}
 
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated %}{# deja connecté #}
       {% include 'benevole/homepage.html'%}
-    {% else %}
+    {% else %}{# pas authentifié #}
       {% include 'benevole/connexion.html'%}
     {% endif %}
     </br>
     </br>
-    <li>présentation du site</li>
-
 {% endblock %}

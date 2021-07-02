@@ -1,8 +1,9 @@
+import benevole
 from benevole.models import Personne, ProfileBenevole
 from evenement.models import Evenement
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -33,7 +34,12 @@ def Home(request):
         #data["Evenement"] = evenement
         data["Benevoles"] = ProfileBenevole.objects.filter(BenevolesEvenement=evenement)  # objets benevoles de l'evenement
     except:
-        print('on est pas passé la page evenement')
+        print('pas passé la page evenement')
+
+    # on redirige vers la page profile tant que celui-ci n est pas rempli
+    if request.user.is_authenticated :
+        if not request.user.last_name:
+            return Profile(request)
 
     return render(request, "benevole/home.html", data)
 
@@ -55,7 +61,6 @@ def Profile(request):
         try:
             # on a un profile bénévole déjà cree, on le recupere
             FormBenevole = BenevoleForm(request.POST, instance=ProfileBenevole.objects.get(personne_id=request.POST.get('personne')))
-            print('bénévole modifié')
         except:
             # nouveau profile benevole
             FormBenevole = BenevoleForm(request.POST,
@@ -67,8 +72,15 @@ def Profile(request):
 
         if FormPersonne.is_valid() and FormBenevole.is_valid():
             FormPersonne.save()   
-            FormBenevole.save(Personne.objects.get(UUID=request.POST.get('personne'))) 
-
+            FormBenevole.save(Personne.objects.get(UUID=request.POST.get('personne')))
+            # cree le lien evenement - benevole : a changer ici on est sur un seul evenement, il faudra voir comment s'inscrire a un evenement parmis d'autres
+            evenement = Evenement.objects.filter().first()
+            plop = ProfileBenevole.objects.get(UUID=request.user.profilebenevole.UUID)
+            # ajoute notre benevole dans le champs manytomany 
+            evenement.benevole.add(ProfileBenevole.objects.get(UUID=plop.UUID)) 
+            # on redirige vers la page homepage si les forms sont remplies
+            return redirect("home")
+            
     # on construit nos objets a passer au template dans le dictionnaire data
     try : 
         profile_benevole = BenevoleForm(instance=ProfileBenevole.objects.get(personne_id=request.user.UUID))  # form benevole liée

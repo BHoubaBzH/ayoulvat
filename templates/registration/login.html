@@ -27,13 +27,9 @@
                   </div>
               </div>
               <div class="col-md-6 col-md-offset-4">
-                  {% if not FormPersonne.lastname %}
-                    <!-- force a aller sur la page de profile si il n'est pas renseigné -->
-                    <input type="hidden" name="next" value="{% url 'profile' %}"/>
-                  {% else %}
-                    <!-- retourne a la page precedent si login ok, si ko HS a voir-->
-                    <input type="hidden" name="next" value="{{ request.GET.next }}"/> 
-                  {% endif %}
+                  <!-- retourne a la page precedent si login ok, si ko HS a voir-->
+                  <!--input type="hidden" name="next" value="{{ request.GET.next }}"/-->
+                  <input type="hidden" name="next" value="{% url 'home' %}"> 
                   <input name="login" type="submit" value="Connexion" class="btn btn-success" /> &nbsp;
                   <a href="{% url 'inscription' %}">ou Creer un Compte</a>
               </div>
