@@ -39,10 +39,10 @@ class BenevoleForm(ModelForm):
         print('personne {}'.format(personne.UUID))
         self.instance.personne = personne
         return super(BenevoleForm, self).save()
-
+    ## !! filtrer les asso partenaires par evenement 
 
 class PersonneForm(ModelForm):
-    date_de_naissance = DateField(widget=DateInput())
+    date_de_naissance = DateField(widget=DateInput(format='%Y-%m-%d'))
 
     class Meta:
         model = Personne
