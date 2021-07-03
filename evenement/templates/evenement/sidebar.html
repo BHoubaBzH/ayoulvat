@@ -70,7 +70,7 @@
       </h6>
       <ul class="nav flex-column mb-2">
         {% for plan in Plannings %}
-          {% if  plan.equipe_id|stringformat:'s' == equipe_uuid|stringformat:'s' %} {#on affiche que les planning de l'equipe #}
+          {% if  plan.equipe_id|stringformat:'s' == equipe_uuid|stringformat:'s' %} {# on affiche que les planning de l'equipe #}
             <li class="nav-item">
               <form class="form evenement-form" method="post">
                 {% csrf_token %}
@@ -128,7 +128,7 @@
 
   </div>
 </nav>
-{# ajoute d'un planning #}
+{# ajoute d'un planning pour les admins #}
 {% if 'evenement.add_planning' in perms %}
     {% include "evenement/planning_ajoute.html" %}
-{% endif %}       
+{% endif %} 

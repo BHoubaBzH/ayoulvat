@@ -17,7 +17,13 @@
             </table>
           <input type="hidden" name="username" value="{{ user.username }}">
           <input type="hidden" name="personne" value="{{ user.UUID }}">
-          <button type="submit" id="profile" class="btn btn-primary success">Modifier</button>
+          {% if FormPersonne.last_name%} {# si le benevole a déjà renseigné son profile alors il n'est pas obligé de modifier son profile #}
+            <button type = "button" class="btn btn-secondary"  onclick="history.back()">Retour</button>
+            <button type="submit" class="btn btn-primary" id="profile">Modifier</button>
+          {%else%} {# sinon ild doit renseigner son profile #}
+          <button type="submit" class="btn btn-primary" id="profile">Valider</button>
+          {%endif%}
+          
         </div>
     </div>
   </div>

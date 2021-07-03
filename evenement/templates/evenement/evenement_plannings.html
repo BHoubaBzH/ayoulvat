@@ -33,6 +33,11 @@
                     {% include "evenement/gridplan_postes.html" %}
                 </div>
             {% endif %}
+        {# une equipe est selectionnée par un benevole, pas de planning ou de poste #}
+        {% elif not Planning and not Poste and not 'evenement.change_planning' in perms%} 
+            <div class="tab-content" id="nav-tabContent">
+                {% include "evenement/equipe_explique.html" %}
+            </div>
         {# page par defaut admin: plannings  evenement et equipes #}
         {# page pour benevole: planning de l equipe  #}
         {% elif Evenement and 'evenement.change_planning' in perms %} 
@@ -55,9 +60,6 @@
                     {% else %}
                         {% include "evenement/gridplan_planningperso.html" %}
                     {% endif %}
-                    {% comment " " %}
-                    {% include "evenement/gridplan_planningperso.html" %}
-                    {% endcomment %}
                 </div>
             </div>
         {% endif %}

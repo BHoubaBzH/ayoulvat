@@ -39,6 +39,7 @@ class Evenement(models.Model):
     editable = models.BooleanField(default=True, help_text="si non editable, l'évènement est bloqué."
                                                            " Seul un responsable ou + peu l'éditer ou le réouvrir")
     description = models.CharField(max_length=500, blank=True, default='')
+    courriel_responsable = models.EmailField(default='', help_text="courriel accessible aux bénévoles en bas de page")
     vignette = models.ImageField(upload_to=upload_dir_vignette, blank=True)
     couleur = RGBColorField(default="#0d6efd")
 
@@ -63,6 +64,7 @@ class Equipe(models.Model):
     responsable_valide = models.BooleanField(help_text="les responsables doivent valider les créneaux choisis")
     responsable_creer = models.BooleanField(help_text="les responsables peuvent creer des bénévoles")
     description = models.CharField(max_length=500, blank=True, default='')
+    courriel_responsable = models.EmailField(default='', help_text="courriel accessible aux bénévoles en bas de page")
     couleur = RGBColorField(default="#0d6efd")
     benevole = models.ManyToManyField(ProfileBenevole,
                                       related_name='BenevolesEquipe',

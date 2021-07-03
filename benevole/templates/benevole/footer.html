@@ -1,12 +1,20 @@
 <!-- benevole/footer.html -->
 <footer>
     <div class="container">
-        <div class="row card footer ml-t">
+        <div class="row card footer sl-t">
             <div class="card-body row ">
-                <div class="col-lg-8 col-md-8 left"> 
-                    <p>Developpé par:</p>
-                    <p><h5><a href="mailto:bhouba@zohomail.eu" target="_blank">Phil Rioual</a></h5></p>
+                <div class="col-lg-8 col-md-8 left">
+                    {% if Evenement %} 
+                        <p>besoins d'aide? un renseignement?</p>
+                        <p style="padding-left: 15%;"><a href="mailto:{{ Evenement.courriel_responsable }}" target="_blank"><i class="bi bi-envelope-fill" style="font-size: 2rem; color: cornflowerblue;"></i></p></a>
+                    {% endif %}
                 </div>
+                {% comment "" %}
+                <div class="col-lg-2 col-md-2 right"> 
+                    <p>Developpé par:</p>
+                    <p><a href="mailto:bhouba@zohomail.eu" target="_blank">Phil Rioual</a></p>
+                </div>
+                {% endcomment %}
                 <div class="col-lg-4 col-md-4 right">
                     <p class="m-t">Copyright &copy <a href="mailto:bhouba@zohomail.eu" target="_blank">bhouba@zohomail.eu</a> 2021</p>
                     <p>All Rights Reserved.</p>
