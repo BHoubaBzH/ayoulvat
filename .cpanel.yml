@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/c1350767c/repositories/ayoulvat
+    - export DEPLOYPATH=/home/c1350767c/ayoulvat
     - /bin/cp -R * $DEPLOYPATH
