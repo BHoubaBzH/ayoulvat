@@ -156,6 +156,8 @@ LOGOUT_REDIRECT_URL = 'home'  # redirection de logout
 # conf smtp de test
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
+DEFAULT_FROM_EMAIL = 'phil@deusta.bzh'
+SERVER_EMAIL = 'phil@deusta.bzh'
 # numéros de téléphone en fr ou e164
 PHONENUMBER_DB_FORMAT = 'NATIONAL'
 PHONENUMBER_DEFAULT_REGION = 'FR'
