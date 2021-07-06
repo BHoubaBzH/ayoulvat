@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
+import os
 from pathlib import Path
 from decouple import config
 
@@ -136,15 +137,16 @@ LANGUAGES = (
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
 # gestion des medias
-MEDIA_ROOT = 'media'
 MEDIA_URL = '/media/'
+MEDIA_ROOT = 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, "static_media")
 
 # authent personnalisée
 AUTH_USER_MODEL = 'benevole.Personne'
@@ -156,8 +158,7 @@ LOGOUT_REDIRECT_URL = 'home'  # redirection de logout
 # conf smtp de test
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
-DEFAULT_FROM_EMAIL = 'phil@deusta.bzh'
-SERVER_EMAIL = 'phil@deusta.bzh'
+
 # numéros de téléphone en fr ou e164
 PHONENUMBER_DB_FORMAT = 'NATIONAL'
 PHONENUMBER_DEFAULT_REGION = 'FR'
