@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '.localhost', 'ayoulvat.deusta.bzh']
 
@@ -138,7 +138,7 @@ LANGUAGES = (
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
@@ -146,7 +146,7 @@ STATICFILES_DIRS = [
 # gestion des medias
 MEDIA_URL = '/media/'
 MEDIA_ROOT = 'media'
-MEDIA_ROOT = os.path.join(BASE_DIR, "static_media")
+# MEDIA_ROOT = os.path.join(BASE_DIR, "static_media")
 
 # authent personnalisée
 AUTH_USER_MODEL = 'benevole.Personne'
