@@ -25,10 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if sys.argv[1] != 'runserver':
-    DEBUG = False
-else: 
-    DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['ayoulvat.deusta.bzh']
 
@@ -148,8 +145,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-if sys.argv[1] != 'runserver':
-    STATIC_ROOT=os.path.join(BASE_DIR, "static")
+STATIC_ROOT=os.path.join(BASE_DIR, "static")
 
 # gestion des medias
 MEDIA_URL = '/media/'
@@ -172,10 +168,9 @@ PHONENUMBER_DB_FORMAT = 'NATIONAL'
 PHONENUMBER_DEFAULT_REGION = 'FR'
 
 # production deploiement variables 
-if sys.argv[1] != 'runserver':
-    SECURE_HSTS_PRELOAD = True
-    SECURE_HSTS_SECONDS = 60
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_SECONDS = 60
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
