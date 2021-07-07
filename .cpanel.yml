@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/public_html/ayoulvat.deusta.bzh/
+    - export DEPLOYPATH=/home/c1350767c/public_html/ayoulvat.deusta.bzh/
     - /bin/cp -R * $DEPLOYPATH
