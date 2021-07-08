@@ -2,4 +2,6 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/c1350767c/ayoulvat/
+    - /bin/cp $DEPLOYPATH/ayoulvat/settings.py $DEPLOYPATH/ayoulvat/settings.py_sav
     - /bin/cp -R * $DEPLOYPATH
+    - /bin/cp $DEPLOYPATH/ayoulvat/settings.py_sav $DEPLOYPATH/ayoulvat/settings.py

@@ -142,10 +142,17 @@ LANGUAGES = (
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 STATIC_URL = '/static/'
+        # liste des repertoires contenant les fichiers statiques
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "templates"),
+    os.path.join(BASE_DIR, "association/templates"),
+    os.path.join(BASE_DIR, "benevole/templates"),
+    os.path.join(BASE_DIR, "evenement/templates"),
+    os.path.join(BASE_DIR, "evenement/static"),
 ]
-STATIC_ROOT=os.path.join(BASE_DIR, "static")
+        # repertoire cible ou serotn deployés les fichiers statique. utilisé par : manage.py collectstatic
+STATIC_ROOT=os.path.join("web_serveur_dir", "static")
 
 # gestion des medias
 MEDIA_URL = '/media/'
