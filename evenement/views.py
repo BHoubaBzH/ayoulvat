@@ -306,7 +306,7 @@ def evenement(request, uuid_evenement):
         "Equipes": Equipe.objects.filter(evenement_id=evenement),  # objets equipes de l'evenement
         "Plannings": Planning.objects.filter(evenement_id=evenement).order_by('debut'),  # objets planning de l'evenement
         "Postes": Poste.objects.filter(evenement_id=evenement).order_by('nom'),  # objets postes de l'evenement
-        "Creneaux": Creneau.objects.filter(evenement_id=evenement),  # objets creneaux de l'evenement
+        "Creneaux": Creneau.objects.filter(evenement_id=evenement).order_by('debut'),  # objets creneaux de l'evenement
         "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=evenement),  # objets benevoles de l'evenement
 
         "dispo_actif": "False", # active ou non la gestion des disponibilités des bénévoles; par défaut désactivé

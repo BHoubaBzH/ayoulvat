@@ -95,7 +95,7 @@
 <table class="table table-striped ">
   <thead>
     <tr>
-      <th scope="col">#</th>
+      <!-- th scope="col">#</th -->
       <th scope="col">équipe</th>
       <th scope="col">poste</th>
       <th scope="col">jour</th>
@@ -104,13 +104,11 @@
     </tr>
   </thead>
   <tbody>
-    {# AFFICHE LES DISPO ET LES CRENEAUX DU BENEVOLE #}
-    {# le bénévole peut editer uniquement ses dispos #}
-    {% with count=0  %}
+    {# AFFICHE LES CRENEAUX DU BENEVOLE #}
     {% for creno in Creneaux %}
         {% if creno.benevole_id == user.profilebenevole.UUID %}
             <tr>
-            <th scope="row">{{ count|add:"1" }}</th>
+            <!-- th scope="row">{{ count|add:"1" }}</th -->
             <td>{{ creno.equipe.nom }}</td>
             <td>{{ creno.poste.nom }}</td>
             <td>{{ creno.debut|date:'d F Y' }}</td>
@@ -119,7 +117,6 @@
             </tr>
         {% endif %}
     {% endfor %}
-    {% endwith %}
   </tbody>
 </table>
 
