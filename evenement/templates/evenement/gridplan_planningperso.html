@@ -1,97 +1,98 @@
 <!-- evenement/gridplan_planningperso.html -->
 {# page du planning du benevole #}
-
-{% if user.profilebenevole in Benevoles %}
-    <h2>Planning Perso</h2> 
-    <h6>Ici, le résumé de ton planning sur tout l'évènement.</h6>
-    {% if dispo_actif == 'True' %}
-        <h6>Tu peux sélectionner un planning d'équipe pour y inscrire tes disponibilités. En fonction, un responsable viendra vous affecter aux créneaux.</h6>
-        <h6>Sinon vous pouvez directement choisir des créneaux dans le menu de gauche.</h6>
-    {% else %}
-        <h6> Pour modifier, dans le menu de gauche, choisis une équipe et un planning pour t'inscrire ou te désinscrire des créneaux</h6>
+<div class="table-responsive ">
+    {% if user.profilebenevole in Benevoles %}
+        <h2>Planning Perso</h2> 
+        <h6>Ici, le résumé de ton planning sur tout l'évènement.</h6>
+        {% if dispo_actif == 'True' %}
+            <h6>Tu peux sélectionner un planning d'équipe pour y inscrire tes disponibilités. En fonction, un responsable viendra vous affecter aux créneaux.</h6>
+            <h6>Sinon vous pouvez directement choisir des créneaux dans le menu de gauche.</h6>
+        {% else %}
+            <h6> Pour modifier, dans le menu de gauche, choisis une équipe et un planning pour t'inscrire ou te désinscrire des créneaux</h6>
+        {% endif %}
+        <br>
     {% endif %}
-    <br>
-{% endif %}
 
-<div class="planning-equipes" aria-labelledby="planning-heading">
-    {# affiche les entetes des colonnes du planning : les heures #}
-    {% for dates, heures in PlanningRange.items %}
-        <div class="planning-head-planningperso" style="grid-column: time-{{ dates }}; grid-row: heures">
-            <h6 class="time-slot">
-                {% if heures.0|stringformat:'s' != "00:00" and heures.1|date:'i' == '00'%}{# affiche les heures pleines #}
-                    {% if heures.0|stringformat:'s' == "12:00" %}{# affiche seulement midi  #}
-                        {{ heures.0 }}
-                    {% endif %} 
-                {% elif heures.0|stringformat:'s' == "00:00" %} {# affiche le jour a minuit #}
-                    <b>{{ heures.1|date:'d/m/y' }}</b>
-                {% endif %}
-            </h6>
-        </div>
-    {% endfor %}
+    <div class="planning-equipes" aria-labelledby="planning-heading">
+        {# affiche les entetes des colonnes du planning : les heures #}
+        {% for dates, heures in PlanningRange.items %}
+            <div class="planning-head-planningperso" style="grid-column: time-{{ dates }}; grid-row: heures">
+                <h6 class="time-slot">
+                    {% if heures.0|stringformat:'s' != "00:00" and heures.1|date:'i' == '00'%}{# affiche les heures pleines #}
+                        {% if heures.0|stringformat:'s' == "12:00" %}{# affiche seulement midi  #}
+                            {{ heures.0 }}
+                        {% endif %} 
+                    {% elif heures.0|stringformat:'s' == "00:00" %} {# affiche le jour a minuit #}
+                        <b>{{ heures.1|date:'d/m/y' }}</b>
+                    {% endif %}
+                </h6>
+            </div>
+        {% endfor %}
 
-    {# affiche toutes les equipes #}
-    {% for equipe in Equipes %}
-        {# affiche les entetes des lignes du planning : equipes #}
-        <div class="equipe-slot-planningperso"
-            aria-hidden="true"
-            style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;">
-                <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
-        </div>
-        {% for planning in Plannings %}
-            {% if planning.equipe_id == equipe.UUID %}
-            {# AFFICHE LES PLANNINGS DES EQUIPES DANS LA GRID CSS #}
-                <form class="form_grid_button_planningperso" style="grid-row: ligne-{{ equipe.UUID }}; 
-                    grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|date:'Y-m-d-Hi' }};" method="post">
-                    {% csrf_token %}
-                    <input  name="evenement" value="{{ equipe.evenement.UUID }}" type="hidden">
-                    <input  name="equipe" value="{{ equipe.UUID }}" type="hidden">
-                    <input  name="planning" value="{{ planning.UUID }}" type="hidden">
-                    {% comment "" %}
-                    <button  class="planningperso" 
-                    title="{{ equipe.nom|upper }} > {{ planning.nom }}"
-                    type="submit">
-                    <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
-                    </button>
-                    {% endcomment %}
-                    <button class="planningperso" type="button" 
-                        id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
-                        title="ajouter une disponibilité"
-                        style="width:100%; height:125%; opacity:80%;" title="me déclarer disponible"
-                        data-bs-toggle="modal" data-bs-target="#modal-dispo_creer-{{ planning.UUID }}"
-                        {# on autorise l ajout de dispo que si dispo_actif=True #}
-                        {% if dispo_actif != "True" %}disabled{% endif %}
-                        >
+        {# affiche toutes les equipes #}
+        {% for equipe in Equipes %}
+            {# affiche les entetes des lignes du planning : equipes #}
+            <div class="equipe-slot-planningperso"
+                aria-hidden="true"
+                style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;">
+                    <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
+            </div>
+            {% for planning in Plannings %}
+                {% if planning.equipe_id == equipe.UUID %}
+                {# AFFICHE LES PLANNINGS DES EQUIPES DANS LA GRID CSS #}
+                    <form class="form_grid_button_planningperso" style="grid-row: ligne-{{ equipe.UUID }}; 
+                        grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|date:'Y-m-d-Hi' }};" method="post">
+                        {% csrf_token %}
+                        <input  name="evenement" value="{{ equipe.evenement.UUID }}" type="hidden">
+                        <input  name="equipe" value="{{ equipe.UUID }}" type="hidden">
+                        <input  name="planning" value="{{ planning.UUID }}" type="hidden">
+                        {% comment "" %}
+                        <button  class="planningperso" 
+                        title="{{ equipe.nom|upper }} > {{ planning.nom }}"
+                        type="submit">
                         <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
+                        </button>
+                        {% endcomment %}
+                        <button class="planningperso" type="button" 
+                            id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
+                            title="ajouter une disponibilité"
+                            style="width:100%; height:125%; opacity:80%;" title="me déclarer disponible"
+                            data-bs-toggle="modal" data-bs-target="#modal-dispo_creer-{{ planning.UUID }}"
+                            {# on autorise l ajout de dispo que si dispo_actif=True #}
+                            {% if dispo_actif != "True" %}disabled{% endif %}
+                            >
+                            <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
+                        </button>
+                    </form>
+                {% endif %}
+            {% endfor %}
+            {# AFFICHE LES DISPO ET LES CRENEAUX DU BENEVOLE #}
+            {# le bénévole peut editer uniquement ses dispos #}
+            {% for creno in Creneaux %}
+                {% if creno.benevole_id == user.profilebenevole.UUID and creno.equipe_id == equipe.UUID %}
+                    <button  class="creneau-planningperso {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe{%endif%} equipe equipe-{{ equipe.UUID }}" 
+                            style="grid-row: ligne-{{ equipe.UUID }};
+                            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                            title="{%if creno.type == 'benevole'%}éditer la disponible{%else%}
+    {{ creno.equipe.nom }} - {{ creno.poste.nom }} : {{ creno.debut|date:'d/m/Y' }}
+    {{ creno.debut|date:'H:i' }} > {{ creno.fin|date:'H:i' }}
+    {%endif%}"
+                            data-bs-toggle="modal" data-bs-target="{% if creno.type == 'benevole' %}#modal-dispo_editer-{{ creno.UUID }}{% endif %}"
+                            {# on autorise la modif de dispo que si dispo_actif=True #}
+                            {% if dispo_actif != "True" %}disabled{% endif %}
+                            >
+                                <a>{%if creno.poste%}{{ creno.poste.nom }}{%endif%}</a>
                     </button>
-                </form>
-            {% endif %}
-        {% endfor %}
-        {# AFFICHE LES DISPO ET LES CRENEAUX DU BENEVOLE #}
-        {# le bénévole peut editer uniquement ses dispos #}
-        {% for creno in Creneaux %}
-            {% if creno.benevole_id == user.profilebenevole.UUID and creno.equipe_id == equipe.UUID %}
-                <button  class="creneau-planningperso {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe{%endif%} equipe equipe-{{ equipe.UUID }}" 
-                        style="grid-row: ligne-{{ equipe.UUID }};
-                        grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                        title="{%if creno.type == 'benevole'%}éditer la disponible{%else%}
-{{ creno.equipe.nom }} - {{ creno.poste.nom }} : {{ creno.debut|date:'d/m/Y' }}
-{{ creno.debut|date:'H:i' }} > {{ creno.fin|date:'H:i' }}
-{%endif%}"
-                        data-bs-toggle="modal" data-bs-target="{% if creno.type == 'benevole' %}#modal-dispo_editer-{{ creno.UUID }}{% endif %}"
-                        {# on autorise la modif de dispo que si dispo_actif=True #}
-                        {% if dispo_actif != "True" %}disabled{% endif %}
-                        >
-                            <a>{%if creno.poste%}{{ creno.poste.nom }}{%endif%}</a>
-                </button>
-            {% endif %}
-        {% endfor %}
+                {% endif %}
+            {% endfor %}
 
-        {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" %}
-    {% endfor %}
+            {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" %}
+        {% endfor %}
+    </div>
 </div>
 
+{# tableau des creneaux du bénévole#}
 <h2 style="padding-top: 2em;">Planning Perso Détails</h2> 
-
 <table class="table table-striped ">
   <thead>
     <tr>
