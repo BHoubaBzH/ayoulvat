@@ -260,7 +260,7 @@ hr {
 
 {# styles des creneaux #}
 
-.creneau, .creneau_libre, .creneau_libre_moi_occupe, .creneau_autre_occupe, .creneau_occupe, .planning {
+.creneau, .creneau_libre, .creneau_libre_moi_occupe, .creneau_autre_occupe, .creneau_occupe, .planning, .creneau-planningperso {
 	box-shadow: 3px 2px #888;
 	#display: block;
 	#color: rgb(0, 0, 0);
@@ -278,6 +278,10 @@ hr {
 	text-overflow: ellipsis;
 	margin-bottom: 1px;
 	border-radius: 10px;
+}
+
+.creneau-planningperso {
+	align-self: end;
 }
 
 {# utilisé si personne affecté au creneau et si pas bloqué : créneau libre #}

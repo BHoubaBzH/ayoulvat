@@ -70,7 +70,7 @@
         {# le bénévole peut editer uniquement ses dispos #}
         {% for creno in Creneaux %}
             {% if creno.benevole_id == user.profilebenevole.UUID and creno.equipe_id == equipe.UUID %}
-                <button  class="creneau {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe{%endif%} equipe equipe-{{ equipe.UUID }}" 
+                <button  class="creneau-planningperso {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe{%endif%} equipe equipe-{{ equipe.UUID }}" 
                         style="grid-row: ligne-{{ equipe.UUID }};
                         grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                         title="{%if creno.type == 'benevole'%}éditer la disponible{%else%}
@@ -81,7 +81,7 @@
                         {# on autorise la modif de dispo que si dispo_actif=True #}
                         {% if dispo_actif != "True" %}disabled{% endif %}
                         >
-                            <a>{{ creno.equipe.nom }}{%if creno.poste%} <i class="bi bi-chevron-right"></i> {{ creno.poste.nom }}{%endif%}</a>
+                            <a>{%if creno.poste%}{{ creno.poste.nom }}{%endif%}</a>
                 </button>
             {% endif %}
         {% endfor %}
