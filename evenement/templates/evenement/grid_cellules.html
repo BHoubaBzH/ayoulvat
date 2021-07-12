@@ -1,9 +1,9 @@
-{# evenement/grid_cellules.html #}
+<!-- evenement/grid_cellules.html -->
 
 {# decoration css: on parcour toutes les cellule de la grid css pour y appliquer un div #}
 {% for dates, dateheure in PlanningRange.items %}
     {% if not forloop.last %} {# pas de bouton pour la derniere colonne vu qu'elle apparait apres l heure de fin du planning #}
-        <div class="{%if dateheure.1|date:'Hi' == '0000'%}grid-cell-minuit{%else%}grid-cell{%endif%}"
+        <div class="{%if dateheure.1|date:'Hi' == '0000'%}grid-cell-minuit{%else%}grid-cell{%endif%} ligne-{{ poste.UUID }}"
                 style="grid-row: ligne-{% if le_benevole == 'oui' %}{{ user.profilebenevole.UUID }}{% else %}{{ row_type.UUID }}{% endif %};
                     grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};">
 
@@ -17,7 +17,7 @@
                     <input type="hidden" name="creneau-moyen" value="{{ Planning.creneau_moyen }}">
                     <input type="hidden" name="type" value="creneau">
 
-                    <button class="grid-cell" type="button" id="creneau_ajouter-{{ row_type.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
+                    <button class="grid-cell ligne-{{ poste.UUID }}" type="button" id="creneau_ajouter-{{ row_type.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
                             style="width:100%; height:100%" title="ajouter un créneau commençant à {{ dateheure.0 }}, poste {{ poste.nom }}"
                             onClick="creneau_pre_modal_info(this.form)"
                             data-bs-toggle="modal" data-bs-target="#modal-creneau_ajouter">
@@ -37,7 +37,7 @@
                         <input type="hidden" name="creneau-moyen" value="{{ Planning.creneau_moyen }}">
                         <input type="hidden" name="type" value="benevole">
                         
-                        <button class="grid-cell" type="button" 
+                        <button class="grid-cell ligne-{{ poste.UUID }}" type="button" 
                                 id="creneau_ajouter-{% if 'benevole.change_profilebenevole' in perms %}{{ row_type.UUID }}
                                 {% else %}{{ user.profilebenevole.UUID}}{% endif %}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
                                 style="width:100%; height:100%" title="me déclarer disponible à partir de {{ dateheure.0 }}"
@@ -56,7 +56,7 @@
                     <input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'Y-m-d H:i' }}">
                     <input type="hidden" name="creneau-moyen" value="{{ Planning.creneau_moyen }}">
 
-                    <button class="grid-cell" type="button" id="creneau_ajouter-{{ row_type.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
+                    <button class="grid-cell ligne-{{ poste.UUID }}" type="button" id="creneau_ajouter-{{ row_type.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
                             style="width:100%; height:100%" title="ajouter une planning commençant à {{ dateheure.0 }}"
                             onClick="creneau_pre_modal_info(this.form)"
                             data-bs-toggle="modal" data-bs-target="#modal-planning_ajouter">
@@ -67,7 +67,7 @@
     {#% include "evenement/creneau_ajoute.html" %#}
     {% else %}
         {# pas de bouton pour la derniere colonne vu qu'elle apparait apres l heure de fin du planning #}
-        <div class="{% if forloop.last %}grid-cell-last{% else %}grid-cell{% endif %}" 
+        <div class="{% if forloop.last %}grid-cell-last{% else %}grid-cell{% endif %} ligne-{{ poste.UUID }}" 
                 style="grid-row: ligne-{% if le_benevole == 'oui' %}{{ user.profilebenevole.UUID }}{% else %}{{ row_type.UUID }}{% endif %};
                 grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};"></div>
     {% endif %}

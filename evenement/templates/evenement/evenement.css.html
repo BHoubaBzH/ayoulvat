@@ -115,6 +115,13 @@
 		}
 	{% endfor %}
 
+	{# colorise les cellules des grids#}
+	{% for poste in Postes %}
+		.grid-cell.ligne-{{ poste.UUID }} {
+			border-bottom-color: {{ poste.couleur }};
+		}
+	{% endfor %};
+
 	{# PLANNING PARTIE COMMUNE #}
 
 	.time-slot {

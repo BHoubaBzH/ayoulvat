@@ -23,7 +23,8 @@
                             {{ heures.0 }}
                         {% endif %} 
                     {% elif heures.0|stringformat:'s' == "00:00" %} {# affiche le jour a minuit #}
-                        <b>{{ heures.1|date:'d/m/y' }}</b>
+                        <b>{{ heures.1|date:'d/m/y' }}<br>
+                           {{ heures.1|date:'D' }}</b>
                     {% endif %}
                 </h6>
             </div>
@@ -112,7 +113,7 @@
             <!-- th scope="row">{{ count|add:"1" }}</th -->
             <td>{{ creno.equipe.nom }}</td>
             <td>{{ creno.poste.nom }}</td>
-            <td>{{ creno.debut|date:'d F Y' }}</td>
+            <td>{{ creno.debut|date:'D, d F Y' }}</td>
             <td>{{ creno.debut|date:'H:i' }}</td>
             <td>{{ creno.fin|date:'H:i'  }}</td>
             </tr>
