@@ -117,10 +117,15 @@
 
 	{# colorise les cellules des grids#}
 	{% for poste in Postes %}
-		.grid-cell.ligne-{{ poste.UUID }} {
+		.grid-cell.ligne-{{ poste.UUID }}, .grid-cell-minuit.ligne-{{ poste.UUID }} {
 			border-bottom-color: {{ poste.couleur }};
 		}
-	{% endfor %};
+		.poste-slot.ligne-{{ poste.UUID }} {
+			border-bottom: inherit;
+			border-bottom-color: {{ poste.couleur }};
+		}
+
+	{% endfor %}
 
 	{# PLANNING PARTIE COMMUNE #}
 

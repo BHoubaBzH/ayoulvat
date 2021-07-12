@@ -12,7 +12,7 @@
         {% for poste in Postes %}
             {% if poste.planning_id|stringformat:'s' == planning_uuid|stringformat:'s' %}
                 {# affiche les entetes des lignes du planning : postes #}
-                <div class="poste-slot"
+                <div class="poste-slot ligne-{{ poste.UUID }}"
                     aria-hidden="true"
                     style="grid-row: ligne-{{ poste.UUID }}; grid-column: postes;">
                         <p style="margin-bottom: 0px;">{{ poste.nom }}</p>
