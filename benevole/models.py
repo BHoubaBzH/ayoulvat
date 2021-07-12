@@ -135,6 +135,7 @@ class ProfileBenevole(models.Model):
                                     blank=True,
                                     default='',
                                     on_delete=models.PROTECT,
-                                    help_text='associations partenaires de l evenement')
+                                    verbose_name=" Association Partenaire", # nom humainement comprehensible
+                                    help_text='associations partenaires que vous voulez représenter')
     def __str__(self):
         return "{0} {1}".format(self.personne.last_name.upper(), self.personne.first_name.capitalize())

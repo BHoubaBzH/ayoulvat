@@ -90,6 +90,43 @@
     {% endfor %}
 </div>
 
+<h2 style="padding-top: 2em;">Planning Perso Détails</h2> 
+
+<table class="table table-striped ">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">équipe</th>
+      <th scope="col">poste</th>
+      <th scope="col">jour</th>
+      <th scope="col">début</th>
+      <th scope="col">fin</th>
+    </tr>
+  </thead>
+  <tbody>
+    {# AFFICHE LES DISPO ET LES CRENEAUX DU BENEVOLE #}
+    {# le bénévole peut editer uniquement ses dispos #}
+    {% with count=0  %}
+    {% for creno in Creneaux %}
+        {% if creno.benevole_id == user.profilebenevole.UUID %}
+            <tr>
+            <th scope="row">{{ count|add:"1" }}</th>
+            <td>{{ creno.equipe.nom }}</td>
+            <td>{{ creno.poste.nom }}</td>
+            <td>{{ creno.debut|date:'d F Y' }}</td>
+            <td>{{ creno.debut|date:'H:i' }}</td>
+            <td>{{ creno.fin|date:'H:i'  }}</td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+    {% endwith %}
+  </tbody>
+</table>
+
+{#####################################################################################}
+{#################                  MODALS                ############################}
+{#####################################################################################}
+
 {# on autorise l'ajout , la modif, la suppression de dispo que si dispo_actif=True#}
 {% if dispo_actif == "True" %}
     {# modal de creation de dispo du benevole #}
