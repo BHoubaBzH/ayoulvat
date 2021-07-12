@@ -33,8 +33,6 @@ ALLOWED_HOSTS = ['ayoulvat.deusta.bzh', '127.0.0.1']
 
 INSTALLED_APPS = [
     'modeltranslation',
-
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -48,6 +46,8 @@ INSTALLED_APPS = [
     'administration.apps.AdministrationConfig',
     'evenement.apps.EvenementConfig',
     'benevole.apps.BenevoleConfig',
+
+    'django.contrib.admin',
 ]
 
 MIDDLEWARE = [
