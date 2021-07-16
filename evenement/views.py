@@ -344,13 +344,14 @@ def evenement(request, uuid_evenement):
         uuid_evenement = request.POST.get('evenement')
         if request.POST.get('equipe'):  # selection d'une équipe
             data["equipe_uuid"] = request.POST.get('equipe')  # UUID equipe selectionnée
-
+            data["DicPostes"] = forms_postes(request, data, uuid_evenement)
+            data["DicCreneaux"] = forms_creneaux(request, data, uuid_evenement)
+            
             if request.POST.get('planning'):  # selection d'un planning
                 data["planning_uuid"] = request.POST.get('planning')
                 data["Planning"] = Planning.objects.get(UUID=request.POST.get('planning'))  # planning selectionnée
                 # instances de form poste & creneau liées : modifs & suppression & liste des postes
                 data["DicPostes"] = forms_postes(request, data, uuid_evenement)
-                data["DicCreneaux"] = forms_creneaux(request, data, uuid_evenement)
                 # heures formatées du planning
                 data["PlanningRange"] = planning_range(Planning.objects.get(UUID=request.POST.get('planning')).debut,
                                                     Planning.objects.get(UUID=request.POST.get('planning')).fin,
