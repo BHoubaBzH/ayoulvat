@@ -88,7 +88,7 @@
                 </button>
               </form>
             </li>
-          {% elif not equipe_uuid %} {#on affiche tous les planning de l'evenement #}
+          {% elif not equipe_uuid %} {#on affiche tous les planning de toutes les équipes de l'evenement #}
             <li class="nav-item">
               <form class="form evenement-form" method="post">
                 {% csrf_token %}
@@ -128,7 +128,6 @@
     {% else %}
       <p>il n'y a pas encore d'évènement créé pour cette association.</p>
     {% endif %}
-
 
   </div>
 </nav>

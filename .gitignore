@@ -2,3 +2,4 @@
 sent_emails
 media/*
 !media/empty.jpg
+.vscode

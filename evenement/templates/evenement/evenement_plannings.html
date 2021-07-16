@@ -34,10 +34,12 @@
                 </div>
             {% endif %}
         {# une equipe est selectionnée par un benevole, pas de planning ou de poste #}
+        {% comment "partie permettant d afficher une page si le benevole a selectionné une equipe uniquement" %}
         {% elif not Planning and not Poste and not 'evenement.change_planning' in perms%} 
-            <div class="tab-content" id="nav-tabContent">
+            <div class="tab-content" id="nav-tabContent"> 
                 {% include "evenement/equipe_explique.html" %}
             </div>
+        {% endcomment %}
         {# page par defaut admin: plannings  evenement et equipes #}
         {# page pour benevole: planning de l equipe  #}
         {% elif Evenement and 'evenement.change_planning' in perms %} 
@@ -54,7 +56,7 @@
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-equipes"
                     role="tabpanel" aria-labelledby="nav-equipes-tab">
-                
+
                     {%if equipe_uuid%}
                         {% include "evenement/gridplan_evenement.html" %}
                     {% else %}

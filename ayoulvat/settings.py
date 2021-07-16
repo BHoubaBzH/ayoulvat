@@ -167,8 +167,16 @@ LOGIN_REDIRECT_URL = 'home'  # redirection de login
 LOGOUT_REDIRECT_URL = 'home'  # redirection de logout
 
 # conf smtp de test
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
+#EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+#EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
+# conf smtp de prod 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_HOST_USER = config('EMAIL_USERNAME')
+EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
+DEFAULT_FROM_EMAIL = config('EMAIL_DEFAULT_FROM')
 
 # numéros de téléphone en fr ou e164
 PHONENUMBER_DB_FORMAT = 'NATIONAL'
