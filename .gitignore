@@ -3,3 +3,8 @@ sent_emails
 media/*
 !media/empty.jpg
 .vscode
+__pycache__/
+ayoulvat_db
+*.log
+*.pot
+*.pyc
