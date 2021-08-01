@@ -8,3 +8,4 @@ ayoulvat_db
 *.log
 *.pot
 *.pyc
+ayoulvat/settings.py
