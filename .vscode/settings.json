@@ -1,17 +1,3 @@
 {
-    "python.pythonPath": "/home/phil/.virtualenvs/ayoulvat/bin/python",
-    "json.schemas": [
-    
-    ],
-    "emmet.excludeLanguages": [
-
-
-        "markdown"
-    ],
-    "emmet.preferences": {
-    
-    },
-    "files.associations": {
-        "*.html": "django-html"
-    }
+    "python.pythonPath": "/home/bhouba/.virtualenvs/ayoulvat/bin/python"
 }
