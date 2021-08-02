@@ -273,7 +273,7 @@ hr {
 
 {# styles des creneaux #}
 
-.creneau, .creneau_libre, .creneau_libre_moi_occupe, .creneau_autre_occupe, .creneau_occupe, .planning, .creneau-planningperso {
+.creneau, .creneau_libre, .creneau_libre_reserve, .creneau_libre_moi_occupe, .creneau_autre_occupe, .creneau_occupe, .planning, .creneau-planningperso {
 	box-shadow: 3px 2px #888;
 	#display: block;
 	#color: rgb(0, 0, 0);
@@ -301,6 +301,11 @@ hr {
 .creneau_libre {
 	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-teal) 50%);
 }
+{# utilisé si personne affecté au creneau et si poste/creneau/planning bloqué : créneau libre #}
+.creneau_libre_reserve {
+	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-success) 50%);
+}
+
 {# utilisé si personne affecté au creneau et si pas bloqué mais que le bénévole ne peut pas le prendre#}
 .creneau_libre_moi_occupe {
 	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-teal) 200%);
