@@ -351,7 +351,7 @@ def evenement(request, uuid_evenement):
                 data["planning_uuid"] = request.POST.get('planning')
                 data["Planning"] = Planning.objects.get(UUID=request.POST.get('planning'))  # planning selectionnée
                 # instances de form poste & creneau liées : modifs & suppression & liste des postes
-                data["DicPostes"] = forms_postes(request, data, uuid_evenement)
+                # data["DicPostes"] = forms_postes(request, data, uuid_evenement) # bug creation poste en double
                 # heures formatées du planning
                 data["PlanningRange"] = planning_range(Planning.objects.get(UUID=request.POST.get('planning')).debut,
                                                     Planning.objects.get(UUID=request.POST.get('planning')).fin,
