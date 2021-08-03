@@ -119,10 +119,16 @@
 	{% for poste in Postes %}
 		.grid-cell.ligne-{{ poste.UUID }}, .grid-cell-minuit.ligne-{{ poste.UUID }} {
 			border-bottom-color: {{ poste.couleur }};
+			{%if not poste.editable %} {# le poste est bloqué par un admin : on edit le fond des cases de la ligne#}
+				background-color: #6c757d30;
+			{%endif%}
 		}
 		.poste-slot.ligne-{{ poste.UUID }} {
 			border-bottom: inherit;
 			border-bottom-color: {{ poste.couleur }};
+			{%if not poste.editable %} {# le poste est bloqué par un admin : on edit le fond du titre de la ligne#}
+				background-color: #6c757d30;
+			{%endif%}
 		}
 	{% endfor %}
 
