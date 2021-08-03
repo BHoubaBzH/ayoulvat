@@ -273,7 +273,7 @@ hr {
 
 {# styles des creneaux #}
 
-.creneau, .creneau_libre, .creneau_libre_reserve, .creneau_libre_moi_occupe, .creneau_autre_occupe, .creneau_occupe, .planning, .creneau-planningperso {
+.creneau, .creneau_libre, .creneau_libre_bloque, .creneau_libre_moi_occupe, .creneau_autre_occupe, .creneau_occupe, .creneau_occupe_bloque, .planning, .creneau-planningperso {
 	box-shadow: 3px 2px #888;
 	#display: block;
 	#color: rgb(0, 0, 0);
@@ -298,22 +298,17 @@ hr {
 }
 
 {# utilisé si personne affecté au creneau et si pas bloqué : créneau libre #}
-.creneau_libre {
+.creneau_libre, .creneau_libre_bloque, .creneau_libre_moi_occupe {
 	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-teal) 50%);
 }
-{# utilisé si personne affecté au creneau et si poste/creneau/planning bloqué : créneau libre #}
-.creneau_libre_reserve {
-	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-success) 50%);
-}
-
-{# utilisé si personne affecté au creneau et si pas bloqué mais que le bénévole ne peut pas le prendre#}
-.creneau_libre_moi_occupe {
-	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-teal) 200%);
+{# utilisé si personne affecté au creneau et si poste/creneau/planning bloqué : créneau libre ou occupé #}
+.creneau_libre_bloque, .creneau_occupe_bloque, .creneau_libre_moi_occupe, .creneau_autre_occupe  {
+	opacity: 40%
 }
 {# pour les non admin, utilisé pour l'affichage des creneaux occupé par d'autre benevole #}
-.creneau_autre_occupe {
-	#background-color: var(--bs-secondary);
-}
+//.creneau_autre_occupe {
+//	#background-color: var(--bs-secondary);
+//}
 {# créneau occupé dans la vue planning benevole(s) #}
 .creneau_occupe {
 	# background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-dark) 70%);

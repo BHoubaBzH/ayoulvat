@@ -22,7 +22,13 @@
                 {% elif creno.editable and creno.poste.editable and creno.planning.editable and creno.equipe.editable and creno.evenement.editable %}
                     {# sinon si le creneau est dejà pris, on desactive le bouton#}
                     {% if libre == 'non' %}
-                        <button  class="creneau_autre_occupe poste {% if 'evenement.delete_creneau' in perms %}poste-{{ poste.UUID }}{%endif%}" 
+                        <button  class="
+                                {% if not 'evenement.delete_creneau' in perms %}
+                                    creneau_autre_occupe
+                                {%else%}
+                                    creneau_occupe
+                                {%endif%} 
+                                poste poste-{{ poste.UUID }}" 
                                 style="grid-row: ligne-{{ creno.poste_id }};
                                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                                 title="créneau occupé"
@@ -49,14 +55,20 @@
                     {% endif %}
                 {# si le poste a été bloqué par l'admin , le bénévole n'a pas accès aux créneaux du poste, seuls les admins ont accès #}
                 {% elif not creno.poste.editable %}
-                    <button class="{%if libre == 'non'%}creneau{%else%}creneau_libre_reserve{%endif%} poste poste-{{ poste.UUID }}" 
+                    <button class="
+                            {%if 'evenement.delete_creneau' in perms%}
+                                {%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%}
+                            {%else%}
+                                {%if libre == 'non'%}creneau_occupe_bloque{%else%}creneau_libre_bloque{%endif%}
+                            {%endif%}
+                            poste poste-{{ poste.UUID }}"
                             style="grid-row: ligne-{{ creno.poste_id }};
                             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                             {%if 'evenement.delete_creneau' in perms%}
                                 title="{%if libre == 'non'%}mon créneau{%else%}créneau disponible{%endif%}"
                                 data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}"
                             {%else%}
-                                title="réservé par un gestionnaire"
+                                title="{%if libre == 'non'%}créneau occupé{%else%}réservé par un gestionnaire{%endif%}"
                             disabled
                             {%endif%}>
                             <a><b>{% if creno.benevole %}{{ creno.benevole }}{%else%}réservé{%endif%}</b></a>
