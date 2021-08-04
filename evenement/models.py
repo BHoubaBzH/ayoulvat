@@ -36,8 +36,8 @@ class Evenement(models.Model):
     debut = models.DateTimeField(blank=False, default='')
     fin = models.DateTimeField(blank=False, default='')
     site_web = models.URLField(blank=True, default='')
-    editable = models.BooleanField(default=True, help_text="si non editable, l'évènement est bloqué."
-                                                           " Seul un responsable ou + peu l'éditer ou le réouvrir")
+    editable = models.BooleanField(default=True, help_text="si éditable, l'évènement est bloqué."
+                                                           " pas encore implémenté")
     description = models.CharField(max_length=500, blank=True, default='')
     courriel_responsable = models.EmailField(default='', help_text="courriel accessible aux bénévoles en bas de page")
     vignette = models.ImageField(upload_to=upload_dir_vignette, blank=True)
@@ -70,8 +70,8 @@ class Equipe(models.Model):
                                       related_name='BenevolesEquipe',
                                       blank=True,
                                       default='les benevoles peuvent s inscrire a l equipe')
-    editable = models.BooleanField(default=True, help_text="si non editable, l'équipe est bloqué."
-                                                           " Seul un responsable ou + peu l'éditer ou le réouvrir")
+    editable = models.BooleanField(default=True, help_text="si éditable, les plannings de l'équipe sont modifiables."
+                                                           " pas encore implémenté")
 
     def __str__(self):
         return '{0} - {1}'.format(self.evenement, self.nom)
@@ -120,8 +120,8 @@ class Planning(models.Model):
                                            help_text="pas de reglage des creneaux en minutes: 15 / 30 / 60")
     creneau_moyen = models.PositiveSmallIntegerField(choices=CreneauMoyen.choices,blank=False, default=120,
                                            help_text="duree classique d'un créneau en minutes")
-    editable = models.BooleanField(default=True, help_text="si non editable, le planning est bloqué."
-                                                           " Seul un responsable ou + peu l'éditer ou le réouvrir")
+    editable = models.BooleanField(default=True, help_text="si éditable, les postes du planning sont ouverts."
+                                                           " pas encore implémenté")
     def __str__(self):
         return '{0} - {1}'.format(self.equipe, self.nom)
 
@@ -156,8 +156,8 @@ class Poste(models.Model):
     nom = models.CharField(max_length=50)
     description = models.CharField(max_length=500, blank=True, default='')
     couleur = RGBColorField(default="#0d6efd")
-    editable = models.BooleanField(default=True, help_text="si non editable, le poste est bloqué."
-                                                           " Seul un responsable ou + peu l'éditer ou le réouvrir")
+    editable = models.BooleanField(default=True, help_text="si editable, le poste est ouvert."
+                                                           " Les créneaux ne sont ouverts qu'aux responsables.")
     def __str__(self):
         return '{0} - {1}'.format(self.planning, self.nom)
 
@@ -208,8 +208,8 @@ class Creneau(models.Model):
     debut = models.DateTimeField(blank=False, default='')
     fin = models.DateTimeField(blank=False, default='')
     description = models.CharField(max_length=500, blank=True, default='')
-    editable = models.BooleanField(default=True, help_text="si non editable, le créneau est bloqué."
-                                                           " Seul un responsable ou + peu l'éditer ou le réouvrir")
+    editable = models.BooleanField(default=True, help_text="si editable, le créneau n'est pas bloqué."
+                                                           " pas encore implémenté")
     valide_present = models.BooleanField(blank=True, default=False, help_text="à valider si le bénévole s'est bien présenté")
     type = models.CharField(choices=Type.choices,
                             max_length=50,
