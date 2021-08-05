@@ -8,8 +8,8 @@
     {% for uuid, creneauf in DicCreneaux.items %}
         {# si le poste est éditable on affiche en fonction des dispo du creneau et du bénévole #}
         {% if uuid|stringformat:"s" == creno.UUID|stringformat:"s" %}
-                {# editable : {{creno.editable}} {{creno.poste.editable}} {{creno.planning.editable}} {{creno.equipe.editable}} {{creno.evenement.editable}} #}
-                {% if user.profilebenevole|stringformat:"s" in creneauf.benevole|stringformat:"s" and creno.poste.editable %}
+                {# editable : {{creno.editable}} {{creno.poste.ouvert}} {{creno.planning.editable}} {{creno.equipe.editable}} {{creno.evenement.editable}} #}
+                {% if user.profilebenevole|stringformat:"s" in creneauf.benevole|stringformat:"s" and creno.poste.ouvert %}
                     {# le benevole est dans la liste des benevoles du creneau, il peut prendre le créneau #}
                     <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%} poste poste-{{ poste.UUID }}" 
                             style="grid-row: ligne-{{ creno.poste_id }};
@@ -19,7 +19,7 @@
                             {%if libre == 'non'%}<a><b>{{ creno.benevole }}</b></a>
                             {%else%}<a><b>Disponible</b></a>{%endif%}
                     </button>
-                {% elif creno.editable and creno.poste.editable and creno.planning.editable and creno.equipe.editable and creno.evenement.editable %}
+                {% elif creno.editable and creno.poste.ouvert and creno.planning.editable and creno.equipe.editable and creno.evenement.editable %}
                     {# sinon si le creneau est dejà pris, on desactive le bouton#}
                     {% if libre == 'non' %}
                         <button  class="
@@ -54,7 +54,7 @@
                         </button>
                     {% endif %}
                 {# si le poste a été bloqué par l'admin , le bénévole n'a pas accès aux créneaux du poste, seuls les admins ont accès #}
-                {% elif not creno.poste.editable %}
+                {% elif not creno.poste.ouvert %}
                     <button class="
                             {%if 'evenement.delete_creneau' in perms%}
                                 {%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%}

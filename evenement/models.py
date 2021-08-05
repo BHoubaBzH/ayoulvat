@@ -156,8 +156,10 @@ class Poste(models.Model):
     nom = models.CharField(max_length=50)
     description = models.CharField(max_length=500, blank=True, default='')
     couleur = RGBColorField(default="#0d6efd")
-    editable = models.BooleanField(default=True, help_text="si editable, le poste est ouvert."
-                                                           " Les créneaux ne sont ouverts qu'aux responsables.")
+    ouvert = models.BooleanField(default=True, help_text="si sélectionné, Les créneaux sont ouverts aux bénévoles."
+                                                           " Sinon les créneaux ne sont disponibles qu'aux responsables.")
+    ouvert_mineur = models.BooleanField(default=True,
+                                        help_text='si sélectionné, les mineurs peuvent s\'inscrire à ce poste')
     def __str__(self):
         return '{0} - {1}'.format(self.planning, self.nom)
 
@@ -209,7 +211,7 @@ class Creneau(models.Model):
     fin = models.DateTimeField(blank=False, default='')
     description = models.CharField(max_length=500, blank=True, default='')
     editable = models.BooleanField(default=True, help_text="si editable, le créneau n'est pas bloqué."
-                                                           " pas encore implémenté")
+                                                            " pas encore implémenté")
     valide_present = models.BooleanField(blank=True, default=False, help_text="à valider si le bénévole s'est bien présenté")
     type = models.CharField(choices=Type.choices,
                             max_length=50,

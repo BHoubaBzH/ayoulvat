@@ -20,7 +20,12 @@ class EquipeForm(ModelForm):
                   'editable',
                   'couleur',
                   'evenement',]
-
+                
+    # cache certains champs
+    def __init__(self, *args, **kwargs):
+        super(EquipeForm, self).__init__(*args, **kwargs)
+        # pas encore codé, on cache le champs
+        self.fields['editable'].widget = HiddenInput()
 
 ################################################################################################
 class PlanningForm(ModelForm):
@@ -41,6 +46,13 @@ class PlanningForm(ModelForm):
                   'equipe',
                   'evenement',]
 
+    # cache certains champs
+    def __init__(self, *args, **kwargs):
+        super(PlanningForm, self).__init__(*args, **kwargs)
+        # pas encore codé, on cache le champs
+        self.fields['editable'].widget = HiddenInput()
+        self.fields['ouvert_mineur'].widget = HiddenInput()
+
 
 
 ################################################################################################
@@ -57,7 +69,8 @@ class PosteForm(ModelForm):
         fields = ['nom', 
                   'description', 
                   'couleur', 
-                  'editable', 
+                  'ouvert',
+                  'ouvert_mineur', 
                   'benevole', 
                   'planning', 
                   'equipe', 
@@ -128,6 +141,8 @@ class CreneauForm(ModelForm):
         self.fields['equipe'].widget = HiddenInput()
         self.fields['evenement'].widget = HiddenInput()
         self.fields['type'].widget = HiddenInput()
+        # pas encore codé, on cache le champs
+        self.fields['editable'].widget = HiddenInput()
 
         # recuperer le pas du planning associé
         # time_attr.step :  valeurs valides liées au pas du planning dans les choix en unités secondes :

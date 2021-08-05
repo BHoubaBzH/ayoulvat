@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('evenement', '0014_alter_evenement_editable'),
+        ('evenement', '0013_auto_20210503_1610'),
     ]
 
     operations = [
