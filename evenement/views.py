@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, date
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http.response import HttpResponseRedirect
@@ -255,6 +255,20 @@ def forms_creneaux(request, data, uuid_evenement):
     return dic_creneaux_init
 
 
+def check_majeur(date_naissance, date_evenement):
+    '''
+        vérifie si le bénévole est majeur ou non au debut de l'evenement
+        entree : date de naissance du bénévole , date de début de l'evenement
+        sortie : booleen , True : Majeur , False : Mineur
+    '''
+    pivot = 6570 # age pivot : 18 ans = 6570 jours
+    delta = date_evenement - date_naissance
+    if delta.days < pivot:
+        return False # mineur
+    else:
+        return True # majeur
+
+
 ################################################
 #            views 
 ################################################
@@ -325,6 +339,7 @@ def evenement(request, uuid_evenement):
         "FormPoste" : "",  # form non liée au template pour ajout d un nouveau poste
         "DicCreneaux" : "",  # dictionnaire des formes de creneau de l'evenement liées aux objets de la db
         "FormCreneau" : "",  # form non liée au template pour ajout d un nouveau creneau
+        "Majeur" : check_majeur(request.user.date_de_naissance, evenement.debut.date()), # booleen précisant si le bénévole est majeur
     }
 
     data["DicEquipes"] = forms_equipe(request, data, evenement)
