@@ -38,7 +38,7 @@ class Evenement(models.Model):
     site_web = models.URLField(blank=True, default='')
     editable = models.BooleanField(default=True, help_text="si éditable, l'évènement est bloqué."
                                                            " pas encore implémenté")
-    description = models.CharField(max_length=500, blank=True, default='')
+    description = models.TextField(max_length=2000, blank=True, default='')
     courriel_responsable = models.EmailField(default='', help_text="courriel accessible aux bénévoles en bas de page")
     vignette = models.ImageField(upload_to=upload_dir_vignette, blank=True)
     couleur = RGBColorField(default="#0d6efd")
@@ -63,7 +63,7 @@ class Equipe(models.Model):
     nom = models.CharField(max_length=50)
     responsable_valide = models.BooleanField(help_text="les responsables doivent valider les créneaux choisis")
     responsable_creer = models.BooleanField(help_text="les responsables peuvent creer des bénévoles")
-    description = models.CharField(max_length=500, blank=True, default='')
+    description = models.TextField(max_length=1000, blank=True, default='')
     courriel_responsable = models.EmailField(default='', help_text="courriel accessible aux bénévoles en bas de page")
     couleur = RGBColorField(default="#0d6efd")
     benevole = models.ManyToManyField(ProfileBenevole,
@@ -154,7 +154,7 @@ class Poste(models.Model):
                                       default='',
                                       help_text='responsable de poste, ca n a surement pas de sens')
     nom = models.CharField(max_length=50)
-    description = models.CharField(max_length=500, blank=True, default='')
+    description = models.TextField(max_length=500, blank=True, default='')
     couleur = RGBColorField(default="#0d6efd")
     ouvert = models.BooleanField(default=True, help_text="si sélectionné, Les créneaux sont ouverts aux bénévoles."
                                                            " Sinon les créneaux ne sont disponibles qu'aux responsables.")
@@ -209,7 +209,7 @@ class Creneau(models.Model):
 
     debut = models.DateTimeField(blank=False, default='')
     fin = models.DateTimeField(blank=False, default='')
-    description = models.CharField(max_length=500, blank=True, default='')
+    description = models.TextField(max_length=500, blank=True, default='')
     editable = models.BooleanField(default=True, help_text="si editable, le créneau n'est pas bloqué."
                                                             " pas encore implémenté")
     valide_present = models.BooleanField(blank=True, default=False, help_text="à valider si le bénévole s'est bien présenté")

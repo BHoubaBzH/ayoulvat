@@ -18,7 +18,7 @@
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
-                    {# planning on affiche que si un planning ou un poste est selectionn #}
+                    {# planning on affiche que si un planning ou un poste est selectionné #}
                     <div class="tab-pane fade show active" id="nav-creneaux" 
                         role="tabpanel" aria-labelledby="nav-creneaux-tab">
                             {% include "evenement/gridplan_postes.html" %}
@@ -52,7 +52,6 @@
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-equipes"
                     role="tabpanel" aria-labelledby="nav-equipes-tab">
-
                     {%if equipe_uuid%}
                         {% include "evenement/gridplan_evenement.html" %}
                     {% else %}

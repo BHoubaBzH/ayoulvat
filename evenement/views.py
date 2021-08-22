@@ -347,8 +347,23 @@ def evenement(request, uuid_evenement):
     data["DicPlannings"] = forms_planning(request, data, evenement)
     data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})  
 
+    # check du groupe du user connecté:
+    print('#########################################################')
+    print ('#   utilisateur connecté: ')
+    if request.user.groups.filter(name = 'Administrateur').exists():
+        GoupeUtilisateur = 'Administrateur'
+    elif request.user.groups.filter(name = 'Organisateur').exists():
+        GoupeUtilisateur = 'Organisateur'
+    elif request.user.groups.filter(name = 'Responsable').exists():
+        GoupeUtilisateur = 'Responsable'
+    elif request.user.groups.filter(name = 'Benevole').exists():
+        GoupeUtilisateur = 'Benevole'
+    print ('#        {2} : {0} {1} '.format(request.user.first_name, request.user.last_name, GoupeUtilisateur))
+    data['GoupeUtilisateur'] = GoupeUtilisateur
+
     # log les donnees post
     print('#########################################################')
+    print ('#   données POST passées: ')
     for key, value in request.POST.items():
         print('#        POST -> {0} : {1}'.format(key, value))
     print('#########################################################')

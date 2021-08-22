@@ -1,5 +1,12 @@
 <!-- evenement/gridplan_postes.html -->
 
+<!-- affiche le popup d'aide quand on passe sur un poste-->
+<script>
+$(document).ready(function(){
+  $('[data-bs-toggle="poste-tooltip"]').tooltip();   
+});
+</script>
+
 <div class="titre">
     <h2>Planning du {{ Planning.debut|date:'l j F' }}</h2> 
 </div>
@@ -18,8 +25,9 @@
                     {# affiche les entetes des lignes du planning : postes #}
                     <div class="poste-slot ligne-{{ poste.UUID }}"
                         aria-hidden="true"
-                        style="grid-row: ligne-{{ poste.UUID }}; grid-column: postes;">
-                            <p style="margin-bottom: 0px;">{{ poste.nom }}</p>
+                        style="grid-row: ligne-{{ poste.UUID }}; grid-column: postes;"
+                        data-bs-toggle="poste-tooltip" data-bs-placement="right" title="{{poste.description}}">
+                            {{ poste.nom }}
                     </div>
                     {% if 'evenement.change_poste'  in perms %}
                         {% include "evenement/poste_edite.html" %}
@@ -46,7 +54,7 @@
             </span>
             {% endcomment %}
         {% endif %}
-        {# ajoute une ligne vide pour pouvoir ajouter des postes au besoins #}
+        {# ajoute une ligne vide pour pouvoir ajouter des postes #}
         {% if 'evenement.add_poste' in perms %}
             {% include "evenement/poste_ajoute.html" %}
         {% endif %}
