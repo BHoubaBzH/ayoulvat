@@ -134,7 +134,7 @@
             navigator.userLanguage
         ).substr(0, 2);
 
-        return (locales[locale]) ? locales[locale] : locales['en'];
+        return (locales[locale]) ? locales[locale] : locales['fr'];
     }
 
     /**
@@ -142,7 +142,7 @@
      * @returns {boolean}
      */
     function testCookie() {
-        document.cookie = 'testCookie=1';
+        document.cookie = 'testCookie=1; SameSite=Strict';
         return document.cookie.indexOf('testCookie') != -1;
     }
 
@@ -183,7 +183,7 @@
         noticeStyle.background = bgColor;
         noticeStyle.color = textColor;
         noticeStyle["z-index"] = '2000';
-        noticeStyle.padding = '100px 200px';
+        noticeStyle.padding = '100px 5px';
         noticeStyle["text-align"] = 'center';
         noticeStyle["font-size"] = "1em";
         noticeStyle["line-height"] = "28px";
@@ -258,7 +258,7 @@
             cookieExpire = new Date();
 
         cookieExpire.setTime(now.getTime() + expireIn);
-        document.cookie = "cookie_notice=1; expires=" + cookieExpire.toUTCString() + "; path=/;";
+        document.cookie = "cookie_notice=1; expires=" + cookieExpire.toUTCString() + "; path=/; SameSite=Strict";
     }
 
     /**
