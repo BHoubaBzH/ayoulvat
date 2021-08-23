@@ -3,6 +3,14 @@
 
 {% load bootstrap5 %}
 {% block evenement_plannings %}
+
+<!-- affiche le popup d'aide quand on passe sur un element contenant un tooltip -->
+<script>
+$(document).ready(function(){
+  $('[data-bs-toggle="tooltip"]').tooltip();   
+});
+</script>
+
     {% if not planning_perso %}
         {# si planning selectionné, on affiche #}
         {% if Planning or Poste %}
