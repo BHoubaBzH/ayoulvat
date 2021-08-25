@@ -63,5 +63,5 @@
 </div>
 {# modal d ajout des creneaux type=creneau #}
 {% if 'evenement.add_creneau' in perms %}
-    {% include "evenement/creneau_ajoute.html" %}
+    {% include "evenement/creneau_ajoute.html" with type='poste' %}
 {% endif %} 
