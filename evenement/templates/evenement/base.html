@@ -1,8 +1,4 @@
 <!-- evenement/base.html -->
-{% load bootstrap5 %}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-{% bootstrap_messages %}
 
 {% load static %}
 
@@ -29,6 +25,11 @@
     {# specifique slider #}
     <!-- link href="http://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css" rel="stylesheet" -->
     <!-- script src="http://code.jquery.com/ui/1.12.0/jquery-ui.min.js" ></script -->
+
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_messages %}
+    {% bootstrap_javascript %}
 
 </head>
 <body class="override">  

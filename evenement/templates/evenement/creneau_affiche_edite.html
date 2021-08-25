@@ -2,97 +2,22 @@
 
 {# pour le placement dans la grille planning garder le filtre sur creno.debut et creno.fin comme la fonction planning_range de views.py : #}
 
+{##################################################################}
 {# affiche le creneau sur le planning avec poste en ordonnées #}
-{% if source_type == "creneau" %}
+{% if source_type == "creneau" %} 
     {# on cherche si le bénévole connecté est proposé dans la liste des benevoles : creneau pris par le benevole ou creneau dispo pour le benevole #}
     {% for uuid, creneauf in DicCreneaux.items %}
-        {# si le poste est ouvert on affiche en fonction des dispo du creneau et du bénévole #}
+        {# on gere ici l'affichage du creneau en fonction de la personne, de la reservation du creneau , de l'ouverture ou non des postes, plannings, evenements... #}
         {% if uuid|stringformat:"s" == creno.UUID|stringformat:"s" %}
-
-            {# si poste est reservé aux majeurs, le bénévole mineur n'a pas accès aux créneaux du poste, admins et benevoles majeurs ont accès #}
-            {% if not Majeur and not creno.poste.ouvert_mineur and not 'evenement.delete_creneau' in perms %}
-                <button class="
-                        {%if libre == 'non'%}creneau_occupe_bloque{%else%}creneau_libre_bloque{%endif%}
-                        poste poste-{{ poste.UUID }}"
-                        style="grid-row: ligne-{{ creno.poste_id }};
-                        grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                        title="{%if libre == 'non'%}créneau occupé{%else%}poste adulte{%endif%}"
-                        disabled>
-                        <a><b>{% if creno.benevole %}{{ creno.benevole }}{%else%}poste adulte{%endif%}</b></a>
-                </button>
-
-            {# le benevole est dans la liste des benevoles du creneau et le poste est ouvert, il peut prendre le créneau #}
-            {% elif user.profilebenevole|stringformat:"s" in creneauf.benevole|stringformat:"s" and creno.poste.ouvert %}
-                <button  class="{%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%} poste poste-{{ poste.UUID }}" 
-                        style="grid-row: ligne-{{ creno.poste_id }};
-                        grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                        title="{%if libre == 'non'%}mon créneau{%else%}créneau disponible{%endif%}"
-                        data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}" >
-                        {%if libre == 'non'%}<a><b>{{ creno.benevole }}</b></a>
-                        {%else%}<a><b>Disponible</b></a>{%endif%}
-                </button>
-            {# le benevole n'est pas dans la liste des bénévoles du creneau et le poste est ouvert #}
-            {% elif creno.poste.ouvert %}
-                {# si le creneau est dejà pris, on desactive le bouton#}
-                {% if libre == 'non' %}
-                    <button  class="
-                            {% if not 'evenement.delete_creneau' in perms %}
-                                creneau_autre_occupe
-                            {%else%}
-                                creneau_occupe
-                            {%endif%} 
-                            poste poste-{{ poste.UUID }}" 
-                            style="grid-row: ligne-{{ creno.poste_id }};
-                            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                            title="créneau occupé"
-                            {%if 'evenement.delete_creneau' in perms%}
-                                data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}" 
-                            {%else%}
-                                disabled
-                            {%endif%}>
-                            <a><b>{{ creno.benevole }}</b></a>
-                    </button>
-                {# sinon si le bénévole est dejà pris sur cet horaire, on desactive le bouton#}
-                {% else %}
-                    <button  class="creneau_libre_moi_occupe poste poste-{{ poste.UUID }}" 
-                            style="grid-row: ligne-{{ creno.poste_id }};
-                            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                            title="tu es déjà occupé sur cet horaire"
-                            {%if 'evenement.delete_creneau' in perms%}
-                                data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}"
-                            {%else%}
-                                disabled
-                            {%endif%}>
-                            <a><b></b></a>
-                    </button>
-                {% endif %}
-            {# si le poste n'est pas ouvert, le bénévole n'a pas accès aux créneaux du poste, seuls les admins ont accès #}
-            {% elif not creno.poste.ouvert %}
-                <button class="
-                        {%if 'evenement.delete_creneau' in perms%}
-                            {%if libre == 'non'%}creneau{%else%}creneau_libre{%endif%}
-                        {%else%}
-                            {%if libre == 'non'%}creneau_occupe_bloque{%else%}creneau_libre_bloque{%endif%}
-                        {%endif%}
-                        poste poste-{{ poste.UUID }}"
-                        style="grid-row: ligne-{{ creno.poste_id }};
-                        grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                        {%if 'evenement.delete_creneau' in perms%}
-                            title="{%if libre == 'non'%}mon créneau{%else%}créneau disponible{%endif%}"
-                            data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}"
-                        {%else%}
-                            title="{%if libre == 'non'%}créneau occupé{%else%}réservé par un gestionnaire{%endif%}"
-                        disabled
-                        {%endif%}>
-                        <a><b>{% if creno.benevole %}{{ creno.benevole }}{%else%}réservé{%endif%}</b></a>
-                </button>
-            {#######}
-            {# ajouter les controles sur creno.ouvert and creno.planning.ouvert and creno.equipe.ouvert and creno.evenement.ouvert#}
-            {#######}
+            {# check si les benevoles peuvent editer ou non des creneaux, en fonction des paramètres de l'evenement , du poste...#}
+            {% if creno.poste.ouvert and EvtOuvertBenevoles|stringformat:"s" == '1' and Evenement.editable %}
+                {% include "evenement/bouton_creneau.html" with ouvert='oui' %}
+            {% else %}
+                {% include "evenement/bouton_creneau.html" with ouvert='non' %}
             {% endif %}
         {% endif %}
     {% endfor %}
-
+{##################################################################}
 {# affiche le creneau sur le planning avec benevole en ordonnées #}
 {% elif source_type == "benevole" %}
     <button  class="creneau {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe{%endif%} benevole benevole-{{ creno.benevole_id }}" 
@@ -105,7 +30,7 @@
                 <a>{{ creno.equipe.nom }}{%if creno.poste%} <i class="bi bi-chevron-right"></i> {{ creno.poste.nom }}{%endif%}</a>
     </button>
 {% endif %}
-
+{##################################################################}
 {# modal admin de modification des creneaux#}
 {# si admin, affiche les details et les boutons d action #}
 {% if 'evenement.delete_creneau' in perms %}
@@ -196,7 +121,7 @@
             e.preventDefault();
         });
     </script>
-
+{##################################################################}
 {# modals benevole #}
 {# si non admin, affiche pas les details et on permet juste de prendre le créneau #}
 {% elif creno.benevole == None %}

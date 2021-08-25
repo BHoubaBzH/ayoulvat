@@ -27,6 +27,45 @@
           <a class="nav-link">Bienvenue {%if request.user.first_name%}{{ request.user.first_name|capfirst }}{%endif%}</a>
         </li>
       </ul>
+
+      <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+          {# si l evenment est bloqué ou pas ouvert aux inscriptions , on l'affiche#}
+          {% if Evenement and not Evenement.editable %}
+            <div class="btn-group me-2">
+              <button type="submit" id="profile" class="btn btn-sm btn-outline-danger"
+                formaction=""
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="L'administrateur n'a pas encore ouvert les inscriptions">
+                Evènement bloqué</button>
+            </div>
+          {# si les inscrptions à l evenements n ont pas commencees , on l'affiche#}
+          {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '0'%}
+            <div class="btn-group me-2">
+              <button type="submit" id="profile" class="btn btn-sm btn-outline-warning"
+                formaction="{% url 'evenement' uuid_evenement=Evenement.UUID %}"
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="les inscriptions ouvrirons le {{Evenement.inscription_debut}}">
+                Inscriptions à Venir</button>
+            </div>
+          {# si les inscriptions à l evenements sont en cours , on l'affiche#}
+          {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '1'%}
+            <div class="btn-group me-2">
+              <button type="submit" id="profile" class="btn btn-sm btn-outline-success"
+                formaction="{% url 'evenement' uuid_evenement=Evenement.UUID %}"
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="les inscriptions seront closes le {{Evenement.inscription_fin}}">
+                Inscriptions En Cours</button>
+            </div>
+          {# si les inscriptions à l evenements sont terminees , on l'affiche#}
+          {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '2'%}
+            <div class="btn-group me-2">
+              <button type="submit" id="profile" class="btn btn-sm btn-outline-danger"
+                formaction="{% url 'evenement' uuid_evenement=Evenement.UUID %}"
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="les inscriptions sont finies depuis le {{Evenement.inscription_fin}}">
+                Inscriptions Closes</button>
+            </div>
+          {% endif %}
+        </li>
+      </ul>
+
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap" id="boutons_navbar">
           {# si c'est un bénévole inscrit à l'evenement, il peut consulter son planning perso #}
@@ -38,10 +77,12 @@
             </div>
             {% endcomment %}
           {% endif %}
-            <div class="btn-group me-2">
-              <button type="submit" id="profile" class="btn btn-sm btn-outline-secondary"
-                formaction="{% url 'home' %}">Home</button>
-            </div>
+
+          <div class="btn-group me-2">
+            <button type="submit" id="profile" class="btn btn-sm btn-outline-secondary"
+              formaction="{% url 'home' %}">Home</button>
+          </div>
+
         {% comment "garde pour exemple" %}
           <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
             <span data-feather="calendar"></span>

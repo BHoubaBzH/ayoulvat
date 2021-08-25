@@ -4,6 +4,7 @@ from django.urls.base import set_urlconf
 from association.models import AssoPartenaire, Association
 from benevole.models import ProfileOrganisateur, ProfileResponsable, ProfileBenevole
 from colorful.fields import RGBColorField
+from datetime import date
 
 
 class Evenement(models.Model):
@@ -35,9 +36,10 @@ class Evenement(models.Model):
     nom = models.CharField(max_length=50)
     debut = models.DateTimeField(blank=False, default='')
     fin = models.DateTimeField(blank=False, default='')
+    inscription_debut = models.DateField( default= date.today, blank=True, help_text="date à partir de laquelle les inscriptions des bénévoles sont possibles")
+    inscription_fin = models.DateField(default= date.today, blank=True, help_text="date à partir de laquelle les inscriptions des bénévoles sont closes")
+    editable = models.BooleanField(default=True, help_text="si éditable, l'évènement est ouvert à tous. Sinon, il n'est pas modifiable")
     site_web = models.URLField(blank=True, default='')
-    editable = models.BooleanField(default=True, help_text="si éditable, l'évènement est bloqué."
-                                                           " pas encore implémenté")
     description = models.TextField(max_length=2000, blank=True, default='')
     courriel_responsable = models.EmailField(default='', help_text="courriel accessible aux bénévoles en bas de page")
     vignette = models.ImageField(upload_to=upload_dir_vignette, blank=True)

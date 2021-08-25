@@ -14,6 +14,22 @@ from association.models import Association
 #             fonctions
 ################################################
 
+def inscription_ouvert(debut, fin):
+    """
+        prend une date de debut et une date de fin en entree
+        en sortie, un integer:
+        0: si today avant la période
+        1: si today dans la période
+        2: si today après la période
+    """
+    if date.today() < debut:
+        return 0
+    elif debut <= date.today() <= fin:
+        return 1
+    else:
+        return 2 
+
+
 def planning_range(debut, fin, delta):
     """
         entree : datetime, datetime, minutes
@@ -340,6 +356,7 @@ def evenement(request, uuid_evenement):
         "DicCreneaux" : "",  # dictionnaire des formes de creneau de l'evenement liées aux objets de la db
         "FormCreneau" : "",  # form non liée au template pour ajout d un nouveau creneau
         "Majeur" : check_majeur(request.user.date_de_naissance, evenement.debut.date()), # booleen précisant si le bénévole est majeur
+        "EvtOuvertBenevoles" : inscription_ouvert(evenement.inscription_debut, evenement.inscription_fin) , # integer précisant si on est avant/dans/après la période de modification des creneaux
     }
 
     data["DicEquipes"] = forms_equipe(request, data, evenement)

@@ -2,7 +2,9 @@
 {% load bootstrap5 %}
 {% load filters_perso %}
 
-<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse"
+data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="
+              Choisis une équipe et un planning pour gérer tes créneaux">
   <div class="position-sticky pt-3">
 
     {# si un evenement a été selectionné on affiche les equipes et planning dans la sidebar #}
@@ -23,7 +25,10 @@
               <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
               <input  name="equipe" value="{{ team.UUID }}" type="hidden">
               <input type="hidden" name="planning_perso" value="oui">
-              <button class="list-group-item evenement-button {% if planning_perso == 'oui' %}active{% endif %}">Mon Planning</button>
+              <button class="list-group-item evenement-button {% if planning_perso == 'oui' %}active{% endif %}"
+              data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="
+              Ton planning personnel sur tout l'évènement.">
+              Mon Planning</button>
             </form>
           </li>
       </ul>

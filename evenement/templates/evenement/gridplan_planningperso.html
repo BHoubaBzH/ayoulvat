@@ -3,12 +3,13 @@
 <div class="table-responsive ">
     {% if user.profilebenevole in Benevoles %}
         <h2>Planning Perso</h2> 
-        <h6>Ici, le résumé de ton planning sur tout l'évènement.</h6>
-        {% if dispo_actif == 'True' %}
+        <h6>Voici les planning des différentes équipes pour l'évènement.</h6>
+        {% if dispo_actif == 'True' %} {# si le bénévole peut ajouter ses disponibilités #}
             <h6>Tu peux sélectionner un planning d'équipe pour y inscrire tes disponibilités. En fonction, un responsable viendra vous affecter aux créneaux.</h6>
             <h6>Sinon vous pouvez directement choisir des créneaux dans le menu de gauche.</h6>
         {% else %}
-            <h6> Pour modifier, dans le menu de gauche, choisis une équipe et un planning pour t'inscrire ou te désinscrire des créneaux</h6>
+            <h6> en dessous, une liste des créneaux que tu as réservés.<br></h6>
+            <h6> Dans le menu de gauche, choisis une équipe et un planning pour t'inscrire ou te désinscrire des créneaux</h6>
         {% endif %}
         <br>
     {% endif %}

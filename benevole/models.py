@@ -34,7 +34,7 @@ class Personne(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
     role = models.CharField(max_length=50, blank=True, default='')
     genre = models.CharField(max_length=50, choices=genreListe, default=NSP)
-    date_de_naissance = models.DateField(null=True, default=datetime.now()+relativedelta(years=-20))
+    date_de_naissance = models.DateField(null=True, default="01/01/2000")
     fixe = PhoneNumberField(null=True,
                             blank=True,
                             unique=False,

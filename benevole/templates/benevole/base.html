@@ -1,26 +1,27 @@
 <!-- benevole/base.html -->
-{% load bootstrap5 %}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-{% bootstrap_messages %}
 
 {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>AYOULVAT</title>
-   
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{% static 'css/ayoulvat.css' %}" type="text/css" />
+  <title>AYOULVAT</title>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/ayoulvat.css' %}" type="text/css" />
 
-    <style>
-        {# internal CSS pour dynamique #}
-        {% include 'evenement/evenement.css.html'%}
-    </style>
-    {# ressources JQUERY #}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <style>
+      {# internal CSS pour dynamique #}
+      {% include 'evenement/evenement.css.html'%}
+  </style>
+  {# ressources JQUERY #}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+  {% bootstrap_messages %}
 
 </head>
 <body class="override">
