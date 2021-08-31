@@ -50,13 +50,13 @@
                         <input  name="equipe" value="{{ equipe.UUID }}" type="hidden">
                         <input  name="planning" value="{{ planning.UUID }}" type="hidden">
                         {% comment "" %}
-                        <button  class="planningperso" 
+                        <button  class="planning-perso" 
                         title="{{ equipe.nom|upper }} > {{ planning.nom }}"
                         type="submit">
                         <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
                         </button>
                         {% endcomment %}
-                        <button class="planningperso" type="button" 
+                        <button class="planning-perso" type="button" 
                             id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
                             title="ajouter une disponibilité"
                             style="width:100%; height:125%; opacity:80%;" title="me déclarer disponible"

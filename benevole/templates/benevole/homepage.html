@@ -22,19 +22,21 @@
     <div class="container overflow-hidden">
         <div class="row gy-5 gx-5" style="margin-top: 0px;">
             {% for EV in Evenements %}
-                <div class="col card card-default">
-                    <div class="card-header" style="text-align: center;">{{ EV.nom }}</div>
-                    <a href="">
-                    <div class="card-body">
-                        <button type="submit" name="evenement-{{ EV }}" form="{{ EV }}" title="vers {{ EV }}">
-                        {% if EV.vignette %}
-                            <img src="{{ EV.vignette.url }}" form="{{ EV }}" alt="vers {{ EV }}" style="max-width: 100%;max-height: 100%;"/>
-                        {% else %}
-                            <img src="media/empty.jpg" form="{{ EV }}" alt="vers {{ EV }}" style="max-width: 100%;max-height: 100%;"/> 
-                        {% endif %}
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <div class="col">
+                        <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="{{ EV }}" title="vers {{ EV }}">
+                            <div class="card h-100">
+                            {% if EV.vignette %}
+                                <img src="{{ EV.vignette.url }}" class="card-img-top" alt="vers {{ EV }}">
+                            {% else %}
+                                <img src="media/empty.jpg" class="card-img-top" alt="vers {{ EV }}">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ EV.nom }}</h5>
+                                <p class="card-text">{{ EV.description }}</p>
+                            </div>
                         </button>
                     </div>
-                    </a>
                 </div>
             {% endfor %}
         </div>

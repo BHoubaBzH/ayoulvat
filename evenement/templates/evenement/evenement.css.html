@@ -89,8 +89,8 @@
 		display: grid;
 		gap: 0.2em;
 		border: 1px solid #ffffff;
-		padding: inherit;
 		padding-top: 2em;
+		padding-bottom: 2em;
 		{# construction des entetes et des lignes de la grille planning: heures puis equipes #}
 		grid-template-rows:
 			[heures] 3em
@@ -234,6 +234,17 @@ body {
 	# font-size:.75em;
 }
 
+.planning-perso {
+	box-shadow: 3px 2px #888;
+	background-color: #00000040;
+	border-width: 1px;
+	font-size: .75em;
+	padding: 0 .75em;
+	line-height: 2em;
+	margin-bottom: 1px;
+	border-radius: 10px;
+}
+
 .planning-head, .planning-head-equipes {
 	display: inline-grid;
 	# width: 1.5em;
@@ -347,3 +358,8 @@ hr {
 	border-color: #601eb0;
 }
 
+{# boutons lien vers evenement #}
+.bouton-evenement {
+	border: 0px;
+	padding: 0px;
+}
