@@ -1,21 +1,20 @@
 <!-- evenement/gridplan_planningperso.html -->
 {# page du planning du benevole #}
-<div class="table-responsive ">
+<div class="table-responsive">
     {% if user.profilebenevole in Benevoles %}
-        <h2>Planning Perso</h2> 
-        <h6>Voici les planning des différentes équipes pour l'évènement.</h6>
         {% if dispo_actif == 'True' %} {# si le bénévole peut ajouter ses disponibilités #}
             <h6>Tu peux sélectionner un planning d'équipe pour y inscrire tes disponibilités. En fonction, un responsable viendra vous affecter aux créneaux.</h6>
             <h6>Sinon vous pouvez directement choisir des créneaux dans le menu de gauche.</h6>
         {% else %}
-            <h6> en dessous, une liste des créneaux que tu as réservés.<br></h6>
-            <h6> Dans le menu de gauche, choisis une équipe et un planning pour t'inscrire ou te désinscrire des créneaux</h6>
+            <h6> <i class="bi bi-arrow-left-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i> Dans le menu de gauche, choisis une équipe et un planning pour t'inscrire ou te désinscrire des créneaux</h6>
         {% endif %}
-        <br>
+
+        <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" title="les planning des différentes équipes pour l'évènement, avec tes créneaux.">Planning Perso</h2> 
+        <hr class="border-2 border-top border-dark"> {# barre horizontale #}
     {% endif %}
 </div>
-<div class="table-responsive ">
-    <div class="planning-equipes" aria-labelledby="planning-heading">
+<div class="overflow-scroll">
+    <div class="planning-equipes" aria-labelledby="planning-heading" >
         {# affiche les entetes des colonnes du planning : les heures #}
         {% for dates, heures in PlanningRange.items %}
             <div class="planning-head-planningperso" style="grid-column: time-{{ dates }}; grid-row: heures">
@@ -95,7 +94,8 @@
 </div>
 
 {# tableau des creneaux du bénévole#}
-<h2 style="padding-top: 2em;">Planning Perso Détails</h2> 
+<h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" title="liste de tes créneaux.">Détails</h2> 
+<hr class="border-2 border-top border-dark"> {# barre horizontale #}
 <table class="table table-striped ">
   <thead>
     <tr>
