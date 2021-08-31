@@ -1,7 +1,7 @@
 <!-- evenement/bouton_creneau.html -->
 
 {##################################################################}
-{# la personne est un benevole et les contenants du creneau sont ouverts : poste ouvert, evenement ouvert ...#}
+{# la personne est uniquement benevole et les contenants du creneau sont ouverts : poste ouvert, evenement ouvert ...#}
 {% if user.profilebenevole.UUID and not 'evenement.delete_creneau' in perms and ouvert == 'oui' %}
     {# le creneau est occupé #}
     {% if creno.benevole %}
@@ -54,7 +54,7 @@
     {% endif %}
 
 {##################################################################}
-{# la personne est un benevole et les contenants du creneau sont fermés : poste fermé, evenement non editable ...#}
+{# la personne est uniquement benevole et les contenants du creneau sont fermés : poste fermé, evenement non editable ...#}
 {% elif user.profilebenevole.UUID and not 'evenement.delete_creneau' in perms and ouvert == 'non' %}
    {# le creneau est occupé #}
     {% if creno.benevole %}
@@ -117,7 +117,7 @@
                     title="Mon Créneau" >
                     <a><b>{{ creno.benevole }}</b></a>
                 </button>
-        {# simplement occupé par un autre bénévole -> toujours disabled pour les simples benevoles #}
+        {# simplement occupé par un autre bénévole #}
         {% else %}
             <button class="creneau_occupe poste poste-{{ poste.UUID }}"
                 style="grid-row: ligne-{{ creno.poste_id }};
@@ -138,13 +138,13 @@
                 title="Mon Créneau">
                 <a><b>Disponible</b></a>
             </button>
-        {# le bénévole est dejà pris sur cet horaire -> toujours disabled pour les simples benevoles #}
+        {# le bénévole est dejà pris sur cet horaire #}
         {% else %}
             <button  class="creneau_libre poste poste-{{ poste.UUID }}" 
                 style="grid-row: ligne-{{ creno.poste_id }};
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                 data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer-{{ creno.UUID }}"
-                title="tu es déjà occupé sur cet horaire" disabled>                            
+                title="tu es déjà occupé sur cet horaire">                            
                 <a><b>Non Dispo</b></a>
             </button>
         {% endif %}
