@@ -9,10 +9,33 @@ from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
 from benevole.models import ProfileBenevole, Personne, ProfileResponsable, ProfileOrganisateur
 from association.models import Association
 
+from django.core.mail import BadHeaderError, send_mail
+from django.http import HttpResponse, HttpResponseRedirect
 
 ################################################
 #             fonctions
 ################################################
+
+def envoi_courriel(request, evenement):
+    """
+        envoi le courrier de résumé des creneaux du bénévole
+    """
+    sujet = 'voici ta liste de créneau pour l\'évènement {}'.format(evenement)
+    message = request.POST.get('creneaux_courriel_message')
+    from_courriel = 'no-reply@deusta.bzh'
+    to_courriel = [(request.user.email)]
+
+    if sujet and message and from_courriel:
+        try:
+            send_mail(sujet, message, from_courriel, to_courriel)
+        except BadHeaderError:
+            return HttpResponse('Header incorrect détecté.')
+        return HttpResponseRedirect('')
+    else:
+        # In reality we'd use a form class
+        # to get proper validation errors.
+        return HttpResponse('Tous les champs ne sont pas remplis correctement.')
+
 
 def inscription_ouvert(debut, fin):
     """
@@ -420,6 +443,9 @@ def evenement(request, uuid_evenement):
 
         elif not request.POST.get('equipe'):  # selection d'un evenement uniquement
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
+            # si la personne a cliqué sur le bouton pour recevoir ses créneaux par email
+            if request.POST.get('creneaux_courriel'):
+                envoi_courriel(request, evenement)
 
         # on envoie la form non liée au template pour ajout d un nouveau poste
         data["FormPoste"] = PosteForm(initial={'evenement': evenement,

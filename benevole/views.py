@@ -23,6 +23,10 @@ class InscriptionView(generic.CreateView):
     template_name = 'benevole/inscription.html'
 
 
+################################################
+#            views 
+################################################
+@login_required(login_url='login')
 def Home(request):
     """
         page profile de login et principale du benevole
@@ -73,8 +77,8 @@ def Profile(request):
                                         #assopartenaire_id=request.POST.get('assopartenaire'),
                                         #message=request.POST.get('message'), 
                                         )
-            print('nouveau benevole !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-            logger.info('nouvel bénévole inscrit: {0} {1} {2}'.format(request.POST.get('last_name'), request.POST.get('first_name'), request.user.email))
+            # print('nouveau benevole !!')
+            logger.info('nouveau bénévole inscrit: {0} {1} - {2}'.format(request.POST.get('last_name'), request.POST.get('first_name'), request.user.email))
 
         if FormPersonne.is_valid() and FormBenevole.is_valid():
             FormPersonne.save()   

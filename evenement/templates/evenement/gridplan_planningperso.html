@@ -94,8 +94,56 @@
     </div>
 </div>
 
-{# tableau des creneaux du bénévole#}
-<h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" title="liste de tes créneaux.">Détails</h2> 
+<div class="container">
+    <div class="row align-items-end">
+        <div class="col-md-11">
+            {# tableau des creneaux du bénévole#}
+            <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" title="liste de tes créneaux.">Détails</h2> 
+        </div>
+        <div class="col-md-1">
+            {# bouton envoi par courriel des créneaux #}
+            <form method='post' id="courriel_creneaux">
+                {% csrf_token %}
+                <input  name="creneaux_courriel" value="envoi" type="hidden">
+                <input  name="creneaux_courriel_message" value='
+                    <table class="table table-striped ">
+                        <thead>
+                            <tr>
+                            <!-- th scope="col">#</th -->
+                            <th scope="col">équipe</th>
+                            <th scope="col">poste</th>
+                            <th scope="col">jour</th>
+                            <th scope="col">début</th>
+                            <th scope="col">fin</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {# AFFICHE LES CRENEAUX DU BENEVOLE #}
+                            {% for creno in Creneaux %}
+                                {% if creno.benevole_id == user.profilebenevole.UUID %}
+                                    <tr>
+                                    <!-- th scope="row">{{ count|add:"1" }}</th -->
+                                    <td>{{ creno.equipe.nom }}</td>
+                                    <td>{{ creno.poste.nom }}</td>
+                                    <td>{{ creno.debut|date:"D, d F Y" }}</td>
+                                    <td>{{ creno.debut|date:"H:i" }}</td>
+                                    <td>{{ creno.fin|date:"H:i"  }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>'    
+                type="hidden">
+                <button type="submit">
+                <i class="bi bi-envelope-fill" style="font-size: 2rem; color: cornflowerblue;"
+                data-bs-toggle="tooltip" data-bs-placement="top" title="m'envoyer la liste des créneaux par courriel."></i>
+                </button>
+            </form>
+            {# fin bouton #}
+        </div>
+    </div>
+</div>
+
 <hr class="border-2 border-top border-dark"> {# barre horizontale #}
 <table class="table table-striped ">
   <thead>
