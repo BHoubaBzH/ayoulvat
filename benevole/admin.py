@@ -13,7 +13,14 @@ class PersonneInLine(admin.TabularInline):
     extra = 1
 
 class PersonneDetails(admin.ModelAdmin):
-    list_display = ("username", "last_name", "first_name", "date_joined", "is_superuser")
+
+    def group(self, user):
+        groups = []
+        for group in user.groups.all():
+            groups.append(group.name)
+        return ' '.join(groups)
+    group.short_description = 'Groupes'
+    list_display = ("username", "last_name", "first_name", "date_joined", "is_superuser", "group")
 
 '''
 class BenevoleDetails(UserAdmin):

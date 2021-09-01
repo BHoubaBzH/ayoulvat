@@ -34,9 +34,10 @@
         {# affiche toutes les equipes #}
         {% for equipe in Equipes %}
             {# affiche les entetes des lignes du planning : equipes #}
-            <div class="equipe-slot-planningperso"
+            <div class="equipe-slot-planningperso text-truncate"
                 aria-hidden="true"
-                style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;">
+                style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;"
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ equipe.nom|capfirst }}">
                     <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
             </div>
             {% for planning in Plannings %}

@@ -1,4 +1,5 @@
 import benevole
+import logging
 from benevole.models import Personne, ProfileBenevole
 from evenement.models import Evenement
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,10 @@ from django.views import generic
 
 from benevole.forms import BenevoleForm, PersonneForm, RegisterForm
 
+# import the logging library
+import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 # nouvelle class d'enregistrement 
 class InscriptionView(generic.CreateView):
@@ -68,7 +73,8 @@ def Profile(request):
                                         #assopartenaire_id=request.POST.get('assopartenaire'),
                                         #message=request.POST.get('message'), 
                                         )
-            print('nouveau benevole')
+            print('nouveau benevole !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            logger.info('nouvel bénévole inscrit: {0} {1} {2}'.format(request.POST.get('last_name'), request.POST.get('first_name'), request.user.email))
 
         if FormPersonne.is_valid() and FormBenevole.is_valid():
             FormPersonne.save()   

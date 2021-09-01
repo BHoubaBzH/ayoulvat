@@ -34,15 +34,15 @@ class Personne(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
     role = models.CharField(max_length=50, blank=True, default='')
     genre = models.CharField(max_length=50, choices=genreListe, default=NSP)
-    date_de_naissance = models.DateField(null=True, default="01/01/2000")
+    date_de_naissance = models.DateField(null=True, default="2000-01-01")
     fixe = PhoneNumberField(null=True,
                             blank=True,
                             unique=False,
                             help_text='donnée optionnelle')
-    portable = PhoneNumberField(null=False,
-                                blank=False,
+    portable = PhoneNumberField(null=True,
+                                blank=True,
                                 unique=False,  # unique=False car une personne peu etre contact pour plusieures assos
-                                help_text='donnée obligatoire')
+                                help_text='pourra servir à t\'appeler le jour J')
     description = models.CharField(max_length=500, blank=True, default='')
 
 
