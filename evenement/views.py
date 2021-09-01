@@ -33,7 +33,7 @@ def envoi_courriel(request, evenement):
     if sujet and message and from_courriel:
         logger.info('envoi des crenaux perso à : {0} '.format(request.user.email))
         try:
-            send_mail(sujet, message, from_courriel, to_courriel)
+            send_mail(sujet, '', from_courriel, to_courriel, html_message=message)
         except BadHeaderError:
             return HttpResponse('Header incorrect détecté.')
         return HttpResponseRedirect('')
