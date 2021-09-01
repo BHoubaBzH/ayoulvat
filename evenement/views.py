@@ -12,6 +12,11 @@ from association.models import Association
 from django.core.mail import BadHeaderError, send_mail
 from django.http import HttpResponse, HttpResponseRedirect
 
+# import the logging library
+import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+
 ################################################
 #             fonctions
 ################################################
@@ -26,6 +31,7 @@ def envoi_courriel(request, evenement):
     to_courriel = [(request.user.email)]
 
     if sujet and message and from_courriel:
+        logger.info('envoi des crenaux perso à : {0} '.format(request.user.email))
         try:
             send_mail(sujet, message, from_courriel, to_courriel)
         except BadHeaderError:
