@@ -9,7 +9,16 @@
             <h6> <i class="bi bi-arrow-left-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i> Dans le menu de gauche, choisis une équipe et un planning pour t'inscrire ou te désinscrire des créneaux</h6>
         {% endif %}
 
-        <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" title="les planning des différentes équipes pour l'évènement, avec tes créneaux.">Planning Perso</h2> 
+        <div class="container">
+            <div class="row align-items-end">
+                <div class="col-md-12">
+                    <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
+                        title="les planning des différentes équipes pour l'évènement, avec tes créneaux.">
+                        Planning Perso
+                    </h2>
+                </div>
+            </div>
+        </div>    
         <hr class="border-2 border-top border-dark"> {# barre horizontale #}
     {% endif %}
 </div>
@@ -100,6 +109,7 @@
             {# tableau des creneaux du bénévole#}
             <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" title="liste de tes créneaux.">Détails</h2> 
         </div>
+        {% comment %}
         <div class="col-md-1">
             {# bouton envoi par courriel des créneaux #}
             <form method='post' id="courriel_creneaux">
@@ -141,6 +151,7 @@
             </form>
             {# fin bouton #}
         </div>
+        {% endcomment %}
     </div>
 </div>
 
