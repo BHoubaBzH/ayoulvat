@@ -26,14 +26,15 @@ def envoi_courriel(request, evenement):
         envoi le courrier de résumé des creneaux du bénévole
     """
     sujet = 'voici ta liste de créneau pour l\'évènement {}'.format(evenement)
-    message = request.POST.get('creneaux_courriel_message')
+    message_text = request.POST.get('creneaux_courriel_message_text')
+    message_html = request.POST.get('creneaux_courriel_message_html')
     from_courriel = 'no-reply@deusta.bzh'
     to_courriel = [(request.user.email)]
 
-    if sujet and message and from_courriel:
+    if sujet and to_courriel and from_courriel:
         logger.info('envoi des crenaux perso à : {0} '.format(request.user.email))
         try:
-            send_mail(sujet, '', from_courriel, to_courriel, html_message=message)
+            send_mail(sujet, message_text, from_courriel, to_courriel, html_message=message_html)
         except BadHeaderError:
             return HttpResponse('Header incorrect détecté.')
         return HttpResponseRedirect('')

@@ -109,40 +109,53 @@
             {# tableau des creneaux du bénévole#}
             <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" title="liste de tes créneaux.">Détails</h2> 
         </div>
-        {% comment %}
+
         <div class="col-md-1">
             {# bouton envoi par courriel des créneaux #}
             <form method='post' id="courriel_creneaux">
                 {% csrf_token %}
                 <input  name="creneaux_courriel" value="envoi" type="hidden">
-                <input  name="creneaux_courriel_message" value='
-                    <table class="table table-striped ">
-                        <thead>
-                            <tr>
-                            <!-- th scope="col">#</th -->
-                            <th scope="col">équipe</th>
-                            <th scope="col">poste</th>
-                            <th scope="col">jour</th>
-                            <th scope="col">début</th>
-                            <th scope="col">fin</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {# AFFICHE LES CRENEAUX DU BENEVOLE #}
-                            {% for creno in Creneaux %}
-                                {% if creno.benevole_id == user.profilebenevole.UUID %}
-                                    <tr>
-                                    <!-- th scope="row">{{ count|add:"1" }}</th -->
-                                    <td>{{ creno.equipe.nom }}</td>
-                                    <td>{{ creno.poste.nom }}</td>
-                                    <td>{{ creno.debut|date:"D, d F Y" }}</td>
-                                    <td>{{ creno.debut|date:"H:i" }}</td>
-                                    <td>{{ creno.fin|date:"H:i"  }}</td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>'    
+                <input  name="creneaux_courriel_message_text" value='
+                {# AFFICHE LES CRENEAUX DU BENEVOLE #}
+                {% for creno in Creneaux %}
+                    {% if creno.benevole_id == user.profilebenevole.UUID %}
+                        le {{ creno.debut|date:"D, d F Y" }} de {{ creno.debut|date:"H:i" }} à {{ creno.fin|date:"H:i"  }} | équipe : {{ creno.equipe.nom }} | poste : {{ creno.poste.nom }}
+                    {% endif %}
+                {% endfor %}
+
+                '
+                type="hidden">
+                <input  name="creneaux_courriel_message_html" value='
+                    <!doctype html><html amp4email><head></head></head>
+                    <body>
+                        <table class="table table-striped ">
+                            <thead>
+                                <tr>
+                                <!-- th scope="col">#</th -->
+                                <th scope="col">équipe</th>
+                                <th scope="col">poste</th>
+                                <th scope="col">jour</th>
+                                <th scope="col">début</th>
+                                <th scope="col">fin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {# AFFICHE LES CRENEAUX DU BENEVOLE #}
+                                {% for creno in Creneaux %}
+                                    {% if creno.benevole_id == user.profilebenevole.UUID %}
+                                        <tr>
+                                        <!-- th scope="row">{{ count|add:"1" }}</th -->
+                                        <td>{{ creno.equipe.nom }}</td>
+                                        <td>{{ creno.poste.nom }}</td>
+                                        <td>{{ creno.debut|date:"D, d F Y" }}</td>
+                                        <td>{{ creno.debut|date:"H:i" }}</td>
+                                        <td>{{ creno.fin|date:"H:i"  }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </body>'    
                 type="hidden">
                 <button type="submit">
                 <i class="bi bi-envelope-fill" style="font-size: 2rem; color: cornflowerblue;"
@@ -151,7 +164,8 @@
             </form>
             {# fin bouton #}
         </div>
-        {% endcomment %}
+
+
     </div>
 </div>
 
