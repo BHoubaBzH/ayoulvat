@@ -451,7 +451,11 @@ def evenement(request, uuid_evenement):
                                                     Planning.objects.get(UUID=data["planning_uuid"]).pas)
                 except:
                     print("{} : équipe sans planning ".format(Equipe.objects.get(UUID=request.POST.get('equipe')).nom))
-                    #logger.info('equipe sans planning: {0} '.format(request.POST.get('equipe')))
+                    # logger.info('equipe selectionnée sans planning: {0} '.format(request.POST.get('equipe')))
+                    data["planning_perso"] = "oui"
+                    data["PlanningRange"] = planning_range(evenement.debut,
+                                        evenement.fin,
+                                        30)
                     
         elif not request.POST.get('equipe'):  # selection d'un evenement uniquement
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
