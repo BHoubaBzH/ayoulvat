@@ -31,7 +31,7 @@
                 style="grid-row: ligne-{{ creno.poste_id }};
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                 title="poste réservé adulte" disabled>
-                <a><b>Disponible</b></a>
+                <a><b>Réservé Adultes</b></a>
             </button>
         {# le benevole est dans la liste des benevoles du creneau #}
         {% elif user.profilebenevole|stringformat:"s" in creneauf.benevole|stringformat:"s" %}
@@ -83,15 +83,15 @@
                 style="grid-row: ligne-{{ creno.poste_id }};
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                 title="poste réservé adulte" disabled>
-                <a><b>Disponible</b></a>
+                <a><b>Réservé Adulte</b></a>
             </button>
         {# le benevole est dans la liste des benevoles du creneau #}
         {% elif user.profilebenevole|stringformat:"s" in creneauf.benevole|stringformat:"s" %}
             <button class="creneau_libre_bloque poste poste-{{ poste.UUID }}"
                 style="grid-row: ligne-{{ creno.poste_id }};
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                title="" disabled>
-                <a><b>Disponible</b></a>
+                title="poste non ouvert" disabled>
+                <a><b>Réservé</b></a>
             </button>
         {# le bénévole est dejà pris sur cet horaire #}
         {% else %}

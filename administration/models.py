@@ -61,7 +61,7 @@ groupe_permission = {
         'add_poste', 'view_poste', 'change_poste', 'delete_poste',
         'add_creneau', 'view_creneau', 'change_creneau', 'delete_creneau',
     ),
-    'Responsable': (  # custom user : personne
+    'Responsable': (  # custom user : personne . responsable d'équipe
         'add_personne', 'view_personne', 'change_personne', 'delete_personne',
         'view_profileadministrateur',
         'view_profileorganisateur',
@@ -72,8 +72,8 @@ groupe_permission = {
         'view_assopartenaire',
         # evenement
         'view_evenement',
-        'add_equipe', 'view_equipe', 'change_equipe', 'delete_equipe',
-        'add_planning', 'view_planning', 'change_planning', 'delete_planning',
+        'view_equipe', 'change_equipe', 'delete_equipe',
+        'view_planning', 'change_planning', 'delete_planning',
         'add_poste', 'view_poste', 'change_poste', 'delete_poste',
         'add_creneau', 'view_creneau', 'change_creneau', 'delete_creneau',
     ),

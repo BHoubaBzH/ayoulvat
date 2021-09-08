@@ -1,23 +1,5 @@
 {# evenement/poste_ajoute.html #}
 
-<span class="poste-slot" aria-hidden="true" style="grid-row: poste-add; grid-column: postes;">
-        <form  id="form-poste_ajouter" method='post'>
-            {% csrf_token %}
-            <button style=""
-                    class="btn btn-sm"
-                    title="ajouter un poste"
-                    id="bouton-poste_ajouter"
-                    type="submit"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modal-poste_ajouter">
-                <div>
-                    <i class="bi bi-plus-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i>
-                </div>
-            </button>
-        </form>
-    </button>
-</span>
-
 {# modal doit etre en dehors du div pour s'afficher correctement #}
 <div class="modal fade"
      id="modal-poste_ajouter"
@@ -25,7 +7,7 @@
      role="dialog"
      aria-labelledby="poste_ajouter"
      aria-hidden="true">
-    <div class="modal-dialog" role="document" style="z-index:1050">
+    <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalLabel">Ajout d'un poste</h5>

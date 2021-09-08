@@ -58,20 +58,11 @@
                         <input  name="evenement" value="{{ equipe.evenement.UUID }}" type="hidden">
                         <input  name="equipe" value="{{ equipe.UUID }}" type="hidden">
                         <input  name="planning" value="{{ planning.UUID }}" type="hidden">
-                        {% comment "" %}
-                        <button  class="planning-perso" 
-                        title="{{ equipe.nom|upper }} > {{ planning.nom }}"
-                        type="submit">
-                        <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
-                        </button>
-                        {% endcomment %}
                         <button class="planning-perso" type="button" 
                             id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
-                            title="ajouter une disponibilité"
-                            title="me déclarer disponible"
                             data-bs-toggle="modal" data-bs-target="#modal-dispo_creer-{{ planning.UUID }}"
                             {# on autorise l ajout de dispo que si dispo_actif=True #}
-                            {% if dispo_actif != "True" %}disabled{% endif %}
+                            {% if dispo_actif == "True" %}title="me déclarer disponible" {% else %} disabled{% endif %}
                             >
                             <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
                         </button>
@@ -97,7 +88,6 @@
                     </button>
                 {% endif %}
             {% endfor %}
-
             {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" %}
         {% endfor %}
     </div>
@@ -226,7 +216,7 @@
             role="dialog"
             aria-labelledby="dispo_creer"
             aria-hidden="true">
-            <div class="modal-dialog" role="document" style="z-index:1050">
+            <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="ModalLabel">
@@ -300,7 +290,7 @@
             role="dialog"
             aria-labelledby="dispo_editer"
             aria-hidden="true">
-            <div class="modal-dialog" role="document" style="z-index:1050">
+            <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="ModalLabel">
@@ -383,7 +373,7 @@
             role="dialog"
             aria-labelledby="creneau_supprime"
             aria-hidden="true">
-            <div class="modal-dialog modal-sm" role="document" style="z-index:1050">
+            <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="ModalLabel">Confirmer La suppression de la disponibilité</h5>

@@ -57,11 +57,27 @@
         {% endif %}
         {# ajoute une ligne vide pour pouvoir ajouter des postes #}
         {% if 'evenement.add_poste' in perms %}
-            {% include "evenement/poste_ajoute.html" %}
+            <span class="poste-slot" aria-hidden="true" style="grid-row: poste-add; grid-column: postes;">
+                <form  id="form-poste_ajouter" method='post'>
+                    {% csrf_token %}
+                    <button style=""
+                            class="btn btn-sm"
+                            title="ajouter un poste"
+                            id="bouton-poste_ajouter"
+                            type="submit"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modal-poste_ajouter">
+                        <div>
+                            <i class="bi bi-plus-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i>
+                        </div>
+                    </button>
+                </form>
+            </span>
+            {% include "evenement/modal_poste_ajoute.html" %}
         {% endif %}
     </div>
 </div>
 {# modal d ajout des creneaux type=creneau #}
 {% if 'evenement.add_creneau' in perms %}
-    {% include "evenement/creneau_ajoute.html" with type='poste' %}
+    {% include "evenement/modal_creneau_ajoute.html" with type='poste' %}
 {% endif %} 

@@ -1,0 +1,100 @@
+<!-- evenement/modal_planning_ajoute.html -->
+
+<script>
+    /* permet d'afficher les mois, les jours, les heure et les minute sur 2 digits, en ajoutant un zero si besoins*/
+    function addZero(i) {
+        if (i < 10) {
+            i = "0" + i;
+        }
+        return i;
+    }
+
+    /* quand on clique pour ajouter un planning dans la grille, rempli les valeurs des inputs correspondants */
+    /* pre-prempli les champs debut, fin, creneau avec l heure du carré sur lequel on a clické */
+    function planning_pre_modal_info(clicked_form) {
+        /*
+        alert(clicked_form.id);
+        var inputs = clicked_form.elements;
+        let text = "";
+        for (let i = 0; i < inputs.length; i++) {
+            text += inputs[i] + "<br>";
+            alert(text);
+        } */
+        for(let field of clicked_form.elements) {
+            if (field.name) {
+                console.log(field.name + " : " + field.value);
+                /* select l heure de debut et l heure de fin par defaut */
+                if (field.name == 'case-debut-init') {
+                    var debut = field.value;
+                    /* decompose la date time pour remplir les 2 champs suite au SplitDateTimeMultiWidget */
+                    var debut_details = debut.split(" ");
+                    $("input[name=debut_0][id=id_debut_0]").val(debut_details[0]);
+                    $("input[name=debut_1][id=id_debut_1]").val(debut_details[1]);
+
+                    var fin = debut;
+                    var duree = 720; /* 12 heures par défaut */
+                    /* ajoute le temps classique d'un creneau a la fin du créneau par rapport au debut */
+                    let [y,M,d,h,m] = fin.split(/[- :]/);
+                    let fin_date =  new Date(y,parseInt(M)-1,d,h,parseInt(m));
+                    fin_date = new Date(fin_date.getTime() + (duree*60*1000));
+                    let fin_str = fin_date.getFullYear() + "-" + addZero((fin_date.getMonth() + 1)) + "-" + addZero(fin_date.getDate()) + " " + addZero(fin_date.getHours()) + ":" + addZero(fin_date.getMinutes())
+                    /* decompose la date time pour remplir les 2 champs suite au SplitDateTimeMultiWidget */
+
+                    var fin_details = fin_str.split(" ")
+                    $("input[name=fin_0][id=id_fin_0]").val(fin_details[0]);
+                    $("input[name=fin_1][id=id_fin_1]").val(fin_details[1]);
+                } 
+                /* select la bonne equipe par defaut */
+                else if (field.name == 'case-ligne-init') {
+                    let equipe = document.getElementById("id_equipe")
+                    equipe.value = field.value;
+                }
+            }
+        }
+    }
+</script>
+
+{# modal ajout planning #}
+<div class="modal fade"
+     id="modal-planning_ajouter"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="planning_ajouter"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Ajout d'un planning</h5>
+            </div>
+            <form  id="form-planning" method='post'>
+                <div class="modal-body">
+                        {% csrf_token %}
+                    <table class="table">
+                        {{ FormPlanning.as_table }}
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+                    <input name="planning_ajouter" value="" type="hidden">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" id="poste_ajouter" class="btn btn-primary success">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    /* affiche le modal de confirmation quand appuie sur le bouton type=submit */
+    $('#form-planning_ajouter').on('submit', function(e){
+        /* alert('modal'); */
+        $('#modal-planning_ajouter').modal('show');
+        e.preventDefault();
+    });
+
+    /* quand le bouton Ajouter est utilisé dans modal, submit la form et ferme le modal */
+    $(document).on('click', '#planning_ajouter', function () {
+        /* alert('submitting-{{ forloop.counter }}'); */
+        document.getElementById('form-planning').submit();
+        $('#modal-poste_ajouter').modal('toggle');
+    });
+</script>

@@ -50,5 +50,5 @@
 {# il est dejà présent si admin, orga, on rajoute si benevole uniquement #}
 {% comment "" %}{% endcomment %}
 {% if not 'benevole.change_benevole' in perms %}
-    {% include "evenement/creneau_ajoute.html" %}
+    {% include "evenement/modal_creneau_ajoute.html" %}
 {% endif %}

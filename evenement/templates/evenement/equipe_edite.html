@@ -5,7 +5,7 @@
         {# affiche le bouton d edition de equipe #}
     <form  id="form-equipe-change-{{ equipe.UUID }}" method='post'>
         {% csrf_token %}
-        <input name="equipe_modifier" value="{{ equipe.UUID }}" type="hidden">
+        <input name="equipe_modifier-{{ equipe.UUID }}" value="{{ equipe.UUID }}" type="hidden">
         <button style=""
                 class="bouton_edite_equipe btn btn-sm"
                 title="editer cette equipe"
@@ -54,13 +54,13 @@
                     
                     {% if 'evenement.delete_equipe'  in perms %}
                         <button class="btn btn-danger" title="supprimer cette equipe" name="equipe_supprimer"
-                                id="equipe_supprimer" value="supprimer" type="button"
+                                id="equipe_supprimer-{{ equipe.UUID }}" value="supprimer" type="button"
                                 data-bs-toggle="modal" data-bs-target="#modal-confirme-equipe-supprime-{{ equipe.UUID }}">
                                 Supprimer
                         </button>
                     {% endif %}
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" id="equipe_modifier" name="equipe_modifier" value="modifier" class="btn btn-primary success">Modifier</button>
+                    <button type="submit" id="equipe_modifier-{{ equipe.UUID }}" name="equipe_modifier" value="modifier" class="btn btn-primary success">Modifier</button>
                 </div>
             </form>
         </div>
@@ -75,7 +75,7 @@
      role="dialog"
      aria-labelledby="equipe_supprime"
      aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document" style="z-index:1050">
+    <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalLabel">Confirmer La suppression de l'équipe</h5>

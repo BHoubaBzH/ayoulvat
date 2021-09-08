@@ -142,7 +142,7 @@ data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="C
 
   </div>
 </nav>
-{# ajoute d'un planning pour les admins #}
+{# modal d'ajout d'un planning pour les admins #}
 {% if 'evenement.add_planning' in perms %}
-    {% include "evenement/planning_ajoute.html" %}
+    {% include "evenement/modal_planning_ajoute.html" %}
 {% endif %} 

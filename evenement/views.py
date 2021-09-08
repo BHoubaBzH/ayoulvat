@@ -1,4 +1,5 @@
 from datetime import timedelta, date
+import datetime
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http.response import HttpResponseRedirect
@@ -441,13 +442,17 @@ def evenement(request, uuid_evenement):
 
             elif not request.POST.get('planning'):
                 # selection d'une equipe uniquement, pas de planning, on affiche le premier planning en date
-                data["Planning"] = Planning.objects.filter(equipe_id=request.POST.get('equipe')).order_by('debut').first()
-                data["planning_uuid"] = data["Planning"].UUID
-                # recupère les heures du planning
-                data["PlanningRange"] = planning_range(Planning.objects.get(UUID=data["planning_uuid"]).debut,
+                try:
+                    data["Planning"] = Planning.objects.filter(equipe_id=request.POST.get('equipe')).order_by('debut').first()
+                    data["planning_uuid"] = data["Planning"].UUID
+                    # recupère les heures du planning
+                    data["PlanningRange"] = planning_range(Planning.objects.get(UUID=data["planning_uuid"]).debut,
                                                     Planning.objects.get(UUID=data["planning_uuid"]).fin,
                                                     Planning.objects.get(UUID=data["planning_uuid"]).pas)
-
+                except:
+                    print("{} : équipe sans planning ".format(Equipe.objects.get(UUID=request.POST.get('equipe')).nom))
+                    #logger.info('equipe sans planning: {0} '.format(request.POST.get('equipe')))
+                    
         elif not request.POST.get('equipe'):  # selection d'un evenement uniquement
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
             # si la personne a cliqué sur le bouton pour recevoir ses créneaux par email
@@ -483,7 +488,6 @@ def evenement(request, uuid_evenement):
     else:
         data["PlanningRange"] = planning_range(evenement.debut,
                                                evenement.fin,
-                                               30)
-             
+                                               30)          
     return render(request, "evenement/evenement_plannings.html", data)
  
