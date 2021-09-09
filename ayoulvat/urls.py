@@ -22,7 +22,8 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 # debug perfs
-if settings.DEBUG:
+from decouple import config
+if config('PROJET_ENV') == 'DEV':
     import debug_toolbar
 
 urlpatterns = [
@@ -36,9 +37,10 @@ urlpatterns = [
     path('benevole/', include('benevole.urls')),
     path('association/', include('association.urls')),
     path('evenement/', include('evenement.urls')),
-    # debug perfs en dev
-    # path('__debug__/', include(debug_toolbar.urls)),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
+# debug perfs en dev
+if config('PROJET_ENV') == 'DEV':
+   urlpatterns.append(path('__debug__/', include(debug_toolbar.urls)))

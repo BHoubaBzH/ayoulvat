@@ -8,14 +8,6 @@
           {% if Evenement.vignette %}<img src="{{ Evenement.vignette.url }}" style="max-width: 40px;max-height: 40px;">{% endif %}
           {% if 'change_evenement'  in perms %}<a  href="{% url 'liste_evenements' %}">{{ Association.nom }}</a>{% endif %}
           {%if Evenement.nom%}<a> {% if 'change_evenement'  in perms %}<i class="bi bi-chevron-right"></i>{% endif %} {{ Evenement.nom }}</a>{%endif%}
-      {% comment "prend trop de place dans la navbar, et l'info est dans la sidebar" %}
-          {% for team in Equipes %}
-            {%if equipe_uuid|stringformat:'s' == team.UUID|stringformat:'s'%}<a> <i class="bi bi-chevron-right"></i> {{ team.nom }}</a>{%endif%}
-          {% endfor %}
-          {% for plan in Plannings %}
-            {%if planning_uuid|stringformat:'s' == plan.UUID|stringformat:'s'%}<a> <i class="bi bi-chevron-right"></i> {{ plan.nom }}</a>{%endif%}
-          {% endfor %}
-      {% endcomment %}
         {% else %}
           AYOULVAT
         {% endif %}
@@ -67,35 +59,41 @@
       </ul>
 
       <ul class="navbar-nav px-3">
+        {% comment "ancien accès a mon planning. déporté sur la sidebar" %}
         <li class="nav-item text-nowrap" id="boutons_navbar">
           {# si c'est un bénévole inscrit à l'evenement, il peut consulter son planning perso #}
           {% if Evenement and user.profilebenevole in Benevoles %}
-            {% comment "ancien accès a mon planning. déporté sur la sidebar" %}
+
             <div class="btn-group me-2">
               <button type="submit" id="planning_perso" class="btn btn-sm btn-outline-secondary"
                 formaction="{% url 'evenement' uuid_evenement=Evenement.UUID %}">Mon Planning</button>
             </div>
-            {% endcomment %}
           {% endif %}
-
-          <div class="btn-group me-2">
-            <button type="submit" id="profile" class="btn btn-sm btn-outline-secondary"
-              formaction="{% url 'home' %}">Home</button>
-          </div>
-
-        {% comment "garde pour exemple" %}
-          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-            <span data-feather="calendar"></span>
-            This week
-          </button>
-        {% endcomment %}
         </li>
+        {% endcomment %}
+
+        {% if 'benevole.add_benevole' in perms %}
+          <li class="nav-item dropdown">
+              <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                Administration
+              </button>
+              <ul class="dropdown-menu dropdown-menu-dark position-absolute" aria-labelledby="dropdownMenu">
+                <li><a class="dropdown-item" href="{% url 'profile' %}">Ajouter un bénévole</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Action</a></li>
+              </ul>
+          </li>
+        {% endif %}
       </ul>
     {% endif %}
 
     <ul class="navbar-nav px-3">
       <li class="nav-item text-nowrap">
         {% if user.is_authenticated %}
+        <div class="btn-group me-2">
+          <button type="submit" id="profile" class="btn btn-sm btn-outline-secondary"
+            formaction="{% url 'home' %}">Home</button>
+        </div>
         <div class="btn-group me-2">
           <button type="submit" id="profile" class="btn btn-sm btn-outline-secondary"
             formaction="{% url 'profile' %}">Mon Profile</button>
