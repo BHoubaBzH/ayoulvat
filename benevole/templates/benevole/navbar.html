@@ -72,18 +72,21 @@
         </li>
         {% endcomment %}
 
-        {% if 'benevole.add_benevole' in perms %}
+        {% comment "" %}
+        {% if Evenement and 'benevole.add_benevole' in perms %}
           <li class="nav-item dropdown">
               <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
                 Administration
               </button>
               <ul class="dropdown-menu dropdown-menu-dark position-absolute" aria-labelledby="dropdownMenu">
-                <li><a class="dropdown-item" href="{% url 'profile' %}">Ajouter un bénévole</a></li>
+                <li><a class="dropdown-item" {# href="{% url 'profile' %}"#}>Ajouter un bénévole</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="#">Action</a></li>
               </ul>
           </li>
         {% endif %}
+        {% endcomment %}
+
       </ul>
     {% endif %}
 
