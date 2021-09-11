@@ -172,9 +172,12 @@ class CreneauForm(ModelForm):
                 # si on edite une proposition de dispo benevole ou si on en cree une,
                 # on retire vide dans la liste benevoles et on permet de modifier les heures
                 if self.instance.type == "benevole" or self.type == "benevole" or self.type is None:
-                    self.fields['benevole'].empty_label = None
-                    self.fields['benevole'].initial = \
-                        ProfileBenevole.objects.get(UUID=self.personne_connectee.profilebenevole.UUID)
+                    # un admin cree un nouveau creneau affecté a personne par defaut
+                    # du coup on ne force pas le bénévole initial
+                    if not self.personne_connectee.has_perm('evenement.change_creneau'):
+                        self.fields['benevole'].empty_label = None
+                        self.fields['benevole'].initial = \
+                            ProfileBenevole.objects.get(UUID=self.personne_connectee.profilebenevole.UUID)
                     self.fields['debut'].widget.attrs['readonly'] = False
                     self.fields['fin'].widget.attrs['readonly'] = False
                 # si c'est un creneau affecté à un autre benevole, on affiche juste ce benevole
