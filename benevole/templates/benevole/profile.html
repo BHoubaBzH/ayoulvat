@@ -9,21 +9,22 @@
   <div class="row card card-default">
     <div class="card-header">Mon Profile</div>
     <div class="card-body">
-        <div class="modal-body">
+          <div class="modal-body">
             {% csrf_token %}
+
             <table class="table">
               {{ FormPersonne.as_table }}
               {{ FormBenevole.as_table }}
             </table>
-          <input type="hidden" name="username" value="{{ user.username }}">
-          <input type="hidden" name="personne" value="{{ user.UUID }}">
+            <input type="hidden" name="username" value="{{ user.username }}">
+            <input type="hidden" name="personne" value="{{ user.UUID }}">
 
-          {% if user.last_name %} {# si le benevole a déjà renseigné son profile alors il n'est pas obligé de modifier son profile #}
-            <button type = "button" class="btn btn-secondary"  onclick="history.back()">Retour</button>
-            <button type="submit" class="btn btn-primary" id="profile">Enregistrer</button>
-          {%else%} {# sinon il doit renseigner son profile #}
-          <button type="submit" class="btn btn-primary" id="profile">Valider</button>
-          {%endif%}
+            {% if user.last_name %} {# si le benevole a déjà renseigné son profile alors il n'est pas obligé de modifier son profile #}
+              <button type = "button" class="btn btn-secondary"  onclick="history.back()">Retour</button>
+              <button type="submit" class="btn btn-primary" id="profile">Enregistrer</button>
+            {%else%} {# sinon il doit renseigner son profile #}
+              <button type="submit" class="btn btn-primary" id="profile">Valider</button>
+            {%endif%}
           
         </div>
     </div>

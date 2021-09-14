@@ -8,6 +8,7 @@ from django.shortcuts import render, get_object_or_404
 from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
 from benevole.models import ProfileBenevole, Personne, ProfileResponsable, ProfileOrganisateur
+from benevole.views import GroupeUtilisateur
 from association.models import Association
 
 from django.core.mail import BadHeaderError, send_mail
@@ -398,16 +399,8 @@ def evenement(request, uuid_evenement):
     # check du groupe du user connecté:
     print('#########################################################')
     print ('#   utilisateur connecté: ')
-    if request.user.groups.filter(name = 'Administrateur').exists():
-        GoupeUtilisateur = 'Administrateur'
-    elif request.user.groups.filter(name = 'Organisateur').exists():
-        GoupeUtilisateur = 'Organisateur'
-    elif request.user.groups.filter(name = 'Responsable').exists():
-        GoupeUtilisateur = 'Responsable'
-    elif request.user.groups.filter(name = 'Benevole').exists():
-        GoupeUtilisateur = 'Benevole'
-    print ('#        {2} : {0} {1} '.format(request.user.first_name, request.user.last_name, GoupeUtilisateur))
-    data['GoupeUtilisateur'] = GoupeUtilisateur
+    print ('#        {2} : {0} {1} '.format(request.user.first_name, request.user.last_name, GroupeUtilisateur(request)))
+    data['GroupeUtilisateur'] = GroupeUtilisateur(request)
 
     # log les donnees post
     print('#########################################################')

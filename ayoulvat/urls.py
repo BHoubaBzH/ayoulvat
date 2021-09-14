@@ -37,6 +37,7 @@ urlpatterns = [
     path('benevole/', include('benevole.urls')),
     path('association/', include('association.urls')),
     path('evenement/', include('evenement.urls')),
+    path('administration/', include('administration.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,0 +1,33 @@
+<!-- administration/benevole/ajoute.html -->
+{# modal ajout bénévole #}
+<div class="modal fade"
+     id="modal-benevole-ajoute"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="benevole_ajouter"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">
+                Ajout d'un bénévole
+                </h5>
+            </div>
+            <form  id="form-ajout-benevole" class="form-ajout-benevole" method='post'>
+              <div class="modal-body">
+                {% csrf_token %}
+
+                <table class="table">
+                {{ FormPersonne.as_table }}
+                {#{ FormBenevole.as_table }#}
+                {{ benevole_formset.as_table }}
+                </table>
+              </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+              <button type="submit" id="benevole_creer" name="benevole_creer"  class="btn btn-primary success">Ajouter</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,1 +1,60 @@
 <!-- administration/benevoles.html -->
+
+{% extends 'administration/base.html' %}
+{% load bootstrap5 %}
+
+{% block title %}liste des bénévoles{% endblock %}
+
+{% block content %}
+<div class="row card card-default">
+    <div class="card-header">liste des bénévoles</div>
+        <div class="card-body">
+
+            <div class="col-md-9 ms-sm-auto col-lg-1 px-md-4 pt-3">
+                <button style="" class="btn btn-sm" title="ajouter un bénévole" data-bs-toggle="modal" data-bs-target="#modal-benevole-ajoute">
+                    <i style="color: var(--bs-success)" class="bi bi-plus-square fs-1"></i>
+                </button>
+            </div>
+            <table class="table table-striped"  id="table_benevoles">
+                <thead>
+                    <tr>
+                    <!-- th scope="col">#</th -->
+                    <th scope="col">nom</th>
+                    <th scope="col">prenom</th>
+                    <th scope="col">email</th>
+                    <th scope="col">portable</th>
+                    <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {# AFFICHE LES CRENEAUX DU BENEVOLE #}
+                    {% for benevole in Benevoles %}
+                        {% if benevole.personne.is_active %}
+                            <tr style="vertical-align : middle;">
+                            <!-- th scope="row">{{ count|add:"1" }}</th -->
+                            <td>{{benevole.personne.last_name|upper}}</td>
+                            <td>{{benevole.personne.first_name|capfirst}}</td>
+                            <td>{{benevole.personne.email}}</td>
+                            <td>{{benevole.personne.portable}}</td>
+                            <td>
+                                <div style="display: flex;">
+                                <a href="#" class="d-block p-3 link-blue text-decoration-none" title="éditer" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
+                                    <i class="bi-pencil-square fs-1"></i>
+                                </a>
+                                <a href="#" class="d-block p-3 link-red text-decoration-none" title="supprimer" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
+                                    <i style="color: var(--bs-danger)" class="bi bi-x-square fs-1"></i>
+                                </a>
+                                </div>
+                            </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% include "administration/benevole/ajoute.html" %}
+
+{% endblock %}

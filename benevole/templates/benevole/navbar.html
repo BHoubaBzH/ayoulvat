@@ -30,7 +30,7 @@
                 data-bs-toggle="tooltip" data-bs-placement="bottom" title="L'administrateur n'a pas encore ouvert les inscriptions">
                 Evènement bloqué</button>
             </div>
-          {# si les inscrptions à l evenements n ont pas commencees , on l'affiche#}
+          {# si les inscriptions à l evenements n ont pas commencees , on l'affiche#}
           {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '0'%}
             <div class="btn-group me-2">
               <button type="submit" id="profile" class="btn btn-sm btn-outline-warning"
@@ -72,20 +72,30 @@
         </li>
         {% endcomment %}
 
-        {% comment "" %}
-        {% if Evenement and 'benevole.add_benevole' in perms %}
+        {#% if Evenement and 'benevole.add_benevole' in perms %#}
+        {% if Evenement and GroupeUtilisateur in 'Administrateur,Organisateur,Responsable' %}
+          <li class="nav-item text-nowrap" id="boutons_navbar">
+            <button type="submit" id="menu_admin" class="btn btn-sm btn-outline-secondary"
+                formaction="{% url 'benevoles_liste' %}">Administration</button>
+            </div>
+          </li>
+
+        {% comment "exemple menu déroulant" %}
           <li class="nav-item dropdown">
               <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
                 Administration
               </button>
               <ul class="dropdown-menu dropdown-menu-dark position-absolute" aria-labelledby="dropdownMenu">
-                <li><a class="dropdown-item" {# href="{% url 'profile' %}"#}>Ajouter un bénévole</a></li>
+                <li><a class="dropdown-item" href="{% url 'benevoles_liste' %}">Liste des bénévoles</a></li>
+                <li><a class="dropdown-item" href="{% url 'benevole_ajoute' %}">Ajouter un bénévole</a></li>
+                <li><a class="dropdown-item" href="{% url 'benevole_edite' %}">Editer un bénévole</a></li>
+                <li><a class="dropdown-item" href="{% url 'benevole_supprime' %}">supprimer un bénévole</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="#">Action</a></li>
               </ul>
           </li>
-        {% endif %}
         {% endcomment %}
+        {% endif %}
 
       </ul>
     {% endif %}

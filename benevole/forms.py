@@ -1,4 +1,5 @@
 from django.forms import widgets
+from django.forms.models import inlineformset_factory
 from django.forms.widgets import HiddenInput
 from evenement.customwidgets import SplitDateTimeMultiWidget
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -13,7 +14,9 @@ import uuid
 class DateInput(forms.DateInput):
     input_type = 'date'
 
+################################################################################################
 # forms d'enregistrement
+################################################################################################
 class RegisterForm(UserCreationForm):
     class Meta:
         model = get_user_model()
@@ -25,9 +28,11 @@ class RegisterForm(UserCreationForm):
         self.instance.username = uuid.uuid4().hex[:16].upper()
         return super(RegisterForm, self).save()
 
+################################################################################################
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Email')
 
+################################################################################################
 class BenevoleForm(ModelForm):
     class Meta:
         model = ProfileBenevole
@@ -41,6 +46,7 @@ class BenevoleForm(ModelForm):
         return super(BenevoleForm, self).save()
     ## !! filtrer les asso partenaires par evenement 
 
+################################################################################################
 class PersonneForm(ModelForm):
     date_de_naissance = DateField(widget=DateInput(format='%Y-%m-%d'))
 
@@ -48,3 +54,16 @@ class PersonneForm(ModelForm):
         model = Personne
         fields = ['last_name', 'first_name', 'genre', 'date_de_naissance', 'email', 'portable', 'description']
         exclude = ['description',]
+
+    def save(self, commit=True): # si pas indiqué commit est à true
+        # genere un username aleatoire pour remplir le champs, pas utilisé vu qu'on utilise email pour se logguer
+        if not self.instance.username:
+            self.instance.username = uuid.uuid4().hex[:16].upper()
+        if commit:
+            return super(PersonneForm, self).save()
+        else:
+            return super(PersonneForm, self).save(commit=False)        
+
+################################################################################################
+# inlineformset_factory pour creer un bénévole 
+BenevoleCreationFormSet = inlineformset_factory(Personne, ProfileBenevole, fields=('__all__'),can_delete = False)

@@ -1,14 +1,12 @@
-import benevole
 import logging
 from benevole.models import Personne, ProfileBenevole
 from evenement.models import Evenement
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import generic
 
-from benevole.forms import BenevoleForm, PersonneForm, RegisterForm
+from benevole.forms import BenevoleForm, PersonneForm, RegisterForm, BenevoleCreationFormSet
 
 # import the logging library
 import logging
@@ -17,10 +15,25 @@ logger = logging.getLogger(__name__)
 
 # nouvelle class d'enregistrement 
 class InscriptionView(generic.CreateView):
-    #form_class = UserCreationForm
     form_class = RegisterForm               # on utilise notre form custom
     success_url = reverse_lazy('login')
     template_name = 'benevole/inscription.html'
+
+
+################################################
+#            fonctions 
+################################################
+
+def GroupeUtilisateur(request):
+    """renvoi le groupe du user connecté, avec le plus de droits """
+    if request.user.groups.filter(name = 'Administrateur').exists():
+        return 'Administrateur'
+    elif request.user.groups.filter(name = 'Organisateur').exists():
+        return 'Organisateur'
+    elif request.user.groups.filter(name = 'Responsable').exists():
+        return 'Responsable'
+    elif request.user.groups.filter(name = 'Benevole').exists():
+        return 'Benevole'
 
 
 ################################################
@@ -64,6 +77,7 @@ def Profile(request):
         print('#        POST -> {0} : {1}'.format(key, value))
     print('#########################################################')
 
+    # un bénévole accede a son profile
     if request.method == "POST" and request.POST.get('personne'):
         # si on a de donnes post, on sauvegarde les formulaires
         FormPersonne = PersonneForm(request.POST, instance=Personne.objects.get(UUID=request.POST.get('personne')))
@@ -103,6 +117,7 @@ def Profile(request):
         "FormPersonne" : PersonneForm(instance=Personne.objects.get(UUID=request.user.UUID)),  # form personne liée
         "FormBenevole" : profile_benevole, # form benevole liée
         "Evenements" : "",  # liste de tous les evenements
+        "Action" : "modifier",
     }
 
     return render(request, "benevole/profile.html", data)
