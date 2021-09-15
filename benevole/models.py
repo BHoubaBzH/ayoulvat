@@ -16,12 +16,12 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Personne(AbstractUser):
-    MIN = "MINEUR"
+    #MIN = "MINEUR"
     HOM = "HOMME"
     FEM = "FEMME"
     NSP = "NSP"
     genreListe = [
-        (MIN, 'Mineur'),  # a remplacer a terme pour le choix par un calcul sur l'age
+        #(MIN, 'Mineur'),  # a remplacer a terme pour le choix par un calcul sur l'age
         (HOM, 'Homme'),
         (FEM, 'Femme'),
         (NSP, 'Ne se prononce pas'),
@@ -29,21 +29,21 @@ class Personne(AbstractUser):
 
     UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # on oblige a rentrer un nom et un prenom et on retire username
-    last_name = models.CharField(_('last name'), max_length=30, blank=False, unique=False)
-    first_name = models.CharField(_('first name'), max_length=30, blank=False, unique=False)
-    email = models.EmailField(_('email address'), unique=True)
+    last_name = models.CharField(_('last name'), max_length=30, blank=False, unique=False, help_text='Requis')
+    first_name = models.CharField(_('first name'), max_length=30, blank=False, unique=False, help_text='Requis')
+    email = models.EmailField(_('email address'), unique=True, help_text='Requis')
     role = models.CharField(max_length=50, blank=True, default='')
-    genre = models.CharField(max_length=50, choices=genreListe, default=NSP)
-    date_de_naissance = models.DateField(null=True, default="2000-01-01")
+    genre = models.CharField(max_length=50, choices=genreListe, default=NSP, help_text='Option')
+    date_de_naissance = models.DateField(null=True, default="2000-01-01", help_text='Requis')
     fixe = PhoneNumberField(null=True,
                             blank=True,
                             unique=False,
-                            help_text='donnée optionnelle')
+                            help_text='Option')
     portable = PhoneNumberField(null=True,
                                 blank=True,
                                 unique=False,  # unique=False car une personne peu etre contact pour plusieures assos
-                                help_text='pourra servir à t\'appeler le jour J')
-    description = models.CharField(max_length=500, blank=True, default='')
+                                help_text='Option. Un numéro pour te joindre le jour J.')
+    description = models.CharField(max_length=500, blank=True, default='', help_text='Option')
 
 
 # paramètres specifiques administrateurs de l'asso

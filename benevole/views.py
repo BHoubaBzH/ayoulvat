@@ -1,24 +1,19 @@
 import logging
+
 from benevole.models import Personne, ProfileBenevole
 from evenement.models import Evenement
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.urls.base import reverse
 from django.urls import reverse_lazy
 from django.views import generic
 
-from benevole.forms import BenevoleForm, PersonneForm, RegisterForm, BenevoleCreationFormSet
+from benevole.forms import BenevoleForm, PersonneForm, RegisterForm
 
 # import the logging library
 import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
-
-# nouvelle class d'enregistrement 
-class InscriptionView(generic.CreateView):
-    form_class = RegisterForm               # on utilise notre form custom
-    success_url = reverse_lazy('login')
-    template_name = 'benevole/inscription.html'
-
 
 ################################################
 #            fonctions 
@@ -39,6 +34,13 @@ def GroupeUtilisateur(request):
 ################################################
 #            views 
 ################################################
+
+# nouvelle class d'enregistrement 
+class InscriptionView(generic.CreateView):
+    form_class = RegisterForm               # on utilise notre form custom
+    success_url = reverse_lazy('login')
+    template_name = 'benevole/inscription.html'
+
 @login_required(login_url='login')
 def Home(request):
     """

@@ -18,10 +18,12 @@ class DateInput(forms.DateInput):
 # forms d'enregistrement
 ################################################################################################
 class RegisterForm(UserCreationForm):
+
     class Meta:
         model = get_user_model()
-        fields = ['email', 'username', 'last_name', 'first_name', 'password1', 'password2']
-        exclude = ['username', 'last_name', 'first_name']
+        #fields = ['email', 'username', 'password1', 'password2', 'last_name', 'first_name', 'genre', 'date_de_naissance', 'portable']
+        fields = ['email', 'username', 'password1', 'password2']
+        exclude = ['username']
 
     def save(self):
         # genere un username aleatoire pour remplir le champs, pas utilisé vu qu'on utilise email pour se logguer
@@ -66,4 +68,4 @@ class PersonneForm(ModelForm):
 
 ################################################################################################
 # inlineformset_factory pour creer un bénévole 
-BenevoleCreationFormSet = inlineformset_factory(Personne, ProfileBenevole, fields=('__all__'),can_delete = False)
+BenevoleCreationFormSet = inlineformset_factory(Personne, ProfileBenevole, fields=('__all__'),  can_delete = False)
