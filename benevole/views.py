@@ -86,6 +86,7 @@ def Profile(request):
         try:
             # on a un profile bénévole déjà cree, on le recupere
             FormBenevole = BenevoleForm(request.POST, instance=ProfileBenevole.objects.get(personne_id=request.POST.get('personne')))
+            print('!!! try ancien benevole')
         except:
             # nouveau profile benevole
             FormBenevole = BenevoleForm(request.POST,
@@ -93,10 +94,11 @@ def Profile(request):
                                         #assopartenaire_id=request.POST.get('assopartenaire'),
                                         #message=request.POST.get('message'), 
                                         )
-            # print('nouveau benevole !!')
+            print('!!! except nouveau benevole')
             logger.info('nouveau bénévole inscrit: {0} {1} - {2}'.format(request.POST.get('last_name'), request.POST.get('first_name'), request.user.email))
 
         if FormPersonne.is_valid() and FormBenevole.is_valid():
+            print('!!! save benevole')
             FormPersonne.save()   
             FormBenevole.save(Personne.objects.get(UUID=request.POST.get('personne')))
             # cree le lien evenement - benevole : a changer ici on est sur un seul evenement, il faudra voir comment s'inscrire a un evenement parmis d'autres
@@ -105,14 +107,17 @@ def Profile(request):
             # ajoute notre benevole dans le champs manytomany 
             evenement.benevole.add(ProfileBenevole.objects.get(UUID=plop.UUID)) 
             # on redirige vers la page homepage si les forms sont remplies
-            return redirect("home")
+        print('!!! rediect home')
+        return redirect("home")
             
     # on construit nos objets a passer au template dans le dictionnaire data
     try : 
+        print('!!! get profile benevole lié')
         profile_benevole = BenevoleForm(instance=ProfileBenevole.objects.get(personne_id=request.user.UUID))  # form benevole liée
     except :
         # sinon initial, on va lier le profile à l evenement
         # profile_benevole = BenevoleForm(initial={'evenement' : [i.id for i in Evenement_inst.evenement.all()]})
+        print('!!! get profile benevole non lié')
         profile_benevole = BenevoleForm()
 
     data = {
