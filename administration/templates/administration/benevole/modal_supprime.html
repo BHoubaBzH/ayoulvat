@@ -1,0 +1,48 @@
+<!-- administration/benevole/modal_supprime.html -->
+{# modal suppression d'un bénévole #}
+<div class="modal fade"
+     id="modal-benevole-supprime"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="benevole_supprimer"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">
+                Es-tu sûr de supprimer ce bénévole? <script>document.write(BenevoleName)</script>
+                </h5>
+            </div>
+            <form  id="form-ajout-supprimer" class="form-supprime-benevole" method='post'>
+              <div class="modal-body">
+                {% csrf_token %}
+                {% comment "" %}
+                <table class="table">
+                
+                <input type="text" name="BenevoleName" id="BenevoleName" value="" />
+                </table>
+                {% endcomment %}
+                <input type="hidden" name="BenevoleUUID" id="BenevoleUUID" value="" />
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="submit" id="benevole_supprimer" name="benevole_supprimer"  class="btn btn-danger">Supprimer</button>
+              </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+  $(document).on("click", ".benevole-supprime", function (e) {
+    /*alert('script ! ');*/
+    e.preventDefault();
+    var BenevoleUUID = $(this).attr('data-id1');
+    var BenevoleName = $(this).attr('data-id2');
+    var BenevoleFirstName = $(this).attr('data-id3');
+    $("#BenevoleUUID").val(BenevoleUUID);
+    $("#BenevoleLastName").val(BenevoleLastName);
+    $("#BenevoleFirstName").val(BenevoleFirstName);
+    $(_self.attr('href')).modal('show');
+  });
+</script>

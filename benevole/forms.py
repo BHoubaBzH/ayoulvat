@@ -41,11 +41,14 @@ class BenevoleForm(ModelForm):
         fields = ['message', 'assopartenaire', 'personne']
         exclude = ['personne',]
 
-    def save(self, personne):
-        # on force le champs personne_id vu que j'y arrive pas par la view
+    def save(self, personne, commit=True):
+        # on lie le benevole à la personne
         print('personne {}'.format(personne.UUID))
         self.instance.personne = personne
-        return super(BenevoleForm, self).save()
+        if commit:
+            return super(BenevoleForm, self).save()
+        else:
+            return super(BenevoleForm, self).save(commit=False)        
     ## !! filtrer les asso partenaires par evenement 
 
 ################################################################################################
@@ -65,7 +68,3 @@ class PersonneForm(ModelForm):
             return super(PersonneForm, self).save()
         else:
             return super(PersonneForm, self).save(commit=False)        
-
-################################################################################################
-# inlineformset_factory pour creer un bénévole 
-BenevoleCreationFormSet = inlineformset_factory(Personne, ProfileBenevole, fields=('__all__'),  can_delete = False)

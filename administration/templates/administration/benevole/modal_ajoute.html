@@ -1,4 +1,4 @@
-<!-- administration/benevole/ajoute.html -->
+<!-- administration/benevole/modal_ajoute.html -->
 {# modal ajout bénévole #}
 <div class="modal fade"
      id="modal-benevole-ajoute"
@@ -19,14 +19,13 @@
 
                 <table class="table">
                 {{ FormPersonne.as_table }}
-                {#{ FormBenevole.as_table }#}
-                {{ benevole_formset.as_table }}
+                {{ FormBenevole.as_table }}
                 </table>
               </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-              <button type="submit" id="benevole_creer" name="benevole_creer"  class="btn btn-primary success">Ajouter</button>
-            </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="submit" id="benevole_creer" name="benevole_creer"  class="btn btn-primary success">Ajouter</button>
+              </div>
             </form>
         </div>
     </div>
