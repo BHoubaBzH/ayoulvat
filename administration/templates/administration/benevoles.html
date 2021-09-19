@@ -1,6 +1,7 @@
 <!-- benevole/personne_list.html -->
 
 {% extends 'administration/base.html' %}
+{% load filters_perso %}
 {% load bootstrap5 %}
 
 {% block title %}liste des bénévoles{% endblock %}
@@ -38,35 +39,40 @@
                     <th scope="col">prenom</th>
                     <th scope="col">email</th>
                     <th scope="col">portable</th>
+                    <th scope="col">role</th>
                     <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for benevole in Benevoles %}
-                    {% if benevole.personne.is_active %}
-                        <tr style="vertical-align : middle;">
-                        <td>{{benevole.personne.last_name|upper}}</a></td>
-                        <td>{{benevole.personne.first_name|capfirst}}</td>
-                        <td>{{benevole.personne.email}}</td>
-                        <td>{{benevole.personne.portable}}</td>
-                        <td>
-                            <div style="display: flex;">
-                            {% comment "" %}
-                            <a href="#" class="d-block p-3 link-blue text-decoration-none" title="éditer" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
-                                <i class="bi-pencil-square fs-3"></i>
-                            </a>
-                            {% endcomment %}
+                    <tr style="vertical-align : middle;">
+                    <td>{{benevole.personne.last_name|upper}}</a></td>
+                    <td>{{benevole.personne.first_name|capfirst}}</td>
+                    <td>{{benevole.personne.email}}</td>
+                    <td>{{benevole.personne.portable}}</td>
+                    <td>
+                        {% for group in benevole.personne.groups.all %}
+                            {{ group }}{% if not forloop.last %}, {%endif%}
+                        {% endfor %}
+                    <td>
+                        <div style="display: flex;">
+                        {% comment "" %}
+                        <a href="#" class="d-block p-3 link-blue text-decoration-none" title="éditer" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
+                            <i class="bi-pencil-square fs-3"></i>
+                        </a>
+                        {% endcomment %}
+                        {% if not benevole.personne|has_group:"Administrateur" and not benevole.personne|has_group:"Organisateur" and not benevole.personne|has_group:"Responsable" %}
                             <button style="" class="benevole-supprime btn btn-sm" title="supprimer un bénévole" 
                                 data-bs-toggle="modal" data-bs-target="#modal-benevole-supprime"
                                 data-id1="{{benevole.personne.UUID}}"
                                 data-id2="{{benevole.personne.last_name}}"
                                 data-id3="{{benevole.personne.fisrt_name}}">
-                                <i style="color: var(--bs-danger)" class="bi bi-x-square fs-3"></i>
+                                <i style="color: var(--bs-danger)" class="bi bi-x-square fs-6"></i>
                             </button>
-                            </div>
-                        </td>
-                        </tr>
-                    {% endif %}
+                        {% endif %}
+                        </div>
+                    </td>
+                    </tr>
                 {% endfor %}
                 </tbody>
             </table>

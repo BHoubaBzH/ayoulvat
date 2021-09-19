@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.forms import widgets
 from django.forms.models import inlineformset_factory
 from django.forms.widgets import HiddenInput
@@ -9,6 +10,7 @@ from django.forms import ModelForm
 from django.forms.fields import DateField, DateTimeField
 from benevole.models import ProfileBenevole, Personne
 import uuid
+import hashlib
 
 # pour date picker
 class DateInput(forms.DateInput):
@@ -65,6 +67,8 @@ class PersonneForm(ModelForm):
         if not self.instance.username:
             self.instance.username = uuid.uuid4().hex[:16].upper()
         if commit:
+            if not self.instance.password:
+                self.instance.password = 'mot_de_passe_temporaire'
             return super(PersonneForm, self).save()
         else:
             return super(PersonneForm, self).save(commit=False)        

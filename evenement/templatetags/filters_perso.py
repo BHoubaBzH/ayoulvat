@@ -12,3 +12,9 @@ def get_item(dictionaire, key):
     return dictionaire.get(key)
 
 
+@register.filter 
+def has_group(user, group_name):
+    """
+        fonction permettant de trouver si le user appartient a un groupe
+    """
+    return user.groups.filter(name=group_name).exists() 

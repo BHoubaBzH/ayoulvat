@@ -1,4 +1,5 @@
 import logging
+from django.contrib.auth.models import User
 from django.http.response import Http404, HttpResponseServerError
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -6,10 +7,10 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
 from benevole.forms import BenevoleForm, PersonneForm
-from evenement.models import Evenement
+from evenement.models import Equipe, Evenement
 from evenement.views import inscription_ouvert
 from benevole.views import GroupeUtilisateur
-from benevole.models import Personne, ProfileBenevole
+from benevole.models import Personne, ProfileAdministrateur, ProfileBenevole, ProfileOrganisateur, ProfileResponsable
 from association.models import Association
 
 ################################################
@@ -87,7 +88,8 @@ def benevoles_liste(request):
 @method_decorator(user_passes_test(lambda u: u.groups.filter(name__in=['Administrateur','Organisteur','Responsable']).exists()), name='dispatch')
 class BenevolesListView(ListView):
     #model = ProfileBenevole
-    queryset = ProfileBenevole.objects.all()
+    # benevoles actif 
+    queryset = ProfileBenevole.objects.filter(personne__is_active='1')
     template_name = "administration/benevoles.html"
     #paginate_by = 10
 
@@ -105,11 +107,16 @@ class BenevolesListView(ListView):
             "Evenement" : self.Evt, 
             "FormPersonne" : PersonneForm(),
             "FormBenevole" : BenevoleForm(), 
-            "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=self.Evt),  # objets benevoles de l'evenement
+
+            "Benevoles": self.queryset.filter(BenevolesEvenement=self.Evt),  # objets benevoles de l'evenement
+            "Administrateurs": ProfileAdministrateur.objects.filter(association=self.Asso),
+            "Organisteurs" : ProfileOrganisateur.objects.filter(OrganisateurEvenement=self.Evt),
+            "Responsables" : ProfileResponsable.objects.filter(ResponsableEquipe__in=Equipe.objects.filter(evenement=self.Evt)),
+
         }
         return super().dispatch(request, *args, **kwargs)
 
-    # recupere les données post
+    # recupere et traite les données post
     def post(self, request, *args, **kwargs):
         print('{} : post'.format(__class__.__name__))
         print('#########################################################')
@@ -135,9 +142,17 @@ class BenevolesListView(ListView):
         # supprimer un benevole
         if all(k in request.POST for k in ('benevole_supprimer', 'BenevoleUUID')):
             personnesup = get_object_or_404(Personne, UUID=request.POST.get('BenevoleUUID'))
-            print('benevole supprimé : {0} {1}'.format(personnesup.last_name, personnesup.first_name))
-            benevolesup = get_object_or_404(ProfileBenevole, personne=personnesup).delete()
-            personnesup = get_object_or_404(Personne, UUID=request.POST.get('BenevoleUUID')).delete()
+            # secu : on ne supprime les personnes étant également admins
+            if  ProfileAdministrateur.objects.filter(personne=personnesup) or \
+                ProfileOrganisateur.objects.filter(personne=personnesup) or \
+                ProfileResponsable.objects.filter(personne=personnesup):
+                print('ne pas supprimer ')
+                raise Http404('attention, ne pas supprimer les admins')
+            else:
+                print('benevole supprimé : {0} {1}'.format(personnesup.last_name, personnesup.first_name))
+                benevolesup = get_object_or_404(ProfileBenevole, personne=personnesup).delete()
+                personnesup = get_object_or_404(Personne, UUID=request.POST.get('BenevoleUUID')).delete()
+                
 
         # editer un benevole
         if all(k in request.POST for k in ('benevole_editer', 'BenevoleUUID')):
