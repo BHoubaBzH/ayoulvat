@@ -11,7 +11,7 @@ from evenement.models import Creneau, Equipe, Evenement
 from evenement.views import inscription_ouvert
 from benevole.views import GroupeUtilisateur
 from benevole.models import Personne, ProfileAdministrateur, ProfileBenevole, ProfileOrganisateur, ProfileResponsable
-from association.models import Association
+from association.models import AssoPartenaire, Association
 
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -33,6 +33,18 @@ def association(request):
     uuid = request.session['uuid_association']
     association = Association.objects.get(UUID=uuid)
     return association
+
+def assos_part(asso):
+    """ retourne les assos partenaire de l'asso organisatrice de l evenement"""
+    list_assos = AssoPartenaire.objects.filter(Association=asso)
+    return list_assos
+
+def benevoles_par_asso(list_assos):
+    """ returne un dictionnaire de nombre de bénévole par asso """
+    dic = {}
+    for asso in list_assos :
+        dic[asso]= ProfileBenevole.objects.filter(assopartenaire=asso).count()
+    return dic
 
 ################################################
 #            views 
@@ -122,7 +134,7 @@ class BenevolesListView(ListView):
 @method_decorator(login_required(login_url='login'), name='dispatch')
 @method_decorator(user_passes_test(lambda u: u.groups.filter(name__in=['Administrateur','Organisteur','Responsable']).exists()), name='dispatch')
 class DashboardView(View):
-    template_name = "administration/dashboard.html"
+    template_name = "administration/dashboard.html" 
 
     def dispatch(self, request, *args, **kwargs):
         print('{} : dispatch'.format(__class__.__name__))
@@ -138,6 +150,8 @@ class DashboardView(View):
             "Creneaux" : Creneau.objects.filter(evenement=self.Evt, type="creneau"),
             "Creneaux_libres" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=True).count,
             "Creneaux_occupes" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=False).count,
+            "Assos_partenaires" : assos_part(self.Asso),
+            "benevoles_par_asso" : benevoles_par_asso(assos_part(self.Asso)),
 
             "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=self.Evt),  # objets benevoles de l'evenement
             "Administrateurs": ProfileAdministrateur.objects.filter(association=self.Asso),
@@ -145,15 +159,6 @@ class DashboardView(View):
             "Responsables" : ProfileResponsable.objects.filter(ResponsableEquipe__in=Equipe.objects.filter(evenement=self.Evt)),
         }
         return super(DashboardView, self).dispatch(request, *args, **kwargs)
-
-    # recupere et traite les données post
-    #def post(self, request, *args, **kwargs):
-    #    print('{} : post'.format(__class__.__name__))
-    #    print('#########################################################')
-    #    for key, value in request.POST.items():
-    #        print('#        POST -> {0} : {1}'.format(key, value))
-    #    print('#########################################################')
-    #    return render(request, self.template_name, self.context)
 
     # 
     def get(self, request, *args, **kwargs):

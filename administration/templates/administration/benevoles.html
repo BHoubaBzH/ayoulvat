@@ -40,6 +40,7 @@
                     <th scope="col">email</th>
                     <th scope="col">portable</th>
                     <th scope="col">role</th>
+                    <th scope="col">Asso Partenaire</th>                  
                     <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -49,11 +50,13 @@
                     <td>{{benevole.personne.last_name|upper}}</a></td>
                     <td>{{benevole.personne.first_name|capfirst}}</td>
                     <td>{{benevole.personne.email}}</td>
-                    <td>{{benevole.personne.portable}}</td>
+                    <td>{{benevole.personne.portable}}</td>                 
                     <td>
                         {% for group in benevole.personne.groups.all %}
                             {{ group }}{% if not forloop.last %}, {%endif%}
                         {% endfor %}
+                    </td>
+                    <td>{{benevole.assopartenaire}}</td>   
                     <td>
                         <div style="display: flex;">
                         {% comment "" %}

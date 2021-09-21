@@ -10,31 +10,42 @@
 
 <div class="">
 
-           <table class="table table-striped"  id="table_benevoles">
-                <thead>
-                    <tr>
-                    <th scope="col">bénévoles</th><th scope="col">nombre</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="vertical-align : middle;">
-                    <td>Inscrits</td><td>{{ Benevoles.count }}</tr>
-                </tbody>
-            </table>
+    <table class="table table-striped"  id="table_benevoles">
+        <thead>
+            <tr>
+            <th scope="col">bénévoles</th><th scope="col">nombre</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="vertical-align : middle;">
+            <td>Inscrits</td><td>{{ Benevoles.count }}</tr>
+        </tbody>
+    </table>
 
-           <table class="table table-striped"  id="table_benevoles">
-                <thead>
-                    <tr>
-                    <th scope="col">créneaux</th><th scope="col">nombre</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="vertical-align : middle;">
-                    <td>Total</td><td>{{ Creneaux.count }}</tr>
-                    <td>Occupés</td><td>{{ Creneaux_occupes }}</tr>
-                    <td>Libres</td><td>{{ Creneaux_libres }}</tr>
-                </tbody>
-            </table>
+    <table class="table table-striped"  id="table_benevoles">
+        <thead>
+            <tr>
+            <th scope="col">créneaux</th><th scope="col">nombre</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="vertical-align : middle;">
+            <td>Total</td><td>{{ Creneaux.count }}</tr>
+            <td>Occupés</td><td>{{ Creneaux_occupes }}</tr>
+            <td>Libres</td><td>{{ Creneaux_libres }}</tr>
+        </tbody>
+    </table>
+
+    <table class="table table-striped"  id="table_benevoles">
+        <thead>
+            <tr><th scope="col">asso partenaire</th><th scope="col">nombre de bénévole</tr>
+        </thead>
+        <tbody>
+            {% for a, b in  benevoles_par_asso.items %}
+                <tr style="vertical-align : middle;"><td>{{ a }}</td><td>{{ b }}</tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 </div>
 

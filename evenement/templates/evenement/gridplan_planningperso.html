@@ -95,7 +95,7 @@
 
 <div class="container">
     <div class="row align-items-end">
-        <div class="col-md-11">
+        <div class="col-md-2">
             {# tableau des creneaux du bénévole#}
             <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" title="liste de tes créneaux.">Détails</h2> 
         </div>
@@ -161,9 +161,9 @@
                     </body>
                     </html>'    
                 type="hidden">
-                <button type="submit">
-                <i class="bi bi-envelope-fill" style="font-size: 2rem; color: cornflowerblue;"
-                data-bs-toggle="tooltip" data-bs-placement="top" title="m'envoyer la liste des créneaux par courriel."></i>
+                <button style="" class="benevole-supprime btn btn-sm" title="si tu veux recevoir la liste de tes créneaux par courriel." 
+                    data-bs-toggle="modal" data-bs-target="#modal-benevole-supprime">
+                    <i style="color: var(--bs-blue)" class="bi bi-envelope-fill fs-1"></i>
                 </button>
             </form>
             {# fin bouton #}
