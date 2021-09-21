@@ -44,6 +44,7 @@ def benevoles_par_asso(list_assos):
     dic = {}
     for asso in list_assos :
         dic[asso]= ProfileBenevole.objects.filter(assopartenaire=asso).count()
+    dic ={k: v for k, v in sorted(dic.items(), key=lambda x: x[1], reverse=True)}
     return dic
 
 ################################################
