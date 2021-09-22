@@ -49,7 +49,7 @@ $(document).ready(function(){
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-equipes"
                     role="tabpanel" aria-labelledby="nav-equipes-tab">
-                        {% include "evenement/gridplan_evenement.html" %}
+                        {% include "evenement/gridplan_equipes.html" %}
                 </div>
             </div>
         {# a analyser comment on arrive ici , on part sur planning perso #}    
@@ -64,7 +64,7 @@ $(document).ready(function(){
                 <div class="tab-pane fade show active" id="nav-equipes"
                     role="tabpanel" aria-labelledby="nav-equipes-tab">
                     {%if equipe_uuid%}
-                        {% include "evenement/gridplan_evenement.html" %}
+                        {% include "evenement/gridplan_equipes.html" %}
                     {% else %}
                         {% include "evenement/gridplan_planningperso.html" %}
                     {% endif %}

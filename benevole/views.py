@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 ################################################
 
 def GroupeUtilisateur(request):
-    """renvoi le groupe du user connecté, avec le plus de droits """
+    """renvoi le groupe le plus permissif du user connecté """
     if request.user.groups.filter(name = 'Administrateur').exists():
         return 'Administrateur'
     elif request.user.groups.filter(name = 'Organisateur').exists():
