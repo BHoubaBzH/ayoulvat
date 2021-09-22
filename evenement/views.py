@@ -1,5 +1,5 @@
+from administration.views import inscription_ouvert
 from datetime import timedelta, date
-import datetime
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http.response import HttpResponseRedirect
@@ -44,23 +44,6 @@ def envoi_courriel(request, evenement):
         # In reality we'd use a form class
         # to get proper validation errors.
         return HttpResponse('Tous les champs ne sont pas remplis correctement.')
-
-
-def inscription_ouvert(debut, fin):
-    """
-        prend une date de debut et une date de fin en entree
-        en sortie, un integer:
-        0: si today avant la période
-        1: si today dans la période
-        2: si today après la période
-    """
-    if date.today() < debut:
-        return 0
-    elif debut <= date.today() <= fin:
-        return 1
-    else:
-        return 2 
-
 
 def planning_range(debut, fin, delta):
     """

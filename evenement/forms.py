@@ -1,3 +1,4 @@
+from administration.views import evenement
 from uuid import UUID
 from django.forms import ModelForm, DateTimeField, HiddenInput, ValidationError
 from django.forms import ModelChoiceField, ModelMultipleChoiceField, CheckboxSelectMultiple
@@ -188,7 +189,12 @@ class CreneauForm(ModelForm):
                         ProfileBenevole.objects.filter(UUID=self.instance.benevole_id)
                     # un admin peut enlever un benevole d un creneau, on ne lui retire pas vide de la liste des benevoles
                     if not self.personne_connectee.has_perm('evenement.change_creneau'):
-                        self.fields['benevole'].empty_label = None 
+                        self.fields['benevole'].empty_label = None
+                # si le bénévole est aussi un admin, et que le créneau est libre
+                # alors l'admin peut positionner un bénévole dessus
+                elif self.personne_connectee.has_perm('evenement.change_creneau') and self.instance.benevole is None :
+                    self.fields['benevole'].queryset = ProfileBenevole.objects.all()
+
                 # si le bénévole est déjà positionné sur un Creno au meme heures que celui-ci, on ne lui propose pas de prendre celui-ci
                 elif self.instance.benevole_id != self.personne_connectee.profilebenevole.UUID:
                     for Creno in Creneau.objects.filter(benevole_id=self.personne_connectee.profilebenevole.UUID, type="creneau"):
@@ -203,7 +209,7 @@ class CreneauForm(ModelForm):
                             pass
 
 
-            # orga, admin, responsable : on propose uniquement les bénévoles qui ont une
+            # orga, admin, responsable et pas benevole: on propose uniquement les bénévoles qui ont une
             # dispo sur le planning au heures qui vont bien et sur les plannning deja créés donc avec un self.instance.planning_id
             elif self.personne_connectee.has_perm('evenement.change_creneau'): # and self.instance.planning_id:
                 liste_benevoles_inscrits = []

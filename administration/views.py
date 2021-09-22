@@ -1,3 +1,4 @@
+from datetime import date
 import logging
 from django.contrib.auth.models import User
 from django.http.response import Http404, HttpResponseServerError
@@ -8,7 +9,7 @@ from django.views.generic import ListView, View
 
 from benevole.forms import BenevoleForm, PersonneForm
 from evenement.models import Creneau, Equipe, Evenement
-from evenement.views import inscription_ouvert
+#from evenement.views import inscription_ouvert
 from benevole.views import GroupeUtilisateur
 from benevole.models import Personne, ProfileAdministrateur, ProfileBenevole, ProfileOrganisateur, ProfileResponsable
 from association.models import AssoPartenaire, Association
@@ -46,6 +47,21 @@ def benevoles_par_asso(list_assos):
         dic[asso]= ProfileBenevole.objects.filter(assopartenaire=asso).count()
     dic ={k: v for k, v in sorted(dic.items(), key=lambda x: x[1], reverse=True)}
     return dic
+
+def inscription_ouvert(debut, fin):
+    """
+        prend une date de debut et une date de fin en entree
+        en sortie, un integer:
+        0: si today avant la période
+        1: si today dans la période
+        2: si today après la période
+    """
+    if date.today() < debut:
+        return 0
+    elif debut <= date.today() <= fin:
+        return 1
+    else:
+        return 2 
 
 ################################################
 #            views 
