@@ -15,7 +15,8 @@ $(document).ready(function(){
         {# si planning selectionné, on affiche #}
         {% if Planning or Poste %}
             {% if 'benevole.change_profilebenevole' in perms%} {# admins et orgas #}
-                <!-- nav>
+                {% comment "affichage tab postes et benevole" %}
+                <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <button class="nav-link active" id="nav-creneaux-tab" data-bs-toggle="tab" 
                                 data-bs-target="#nav-creneaux" type="button" role="tab" 
@@ -24,17 +25,20 @@ $(document).ready(function(){
                                 data-bs-target="#nav-benevoles" type="button" role="tab" 
                                 aria-controls="nav-benevoles" aria-selected="false">Bénévoles</button>    
                     </div>
-                </nav -->
+                </nav>
+                {% endcomment %}
                 <div class="tab-content" id="nav-tabContent">
                     {# planning on affiche que si un planning ou un poste est selectionné #}
                     <div class="tab-pane fade show active" id="nav-creneaux" 
                         role="tabpanel" aria-labelledby="nav-creneaux-tab">
                             {% include "evenement/gridplan_postes.html" %}
                     </div>
+                    {% comment "affichage tab benevole" %}
                     <div class="tab-pane" id="nav-benevoles" 
                         role="tabpanel" aria-labelledby="nav-benevoles-tab">
                             {% include "evenement/gridplan_benevoles.html" %}
                     </div>
+                    {% endcomment %}
                 </div>
 
             {% else %} {# benevoles #}
@@ -53,7 +57,7 @@ $(document).ready(function(){
                 </div>
             </div>
         {# a analyser comment on arrive ici , on part sur planning perso #}    
-        {% else%}
+        {% else %}
             {% include "evenement/gridplan_planningperso.html" %}
         {% endif %}
 

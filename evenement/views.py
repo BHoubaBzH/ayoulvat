@@ -433,7 +433,7 @@ def evenement(request, uuid_evenement):
                                                 Planning.objects.get(UUID=request.POST.get('planning')).fin,
                                                 uuid_evenement)
 
-            elif not request.POST.get('planning'):
+            else:
                 # selection d'une equipe uniquement, pas de planning, on affiche le premier planning en date
                 try:
                     data["Planning"] = Planning.objects.filter(equipe_id=request.POST.get('equipe')).order_by('debut').first()
