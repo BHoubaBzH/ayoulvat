@@ -1,3 +1,4 @@
+from benevole.forms import PersonneForm
 from administration.views import evenement
 from uuid import UUID
 from django.forms import ModelForm, DateTimeField, HiddenInput, ValidationError
@@ -88,7 +89,7 @@ class PosteForm(ModelForm):
 
 ################################################################################################
 class CreneauForm(ModelForm):
-    benevole = ModelChoiceField(queryset=ProfileBenevole.objects.all(),
+    benevole = ModelChoiceField(queryset=ProfileBenevole.objects.filter(personne__is_active='1').order_by('personne__last_name'),
                                 required=False,
                                 empty_label="Libre")
     debut = DateTimeField(widget=SplitDateTimeMultiWidget())
@@ -191,9 +192,10 @@ class CreneauForm(ModelForm):
                     if not self.personne_connectee.has_perm('evenement.change_creneau'):
                         self.fields['benevole'].empty_label = None
                 # si le bénévole est aussi un admin, et que le créneau est libre
-                # alors l'admin peut positionner un bénévole dessus
-                elif self.personne_connectee.has_perm('evenement.change_creneau') and self.instance.benevole is None :
-                    self.fields['benevole'].queryset = ProfileBenevole.objects.all()
+                # on propose a l admin la liste de tous les benevoles
+                elif self.personne_connectee.has_perm('evenement.change_creneau') and self.instance.benevole_id is None :
+                    self.fields['benevole'].queryset = ProfileBenevole.objects.filter(personne__is_active='1').order_by('personne__last_name')
+
 
                 # si le bénévole est déjà positionné sur un Creno au meme heures que celui-ci, on ne lui propose pas de prendre celui-ci
                 elif self.instance.benevole_id != self.personne_connectee.profilebenevole.UUID:
