@@ -2,6 +2,7 @@
 
 <div class="planning-equipes" aria-labelledby="planning-heading">
     {# affiche les entetes des colonnes du planning : les heures #}
+
     {% for dates, heures in PlanningRange.items %}
         <div class="planning-head-equipes" style="grid-column: time-{{ dates }}; grid-row: heures">
             <h6 class="time-slot">

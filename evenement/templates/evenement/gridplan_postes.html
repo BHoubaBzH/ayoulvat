@@ -4,8 +4,9 @@
     <h2>Planning du {{ Planning.debut|date:'l j F' }}</h2> 
 </div>
 <div class="overflow-scroll">
-    <div class="planning-creneaux" aria-labelledby="planning-heading">
+    <div class="planning-creneaux" aria-labelledby="planning-heading" id="planning-creneaux">
         {# affiche les entetes des colonnes du planning : les heures #}
+        
         {% for dates, heures in PlanningRange.items %}
             <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">
                 <h6 class="time-slot">{{ heures.0 }}</h6>

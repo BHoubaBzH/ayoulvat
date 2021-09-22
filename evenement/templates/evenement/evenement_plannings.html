@@ -27,14 +27,14 @@ $(document).ready(function(){
                     </div>
                 </nav>
                 {% endcomment %}
-                <div class="tab-content" id="nav-tabContent">
+                <div class="tab-content post_display_javascript" id="nav-tabContent">
                     {# planning on affiche que si un planning ou un poste est selectionné #}
-                    <div class="tab-pane fade show active" id="nav-creneaux" 
+                    <div class="tab-pane fade show active post_display_javascript" id="nav-creneaux" 
                         role="tabpanel" aria-labelledby="nav-creneaux-tab">
                             {% include "evenement/gridplan_postes.html" %}
                     </div>
                     {% comment "affichage tab benevole" %}
-                    <div class="tab-pane" id="nav-benevoles" 
+                    <div class="tab-pane post_display_javascript" id="nav-benevoles" 
                         role="tabpanel" aria-labelledby="nav-benevoles-tab">
                             {% include "evenement/gridplan_benevoles.html" %}
                     </div>
@@ -42,7 +42,7 @@ $(document).ready(function(){
                 </div>
 
             {% else %} {# benevoles #}
-                <div class="tab-content" id="nav-tabContent">
+                <div class="tab-content post_display_javascript" id="nav-tabContent">
                     {% include "evenement/gridplan_postes.html" %}
                 </div>
             {% endif %}
@@ -50,8 +50,8 @@ $(document).ready(function(){
         {# une equipe est selectionnée par un benevole, pas de planning ou de poste #}
         {# page par defaut admin: plannings  evenement et equipes #}
         {% elif  Evenement and not Planning and not Poste and 'evenement.change_planning' in perms%} 
-            <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="nav-equipes"
+            <div class="tab-content post_display_javascript" id="nav-tabContent">
+                <div class="tab-pane fade show active post_display_javascript" id="nav-equipes"  
                     role="tabpanel" aria-labelledby="nav-equipes-tab">
                         {% include "evenement/gridplan_equipes.html" %}
                 </div>
@@ -64,7 +64,7 @@ $(document).ready(function(){
     {% else %}
         {# page par defaut des benevoles de l'evenement: son planning sur l evenement #}
         {% if Evenement and user.profilebenevole in Benevoles %}
-            <div class="tab-content" id="nav-tabContent">
+            <div class="tab-content post_display_javascript" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-equipes"
                     role="tabpanel" aria-labelledby="nav-equipes-tab">
                     {%if equipe_uuid%}
