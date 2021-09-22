@@ -81,6 +81,7 @@ class PosteForm(ModelForm):
         super(PosteForm, self).__init__(*args, **kwargs)
         self.fields['planning'].widget = HiddenInput()
         self.fields['equipe'].widget = HiddenInput()
+        self.fields['benevole'].widget = HiddenInput()
         self.fields['evenement'].widget = HiddenInput()
 
 
