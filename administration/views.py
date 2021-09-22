@@ -91,7 +91,7 @@ class BenevolesListView(ListView):
             "FormPersonne" : PersonneForm(),
             "FormBenevole" : BenevoleForm(), 
 
-            "Benevoles": self.queryset.filter(BenevolesEvenement=self.Evt),  # objets benevoles de l'evenement
+            "Benevoles": self.queryset.filter(BenevolesEvenement=self.Evt).order_by('personne__last_name'),  # objets benevoles de l'evenement
             "Administrateurs": ProfileAdministrateur.objects.filter(association=self.Asso),
             "Organisteurs" : ProfileOrganisateur.objects.filter(OrganisateurEvenement=self.Evt),
             "Responsables" : ProfileResponsable.objects.filter(ResponsableEquipe__in=Equipe.objects.filter(evenement=self.Evt)),
