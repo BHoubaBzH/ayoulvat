@@ -2,7 +2,6 @@ from django import template
 
 register = template.Library()
 
-
 @register.filter
 def get_item(dictionaire, key):
     """
@@ -10,7 +9,6 @@ def get_item(dictionaire, key):
         usage : dictionnaire|get_item:item.key 
     """
     return dictionaire.get(key)
-
 
 @register.filter 
 def has_group(user, group_name):

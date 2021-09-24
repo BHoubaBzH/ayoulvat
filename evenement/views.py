@@ -335,7 +335,7 @@ def liste_evenements(request):
         "Association": association,
         "Evenements": liste_evenements,
     }
-    return render(request, "evenement/evenement_plannings.html", data)
+    return render(request, "evenement/evenement_principal.html", data)
 
 
 @login_required(login_url='login')
@@ -451,7 +451,8 @@ def evenement(request, uuid_evenement):
 
             data["DicPostes"] = forms_postes(request, data)
             data["DicCreneaux"] = forms_creneaux(request, data)
-                    
+            data["Postes"] = Poste.objects.filter(planning_id=data["planning_uuid"]).order_by('nom')  # objets postes du planning
+
         elif not request.POST.get('equipe'):  # selection d'un evenement uniquement
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
             # si la personne a cliqué sur le bouton pour recevoir ses créneaux par email
@@ -489,5 +490,5 @@ def evenement(request, uuid_evenement):
                                                evenement.fin,
                                                30)          
     print('*** Fin traitement view : {}'.format(datetime.datetime.now()))
-    return render(request, "evenement/evenement_plannings.html", data)
+    return render(request, "evenement/evenement_principal.html", data)
  
