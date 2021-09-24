@@ -52,20 +52,23 @@ data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="C
           </li>
         {% endif %}
         {% for team in Equipes %}
-          <li class="nav-item">
-            <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
-                {% csrf_token %}
-                <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                <input  name="equipe" value="{{ team.UUID }}" type="hidden">
-                <button class="list-group-item evenement-button 
-                        {% if team.UUID|stringformat:'s' == equipe_uuid|stringformat:'s' %}active{% endif %}"
-                        {% if team.description %}
-                          data-bs-toggle="tooltip" data-bs-placement="right" title="{{team.description}}"
-                        {% endif %}>
-                    <a>{{ team.nom|capfirst }}</a>
-                </button>
-            </form>
-          </li>
+          {% if team.UUID|stringformat:'s' in plannings_equipes|stringformat:'s' %} 
+            {# affiche uniquement les equipes avec planning#}
+            <li class="nav-item">
+              <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
+                  {% csrf_token %}
+                  <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                  <input  name="equipe" value="{{ team.UUID }}" type="hidden">
+                  <button class="list-group-item evenement-button 
+                          {% if team.UUID|stringformat:'s' == equipe_uuid|stringformat:'s' %}active{% endif %}"
+                          {% if team.description %}
+                            data-bs-toggle="tooltip" data-bs-placement="right" title="{{team.description}}"
+                          {% endif %}>
+                      <a>{{ team.nom|capfirst }}</a>
+                  </button>
+              </form>
+            </li>
+          {% endif %}
         {% endfor %}
       </ul>
       {# liste plannings #}

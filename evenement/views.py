@@ -238,7 +238,7 @@ def forms_postes(request, data, uuid_evenement):
     return dic_postes_init
 
 
-def forms_creneaux(request, data, uuid_evenement):
+def forms_creneaux(request, data):
     """
         entree:
             la requete (contenant les infos POST)
@@ -284,8 +284,7 @@ def forms_creneaux(request, data, uuid_evenement):
     # key : UUID postes
     # val : form de creneau initialisée objet db lié
     # parcours les creneaux de l'evenement dans la base
-    creneaux_liste = Creneau.objects.filter(evenement_id=uuid_evenement)
-    for creneau in creneaux_liste:  # liste des creneaux de l'evenement
+    for creneau in Creneau.objects.filter(planning_id=data["planning_uuid"]):  # liste des creneaux du planning
         # form en lien avec l objet basé sur model et pk UUID creneau
         formcreneau = CreneauForm(instance=Creneau.objects.get(UUID=creneau.UUID),
                                   pas_creneau=planning_retourne_pas(request),
@@ -378,6 +377,7 @@ def evenement(request, uuid_evenement):
         "equipe_uuid": "",  # par defaut, pas d'equipe selectionée
         "planning_uuid": "",  # par defaut, pas de planning selectionée
         "PlanningRange": "",  # dictionnaire formaté des dates heures de l'objet selectionné
+        "plannings_equipes": Planning.objects.all().values_list('equipe_id', flat=True).distinct(), # liste des équipes ayant au moins un planning créé
         
         "FormEquipe" : EquipeForm(initial={'evenement': evenement}), # form non liée au template pour ajout d une nouvelle equipe
         "DicEquipes" : "",
@@ -415,8 +415,6 @@ def evenement(request, uuid_evenement):
         uuid_evenement = request.POST.get('evenement')
         if request.POST.get('equipe'):  # selection d'une équipe
             data["equipe_uuid"] = request.POST.get('equipe')  # UUID equipe selectionnée
-            data["DicPostes"] = forms_postes(request, data, uuid_evenement)
-            data["DicCreneaux"] = forms_creneaux(request, data, uuid_evenement)
             
             if request.POST.get('planning'):  # selection d'un planning
                 data["planning_uuid"] = request.POST.get('planning')
@@ -449,6 +447,9 @@ def evenement(request, uuid_evenement):
                     data["PlanningRange"] = planning_range(evenement.debut,
                                         evenement.fin,
                                         30)
+
+            data["DicPostes"] = forms_postes(request, data, uuid_evenement)
+            data["DicCreneaux"] = forms_creneaux(request, data)
                     
         elif not request.POST.get('equipe'):  # selection d'un evenement uniquement
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
