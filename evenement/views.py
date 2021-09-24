@@ -345,6 +345,7 @@ def evenement(request, uuid_evenement):
         page d'un evenement
     """
     print('')
+    print('*******************************************************')
     print('*** Debut traitement view : {}'.format(datetime.datetime.now()))
     # store dans la session le uuid de l'evenement
     # il apparait dans l'url pour pouvoir donner le liens directe aux bénévoles par la suite
