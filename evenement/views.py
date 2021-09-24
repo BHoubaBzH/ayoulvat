@@ -1,3 +1,4 @@
+import datetime
 from administration.views import inscription_ouvert
 from datetime import timedelta, date
 
@@ -330,6 +331,7 @@ def evenement(request, uuid_evenement):
     """
         page d'un evenement
     """
+    print('*** Debut traitement view : {}'.format(datetime.datetime.now()))
     # store dans la session le uuid de l'evenement
     # il apparait dans l'url pour pouvoir donner le liens directe aux bénévoles par la suite
     request.session['uuid_evenement'] = uuid_evenement.urn
@@ -469,5 +471,6 @@ def evenement(request, uuid_evenement):
         data["PlanningRange"] = planning_range(evenement.debut,
                                                evenement.fin,
                                                30)          
+    print('*** Fin traitement view : {}'.format(datetime.datetime.now()))
     return render(request, "evenement/evenement_plannings.html", data)
  

@@ -89,7 +89,8 @@ class PosteForm(ModelForm):
 
 ################################################################################################
 class CreneauForm(ModelForm):
-    benevole = ModelChoiceField(queryset=ProfileBenevole.objects.filter(personne__is_active='1').order_by('personne__last_name'),
+    QuerySet = ProfileBenevole.objects.filter(personne__is_active='1').order_by('personne__last_name')
+    benevole = ModelChoiceField(queryset=QuerySet,
                                 required=False,
                                 empty_label="Libre")
     debut = DateTimeField(widget=SplitDateTimeMultiWidget())
@@ -194,7 +195,7 @@ class CreneauForm(ModelForm):
                 # si le bénévole est aussi un admin, et que le créneau est libre
                 # on propose a l admin la liste de tous les benevoles!!! attention , sur le benevole est deja sur un autre creneau à la meme heure ca ne fonctionne pas
                 elif self.personne_connectee.has_perm('evenement.change_creneau') and self.instance.benevole_id is None :
-                    self.fields['benevole'].queryset = ProfileBenevole.objects.filter(personne__is_active='1').order_by('personne__last_name')
+                    self.fields['benevole'].queryset = self.QuerySet
 
 
                 # si le bénévole est déjà positionné sur un Creno au meme heures que celui-ci, on ne lui propose pas de prendre celui-ci
