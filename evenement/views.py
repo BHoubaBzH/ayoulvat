@@ -284,7 +284,8 @@ def forms_creneaux(request, data, uuid_evenement):
     # key : UUID postes
     # val : form de creneau initialisée objet db lié
     # parcours les creneaux de l'evenement dans la base
-    for creneau in Creneau.objects.filter(evenement_id=uuid_evenement):  # liste des creneaux de l'evenement
+    creneaux_liste = Creneau.objects.filter(evenement_id=uuid_evenement)
+    for creneau in creneaux_liste:  # liste des creneaux de l'evenement
         # form en lien avec l objet basé sur model et pk UUID creneau
         formcreneau = CreneauForm(instance=Creneau.objects.get(UUID=creneau.UUID),
                                   pas_creneau=planning_retourne_pas(request),
@@ -343,6 +344,7 @@ def evenement(request, uuid_evenement):
     """
         page d'un evenement
     """
+    print('')
     print('*** Debut traitement view : {}'.format(datetime.datetime.now()))
     # store dans la session le uuid de l'evenement
     # il apparait dans l'url pour pouvoir donner le liens directe aux bénévoles par la suite
