@@ -195,7 +195,8 @@ def forms_planning(request, data, uuid_evenement):
     print('*** Fin fonction forms_planning : {}'.format(datetime.datetime.now()))
     return dic_planning_init
 
-def forms_postes(request, data, uuid_evenement):
+
+def forms_postes(request, data):
     """
         entree:
             la requete (contenant les infos POST)
@@ -228,8 +229,8 @@ def forms_postes(request, data, uuid_evenement):
     dic_postes_init = {}  # dictionnaire des forms
     # key : UUID postes
     # val : form de poste initialisée objet db lié
-    # parcours les postes de l'evenement dans la base
-    for poste in Poste.objects.filter(evenement_id=uuid_evenement):
+    # parcours les postes du planning dans la base
+    for poste in Poste.objects.filter(planning_id=data["planning_uuid"]):
         # form en lien avec l objet basé sur model et pk UUID poste
         formposte = PosteForm(instance=Poste.objects.get(UUID=poste.UUID))
         dic_postes_init[poste.UUID] = formposte  # dictionnaire des forms
@@ -448,7 +449,7 @@ def evenement(request, uuid_evenement):
                                         evenement.fin,
                                         30)
 
-            data["DicPostes"] = forms_postes(request, data, uuid_evenement)
+            data["DicPostes"] = forms_postes(request, data)
             data["DicCreneaux"] = forms_creneaux(request, data)
                     
         elif not request.POST.get('equipe'):  # selection d'un evenement uniquement
