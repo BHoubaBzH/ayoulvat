@@ -452,6 +452,7 @@ def evenement(request, uuid_evenement):
             data["DicPostes"] = forms_postes(request, data)
             data["DicCreneaux"] = forms_creneaux(request, data)
             data["Postes"] = Poste.objects.filter(planning_id=data["planning_uuid"]).order_by('nom')  # objets postes du planning
+            data["Creneaux"] = Creneau.objects.filter(planning_id=data["planning_uuid"]).order_by('debut')  # objets creneaux du planning
 
         elif not request.POST.get('equipe'):  # selection d'un evenement uniquement
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
