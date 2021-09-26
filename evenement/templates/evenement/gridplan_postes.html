@@ -57,7 +57,7 @@
             {% endcomment %}
         {% endif %}
         {# ajoute une ligne vide pour pouvoir ajouter des postes #}
-        {% if 'evenement.add_poste' in perms %}
+        {% if GroupeUtilisateur in 'Administrateur,Organisateur,Responsable' %}
             <span class="poste-slot" aria-hidden="true" style="grid-row: poste-add; grid-column: postes;">
                 <form  id="form-poste_ajouter" method='post'>
                     {% csrf_token %}
@@ -79,9 +79,7 @@
     </div>
 </div>
 {# modal d ajout des creneaux type=creneau #}
-{% if 'evenement.add_creneau' in perms %}
+{% comment "" %}{% endcomment %}
+{% if GroupeUtilisateur in 'Administrateur,Organisateur,Responsable' %}
     {% include "evenement/modal_creneau_ajoute.html" with type='poste' %}
-    {% comment "javascript fetch en cours" %}
-    {% include "evenement/modal_creneau_edite.html" with type='poste' source_type="creneau" %}
-    {% endcomment %}
 {% endif %} 

@@ -13,18 +13,6 @@
     <table class="table table-dark table-striped table-hover"  id="table_benevoles">
         <thead>
             <tr>
-            <th scope="col" class="col col-lg-4">bénévoles</th><th scope="col">nombre</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr style="vertical-align : middle;">
-            <td>Inscrits</td><td>{{ Benevoles.count }}</tr>
-        </tbody>
-    </table>
-
-    <table class="table table-dark table-striped table-hover"  id="table_benevoles">
-        <thead>
-            <tr>
             <th scope="col" class="col col-lg-4">créneaux</th><th scope="col">nombre</th>
             </tr>
         </thead>
@@ -33,6 +21,18 @@
             <td>Total</td><td>{{ Creneaux.count }}</tr>
             <td>Occupés</td><td>{{ Creneaux_occupes }}</tr>
             <td>Libres</td><td>{{ Creneaux_libres }}</tr>
+        </tbody>
+    </table>
+
+    <table class="table table-dark table-striped table-hover"  id="table_benevoles">
+        <thead>
+            <tr>
+            <th scope="col" class="col col-lg-4">bénévoles</th><th scope="col">nombre</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="vertical-align : middle;">
+            <td>Inscrits</td><td>{{ Benevoles.count }}</tr>
         </tbody>
     </table>
 
