@@ -81,4 +81,7 @@
 {# modal d ajout des creneaux type=creneau #}
 {% if 'evenement.add_creneau' in perms %}
     {% include "evenement/modal_creneau_ajoute.html" with type='poste' %}
+    {% comment "javascript fetch en cours" %}
+    {% include "evenement/modal_creneau_edite.html" with type='poste' source_type="creneau" %}
+    {% endcomment %}
 {% endif %} 

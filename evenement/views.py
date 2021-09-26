@@ -5,6 +5,9 @@ from datetime import timedelta, date
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
 
 from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
@@ -365,10 +368,10 @@ def evenement(request, uuid_evenement):
     data = {
         "Association": Association.objects.get(UUID=uuid_asso),
         "Evenement": evenement,
-        "Equipes": Equipe.objects.filter(evenement_id=evenement),  # objets equipes de l'evenement
+        "Equipes":  Equipe.objects.filter(evenement_id=evenement),  # objets equipes de l'evenement
         "Plannings": Planning.objects.filter(evenement_id=evenement).order_by('debut'),  # objets planning de l'evenement
-        "Postes": Poste.objects.filter(evenement_id=evenement).order_by('nom'),  # objets postes de l'evenement
-        "Creneaux": Creneau.objects.filter(evenement_id=evenement).order_by('debut'),  # objets creneaux de l'evenement
+        "Postes": Poste.objects.filter(evenement_id=evenement).order_by('nom'),  # objets postes de l'evenement pour planning perso
+        "Creneaux": Creneau.objects.filter(evenement_id=evenement).order_by('debut'),  # objets creneaux de l'evenement pour planning perso
         "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=evenement),  # objets benevoles de l'evenement
 
         "dispo_actif": "False", # active ou non la gestion des disponibilités des bénévoles; par défaut désactivé
@@ -379,6 +382,7 @@ def evenement(request, uuid_evenement):
         "planning_uuid": "",  # par defaut, pas de planning selectionée
         "PlanningRange": "",  # dictionnaire formaté des dates heures de l'objet selectionné
         "plannings_equipes": Planning.objects.all().values_list('equipe_id', flat=True).distinct(), # liste des équipes ayant au moins un planning créé
+        "creneaux_benevole" : Creneau.objects.filter(benevole_id=request.user.profilebenevole.UUID), # crenaux du bénévole connecté
         
         "FormEquipe" : EquipeForm(initial={'evenement': evenement}), # form non liée au template pour ajout d une nouvelle equipe
         "DicEquipes" : "",
@@ -493,3 +497,20 @@ def evenement(request, uuid_evenement):
     print('*** Fin traitement view : {}'.format(datetime.datetime.now()))
     return render(request, "evenement/evenement_principal.html", data)
  
+
+@login_required(login_url='login')
+def CreneauFetch(request):
+    """
+        temp : view pour requete javascript fetch 
+        retourne un objet creneau en json 
+        pas encore utilisé
+    """
+    print(request)
+    if request.method == "POST":
+        print('#########################################################')
+        for key, value in request.POST.items():
+            print('#        POST -> {0} : {1}'.format(key, value))
+        print('#########################################################')
+        creneau = Creneau.objects.filter(UUID = request.POST.get('creneau_uuid')).values()
+        print(list(creneau)[0])
+        return JsonResponse(list(creneau)[0], safe=False)
