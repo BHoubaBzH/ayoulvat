@@ -26,18 +26,17 @@
             title="{%if le_benevole == 'oui' %}{{ user.last_name|upper }} {{ user.first_name|capfirst }}
                    {%else%}{{ benevole }}{%endif%}
                    {%if creno.type == 'benevole'%} disponible{%else%} occupé {{ creno.planning_id.nom }}{%endif%}"
-            data-bs-toggle="modal" data-bs-target="#modal-creneau_benevole_editer">
+            data-bs-toggle="modal" data-bs-target="#modal-creneau_benevole_editer-{{ creno.UUID }}">
                 <a>{{ creno.equipe.nom }}{%if creno.poste%} <i class="bi bi-chevron-right"></i> {{ creno.poste.nom }}{%endif%}</a>
     </button>
 {% endif %}
 
-{% comment "" %}
     {##################################################################}
     {# modal admin de modification des creneaux#}
     {# si admin, affiche les details et les boutons d action #}
     {% if 'evenement.delete_creneau' in perms %}
         <div class="modal fade" 
-            id="modal-creneau_{% if source_type == 'creneau' %}creneau{% elif source_type == 'benevole' %}benevole{% endif %}_editer" 
+            id="modal-creneau_{% if source_type == 'creneau' %}creneau{% elif source_type == 'benevole' %}benevole{% endif %}_editer-{{ creno.UUID }}" 
             tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -69,7 +68,7 @@
 
                             <button class="btn btn-danger" title="supprimer ce créneau" name="creneau_supprimer"
                                     id="creneau_supprimer" value="supprimer" type="button"
-                                    data-bs-toggle="modal" data-bs-target="#modal-confirme-creneau-supprime">
+                                    data-bs-toggle="modal" data-bs-target="#modal-confirme-creneau-supprime-{{ creno.UUID }}">
                                     Supprimer
                             </button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
@@ -83,7 +82,7 @@
 
         {# modal de confirmation de suppression #}
         <div class="modal fade"
-            id="modal-confirme-creneau-supprime"
+            id="modal-confirme-creneau-supprime-{{ creno.UUID }}"
             tabindex="-1"
             role="dialog"
             aria-labelledby="creneau_supprime"
@@ -113,13 +112,13 @@
 
         <script>
             /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
-            $('#modal-confirme-creneau-supprime').on('click', '#creneau_supprimer_confirme', function(e){
+            $('#modal-confirme-creneau-supprime-{{ creno.UUID }}').on('click', '#creneau_supprimer_confirme', function(e){
                 /* alert('submitting-{{ forloop.counter }}'); */
                 $('#form-creneau').append('<input type="hidden" name="creneau_supprimer" value="{{ creno.UUID }}">');
                 /* pour le traitement view et form on envoi le type de creneau qu on supprime */
                 $('#form-creneau').append('<input type="hidden" name="type" value="{{ creno.type }}">'); 
                 document.getElementById('form-creneau').submit();
-                $('#modal-confirme-creneau-supprime').modal('toggle');
+                $('#modal-confirme-creneau-supprime-{{ creno.UUID }}').modal('toggle');
                 e.preventDefault();
             });
         </script>
@@ -130,7 +129,7 @@
     {# si non admin, affiche pas les details et on permet juste de prendre le créneau #}
     {% elif creno.benevole == None %}
         <div class="modal fade" 
-            id="modal-creneau_{% if source_type == 'creneau' %}creneau{% elif source_type == 'benevole' %}benevole{% endif %}_editer" 
+            id="modal-creneau_{% if source_type == 'creneau' %}creneau{% elif source_type == 'benevole' %}benevole{% endif %}_editer-{{ creno.UUID }}" 
             tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
 
             <div class="modal-dialog modal-lg" role="document">
@@ -217,7 +216,7 @@
     {# si non admin, affiche pas les details et on permet juste de libérer le créneau #}
     {% elif creno.benevole|stringformat:"s" == user.profilebenevole|stringformat:"s" %}
         <div class="modal fade" 
-            id="modal-creneau_{% if source_type == 'creneau' %}creneau{% elif source_type == 'benevole' %}benevole{% endif %}_editer" 
+            id="modal-creneau_{% if source_type == 'creneau' %}creneau{% elif source_type == 'benevole' %}benevole{% endif %}_editer-{{ creno.UUID }}" 
             tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
 
             <div class="modal-dialog modal-lg" role="document">
@@ -302,4 +301,3 @@
 
         </div>
     {% endif %}                         
-{% endcomment %}

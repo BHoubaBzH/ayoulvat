@@ -64,6 +64,10 @@
                                     </td>
                                 </tr>
                                 {% endcomment %}
+
+                                <select id="benevoles_select" name="benevole">
+                                </select>
+
                                 <tr>
                                     <th>
                                         <label for="creneau_table_benevole_id">Benevole&nbsp;:</label>
@@ -73,6 +77,7 @@
                                         </select>
                                     </td>
                                 </tr>
+
                                 <tr>
                                     <th>
                                         <label for="creneau_table_description">Description&nbsp;:</label>
@@ -90,19 +95,19 @@
                                         <span class="helptext">à valider si le bénévole s'est bien présenté</span>
                                     </td>   
                                 </tr>
+                                <input id="creneau_table_editabe" name="editable" type="hidden">
+                                <input id="creneau_table_type" name="type" type="hidden" >
+                                <input id="creneau_table_poste_id" name="poste" type="hidden">
+                                <input id="creneau_table_planning_id" name="planning" type="hidden">
+                                <input id="creneau_table_equipe_id" name="equipe" type="hidden">
+                                <input id="creneau_table_evenement_id" name="evenement" type="hidden" >
+                                <input id="creneau_table_uuid" name="creneau" type="hidden" >
                             </tbody>                                         
                         </table>
                     </div>
-                    <input id="creneau_table_editabe" name="editable" type="hidden">
-                    <input id="creneau_table_type" name="type" type="hidden" >
-                    <input id="creneau_table_poste_id" name="poste" type="hidden">
-                    <input id="creneau_table_planning_id" name="planning" type="hidden">
-                    <input id="creneau_table_equipe_id" name="equipe" type="hidden">
-                    <input id="creneau_table_evenement_id" name="evenement" type="hidden" >
+
 
                     <div class="modal-footer">
-
-                        <input type="hidden" name="creneau" value="{{ creno.UUID }}">
 
                         <button class="btn btn-danger" title="supprimer ce créneau" name="creneau_supprimer"
                                 id="creneau_supprimer" value="supprimer" type="button"
@@ -352,40 +357,55 @@
         // fetch process pour récuperer les infos de notre creneau
         let form = new FormData();
         form.append("creneau_uuid", creneau);
-
+        form.append("benevole_id", "None");
         let csrfTokenValue = document.querySelector('[name=csrfmiddlewaretoken]').value;
         var requete = new Request('{% url "creneau_fetch" %}', {
             headers:{
                 'X-CSRFToken': csrfTokenValue  // ajoute le token dans l'en-tête
                 }, 
-            body: form,
+            body: form, //form contient les datas envoyées
             method: 'POST', 
             });
         fetch(requete)
-            .then(response => response.json())
-            .then(result => {
-                console.log(result);
-                // alert(JSON.stringify(result))
-                let creneau_table = JSON.parse(JSON.stringify(result));
-                console.log(creneau_table);
-                // afficher les données recues
-                // document.getElementById("creneau_edit").innerHTML = creneau_table.UUID
-                // document.getElementById("creneau_debut").innerHTML = creneau_table.debut
-                // document.getElementById("creneau_fin").innerHTML = creneau_table.fin
-                // Update the modal's content.
-                // $(".modal-body #creneau_table_uuid").val( creneau_table.UUID );
-                $(".modal-body #creneau_table_debut").val( creneau_table.debut );
-                $(".modal-body #creneau_table_fin").val( creneau_table.fin );
-                $(".modal-body #creneau_table_description").val( creneau_table.description );
-                $(".modal-body #creneau_table_editabe").val( creneau_table.editable );
-                $(".modal-body #creneau_table_benevole_id").val( creneau_table.benevole_id );
-                $(".modal-body #creneau_table_poste_id").val( creneau_table.poste_id );  
-                $(".modal-body #creneau_table_planning_id").val( creneau_table.planning_id );    
-                $(".modal-body #creneau_table_equipe_id").val( creneau_table.equipe_id ); 
-                $(".modal-body #creneau_table_evenement_id").val( creneau_table.evenement_id );  
-                $(".modal-body #creneau_table_type").val( creneau_table.type );  
-                $(".modal-body #creneau_table_valide_present").val( creneau_table.valide_present ); 
-            })
+
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            // alert(JSON.stringify(result))
+            // alert(result)
+            let creneau_table = JSON.parse(JSON.stringify(result));
+            console.log(creneau_table);
+            // afficher les données recues
+            // document.getElementById("creneau_edit").innerHTML = creneau_table.UUID
+            // Update the modal's content.
+            $(".modal-body #creneau_table_uuid").val( creneau_table.UUID );
+            $(".modal-body #creneau_table_debut").val( creneau_table.debut );
+            $(".modal-body #creneau_table_fin").val( creneau_table.fin );
+            $(".modal-body #creneau_table_description").val( creneau_table.description );
+            $(".modal-body #creneau_table_editabe").val( creneau_table.editable );
+            $(".modal-body #creneau_table_benevole_id").val( creneau_table.benevole_id );
+            $(".modal-body #creneau_table_poste_id").val( creneau_table.poste_id );  
+            $(".modal-body #creneau_table_planning_id").val( creneau_table.planning_id );    
+            $(".modal-body #creneau_table_equipe_id").val( creneau_table.equipe_id ); 
+            $(".modal-body #creneau_table_evenement_id").val( creneau_table.evenement_id );  
+            $(".modal-body #creneau_table_type").val( creneau_table.type );  
+            $(".modal-body #creneau_table_valide_present").val( creneau_table.valide_present ); 
+            // si on a pas de benevole_id on on fait un fetch pour recupere la liste des benevoles possibles
+            if (!creneau_table.benevole_id) {
+                // alert('no benevole')
+                // test d'insertion des benevoles
+                var target = document.getElementById("benevoles_select");
+                target.innerHTML = '<option>plop</option>
+                // target.innerHTML = " <option selected="" value="">Libre</option>"
+                // <option value="bc3a1e9a-4c50-4a40-ba4d-4122567d1bf0">BABEAU Marc</option>"
+                // <option value="0419f1b4-0593-4a15-bc20-bd5694ada3c5">BERBEY Nolwenn</option>"
+                }
+        })   
+        .catch(console.error)
+
+
+        //2eme fetch pou récuperer la liste des bénévoles du creneau
+
         // Update the modal's content.
         // var modalTitle = modalCreneauCreneauEditer.querySelector('.modal-title')
         // var modalBodyInput = modalCreneauCreneauEditer.querySelector('.modal-body input')
