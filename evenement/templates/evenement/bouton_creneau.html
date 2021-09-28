@@ -15,6 +15,7 @@
                     data-bs-creneauuuid="{{ creno.UUID }}">
                     <a><b>{{ creno.benevole }}</b></a>
                 </button>
+                
         {# simplement occupé par un autre bénévole -> toujours disabled pour les simples benevoles #}
         {% else %}
             <button class="creneau_occupe_bloque poste poste-{{ poste.UUID }}"

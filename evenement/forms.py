@@ -114,9 +114,14 @@ class CreneauForm(ModelForm):
     ################ methode __init__
     # surcharge les definition précédente de la class et permet de gerer les champs
     def __init__(self, *args, **kwargs):
-        self.pas_creneau = kwargs.pop('pas_creneau')
-        self.planning_uuid = kwargs.pop('planning_uuid')
-
+        try:
+            self.planning_uuid = kwargs.pop('planning_uuid')
+        except:
+            pass # on a deja le planning dans l'objet
+        try:
+            self.pas_creneau = kwargs.pop('pas_creneau')
+        except:
+            self.pas_creneau = 60
         try:
             self.poste_uuid = kwargs.pop('poste_uuid')
         except:
@@ -163,6 +168,8 @@ class CreneauForm(ModelForm):
         instance = getattr(self, 'instance', None)
         # print('benevole asso : {}'.format(self.personne_connectee.assopartenaire_id))
         if instance:
+            if not self.personne_connectee:
+                pass
             # la personne est aussi un benevole
             if hasattr(self.personne_connectee, 'profilebenevole'):
                 liste_benevoles_inscrits = []
@@ -247,6 +254,7 @@ class CreneauForm(ModelForm):
                 
                 # print('liste benevole proposée du coup : {}'.format(liste_benevoles_inscrits))
                 self.fields['benevole'].queryset = ProfileBenevole.objects.filter(UUID__in=liste_benevoles_inscrits)
+            
 
     ################ methode controle_coherence_creneaux
     def controle_coherence_creneaux(self, Creno, debut, fin):

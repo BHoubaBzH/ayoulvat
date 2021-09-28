@@ -512,8 +512,12 @@ def CreneauFetch(request):
             print('#        POST -> {0} : {1}'.format(key, value))
         print('#########################################################')
         if request.POST.get('benevole_id') == 'None':
-            creneau = Creneau.objects.filter(UUID = request.POST.get('creneau_uuid')).values()
-            print(list(creneau)[0])
-            return JsonResponse(list(creneau)[0], safe=False)
-            # context = {'creneau': Creneau.objects.filter(UUID = request.POST.get('creneau_uuid'))}
+            # creneau = Creneau.objects.filter(UUID = request.POST.get('creneau_uuid')).values()
+            # print(list(creneau)[0])
+            # return JsonResponse(list(creneau)[0], safe=False)
+            creneau = CreneauForm(personne_connectee=request.user, 
+                                  type="creneau",
+                                  instance=Creneau.objects.get(UUID=request.POST.get('creneau_uuid')))
+            print(creneau)
+            return HttpResponse(creneau)
             # return render(request, "evenement/evenement_principal.html", context)
