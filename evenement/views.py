@@ -279,9 +279,9 @@ def forms_creneaux(request, data):
             print('creneau modifié ou ajouté')
             formcreneau.save()
 
-    if request.POST.get('creneau_supprimer'):
-        print('creneau {} supprimé'.format(Creneau.objects.filter(UUID=request.POST.get('creneau_supprimer'))))
-        Creneau.objects.filter(UUID=request.POST.get('creneau_supprimer')).delete()
+    if 'creneau_supprimer' in request.POST:
+        print('creneau {} supprimé'.format(Creneau.objects.filter(UUID=request.POST.get('creneau'))))
+        Creneau.objects.filter(UUID=request.POST.get('creneau')).delete()
 
     # cree dans la page toutes nos from pour les creneaux de l' evenement
     dic_creneaux_init = {}  # dictionnaire des forms
@@ -408,7 +408,7 @@ def evenement(request, uuid_evenement):
     data['GroupeUtilisateur'] = GroupeUtilisateur(request)
 
     # log les donnees post
-    print('#########################################################')
+    print('##################### evenement ########################')
     print ('#   données POST passées: ')
     for key, value in request.POST.items():
         print('#        POST -> {0} : {1}'.format(key, value))
@@ -418,6 +418,12 @@ def evenement(request, uuid_evenement):
     # et d'afficher les infos en fonction des POST recus :
     if request.method == "POST":
         uuid_evenement = request.POST.get('evenement')
+        # le bénévole prend ou libère un créneau
+        if any(x in  request.POST for x in ['benevole_prend_creneau', 'benevole_libere_creneau']):
+            creneau_bene = Creneau.objects.get(UUID=request.POST.get('creneau'))
+            creneau_bene.benevole_id = request.user.profilebenevole.UUID if ('benevole_prend_creneau' in request.POST) else ""
+            creneau_bene.save()
+
         if request.POST.get('equipe'):  # selection d'une équipe
             data["equipe_uuid"] = request.POST.get('equipe')  # UUID equipe selectionnée
             
@@ -501,23 +507,41 @@ def evenement(request, uuid_evenement):
 @login_required(login_url='login')
 def CreneauFetch(request):
     """
-        temp : view pour requete javascript fetch 
-        retourne un objet creneau en json 
-        pas encore utilisé
+        view pour requete javascript fetch 
+        retourne un form creneau
+        le but est de ne pas avoir a charger un modal par creneau affiché
     """
     print(request)
     if request.method == "POST":
-        print('#########################################################')
+        print('##################### CreneauFetch ######################')
         for key, value in request.POST.items():
             print('#        POST -> {0} : {1}'.format(key, value))
         print('#########################################################')
-        if request.POST.get('benevole_id') == 'None':
-            # creneau = Creneau.objects.filter(UUID = request.POST.get('creneau_uuid')).values()
-            # print(list(creneau)[0])
-            # return JsonResponse(list(creneau)[0], safe=False)
+        
+        if request.POST.get('creneau_affiche') == 'form' :
             creneau = CreneauForm(personne_connectee=request.user, 
-                                  type="creneau",
-                                  instance=Creneau.objects.get(UUID=request.POST.get('creneau_uuid')))
+                                type="creneau",
+                                instance=Creneau.objects.get(UUID=request.POST.get('creneau_uuid')))
             print(creneau)
-            return HttpResponse(creneau)
-            # return render(request, "evenement/evenement_principal.html", context)
+            return HttpResponse(creneau.as_table())
+            # return JsonResponse({'creneau_form' : creneau }, safe=False)
+        elif request.POST.get('creneau_affiche') == 'json':
+            creneau = Creneau.objects.filter(UUID = request.POST.get('creneau_uuid')).values()
+            creneau_obj = Creneau.objects.get(UUID = request.POST.get('creneau_uuid'))
+            poste = Poste.objects.get(UUID = creneau_obj.poste_id).nom
+            planning = Planning.objects.get(UUID = creneau_obj.planning_id).nom
+            equipe = Equipe.objects.get(UUID = creneau_obj.equipe_id).nom
+            try : 
+                benevole_nom = ProfileBenevole.objects.get(UUID = creneau_obj.benevole_id).personne.last_name
+                benevole_pre = ProfileBenevole.objects.get(UUID = creneau_obj.benevole_id).personne.first_name
+                benevole= "{0} {1}".format(benevole_nom.upper(), benevole_pre.title())
+            except:
+                benevole = "Libre"
+            context = {
+                'creneau' : list(creneau)[0],
+                'poste_nom' : poste,
+                'planning_nom': planning,
+                'equipe_nom' : equipe,
+                'benevole_nom' : benevole,
+            }
+            return JsonResponse(context, safe=False) 

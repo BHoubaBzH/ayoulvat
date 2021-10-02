@@ -129,7 +129,6 @@ class CreneauForm(ModelForm):
         try:
             self.benevole_uuid = kwargs.pop('benevole_uuid')
         except:
-            # self.benevole_uuid = Creneau.objects.get(UUID=self.UUID)
             self.benevole_uuid = ""
         try:
             self.type = kwargs.pop('type')
@@ -310,4 +309,3 @@ class CreneauForm(ModelForm):
         # pas de créneau type benevole sans benevole associé
         if self.type == "benevole" and self.benevole_uuid == "":
             raise ValidationError("Wopolo une dispo benevole sans benevole associé!")
-

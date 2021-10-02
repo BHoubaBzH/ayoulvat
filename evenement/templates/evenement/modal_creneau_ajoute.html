@@ -72,7 +72,7 @@
                 {% elif type == "benevole" %}Ajout d'une disponibilité{% endif %}
                 </h5>
             </div>
-            <form  id="form-creneau" class="form-creneau" method='post'>
+            <form  id="form-creneau-ajoute" class="form-creneau-ajoute" method='post'>
                 <div class="modal-body">
                     {% csrf_token %}
                     <table class="table">
@@ -86,7 +86,7 @@
                     {# si on vient ajouter directement un creneau au planning sans passer par equipe, nous ne connaisson pas Equipe.UUID #}
                     <input type="hidden" name="equipe" value="{{ Planning.equipe_id }}">
                     
-                    <input type="hidden" name="creneau_ajouter" value="" >
+                    <input type="hidden" name="creneau_ajouter" value="">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" id="bouton-modal-creneau_ajouter" class="btn btn-primary success">
                         Ajouter

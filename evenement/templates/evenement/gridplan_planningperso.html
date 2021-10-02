@@ -91,7 +91,7 @@
     </div>
 
     <hr class="border-2 border-top border-dark"> {# barre horizontale #}
-    <table class="table table-striped ">
+    <table class="table table-dark  table-striped table-hover">
     <thead>
         <tr>
         <!-- th scope="col">#</th -->
@@ -400,7 +400,7 @@
             /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
             $('#modal-confirme-creneau-supprime-{{ creno.UUID }}').on('click', '#creneau_supprimer_confirme', function(e){
                 /* alert('submitting-{{ forloop.counter }}'); */
-                $('#form-creneau-{{ creno.UUID }}').append('<input type="hidden" name="creneau_supprimer" value="{{ creno.UUID }}">');
+                $('#form-creneau-{{ creno.UUID }}').append('<input type="hidden" name="creneau_supprimer" value="">');
                 document.getElementById('form-creneau-{{ creno.UUID }}').submit();
                 $('#modal-confirme-creneau-supprime-{{ creno.UUID }}').modal('toggle');
                 e.preventDefault();

@@ -1,0 +1,32 @@
+<!-- evenement/creneau_affiche.html -->
+
+{# pour le placement dans la grille planning garder le filtre sur creno.debut et creno.fin comme la fonction planning_range de views.py : #}
+
+{##################################################################}
+{# affiche le creneau sur le planning avec poste en ordonnées #}
+{% if source_type == "creneau" %} 
+    {# on cherche si le bénévole connecté est proposé dans la liste des benevoles : creneau pris par le benevole ou creneau dispo pour le benevole #}
+    {% for uuid, creneauf in DicCreneaux.items %}
+        {# on gere ici l'affichage du creneau en fonction de la personne, de la reservation du creneau , de l'ouverture ou non des postes, plannings, evenements... #}
+        {% if uuid|stringformat:"s" == creno.UUID|stringformat:"s" %}
+            {# check si les benevoles peuvent editer ou non des creneaux, en fonction des paramètres de l'evenement , du poste...#}
+            {% if creno.poste.ouvert and EvtOuvertBenevoles|stringformat:"s" == '1' and Evenement.editable %}
+                {% include "evenement/bouton_creneau.html" with ouvert='oui' %}
+            {% else %}
+                {% include "evenement/bouton_creneau.html" with ouvert='non' %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{##################################################################}
+{# affiche le creneau sur le planning avec benevole en ordonnées #}
+{% elif source_type == "benevole" %}
+    <button  class="creneau {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe{%endif%} benevole benevole-{{ creno.benevole_id }}" 
+            style="grid-row: ligne-{{ creno.benevole_id }};
+            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+            title="{%if le_benevole == 'oui' %}{{ user.last_name|upper }} {{ user.first_name|capfirst }}
+                   {%else%}{{ benevole }}{%endif%}
+                   {%if creno.type == 'benevole'%} disponible{%else%} occupé {{ creno.planning_id.nom }}{%endif%}"
+            data-bs-toggle="modal" data-bs-target="#modal-creneau_benevole_editer">
+                <a>{{ creno.equipe.nom }}{%if creno.poste%} <i class="bi bi-chevron-right"></i> {{ creno.poste.nom }}{%endif%}</a>
+    </button>
+{% endif %}

@@ -1,26 +1,25 @@
 <!-- evenement/bouton_creneau.html -->
-
 {##################################################################}
-{# la personne est uniquement benevole et les contenants du creneau sont ouverts : poste ouvert, evenement ouvert ...#}
+{# la personne est uniquement benevole et les objets contenant le creneau sont ouverts : poste ouvert, evenement ouvert ...#}
 {% if user.profilebenevole.UUID and not 'evenement.delete_creneau' in perms and ouvert == 'oui' %}
     {# le creneau est occupé #}
     {% if creno.benevole %}
         {# par moi #}
         {% if creno.benevole.personne.UUID == user.UUID %}
-                <button class="creneau poste poste-{{ poste.UUID }}"
-                    style="grid-row: ligne-{{ creno.poste_id }};
-                    grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                    title="Mon Créneau"
-                    data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
-                    data-bs-creneauuuid="{{ creno.UUID }}">
+                <button class="creneau poste poste-{{ poste.UUID }}" style="grid-row: ligne-{{ creno.poste_id }};
+                             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                        form="benevole_libere_creneau" name="creneau" value="{{ creno.UUID }}"
+                        data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"
+                        title="Mon Créneau, cliquer pour le libérer" type="submit">
                     <a><b>{{ creno.benevole }}</b></a>
                 </button>
-                
+
         {# simplement occupé par un autre bénévole -> toujours disabled pour les simples benevoles #}
         {% else %}
             <button class="creneau_occupe_bloque poste poste-{{ poste.UUID }}"
                 style="grid-row: ligne-{{ creno.poste_id }};
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
                 title="créneau occupé" disabled>
                 <a><b>{{ creno.benevole }}</b></a>
             </button>
@@ -32,24 +31,26 @@
             <button class="creneau_libre_bloque poste poste-{{ poste.UUID }}"
                 style="grid-row: ligne-{{ creno.poste_id }};
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
                 title="poste réservé adulte" disabled>
                 <a><b>Réservé Adultes</b></a>
             </button>
         {# le benevole est dans la liste des benevoles du creneau #}
         {% elif user.profilebenevole|stringformat:"s" in creneauf.benevole|stringformat:"s" %}
-            <button class="creneau_libre poste poste-{{ poste.UUID }}"
-                style="grid-row: ligne-{{ creno.poste_id }};
-                grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                title=""
-                data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
-                data-bs-creneauuuid="{{ creno.UUID }}">
+            <button class="creneau_libre poste poste-{{ poste.UUID }}" style="grid-row: ligne-{{ creno.poste_id }};
+                            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                    form="benevole_prend_creneau" name="creneau" value="{{ creno.UUID }}"
+                    data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
+                    title="Céneau Disponible, Cliquer pour s'y incrire" type="submit">
                 <a><b>Disponible</b></a>
             </button>
+
         {# le bénévole est dejà pris sur cet horaire -> toujours disabled pour les simples benevoles #}
         {% else %}
             <button  class="creneau_libre_moi_occupe poste poste-{{ poste.UUID }}" 
                 style="grid-row: ligne-{{ creno.poste_id }};
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
                 title="tu es déjà occupé sur cet horaire" disabled>                            
                 <a><b></b></a>
             </button>
@@ -66,6 +67,7 @@
                 <button class="creneau_occupe_bloque poste poste-{{ poste.UUID }}"
                     style="grid-row: ligne-{{ creno.poste_id }};
                     grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                    data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
                     title="Mon Créneau" disabled>
                     <a><b>{{ creno.benevole }}</b></a>
                 </button>
@@ -74,6 +76,7 @@
             <button class="creneau_occupe_bloque poste poste-{{ poste.UUID }}"
                 style="grid-row: ligne-{{ creno.poste_id }};
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
                 title="créneau occupé" disabled>
                 <a><b>{{ creno.benevole }}</b></a>
             </button>
@@ -85,6 +88,7 @@
             <button class="creneau_libre_bloque poste poste-{{ poste.UUID }}"
                 style="grid-row: ligne-{{ creno.poste_id }};
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
                 title="poste réservé adulte" disabled>
                 <a><b>Réservé Adulte</b></a>
             </button>
@@ -93,6 +97,7 @@
             <button class="creneau_libre_bloque poste poste-{{ poste.UUID }}"
                 style="grid-row: ligne-{{ creno.poste_id }};
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
                 title="poste non ouvert" disabled>
                 <a><b>Réservé</b></a>
             </button>
@@ -101,6 +106,7 @@
             <button  class="creneau_libre_moi_occupe poste poste-{{ poste.UUID }}" 
                 style="grid-row: ligne-{{ creno.poste_id }};
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
                 title="tu es déjà occupé sur cet horaire" disabled>                            
                 <a><b></b></a>
             </button>

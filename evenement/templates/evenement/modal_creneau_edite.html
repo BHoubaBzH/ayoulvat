@@ -12,103 +12,20 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="ModalLabel">{{ creno.equipe.nom }} {% if creno.poste.nom %}<i class="bi bi-chevron-right"></i> {{ creno.poste.nom }}{% endif %}</h5>
+                    <h5 class="modal-title" id="ModalLabel">Edition du créneau</h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
 
-                <form  id="form-creneau"  method='post'>
-                    <div class="modal-body">
+                <form  id="form-creneau-edite"  method='post'>
+                    <div class="modal-body modal-body-edite">
                         {% csrf_token %}
                         <table class="table">
-                            {% for uuid, creneauf in DicCreneaux.items %}
-                                {% if uuid|stringformat:"s" == creno.UUID|stringformat:"s" %}
-                                    {{ creneauf.as_table }}
-                                {% endif %}
-                            {% endfor %}
-                            {%if libre == 'non'%}
-                                {# a completer une fois la form benevole en place #}
-                            {% endif %}
-
                             <tbody id="fetch_form">
                                 {# rempli par le javascript et le fetch #}
                             </tbody>
-                            <input id="creneau_table_uuid" name="creneau" type="hidden" >
-
-                            <tbody>
-                                <!--
-                                <tr>
-                                    <th><label for="creneau_table_debut">Debut :</label>
-                                    </th>
-                                    <td>
-                                        <input id="creneau_table_debut" name="debut" required="" type="datetime">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th><label for="creneau_table_fin">Fin :</label>
-                                    </th>
-                                    <td>
-                                        <input id="creneau_table_fin" name="fin" required="" type="datetime">
-                                    </td>
-                                </tr>
-                                {% comment "" %}
-                                <tr>
-                                    <th><label for="id_debut_0">Debut&nbsp;:</label>
-                                    </th>
-                                    <td>
-                                        <input id="id_debut_0" name="debut_0" required="" type="date" value="2021-10-29">
-                                        <input id="id_debut_1" max="60" min="0" name="debut_1" required="" step="3600" type="time" value="18:00">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        <label for="id_fin_0">Fin&nbsp;:</label>
-                                    </th>
-                                    <td>
-                                        <input id="id_fin_0" name="fin_0" required="" type="date" value="2021-10-29">
-                                        <input id="id_fin_1" max="60" min="0" name="fin_1" required="" step="3600" type="time" value="20:00">
-                                    </td>
-                                </tr>
-                                {% endcomment %}
-                                <tr>
-                                    <th>
-                                        <label for="id_fin_0">Benevole:</label>
-                                    </th>
-                                    <td>
-                                        <select id="benevoles_select" name="benevole">
-                                            {# rempli par le javascript et le fetch #}
-                                        </select>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <th>
-                                        <label for="creneau_table_description">Description&nbsp;:</label>
-                                    </th>
-                                    <td>
-                                        <textarea cols="40" id="creneau_table_description" maxlength="500" name="description" rows="10"></textarea>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        <label for="creneau_table_valide_present">Valide present&nbsp;:</label>
-                                    </th>
-                                    <td>
-                                        <input id="creneau_table_valide_present" name="valide_present" type="checkbox"><br>
-                                        <span class="helptext">à valider si le bénévole s'est bien présenté</span>
-                                    </td>   
-                                </tr>
-
-                                <input id="creneau_table_editabe" name="editable" type="hidden">
-                                <input id="creneau_table_type" name="type" type="hidden" >
-                                <input id="creneau_table_poste_id" name="poste" type="hidden">
-                                <input id="creneau_table_planning_id" name="planning" type="hidden">
-                                <input id="creneau_table_equipe_id" name="equipe" type="hidden">
-                                <input id="creneau_table_evenement_id" name="evenement" type="hidden" >
-                                <input id="creneau_table_uuid" name="creneau" type="hidden" >
-                                -->
-                            </tbody>                                         
+                            <input id="creneau_uuid" name="creneau" type="hidden">                                   
                         </table>
                     </div>
 
@@ -139,18 +56,40 @@
         <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="ModalLabel">Confirmer La suppression du créneau</h5>
+                    <h5 class="modal-title" id="ModalLabel">Confirmer la suppression du créneau :</h5>
                 </div>
-                <div class="modal-body">
-                    Etes-vous sur?
+                <div class="modal-body modal-body-supprime">
                     <table class="table">
-                        <tr><th>Equipe</th><td id="equipe">{{ creno.equipe.nom }}</td></tr>
-                        <tr><th>Planning</th><td id="equipe">{{ Planning.nom }}</td></tr>
-                        <tr><th>Poste</th><td id="poste">{{ poste.nom }}</td></tr>
-                        <tr><th>Créneau</th><td id="creneau_supprimer">{{ creno.nom }}</td></tr>
-                    </table>
-                </div>
+                        <tbody id="fetch_json">
+                            <tr>
+                                <th>Debut :</th>
+                                <td><input class="form-control-plaintext" id="creneau_table_debut" name="debut" type="datetime" readonly></td>
+                            </tr>
+                            <tr>
+                                <th>Fin :</th>
+                                <td><input class="form-control-plaintext" id="creneau_table_fin" name="fin" type="datetime" readonly></td>
+                            </tr>
+                            <tr>
+                                <th>Poste :</th>
+                                <td><input class="form-control-plaintext" id="creneau_table_poste" name="poste" type="text" readonly></td>
+                            </tr>    
+                            <tr>
+                                <th>Equipe :</th>
+                                <td><input class="form-control-plaintext" id="creneau_table_equipe" name="equipe" type="text" readonly></td>
+                            </tr>          
+                            <tr>
+                                <th>Planning :</th>
+                                <td><input class="form-control-plaintext" id="creneau_table_planning" name="planning" type="text" readonly></td>
+                            </tr>
+                            <tr>
+                                <th>Bénévole :</th>
+                                <td><input class="form-control-plaintext" id="creneau_table_benevole_id" name="benevole" type="text" readonly></td>
+                            </tr>                            
+                        </tbody>
 
+                    </table>
+
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" data-bs-dismiss="modal">Non</button>
                     <button type="submit" id="creneau_supprimer_confirme" class="btn btn-danger success">Oui</button>
@@ -158,229 +97,98 @@
             </div>
         </div>
     </div>
-
-    <script>
-        /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
-        $('#modal-confirme-creneau-supprime').on('click', '#creneau_supprimer_confirme', function(e){
-            /* alert('submitting-{{ forloop.counter }}'); */
-            $('#form-creneau').append('<input type="hidden" name="creneau_supprimer" value="{{ creno.UUID }}">');
-            /* pour le traitement view et form on envoi le type de creneau qu on supprime */
-            $('#form-creneau').append('<input type="hidden" name="type" value="{{ creno.type }}">'); 
-            document.getElementById('form-creneau').submit();
-            $('#modal-confirme-creneau-supprime').modal('toggle');
-            e.preventDefault();
-        });
-    </script>
-
-
-{##################################################################}
-{# modals benevole #}
-{# si non admin, affiche pas les details et on permet juste de prendre le créneau #}
-{% elif creno.benevole == None %}
-    <div class="modal fade" 
-        id="modal-creneau_{% if source_type == 'creneau' %}creneau{% elif source_type == 'benevole' %}benevole{% endif %}_editer"
-        tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
-
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="ModalLabel">prendre le créneau ?</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <div class="modal-body">
-                    <table class="table">
-                        <tr>
-                            <th>
-                                <label for="id_debut_0">Date</label>
-                            </th>
-                            <td>
-                                {{ creno.debut|date:'d/m/Y' }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <label for="id_debut_0">Equipe</label>
-                            </th>
-                            <td>
-                                {{ creno.equipe.nom }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <label for="id_debut_0">Planning</label>
-                            </th>
-                            <td>
-                                {{ creno.planning.nom }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <label for="id_debut_0">Poste</label>
-                            </th>
-                            <td>
-                                {{ creno.poste.nom }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <label for="id_debut_0">Horaires</label>
-                            </th>
-                            <td>
-                                {{ creno.debut|date:'H:i' }} <i class="bi bi-chevron-right"></i> {{ creno.fin|date:'H:i' }}
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
-                    
-                <div class="modal-footer">
-                    <form  id="form-creneau"  method='post'>
-                        {% csrf_token %}
-                        <input type="hidden" name="debut_0" value="{{ creno.debut|date:'Y-m-d' }}">
-                        <input type="hidden" name="debut_1" value="{{ creno.debut|date:'H:i' }}">
-                        <input type="hidden" name="fin_0" value="{{ creno.fin|date:'Y-m-d' }}">
-                        <input type="hidden" name="fin_1" value="{{ creno.fin|date:'H:i' }}">
-                        <input type="hidden" name="description" value="{{ creno.description }}">
-                        <input type="hidden" name="editable" value="{{ creno.editable }}">
-                        <input type="hidden" name="type" value="{{ creno.type }}">
-                        <input type="hidden" name="benevole" value="{{ user.profilebenevole.UUID }}">
-                        <input type="hidden" name="creneau" value="{{ creno.UUID }}">
-                        <input type="hidden" name="poste" value="{{ creno.poste.UUID }}">
-                        <input type="hidden" name="planning" value="{{ creno.planning.UUID }}">
-                        <input type="hidden" name="equipe" value="{{ creno.equipe.UUID }}">
-                        <input type="hidden" name="evenement" value="{{ creno.evenement.UUID }}">
-
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
-                        <button type="submit" id="creneau_modifier" name="creneau_modifier"  class="btn btn-primary success">Oui</button>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-{# si non admin, affiche pas les details et on permet juste de libérer le créneau #}
-{% elif creno.benevole|stringformat:"s" == user.profilebenevole|stringformat:"s" %}
-    <div class="modal fade" 
-        id="modal-creneau_{% if source_type == 'creneau' %}creneau{% elif source_type == 'benevole' %}benevole{% endif %}_editer" 
-        tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">
-
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="ModalLabel">se désinscrire du créneau ?</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <div class="modal-body">
-                    <table class="table">
-                        <tr>
-                            <th>
-                                <label for="id_debut_0">Date</label>
-                            </th>
-                            <td>
-                                {{ creno.debut|date:'d/m/Y' }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <label for="id_debut_0">Equipe</label>
-                            </th>
-                            <td>
-                                {{ creno.equipe.nom }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <label for="id_debut_0">Planning</label>
-                            </th>
-                            <td>
-                                {{ creno.planning.nom }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <label for="id_debut_0">Poste</label>
-                            </th>
-                            <td>
-                                {{ creno.poste.nom }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <label for="id_debut_0">Horaires</label>
-                            </th>
-                            <td>
-                                {{ creno.debut|date:'H:i' }} <i class="bi bi-chevron-right"></i> {{ creno.fin|date:'H:i' }}
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
-                    
-                <div class="modal-footer">
-                    <form  id="form-creneau"  method='post'>
-                        {% csrf_token %}
-                        <input type="hidden" name="debut_0" value="{{ creno.debut|date:'Y-m-d' }}">
-                        <input type="hidden" name="debut_1" value="{{ creno.debut|date:'H:i' }}">
-                        <input type="hidden" name="fin_0" value="{{ creno.fin|date:'Y-m-d' }}">
-                        <input type="hidden" name="fin_1" value="{{ creno.fin|date:'H:i' }}">
-                        <input type="hidden" name="description" value="{{ creno.description }}">
-                        <input type="hidden" name="editable" value="{{ creno.editable }}">
-                        <input type="hidden" name="type" value="{{ creno.type }}">
-                        <input type="hidden" name="benevole" value="">
-                        <input type="hidden" name="creneau" value="{{ creno.UUID }}">
-                        <input type="hidden" name="poste" value="{{ creno.poste.UUID }}">
-                        <input type="hidden" name="planning" value="{{ creno.planning.UUID }}">
-                        <input type="hidden" name="equipe" value="{{ creno.equipe.UUID }}">
-                        <input type="hidden" name="evenement" value="{{ creno.evenement.UUID }}">
-
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
-                        <button type="submit" id="creneau_modifier" name="creneau_modifier"  class="btn btn-primary success">Oui</button>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
 {% endif %}           
 
-<script>
-    /* script de popul du modal editer : utilise api fetch javascript */
-    var modalCreneauCreneauEditer = document.getElementById('modal-creneau_creneau_editer')
-    modalCreneauCreneauEditer.addEventListener('show.bs.modal', function (event) {
-        /* Button that triggered the modal */
-        var button = event.relatedTarget
-        /* Extract info from data-bs-* attributes */
-        var creneau_bs_data = button.getAttribute('data-bs-creneauuuid')
 
-        // fetch process pour récuperer les infos de notre creneau
-        let form = new FormData();
-        form.append("creneau_uuid", creneau_bs_data);
-        form.append("benevole_id", "None");
-        let csrfTokenValue = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        var requete = new Request('{% url "creneau_fetch" %}', {
-            headers:{
-                'X-CSRFToken': csrfTokenValue  // ajoute le token dans l'en-tête
-                }, 
-            body: form, //form contient les datas envoyées
-            method: 'POST', 
-            });
-        fetch(requete)
-        .then(response => response.text())
-        .then(result => {
-            console.log(result);
-            var target = document.getElementById("fetch_form");
-            target.innerHTML = result;
-            $(".modal-body #creneau_table_uuid").val( creneau_bs_data );
-        })
-        .catch(console.error)
-        $(".modal-body #creneau-uuid").val( creneau );
-    })
+{# scripts de remplissage des forms par api fetch #}
+<script>
+    var creneau_bs_data;
+
+    /* script de popul du modal editer : utilise api fetch javascript et recupere la form du creneau */
+    var modalCreneauCreneauEditer = document.getElementById('modal-creneau_creneau_editer')
+   if (modalCreneauCreneauEditer) {
+        modalCreneauCreneauEditer.addEventListener('show.bs.modal', function (event) {
+            /* Button that triggered the modal */
+            var button = event.relatedTarget
+            /* Extract info from data-bs-* attributes */
+            creneau_bs_data = button.getAttribute('data-bs-creneauuuid')
+            console.log(creneau_bs_data);
+            // fetch process pour récuperer les infos de notre creneau
+            let form = new FormData();
+            form.append("creneau_uuid", creneau_bs_data);
+            form.append("creneau_affiche", 'form');
+            let csrfTokenValue = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            var requete = new Request('{% url "creneau_fetch" %}', {
+                headers:{
+                    'X-CSRFToken': csrfTokenValue  // ajoute le token dans l'en-tête
+                    }, 
+                body: form, //form contient les datas envoyées
+                method: 'POST', 
+                });
+            fetch(requete)
+            .then(response => response.text())
+            .then(creneau_form => {
+                // console.log(creneau_form);
+                var target = document.getElementById("fetch_form");
+                target.innerHTML = creneau_form;
+                $(".modal-body-edite #creneau_uuid").val( creneau_bs_data );
+
+            })
+            .catch(console.error)
+        });
+    }
+
+    /* script de popul du modal supprimer : utilise api fetch javascript et recupere un json du creneau*/
+    var modalConfirmeCreneauSupprime = document.getElementById('modal-confirme-creneau-supprime')
+    if (modalConfirmeCreneauSupprime) {
+        modalConfirmeCreneauSupprime.addEventListener('show.bs.modal', function (event) {
+            // on travail toujours sur le meme créneau que la fonction précédente
+            console.log(creneau_bs_data);
+            // fetch process pour récuperer les infos de notre creneau
+            let form = new FormData();
+            form.append("creneau_uuid", creneau_bs_data);
+            form.append("creneau_affiche", 'json');
+            let csrfTokenValue = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            var requete = new Request('{% url "creneau_fetch" %}', {
+                headers:{
+                    'X-CSRFToken': csrfTokenValue  // ajoute le token dans l'en-tête
+                    }, 
+                body: form, //form contient les datas envoyées
+                method: 'POST', 
+                });
+
+            fetch(requete)
+            .then(response => response.json())
+            .then(creneau_json => {
+                console.log(creneau_json);
+                // alert(JSON.stringify(result))
+                // alert(result)
+                let creneau_table = JSON.parse(JSON.stringify(creneau_json));
+                console.log(creneau_table);
+                // afficher les données recues
+                //document.getElementById("creneau_edit").innerHTML = creneau_table.UUID
+                $(".modal-body-supprime #creneau_table_debut").val( creneau_table.creneau.debut );
+                $(".modal-body-supprime #creneau_table_fin").val( creneau_table.creneau.fin );
+                $(".modal-body-supprime #creneau_table_equipe").val( creneau_table.equipe_nom );
+                $(".modal-body-supprime #creneau_table_planning").val( creneau_table.planning_nom );
+                $(".modal-body-supprime #creneau_table_poste").val( creneau_table.poste_nom );
+                $(".modal-body-supprime #creneau_table_benevole_id").val( creneau_table.benevole_nom );
+            })
+            .catch(console.error)
+            //$(".modal-body-edite #creneau-uuid").val( creneau_bs_data );
+            //$(".modal-body-supprime #creneau-uuid").val( creneau_bs_data );
+        });
+    }
+
+    /* quand le bouton OUI est utilisé dans modal de suppression, submit la form et ferme le modal */
+    $('#modal-confirme-creneau-supprime').on('click', '#creneau_supprimer_confirme', function(e){
+        /* alert('submitting-{{ forloop.counter }}'); */
+        $('#form-creneau-edite').append('<input type="hidden" name="creneau_supprimer" value="{{ creno.UUID }}">');
+        /* pour le traitement view et form on envoi le type de creneau qu on supprime */
+        $('#form-creneau-edite').append('<input type="hidden" name="type" value="{{ creno.type }}">'); 
+        document.getElementById('form-creneau-edite').submit();
+        $('#modal-confirme-creneau-supprime').modal('toggle');
+        e.preventDefault();
+    });
+
 </script>

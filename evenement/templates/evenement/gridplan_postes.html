@@ -1,5 +1,23 @@
 <!-- evenement/gridplan_postes.html -->
 
+
+{# forms benevoles pour prendre ou libérerer en créneau dans evenement/creneau_affiche.html #}
+<form id="benevole_prend_creneau" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="benevole_prend_creneau">
+    {# ajoute les infos au poste pour rester sur la page apres envoi du form#}
+    <input type="hidden" name="planning" value="{{ planning_uuid }}">
+    <input type="hidden" name="equipe" value="{{ equipe_uuid }}">
+</form>
+
+<form id="benevole_libere_creneau" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="benevole_libere_creneau">
+    {# ajoute les infos au poste pour rester sur la page apres envoi du form#}
+    <input type="hidden" name="planning" value="{{ planning_uuid }}">
+    <input type="hidden" name="equipe" value="{{ equipe_uuid }}">
+</form>
+
 <div class="titre">
     <h2>Planning du {{ Planning.debut|date:'l j F' }}</h2> 
 </div>
@@ -41,7 +59,7 @@
                     {% for creno in Creneaux %}
                         {% if creno.planning_id|stringformat:'s' == planning_uuid|stringformat:'s' and creno.poste_id == poste.UUID and creno.type == "creneau" %}
                             {# AFFICHE LES CRENEAU DANS LA GRID  CSS et construit les modals associés #}
-                            {% include "evenement/creneau_affiche_edite.html" with source_type="creneau" %}
+                            {% include "evenement/creneau_affiche.html" with source_type="creneau" %}
                         {% endif %}
                     {% endfor %}
                     {% include "evenement/grid_cellules.html" with row_type=poste ligne="poste" %}
@@ -81,6 +99,6 @@
 {# modal d ajout des creneaux type=creneau #}
 {% if 'evenement.add_creneau' in perms %}
     {% include "evenement/modal_creneau_ajoute.html" with type='poste' %}
-    {% comment "javascript fetch en cours" %}    {% endcomment %}
-    {% include "evenement/modal_creneau_edite.html" with type='poste' source_type="creneau" %}
 {% endif %} 
+{% comment "javascript fetch en cours" %}    {% endcomment %}
+{% include "evenement/modal_creneau_edite.html" with type='poste' source_type="creneau" %}
