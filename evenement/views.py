@@ -502,7 +502,7 @@ def evenement(request, uuid_evenement):
                                                30)          
     print('*** Fin traitement view : {}'.format(datetime.datetime.now()))
     return render(request, "evenement/evenement_principal.html", data)
- 
+
 
 @login_required(login_url='login')
 def CreneauFetch(request):
