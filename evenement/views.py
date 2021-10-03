@@ -522,7 +522,6 @@ def CreneauFetch(request):
             creneau = CreneauForm(personne_connectee=request.user, 
                                 type="creneau",
                                 instance=Creneau.objects.get(UUID=request.POST.get('creneau_uuid')))
-            print(creneau)
             return HttpResponse(creneau.as_table())
             # return JsonResponse({'creneau_form' : creneau }, safe=False)
         elif request.POST.get('creneau_affiche') == 'json':

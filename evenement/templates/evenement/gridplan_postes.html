@@ -96,10 +96,10 @@
         {% endif %}
     </div>
 </div>
-{# modal d ajout des creneaux type=creneau #}
+{# modal d ajout et de modif des creneaux type=creneau #}
 {% comment "" %}{% endcomment %}
 {% if GroupeUtilisateur in 'Administrateur,Organisateur,Responsable' %}
     {% include "evenement/modal_creneau_ajoute.html" with type='poste' %}
+    {% include "evenement/modal_creneau_edite.html" with type='poste' source_type="creneau" %}
 {% endif %} 
-{% comment "javascript fetch en cours" %}    {% endcomment %}
-{% include "evenement/modal_creneau_edite.html" with type='poste' source_type="creneau" %}
+

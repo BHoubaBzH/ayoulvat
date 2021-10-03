@@ -10,6 +10,7 @@
 
             {# si utilisateur a le droit, on presente les form pour ajouter un creneau (creneau type creneau) sur le poste #}
             {% if ligne == "poste" and 'evenement.add_creneau' in perms %}
+
                 <form id ="form-case-bouton-planning" class="bouton-cell" method="post">
                     <input type="hidden" name="case-ligne-init" value="{{ row_type.UUID }}">
                     <!--input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'d/m/Y H:i' }}"-->
@@ -66,7 +67,7 @@
                 </form>
             {% endif %}
         </div>
-    {#% include "evenement/modal_creneau_ajoute.html" %#}
+
     {% else %}
         {# pas de bouton pour la derniere colonne vu qu'elle apparait apres l heure de fin du planning #}
         <div class="{% if forloop.last %}grid-cell-last{% else %}grid-cell{% endif %} ligne-{{ poste.UUID }}" 

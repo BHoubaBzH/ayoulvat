@@ -23,7 +23,7 @@
                         {% csrf_token %}
                         <table class="table">
                             <tbody id="fetch_form">
-                                {# rempli par le javascript et le fetch #}
+                                {# rempli par le javascript #}
                             </tbody>
                             <input id="creneau_uuid" name="creneau" type="hidden">                                   
                         </table>
@@ -112,7 +112,7 @@
             var button = event.relatedTarget
             /* Extract info from data-bs-* attributes */
             creneau_bs_data = button.getAttribute('data-bs-creneauuuid')
-            console.log(creneau_bs_data);
+            // console.log(creneau_bs_data);
             // fetch process pour récuperer les infos de notre creneau
             let form = new FormData();
             form.append("creneau_uuid", creneau_bs_data);
@@ -143,7 +143,7 @@
     if (modalConfirmeCreneauSupprime) {
         modalConfirmeCreneauSupprime.addEventListener('show.bs.modal', function (event) {
             // on travail toujours sur le meme créneau que la fonction précédente
-            console.log(creneau_bs_data);
+            // console.log(creneau_bs_data);
             // fetch process pour récuperer les infos de notre creneau
             let form = new FormData();
             form.append("creneau_uuid", creneau_bs_data);
@@ -160,11 +160,11 @@
             fetch(requete)
             .then(response => response.json())
             .then(creneau_json => {
-                console.log(creneau_json);
+                // console.log(creneau_json);
                 // alert(JSON.stringify(result))
                 // alert(result)
                 let creneau_table = JSON.parse(JSON.stringify(creneau_json));
-                console.log(creneau_table);
+                // console.log(creneau_table);
                 // afficher les données recues
                 //document.getElementById("creneau_edit").innerHTML = creneau_table.UUID
                 $(".modal-body-supprime #creneau_table_debut").val( creneau_table.creneau.debut );

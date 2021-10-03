@@ -9,12 +9,25 @@
 {% block content %}
 
 <div class="container">
+
+    <div class="container">
+        <div class="row align-items-end">
+            <div class="col-md-12">
+                <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
+                    title="les planning des différentes équipes pour l'évènement, avec tes créneaux.">
+                    Résumé global
+                </h2>
+            </div>
+        </div>
+    </div>    
+    <hr class="border-2 border-top border-dark"> {# barre horizontale #}
+
     <div class="row">
        <div class="col col-lg-6">
             <table class="table table-dark table-striped table-hover"  id="table_benevoles">
                 <thead>
                     <tr>
-                    <th scope="col" class="col col-lg-4">bénévoles</th><th scope="col">nombre</th>
+                    <th scope="col" class="col col-lg-8">bénévoles</th><th scope="col">nombre</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -22,26 +35,11 @@
                     <td>Inscrits</td><td>{{ Benevoles.count }}</tr>
                 </tbody>
             </table>
-        </div>
-        <div class="col col-lg-6">
-            <table class="table table-dark table-striped table-hover"  id="table_benevoles">
-                <thead>
-                    <tr><th scope="col" class="col col-lg-4">asso partenaire</th><th scope="col">nombre de bénévole</tr>
-                </thead>
-                <tbody>
-                    {% for a, b in  benevoles_par_asso.items %}
-                        <tr style="vertical-align : middle;"><td>{{ a }}</td><td>{{ b }}</tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="row">
-       <div class="col col-lg-6">
-            <table class="table table-dark table-striped table-hover"  id="table_benevoles">
+
+            <table class="table table-dark table-striped table-hover"  id="table_créneaux">
                 <thead>
                     <tr>
-                    <th scope="col" class="col col-lg-4">créneaux</th><th scope="col">nombre</th>
+                    <th scope="col" class="col col-lg-8">créneaux</th><th scope="col">nombre</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,9 +49,73 @@
                     <td>Libres</td><td>{{ Creneaux_libres }}</tr>
                 </tbody>
             </table>
-       </div>
-       <div class="col col-lg-6">
 
-       </div>
+        </div>
+        <div class="col col-lg-6">
+            <table class="table table-dark table-striped table-hover"  id="table_assospart">
+                <thead>
+                    <tr><th scope="col" class="col col-lg-8">asso partenaire</th><th scope="col">nombre de bénévole</tr>
+                </thead>
+                <tbody>
+                    {% for a, b in  Benevoles_par_asso.items %}
+                        <tr style="vertical-align : middle;"><td>{{ a }}</td><td>{{ b }}</tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row align-items-end">
+            <div class="col-md-12">
+                <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
+                    title="les planning des différentes équipes pour l'évènement, avec tes créneaux.">
+                    Remplissages des créneaux
+                </h2>
+            </div>
+        </div>
+    </div>    
+    <hr class="border-2 border-top border-dark"> {# barre horizontale #}
+
+    <div class="row">
+        <div class="col col-lg-6">
+            <table class="table table-dark table-striped table-hover"  id="table_planning">
+                <thead>
+                    <tr><th scope="col" class="col col-lg-8">planning</th><th scope="col">remplissage</tr>
+                </thead>
+                <tbody>
+                    {% for a, b in  Plannings_occupation.items %}
+                        <tr style="vertical-align : middle;"><td>{{ a.equipe.nom }} - {{ a.nom }}</td>
+                        {% if b < 50 %}
+                            <td style="background:var(--bs-danger)">{{ b }}</tr>
+                        {% elif b < 80 %}
+                            <td style="background:var(--bs-warning)">{{ b }}</tr>
+                        {% else %}
+                            <td style="background:var(--bs-success)">{{ b }}</tr>
+                        {%endif%}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col col-lg-6">
+            <table class="table table-dark table-striped table-hover"  id="table_planning">
+                <thead>
+                    <tr><th scope="col" class="col col-lg-8">equipe</th><th scope="col">remplissage</tr>
+                </thead>
+                <tbody>
+                    {% for a, b in  Equipes_occupation.items %}
+                        <tr style="vertical-align : middle;"><td>{{ a.nom }}</td>
+                        {% if b < 50 %}
+                            <td style="background:var(--bs-danger)">{{ b }}</tr>
+                        {% elif b < 80 %}
+                            <td style="background:var(--bs-warning)">{{ b }}</tr>
+                        {% else %}
+                            <td style="background:var(--bs-success)">{{ b }}</tr>
+                        {%endif%}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 {% endblock %}

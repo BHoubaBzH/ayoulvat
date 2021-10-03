@@ -1,6 +1,7 @@
 from datetime import date
 import logging
 from django.contrib.auth.models import User
+from django.forms.fields import NullBooleanField
 from django.http.response import Http404, HttpResponseServerError
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -8,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, View
 
 from benevole.forms import BenevoleForm, PersonneForm
-from evenement.models import Creneau, Equipe, Evenement
+from evenement.models import Creneau, Equipe, Evenement, Planning
 #from evenement.views import inscription_ouvert
 from benevole.views import GroupeUtilisateur
 from benevole.models import Personne, ProfileAdministrateur, ProfileBenevole, ProfileOrganisateur, ProfileResponsable
@@ -47,6 +48,34 @@ def benevoles_par_asso(list_assos):
         dic[asso]= ProfileBenevole.objects.filter(assopartenaire=asso).count()
     dic ={k: v for k, v in sorted(dic.items(), key=lambda x: x[1], reverse=True)}
     return dic
+
+def plannings_occupation(contenants):
+    """ retoune le taux d'occupation par contenant 
+    
+        entree : queryset de contenants
+        sortie : dictionnaire key : contenant , value : pourcentage occupation
+    """
+    occup = {}
+    for c in contenants:
+        crens = Creneau.objects.filter(planning_id=c.UUID).count()
+        crens_occup = Creneau.objects.filter(planning_id=c.UUID, benevole__isnull=False).count()
+        pourcentage = (crens_occup / crens) * 100 if crens != 0 else 0
+        occup[c] = round(pourcentage, 1)
+    return occup
+
+def equipes_occupation(contenants):
+    """ retoune le taux d'occupation par contenant 
+    
+        entree : queryset de contenants
+        sortie : dictionnaire key : contenant , value : pourcentage occupation
+    """
+    occup = {}
+    for c in contenants:
+        crens = Creneau.objects.filter(equipe_id=c.UUID).count()
+        crens_occup = Creneau.objects.filter(equipe_id=c.UUID, benevole__isnull=False).count()
+        pourcentage = (crens_occup / crens) * 100 if crens != 0 else 0
+        occup[c] = round(pourcentage, 1)
+    return occup
 
 def inscription_ouvert(debut, fin):
     """
@@ -164,11 +193,14 @@ class DashboardView(View):
             # nav bar infos : fin
             "Association" : self.Asso,
             "Evenement" : self.Evt, 
+            "Plannings": Planning.objects.filter(evenement=self.Evt).order_by('debut'),  # objets planning de l'evenement
             "Creneaux" : Creneau.objects.filter(evenement=self.Evt, type="creneau"),
             "Creneaux_libres" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=True).count,
             "Creneaux_occupes" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=False).count,
             "Assos_partenaires" : assos_part(self.Asso),
-            "benevoles_par_asso" : benevoles_par_asso(assos_part(self.Asso)),
+            "Benevoles_par_asso" : benevoles_par_asso(assos_part(self.Asso)),
+            "Plannings_occupation" : plannings_occupation(Planning.objects.filter(evenement=self.Evt).order_by('nom','debut')),
+            "Equipes_occupation" : equipes_occupation(Equipe.objects.filter(evenement=self.Evt).order_by('nom')),
 
             "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=self.Evt),  # objets benevoles de l'evenement
             "Administrateurs": ProfileAdministrateur.objects.filter(association=self.Asso),
