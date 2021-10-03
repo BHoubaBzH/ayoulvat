@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime, time, timedelta
 import logging
 from django.contrib.auth.models import User
 from django.forms.fields import NullBooleanField
@@ -50,8 +50,8 @@ def benevoles_par_asso(list_assos):
     return dic
 
 def plannings_occupation(contenants):
-    """ retoune le taux d'occupation par contenant 
-    
+    """
+        retoune le taux d'occupation par contenant 
         entree : queryset de contenants
         sortie : dictionnaire key : contenant , value : pourcentage occupation
     """
@@ -64,8 +64,8 @@ def plannings_occupation(contenants):
     return occup
 
 def equipes_occupation(contenants):
-    """ retoune le taux d'occupation par contenant 
-    
+    """ 
+        retoune le taux d'occupation par contenant 
         entree : queryset de contenants
         sortie : dictionnaire key : contenant , value : pourcentage occupation
     """
@@ -76,6 +76,29 @@ def equipes_occupation(contenants):
         pourcentage = (crens_occup / crens) * 100 if crens != 0 else 0
         occup[c] = round(pourcentage, 1)
     return occup
+
+def repartition_par_assos(creneaux):
+    """ retoune la répartition horaire par assos
+        entree : queryset des creneaux de l evenement
+        sortie : dictionnaire key : assos , pourcentage total
+    """
+    repart= {}
+    asso_duree = timedelta(0, 0, 0, 0)
+    total = timedelta(0, 0, 0, 0)
+    for c in creneaux:
+        c_duree = c.fin - c.debut
+        total += c_duree
+
+    for c in creneaux:
+        c_duree = c.fin - c.debut
+        total += c_duree
+        if c.benevole:
+            c_duree = c.fin - c.debut
+            asso_duree += c_duree
+            pourcentage = asso_duree / total *100
+            repart[c.benevole.assopartenaire] = round(pourcentage, 1)
+    return dict(sorted(repart.items(), key=lambda item: item[1],reverse=True))
+
 
 def inscription_ouvert(debut, fin):
     """
@@ -199,8 +222,9 @@ class DashboardView(View):
             "Creneaux_occupes" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=False).count,
             "Assos_partenaires" : assos_part(self.Asso),
             "Benevoles_par_asso" : benevoles_par_asso(assos_part(self.Asso)),
-            "Plannings_occupation" : plannings_occupation(Planning.objects.filter(evenement=self.Evt).order_by('nom','debut')),
+            "Plannings_occupation" : plannings_occupation(Planning.objects.filter(evenement=self.Evt).order_by('equipe__nom','debut')),
             "Equipes_occupation" : equipes_occupation(Equipe.objects.filter(evenement=self.Evt).order_by('nom')),
+            "Repartition_par_assos" : repartition_par_assos(Creneau.objects.filter(evenement=self.Evt)),
 
             "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=self.Evt),  # objets benevoles de l'evenement
             "Administrateurs": ProfileAdministrateur.objects.filter(association=self.Asso),
