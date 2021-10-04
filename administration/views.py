@@ -82,7 +82,7 @@ def repartition_par_assos(creneaux):
         entree : queryset des creneaux de l evenement
         sortie : dictionnaire key : assos , pourcentage total
     """
-    repart= {}
+    repart = {}
     asso_duree = timedelta(0, 0, 0, 0)
     total = timedelta(0, 0, 0, 0)
     for c in creneaux:
@@ -93,9 +93,15 @@ def repartition_par_assos(creneaux):
     for c in creneaux:
         if c.benevole and c.benevole.assopartenaire:
             c_duree = c.fin - c.debut
-            asso_duree += c_duree
-            pourcentage = asso_duree / total *100
-            repart[c.benevole.assopartenaire] = round(pourcentage, 1)
+            # print('{} : {}'.format(c.benevole.assopartenaire, c_duree))
+            try:
+                repart[c.benevole.assopartenaire] += c_duree
+            except:
+                repart[c.benevole.assopartenaire] = c_duree
+            # print('{} : {}'.format(c.benevole.assopartenaire, repart[c.benevole.assopartenaire]))
+    for rep, val in repart.items():
+        repart[rep] = round(val / total *100, 1)
+        print('{} : {}'.format(rep, repart[rep]))
     return dict(sorted(repart.items(), key=lambda item: item[1],reverse=True))
 
 
