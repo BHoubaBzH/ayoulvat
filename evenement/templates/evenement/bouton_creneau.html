@@ -114,7 +114,7 @@
     {% endif %}
 {##################################################################}
 {# la personne est admin et bénévole #}
-{% elif user.profilebenevole.UUID and 'evenement.delete_creneau' in perms %}
+{% elif user.profilebenevole.UUID and 'evenement.delete_creneau' in perms %} 
     {# le creneau est occupé #}
     {% if creno.benevole %}
         {# par moi #}
@@ -139,13 +139,14 @@
             </button>
         {% endif %}
     {# creneau libre #}
-    {%else %}
+    {% else %}
+    {% comment " retiré car ca génére un temps de réponse enorme et pas dit que ca server a quelque chose de tester la liste" %}
         {# le benevole est dans la liste des benevoles du creneau #}
         {% if user.profilebenevole|stringformat:"s" in creneauf.benevole|stringformat:"s" %}
             <button class="creneau_libre poste poste-{{ poste.UUID }}"
                 style="grid-row: ligne-{{ creno.poste_id }};
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                title="Mon Créneau"
+                title="créneau disponible"
                 data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
                 data-bs-creneauuuid="{{ creno.UUID }}">
                 <a><b>Disponible</b></a>
@@ -161,8 +162,18 @@
                 <a><b>Non Dispo</b></a>
             </button>
         {% endif %}
-    {% endif %}
+    {% endcomment %}
 
+        <button class="creneau_libre poste poste-{{ poste.UUID }}"
+            style="grid-row: ligne-{{ creno.poste_id }};
+            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+            title="créneau disponible"
+            data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
+            data-bs-creneauuuid="{{ creno.UUID }}">
+            <a><b>Disponible</b></a>
+        </button>
+    {% endif %}
+  
 {##################################################################}
 {# la personne est pure admin et pas bénévole #}
 {% elif not user.profilebenevole.UUID and  'evenement.delete_creneau' in perms %}
