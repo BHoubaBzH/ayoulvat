@@ -86,13 +86,12 @@ def repartition_par_assos(creneaux):
     asso_duree = timedelta(0, 0, 0, 0)
     total = timedelta(0, 0, 0, 0)
     for c in creneaux:
-        c_duree = c.fin - c.debut
-        total += c_duree
+        if c.benevole and c.benevole.assopartenaire:
+            c_duree = c.fin - c.debut
+            total += c_duree
 
     for c in creneaux:
-        c_duree = c.fin - c.debut
-        total += c_duree
-        if c.benevole:
+        if c.benevole and c.benevole.assopartenaire:
             c_duree = c.fin - c.debut
             asso_duree += c_duree
             pourcentage = asso_duree / total *100
