@@ -121,7 +121,7 @@ class CreneauForm(ModelForm):
         try:
             self.pas_creneau = kwargs.pop('pas_creneau')
         except:
-            self.pas_creneau = 60
+            self.pas_creneau = 30
         try:
             self.poste_uuid = kwargs.pop('poste_uuid')
         except:

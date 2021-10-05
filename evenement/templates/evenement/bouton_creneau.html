@@ -140,7 +140,7 @@
         {% endif %}
     {# creneau libre #}
     {% else %}
-    {% comment " retiré car ca génére un temps de réponse enorme et pas dit que ca server a quelque chose de tester la liste" %}
+{% comment " retiré car ca génére un temps de réponse enorme et pas dit que ca server a quelque chose de tester la liste" %}
         {# le benevole est dans la liste des benevoles du creneau #}
         {% if user.profilebenevole|stringformat:"s" in creneauf.benevole|stringformat:"s" %}
             <button class="creneau_libre poste poste-{{ poste.UUID }}"
@@ -162,8 +162,7 @@
                 <a><b>Non Dispo</b></a>
             </button>
         {% endif %}
-    {% endcomment %}
-
+{% endcomment %}
         <button class="creneau_libre poste poste-{{ poste.UUID }}"
             style="grid-row: ligne-{{ creno.poste_id }};
             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
@@ -172,6 +171,7 @@
             data-bs-creneauuuid="{{ creno.UUID }}">
             <a><b>Disponible</b></a>
         </button>
+
     {% endif %}
   
 {##################################################################}

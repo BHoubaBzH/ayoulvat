@@ -6,8 +6,6 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.core import serializers
 
 from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
@@ -83,7 +81,7 @@ def planning_retourne_pas(request):
     if 'planning' in request.POST:
         # retrouve le pas du planning à partir des infos du creneau
         Plan = Planning.objects.get(UUID=request.POST.get('planning'))
-        pas_value = Plan._meta.get_field('pas').value_from_object(Plan)
+        pas_value = Plan.pas
     else:
         # pas possible normalement, on prévoit quand meme une valeur par défaut d une heure au pas
         pas_value = 60
@@ -252,13 +250,14 @@ def forms_creneaux(request, data):
             dictionnaire des forms creneaux: key: UUID / val: form
         gère la création, modification et suppression de creneaux en fonction du contenu de POST
     """
+    pas = planning_retourne_pas(request)
     # print('*** Debut fonction forms_creneaux : {}'.format(datetime.datetime.now()))
     if any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter']) and not request.POST.get('creneau_supprimer'):
         # form en lien avec l objet basé sur model et pk UUID creneau
         if 'creneau_modifier' in request.POST:
             formcreneau = CreneauForm(request.POST,
                                       instance=Creneau.objects.get(UUID=request.POST.get('creneau')),
-                                      pas_creneau=planning_retourne_pas(request),
+                                      pas_creneau=pas,
                                       planning_uuid=request.POST.get('planning'),
                                       poste_uuid=request.POST.get('poste'),
                                       benevole_uuid=request.POST.get('benevole'),
@@ -267,7 +266,7 @@ def forms_creneaux(request, data):
         # nouvel objet en base
         if 'creneau_ajouter' in request.POST:
             formcreneau = CreneauForm(request.POST,
-                                      pas_creneau=planning_retourne_pas(request),
+                                      pas_creneau=pas,
                                       planning_uuid=request.POST.get('planning'),
                                       poste_uuid=request.POST.get('poste'),
                                       benevole_uuid=request.POST.get('benevole'),
@@ -291,7 +290,7 @@ def forms_creneaux(request, data):
     for creneau in Creneau.objects.filter(planning_id=data["planning_uuid"]):  # liste des creneaux du planning
         # form en lien avec l objet basé sur model et pk UUID creneau
         formcreneau = CreneauForm(instance=Creneau.objects.get(UUID=creneau.UUID),
-                                  pas_creneau=planning_retourne_pas(request),
+                                  pas_creneau=pas,
                                   planning_uuid=request.POST.get('planning'),
                                   poste_uuid=request.POST.get('poste'),
                                   benevole_uuid=request.POST.get('benevole'),
@@ -522,7 +521,7 @@ def CreneauFetch(request):
             creneau = CreneauForm(personne_connectee=request.user, 
                                 type="creneau",
                                 instance=Creneau.objects.get(UUID=request.POST.get('creneau_uuid')))
-            return HttpResponse(creneau.as_table())
+            return HttpResponse(creneau.as_table(), content_type="text/plain")
             # return JsonResponse({'creneau_form' : creneau }, safe=False)
         elif request.POST.get('creneau_affiche') == 'json':
             creneau = Creneau.objects.filter(UUID = request.POST.get('creneau_uuid')).values()

@@ -41,6 +41,14 @@ def assos_part(asso):
     list_assos = AssoPartenaire.objects.filter(Association=asso)
     return list_assos
 
+def total_heures_benevoles(creneaux):
+    total = timedelta(0, 0, 0, 0)
+    for c in creneaux:
+        if c.benevole and c.benevole.assopartenaire:
+            c_duree = c.fin - c.debut
+            total += c_duree
+    return total
+
 def benevoles_par_asso(list_assos):
     """ returne un dictionnaire de nombre de bénévole par asso """
     dic = {}
@@ -83,13 +91,7 @@ def repartition_par_assos(creneaux):
         sortie : dictionnaire key : assos , pourcentage total
     """
     repart = {}
-    asso_duree = timedelta(0, 0, 0, 0)
-    total = timedelta(0, 0, 0, 0)
-    for c in creneaux:
-        if c.benevole and c.benevole.assopartenaire:
-            c_duree = c.fin - c.debut
-            total += c_duree
-
+    total = total_heures_benevoles(creneaux)
     for c in creneaux:
         if c.benevole and c.benevole.assopartenaire:
             c_duree = c.fin - c.debut
@@ -209,11 +211,12 @@ class BenevolesListView(ListView):
 @method_decorator(user_passes_test(lambda u: u.groups.filter(name__in=['Administrateur','Organisteur','Responsable']).exists()), name='dispatch')
 class DashboardView(View):
     template_name = "administration/dashboard.html" 
-
+ 
     def dispatch(self, request, *args, **kwargs):
         print('{} : dispatch'.format(__class__.__name__))
         self.Evt = Evenement.objects.get(UUID=self.request.session['uuid_evenement']) # recuper l evenement
         self.Asso = Association.objects.get(UUID=self.request.session['uuid_association']) # recuper l asso
+        self.queryset_c = Creneau.objects.filter(evenement=self.Evt, type="creneau")
         self.context = { 
             # nav bar infos : debut
             "EvtOuvertBenevoles" : inscription_ouvert(self.Evt.inscription_debut, self.Evt.inscription_fin), # integer précisant si on est avant/dans/après la période de modification des creneaux
@@ -222,14 +225,14 @@ class DashboardView(View):
             "Association" : self.Asso,
             "Evenement" : self.Evt, 
             "Plannings": Planning.objects.filter(evenement=self.Evt).order_by('debut'),  # objets planning de l'evenement
-            "Creneaux" : Creneau.objects.filter(evenement=self.Evt, type="creneau"),
+            "Creneaux" : self.queryset_c,
             "Creneaux_libres" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=True).count,
             "Creneaux_occupes" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=False).count,
             "Assos_partenaires" : assos_part(self.Asso),
             "Benevoles_par_asso" : benevoles_par_asso(assos_part(self.Asso)),
             "Plannings_occupation" : plannings_occupation(Planning.objects.filter(evenement=self.Evt).order_by('equipe__nom','debut')),
             "Equipes_occupation" : equipes_occupation(Equipe.objects.filter(evenement=self.Evt).order_by('nom')),
-            "Repartition_par_assos" : repartition_par_assos(Creneau.objects.filter(evenement=self.Evt)),
+            "Repartition_par_assos" : repartition_par_assos(self.queryset_c),
 
             "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=self.Evt),  # objets benevoles de l'evenement
             "Administrateurs": ProfileAdministrateur.objects.filter(association=self.Asso),

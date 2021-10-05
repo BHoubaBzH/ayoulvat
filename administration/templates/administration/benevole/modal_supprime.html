@@ -10,7 +10,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalLabel">
-                Es-tu sûr de supprimer ce bénévole? <script>document.write(BenevoleName)</script>
+                Es-tu sûr de supprimer ce bénévole? <!--script>document.write(BenevoleLastName)</script-->
                 </h5>
             </div>
             <form  id="form-ajout-supprimer" class="form-supprime-benevole" method='post'>
@@ -19,7 +19,7 @@
                 {% comment "" %}
                 <table class="table">
                 
-                <input type="text" name="BenevoleName" id="BenevoleName" value="" />
+                <input type="text" name="BenevoleLastName" id="BenevoleLastName" value="" />
                 </table>
                 {% endcomment %}
                 <input type="hidden" name="BenevoleUUID" id="BenevoleUUID" value="" />
@@ -37,9 +37,9 @@
   $(document).on("click", ".benevole-supprime", function (e) {
     /*alert('script ! ');*/
     e.preventDefault();
-    var BenevoleUUID = $(this).attr('data-id1');
-    var BenevoleName = $(this).attr('data-id2');
-    var BenevoleFirstName = $(this).attr('data-id3');
+    var BenevoleUUID = $(this).attr('data-bs-id1');
+    var BenevoleLastName = $(this).attr('data-bs-id2');
+    var BenevoleFirstName = $(this).attr('data-bs-id3');
     $("#BenevoleUUID").val(BenevoleUUID);
     $("#BenevoleLastName").val(BenevoleLastName);
     $("#BenevoleFirstName").val(BenevoleFirstName);

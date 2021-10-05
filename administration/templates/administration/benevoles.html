@@ -67,9 +67,9 @@
                         {% if not benevole.personne|has_group:"Administrateur" and not benevole.personne|has_group:"Organisateur" and not benevole.personne|has_group:"Responsable" %}
                             <button style="" class="benevole-supprime btn btn-sm" title="supprimer un bénévole" 
                                 data-bs-toggle="modal" data-bs-target="#modal-benevole-supprime"
-                                data-id1="{{benevole.personne.UUID}}"
-                                data-id2="{{benevole.personne.last_name}}"
-                                data-id3="{{benevole.personne.fisrt_name}}">
+                                data-bs-id1="{{benevole.personne.UUID}}" 
+                                data-bs-id2="{{benevole.personne.last_name}}" 
+                                data-bs-id3="{{benevole.personne.fisrt_name}}">
                                 <i style="color: var(--bs-danger)" class="bi bi-x-square fs-6"></i>
                             </button>
                         {% endif %}
