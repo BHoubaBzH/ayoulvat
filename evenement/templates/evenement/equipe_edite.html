@@ -1,4 +1,4 @@
-{# evenement/equipe_edite.html #}
+<!-- evenement/equipe_edite.html -->
 
 <div id="boutons des equipes" class="equipe-bouton-slot" aria-hidden="true"
     style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes-boutons;">
@@ -49,7 +49,6 @@
                 <div class="modal-footer">
                     {# données pour garder le planning affiché apres submission POST#}
                     <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-
                     <input  name="equipe" value="{{ equipe.UUID }}" type="hidden">
                     
                     {% if 'evenement.delete_equipe'  in perms %}
@@ -60,7 +59,7 @@
                         </button>
                     {% endif %}
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" id="equipe_modifier-{{ equipe.UUID }}" name="equipe_modifier" value="modifier" class="btn btn-primary success">Modifier</button>
+                    <button type="submit" id="equipe_modifier-{{ equipe.UUID }}" name="equipe_modifier" value="" class="btn btn-primary success">Modifier</button>
                 </div>
             </form>
         </div>

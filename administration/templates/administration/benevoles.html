@@ -14,75 +14,130 @@
         <div class="row align-items-end">
             <div class="col-md-12">
                 <h2 style="margin-top: 2em;" title="">
-                    liste des bénévoles
+                    Bénévoles
                 </h2>
             </div>
         </div>
     </div>    
     <hr class="border-2 border-top border-dark"> {# barre horizontale #}
 
-    <div class="">
+{# barre des onglets #}
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <button class="nav-link active" id="benevoles-liste-tab" data-bs-toggle="tab" 
+                    data-bs-target="#benevoles-liste" type="button" role="tab" 
+                    aria-controls="benevoles-liste" aria-selected="true">Liste</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" id="benevoles-emails-tab" data-bs-toggle="tab" 
+                    data-bs-target="#benevoles-emails" type="button" role="tab" 
+                    aria-controls="benevoles-emails" aria-selected="false">Courriels</button>    
+        </li>
+    </ul>
 
-        <div class="col-md-9 ms-sm-auto col-lg-1 px-md-4 pt-3">
-            <button style="" class="btn btn-sm" title="ajouter un bénévole" data-bs-toggle="modal" data-bs-target="#modal-benevole-ajoute">
-                <i style="color: var(--bs-success)" class="bi bi-plus-square fs-3"></i>
-            </button>
+    <div class="tab-content" id="benevoles">
+{# onglet 1 #}
+        <div class="tab-pane fade show active post_display_javascript" id="benevoles-liste" 
+            role="tabpanel" aria-labelledby="benevoles-liste-tab">
+
+            <div class="col-md-9 ms-sm-auto col-lg-1 px-md-4 pt-3">
+                    <button style="" class="btn btn-sm" title="ajouter un bénévole" data-bs-toggle="modal" data-bs-target="#modal-benevole-ajoute">
+                        <i style="color: var(--bs-success)" class="bi bi-plus-square fs-3"></i>
+                    </button>
+            </div>
+
+            {% if Benevoles %}
+                {# AFFICHE LES BENEVOLES #}
+                <table class="table table-dark  table-striped table-hover"  id="table_benevoles">
+                    <thead>
+                        <tr>
+                        <th scope="col">nom</th><th scope="col">prenom</th><th scope="col">email</th><th scope="col">portable</th>
+                        <th scope="col">role</th><th scope="col">Asso Partenaire</th><th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for benevole in Benevoles %}
+                        <tr style="vertical-align : middle;">
+                            <td>{{benevole.personne.last_name|upper}}</a></td><td>{{benevole.personne.first_name|capfirst}}</td>
+                            <td>{{benevole.personne.email}}</td><td>{{benevole.personne.portable}}</td>                 
+                        <td>
+                            {% for group in benevole.personne.groups.all %}
+                                {{ group }}{% if not forloop.last %}, {%endif%}
+                            {% endfor %}
+                        </td>
+                        <td>{{benevole.assopartenaire}}</td>   
+                        <td>
+                            <div style="display: flex;">
+                            {% comment "" %}
+                            <a href="#" class="d-block p-3 link-blue text-decoration-none" title="éditer" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
+                                <i class="bi-pencil-square fs-3"></i>
+                            </a>
+                            {% endcomment %}
+                            {% if not benevole.personne|has_group:"Administrateur" and not benevole.personne|has_group:"Organisateur" and not benevole.personne|has_group:"Responsable" %}
+                                <button style="" class="benevole-supprime btn btn-sm" title="supprimer un bénévole" 
+                                    data-bs-toggle="modal" data-bs-target="#modal-benevole-supprime"
+                                    data-bs-id1="{{benevole.personne.UUID}}" 
+                                    data-bs-id2="{{benevole.personne.last_name}}" 
+                                    data-bs-id3="{{benevole.personne.fisrt_name}}">
+                                    <i style="color: var(--bs-danger)" class="bi bi-x-square fs-6"></i>
+                                </button>
+                            {% endif %}
+                            </div>
+                        </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                pas encore de bénévole inscrit
+            {% endif %} 
         </div>
+{# fin onglet 1 #}
+{# debut onglet 2 #}
+        <div class="tab-pane fade show post_display_javascript" id="benevoles-emails" 
+            role="tabpanel" aria-labelledby="benevoles-emails-tab">
 
-        {% if Benevoles %}
-            {# AFFICHE LES BENEVOLES #}
-            <table class="table table-dark  table-striped table-hover"  id="table_benevoles">
-                <thead>
-                    <tr>
-                    <!-- th scope="col">#</th -->
-                    <th scope="col">nom</th>
-                    <th scope="col">prenom</th>
-                    <th scope="col">email</th>
-                    <th scope="col">portable</th>
-                    <th scope="col">role</th>
-                    <th scope="col">Asso Partenaire</th>                  
-                    <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for benevole in Benevoles %}
-                    <tr style="vertical-align : middle;">
-                    <td>{{benevole.personne.last_name|upper}}</a></td>
-                    <td>{{benevole.personne.first_name|capfirst}}</td>
-                    <td>{{benevole.personne.email}}</td>
-                    <td>{{benevole.personne.portable}}</td>                 
-                    <td>
-                        {% for group in benevole.personne.groups.all %}
-                            {{ group }}{% if not forloop.last %}, {%endif%}
+            <div class="col-md-9 ms-sm-auto col-lg-1 px-md-4 pt-3">
+                    <button style="" class="btn btn-sm" title="courriels des bénévoles de l'évènement" data-bs-toggle="tooltip" data-bs-placement="bottom" >
+                        <a href="mailto:{{ Emails_benevoles_evenement|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a>
+                    </button>
+            </div>
+
+
+            <div class="row">
+                <div class="col col-lg-12">
+                    <table class="table table-dark table-striped table-hover"  id="table_planning">
+                        <thead>
+                            <tr><th scope="col" class="col col-lg-5">equipe</th><th scope="col" class="col col-lg-5">planning</th><th scope="col" class="col col-lg-2">courriels</th></tr>
+                        </thead>
+                        <tbody>
+                        {% for equipe, emails in Emails_benevoles_par_equipe.items %}
+                            <tr style="vertical-align : middle;">
+                                <td>{{ equipe.nom }}</td><td>tous</td>
+                                <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles de l'équipe {{equipe.nom}}">
+                                    <a href="mailto:{{ emails|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a>
+                                </td></tr>
+                            {% for plan, details in Emails_benevoles_par_planning.items %}
+                                <!--tr style="vertical-align : middle;" class="col col-lg-4"><td>{{ plan }}</td><td>{{ details }}</td></tr-->
+                                {% if details.0 == equipe and details.2 %} 
+                                    <tr style="vertical-align : middle;">
+                                        <td></td><td>{{ details.1 }}</td>
+                                        <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles du planning {{details.1}} de l'équipe {{equipe.nom}}">
+                                            <a href="mailto:{{ details.2|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                               {% endfor %}
                         {% endfor %}
-                    </td>
-                    <td>{{benevole.assopartenaire}}</td>   
-                    <td>
-                        <div style="display: flex;">
-                        {% comment "" %}
-                        <a href="#" class="d-block p-3 link-blue text-decoration-none" title="éditer" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
-                            <i class="bi-pencil-square fs-3"></i>
-                        </a>
-                        {% endcomment %}
-                        {% if not benevole.personne|has_group:"Administrateur" and not benevole.personne|has_group:"Organisateur" and not benevole.personne|has_group:"Responsable" %}
-                            <button style="" class="benevole-supprime btn btn-sm" title="supprimer un bénévole" 
-                                data-bs-toggle="modal" data-bs-target="#modal-benevole-supprime"
-                                data-bs-id1="{{benevole.personne.UUID}}" 
-                                data-bs-id2="{{benevole.personne.last_name}}" 
-                                data-bs-id3="{{benevole.personne.fisrt_name}}">
-                                <i style="color: var(--bs-danger)" class="bi bi-x-square fs-6"></i>
-                            </button>
-                        {% endif %}
-                        </div>
-                    </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            pas encore de bénévole inscrit
-        {% endif %} 
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>    
+{# fin onglet 2 #}
     </div>
+
 </div>
 
 {% include "administration/benevole/modal_ajoute.html" %}

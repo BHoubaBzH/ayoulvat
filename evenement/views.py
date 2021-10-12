@@ -118,14 +118,12 @@ def tous_creneaux_entre_2_heures(debut, fin, uuid_evenement):
     return crenos_out
 
 
-def forms_equipe(request, data, uuid_evenement):
+def forms_equipe(request):
     """
         entree:
             la requete (contenant les infos POST)
-            l'objet data renvoyé au template
-            l'uid de l'evenement
         sortie:
-            null
+            None
         gère la création, modification et suppression des equipes en fonction du contenu de POST
     """
     # print('*** Debut fonction forms_equipe : {}'.format(datetime.datetime.now()))
@@ -143,7 +141,15 @@ def forms_equipe(request, data, uuid_evenement):
 
     if request.POST.get('equipe_supprimer'):
         Equipe.objects.filter(UUID=request.POST.get('equipe_supprimer')).delete()
+    return None
 
+def dic_equipes(uuid_evenement):
+    """
+        entree:
+            l'uid de l'evenement
+        sortie:
+            dictionnaire des forms équipe: key: UUID / val: form
+    """
     # cree dans la page toutes nos from pour les equipes
     dic_equipe_init = {}  # dictionnaire des forms
     # key : UUID postes
@@ -157,15 +163,12 @@ def forms_equipe(request, data, uuid_evenement):
     # print('*** Fin fonction forms_equipe : {}'.format(datetime.datetime.now()))
     return dic_equipe_init
 
-def forms_planning(request, data, uuid_evenement):
+def forms_planning(request):
     """
         entree:
             la requete (contenant les infos POST)
-            l'objet data renvoyé au template
-            l'uid de l'evenement
         sortie:
-            null
-        gère la création, modification et suppression des plannings en fonction du contenu de POST
+            None
     """
     # print('*** Debut fonction forms_planning : {}'.format(datetime.datetime.now()))
     if any(x in request.POST for x in ['planning_modifier', 'planning_ajouter']):
@@ -182,7 +185,16 @@ def forms_planning(request, data, uuid_evenement):
 
     if request.POST.get('planning_supprimer'):
         Planning.objects.filter(UUID=request.POST.get('planning_supprimer')).delete()
+    return None
 
+def dic_plannings(uuid_evenement):
+    """
+        entree:
+            l'uid de l'evenement
+        sortie:
+            dictionnaire des forms planning: key: UUID / val: form
+        gère la création, modification et suppression des plannings en fonction du contenu de POST
+    """
     # cree dans la page toutes nos from pour les postes du planning
     dic_planning_init = {}  # dictionnaire des forms
     # key : UUID postes
@@ -197,14 +209,12 @@ def forms_planning(request, data, uuid_evenement):
     return dic_planning_init
 
 
-def forms_postes(request, data):
+def forms_poste(request):
     """
         entree:
             la requete (contenant les infos POST)
-            l'objet data renvoyé au template
-            l'uid de l'evenement
         sortie:
-            dictionnaire des forms postes: key: UUID / val: form
+            None
         gère la création, modification et suppression de poste en fonction du contenu de POST
     """
     # print('*** Debut fonction forms_postes : {}'.format(datetime.datetime.now()))
@@ -225,7 +235,15 @@ def forms_postes(request, data):
     if request.POST.get('poste_supprimer'):
         print('poste {} supprimé'.format(Poste.objects.filter(UUID=request.POST.get('poste_supprimer'))))
         Poste.objects.filter(UUID=request.POST.get('poste_supprimer')).delete()
+    return None
 
+def dic_postes(data):
+    """
+        entree:
+            l'objet data renvoyé au template
+        sortie:
+            dictionnaire des forms postes: key: UUID / val: form
+    """
     # cree dans la page toutes nos from pour les postes du planning
     dic_postes_init = {}  # dictionnaire des forms
     # key : UUID postes
@@ -240,14 +258,12 @@ def forms_postes(request, data):
     return dic_postes_init
 
 
-def forms_creneaux(request, data):
+def forms_creneau(request):
     """
         entree:
             la requete (contenant les infos POST)
-            l'objet data renvoyé au template
-            l'uid de l'evenement
         sortie:
-            dictionnaire des forms creneaux: key: UUID / val: form
+                None
         gère la création, modification et suppression de creneaux en fonction du contenu de POST
     """
     pas = planning_retourne_pas(request)
@@ -281,9 +297,20 @@ def forms_creneaux(request, data):
     if 'creneau_supprimer' in request.POST:
         print('creneau {} supprimé'.format(Creneau.objects.filter(UUID=request.POST.get('creneau'))))
         Creneau.objects.filter(UUID=request.POST.get('creneau')).delete()
+    return None
 
+
+def dic_creneaux(request, data):
+    """
+        entree:
+            la requete (contenant les infos POST)
+            l'objet data renvoyé au template
+        sortie:
+            dictionnaire des forms creneaux: key: UUID / val: form
+    """
     # cree dans la page toutes nos from pour les creneaux de l' evenement
     dic_creneaux_init = {}  # dictionnaire des forms
+    pas = planning_retourne_pas(request)
     # key : UUID postes
     # val : form de creneau initialisée objet db lié
     # parcours les creneaux de l'evenement dans la base
@@ -386,7 +413,7 @@ def evenement(request, uuid_evenement):
         "FormEquipe" : EquipeForm(initial={'evenement': evenement}), # form non liée au template pour ajout d une nouvelle equipe
         "DicEquipes" : "",
         "FormPlanning" : "", # form non liée au template pour ajout d un nouveau planning
-        "DicPlannings" : "",
+        "DicPlannings" : dic_plannings(evenement),
         "DicPostes" : "",  # dictionnaire des formes de poste de l'evenement liées aux objets de la db
         "FormPoste" : "",  # form non liée au template pour ajout d un nouveau poste
         "DicCreneaux" : "",  # dictionnaire des formes de creneau de l'evenement liées aux objets de la db
@@ -395,9 +422,9 @@ def evenement(request, uuid_evenement):
         "EvtOuvertBenevoles" : inscription_ouvert(evenement.inscription_debut, evenement.inscription_fin) , # integer précisant si on est avant/dans/après la période de modification des creneaux
     }
 
-    data["DicEquipes"] = forms_equipe(request, data, evenement)
-    data["FormEquipe"] = EquipeForm(initial={'evenement': evenement})
-    data["DicPlannings"] = forms_planning(request, data, evenement)
+    data["DicEquipes"] = dic_equipes(evenement)
+    #data["FormEquipe"] = EquipeForm(initial={'evenement': evenement})
+    #data["DicPlannings"] = dic_plannings(evenement)
     data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})  
 
     # check du groupe du user connecté:
@@ -422,6 +449,17 @@ def evenement(request, uuid_evenement):
             creneau_bene = Creneau.objects.get(UUID=request.POST.get('creneau'))
             creneau_bene.benevole_id = request.user.profilebenevole.UUID if ('benevole_prend_creneau' in request.POST) else ""
             creneau_bene.save()
+
+        # admin change un objet de l'evenement
+        if  any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter', 'creneau_supprimer']):
+            forms_creneau(request)
+        if any(x in request.POST for x in ['poste_modifier', 'poste_ajouter','poste_supprimer']):
+            forms_poste(request)
+        if any(x in request.POST for x in ['planning_modifier', 'planning_ajouter', 'planning_supprimer']):
+            forms_planning(request)
+            data["retour_grid_equipes"] = "1" # si edite un planning, ie on est sur le grid_equipe, alors on reste sur la page apres soumission
+        if any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter', 'equipe_supprimer']):
+            forms_equipe(request)
 
         if request.POST.get('equipe'):  # selection d'une équipe
             data["equipe_uuid"] = request.POST.get('equipe')  # UUID equipe selectionnée
@@ -457,9 +495,9 @@ def evenement(request, uuid_evenement):
                     data["PlanningRange"] = planning_range(evenement.debut,
                                         evenement.fin,
                                         30)
-
-            data["DicPostes"] = forms_postes(request, data)
-            data["DicCreneaux"] = forms_creneaux(request, data)
+            # envoi les forms au template
+            data["DicPostes"] = dic_postes(data)
+            data["DicCreneaux"] = dic_creneaux(request, data)
             data["Postes"] = Poste.objects.filter(planning_id=data["planning_uuid"]).order_by('nom')  # objets postes du planning
             data["Creneaux"] = Creneau.objects.filter(planning_id=data["planning_uuid"]).order_by('debut')  # objets creneaux du planning
 

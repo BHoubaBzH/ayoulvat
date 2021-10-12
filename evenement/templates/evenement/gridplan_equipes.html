@@ -1,5 +1,17 @@
 <!-- evenement/gridplan_equipes.html -->
 
+<div class="container">
+    <div class="row align-items-end">
+        <div class="col-md-12">
+            <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
+                title="les planning des différentes équipes pour l'évènement.">
+                Liste des équipes et de leurs plannings associés
+            </h2>
+        </div>
+    </div>
+</div>    
+<hr class="border-2 border-top border-dark"> {# barre horizontale #}
+
 <div class="planning-equipes" aria-labelledby="planning-heading">
     {# affiche les entetes des colonnes du planning : les heures #}
 
@@ -40,7 +52,7 @@
         {% if 'evenement.add_equipe' in perms %}
             {% include "evenement/equipe_ajoute.html" %}
         {% endif %}
-    {% elif equipe_uuid %} 
+    {% elif equipe_uuid %} plop
         {# une equipe de selectionnée, on affiche que cette équipe dans le planning #}
         {% for equipe in Equipes %}
             {% if  equipe.UUID|stringformat:'s' == equipe_uuid|stringformat:'s'%}

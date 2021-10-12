@@ -66,7 +66,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalLabel">Ajout d'un planning</h5>
             </div>
-            <form  id="form-planning" method='post'>
+            <form  id="form-planning-ajouter" method='post'>
                 <div class="modal-body">
                         {% csrf_token %}
                     <table class="table">
@@ -94,7 +94,7 @@
     /* quand le bouton Ajouter est utilisé dans modal, submit la form et ferme le modal */
     $(document).on('click', '#planning_ajouter', function () {
         /* alert('submitting-{{ forloop.counter }}'); */
-        document.getElementById('form-planning').submit();
+        document.getElementById('form-planning-ajouter').submit();
         $('#modal-poste_ajouter').modal('toggle');
     });
 </script>

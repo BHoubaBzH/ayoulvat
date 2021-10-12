@@ -18,9 +18,18 @@
     <input type="hidden" name="equipe" value="{{ equipe_uuid }}">
 </form>
 
-<div class="titre">
-    <h2>Planning du {{ Planning.debut|date:'l j F' }}</h2> 
-</div>
+<div class="container">
+    <div class="row align-items-end">
+        <div class="col-md-12">
+            <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
+                title="les planning des différentes équipes pour l'évènement, avec tes créneaux.">
+                {{ Planning.equipe.nom }} : Planning du {{ Planning.debut|date:'l j F' }}
+            </h2>
+        </div>
+    </div>
+</div>    
+<hr class="border-2 border-top border-dark"> {# barre horizontale #}
+
 <div class="overflow-scroll">
     <div class="planning-creneaux" aria-labelledby="planning-heading" id="planning-creneaux">
         {# affiche les entetes des colonnes du planning : les heures #}

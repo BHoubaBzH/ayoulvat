@@ -18,7 +18,6 @@ from association.models import AssoPartenaire, Association
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.core import serializers
-
 ################################################
 #            fonctions 
 ################################################
@@ -49,7 +48,7 @@ def total_heures_benevoles(creneaux):
             total += c_duree
     return total
 
-def benevoles_par_asso(list_assos):
+def nb_benevoles_par_asso(list_assos):
     """ returne un dictionnaire de nombre de bénévole par asso """
     dic = {}
     for asso in list_assos :
@@ -103,10 +102,58 @@ def repartition_par_assos(creneaux):
             # print('{} : {}'.format(c.benevole.assopartenaire, repart[c.benevole.assopartenaire]))
     for rep, val in repart.items():
         repart[rep] = round(val / total *100, 1)
-        print('{} : {}'.format(rep, repart[rep]))
+        # print('{} : {}'.format(rep, repart[rep]))
     return dict(sorted(repart.items(), key=lambda item: item[1],reverse=True))
 
+def emails_benevoles_evenement(evt):
+    '''
+        sortie : liste emails des bénévoles ayant pris un créneau
+    '''
+    listout = []
+    for bene in ProfileBenevole.objects.filter(BenevolesCreneau__evenement=evt):
+            email = bene.personne.email
+            listout.append(email)
+    print(listout)
+    return set(listout)
 
+def emails_benevoles_par_equipe(evt):
+    '''
+        sortie : dictionnaire de liste emails , clés : equipes
+    '''
+    tabout = {}
+    for equipe in list(Equipe.objects.filter(evenement=evt)):
+        liste_emails = []
+        for bene in ProfileBenevole.objects.filter(BenevolesCreneau__equipe=equipe):
+            email = bene.personne.email
+            liste_emails.append(email)
+            if liste_emails:
+                tabout[equipe] = set(liste_emails)
+    #for k, v in tabout.items():
+    #    print(k)
+    #    print(*v)
+    return tabout
+
+def emails_benevoles_par_planning(evt):
+    '''
+        sortie : dictionnaire de liste[ equipe, planning nom, [liste emails]] , clés : plannings
+    '''
+    tabout = {}
+    for planning in list(Planning.objects.filter(evenement=evt).order_by("debut")):
+        liste_emails = []
+        liste_planning = []
+        for bene in ProfileBenevole.objects.filter(BenevolesCreneau__planning=planning):
+            email = bene.personne.email
+            liste_emails.append(email)
+        liste_planning.append(planning.equipe)
+        liste_planning.append(planning.nom)
+        liste_planning.append(set(liste_emails))
+        tabout[planning] = liste_planning
+    #for k, v in tabout.items():
+    #    print('##')
+    #    print(k)
+    #    print(*v)
+    return tabout
+ 
 def inscription_ouvert(debut, fin):
     """
         prend une date de debut et une date de fin en entree
@@ -150,10 +197,16 @@ class BenevolesListView(ListView):
             "FormPersonne" : PersonneForm(),
             "FormBenevole" : BenevoleForm(), 
 
+            "Equipes" : Equipe.objects.filter(evenement=self.Evt).order_by('nom'),
+
             "Benevoles": self.queryset.filter(BenevolesEvenement=self.Evt).order_by('personne__last_name'),  # objets benevoles de l'evenement
             "Administrateurs": ProfileAdministrateur.objects.filter(association=self.Asso),
             "Organisteurs" : ProfileOrganisateur.objects.filter(OrganisateurEvenement=self.Evt),
             "Responsables" : ProfileResponsable.objects.filter(ResponsableEquipe__in=Equipe.objects.filter(evenement=self.Evt)),
+
+            "Emails_benevoles_par_planning" : emails_benevoles_par_planning(self.Evt),
+            "Emails_benevoles_par_equipe" : emails_benevoles_par_equipe(self.Evt),
+            "Emails_benevoles_evenement" : emails_benevoles_evenement(self.Evt),
         }
         return super().dispatch(request, *args, **kwargs)
 
@@ -229,7 +282,7 @@ class DashboardView(View):
             "Creneaux_libres" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=True).count,
             "Creneaux_occupes" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=False).count,
             "Assos_partenaires" : assos_part(self.Asso),
-            "Benevoles_par_asso" : benevoles_par_asso(assos_part(self.Asso)),
+            "Benevoles_par_asso" : nb_benevoles_par_asso(assos_part(self.Asso)),
             "Plannings_occupation" : plannings_occupation(Planning.objects.filter(evenement=self.Evt).order_by('equipe__nom','debut')),
             "Equipes_occupation" : equipes_occupation(Equipe.objects.filter(evenement=self.Evt).order_by('nom')),
             "Repartition_par_assos" : repartition_par_assos(self.queryset_c),
@@ -246,7 +299,3 @@ class DashboardView(View):
         print('{} : get_context_data'.format(__class__.__name__))
         return render(request, self.template_name, self.context)
 
-    # envoi les datas au template
-    #def get_context_data(self, **kwargs):
-    #    print('{} : get_context_data'.format(__class__.__name__))
-    #    return self.context

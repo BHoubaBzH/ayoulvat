@@ -2,144 +2,151 @@
 {% load bootstrap5 %}
 {% load filters_perso %}
 
-<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse"
-data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="Choisis une équipe et un planning pour gérer tes créneaux">
-  <div class="position-sticky pt-3">
 
-    {# si un evenement a été selectionné on affiche les equipes et planning dans la sidebar #}
-    {% if Evenement.UUID %}
-      {# planning du benevole sur l evenement#}
-      {% comment "" %}
-      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-        <span>Mes Infos: </span>
-        <a class="link-secondary" href="#" aria-label="Add a new report">
-          <span data-feather="plus-circle"></span>
-        </a>
-      </h6>
-      {% endcomment %}
-      <ul class="nav flex-column">
-          <li class="nav-item">
-            <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
-              {% csrf_token %}
-              <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-              <input  name="equipe" value="{{ team.UUID }}" type="hidden">
-              <input type="hidden" name="planning_perso" value="oui">
-              <button class="list-group-item evenement-button {% if planning_perso == 'oui' %}active{% endif %}"
-              data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="
-              Ton planning personnel sur tout l'évènement.">
-              Mon Planning</button>
-            </form>
-          </li>
-      </ul>
-      {# liste équipes #}
-      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-        <a><i class="bi-people fs-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="Equipes"></i></a>
-      </h6>
-      <ul class="nav flex-column">
-        {% if 'change_evenement'  in perms %} {# admins ont la liste de toutes les équipes #}
-          <li class="nav-item">
-            <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
-                <button class="list-group-item evenement-button {% if not equipe_uuid %}active{% endif %}" 
-                data-bs-toggle="tooltip" data-bs-placement="right" title="Planning Global">
-                    <a>Toutes</a>
-                    {% csrf_token %}
-                    <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                </button>
-            </form>
-          </li>
-        {% endif %}
-        {% for team in Equipes %}
-          {% if team.UUID|stringformat:'s' in plannings_equipes|stringformat:'s' %} 
-            {# affiche uniquement les equipes avec planning#}
-            <li class="nav-item">
-              <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
-                  {% csrf_token %}
-                  <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                  <input  name="equipe" value="{{ team.UUID }}" type="hidden">
-                  <button class="list-group-item evenement-button 
-                          {% if team.UUID|stringformat:'s' == equipe_uuid|stringformat:'s' %}active{% endif %}"
-                          {% if team.description %}
-                            data-bs-toggle="tooltip" data-bs-placement="right" title="{{team.description}}"
-                          {% endif %}>
-                      <a>{{ team.nom|capfirst }}</a>
-                  </button>
-              </form>
-            </li>
-          {% endif %}
-        {% endfor %}
-      </ul>
-      {# liste plannings #}
-      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-        <span>
-        <a><i class="bi-calendar3 fs-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="Plannings"></i></a>
-        {% for team in Equipes %}
-          {% if team.UUID|stringformat:'s' == equipe_uuid|stringformat:'s' %}{{ team.nom }}{% endif %}
-        {% endfor %}
-        </span>
-      </h6>
-      <ul class="nav flex-column mb-2">
-        {% for plan in Plannings %}
-          {% if  plan.equipe_id|stringformat:'s' == equipe_uuid|stringformat:'s' %} {# affiche que les planning de l'equipe #}
-            <li class="nav-item">
-              <form class="form evenement-form" method="post">
-                {% csrf_token %}
-                <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                <input  name="equipe" value="{{ plan.equipe_id }}" type="hidden"-->
-                <input  name="planning" value="{{ plan.UUID }}" type="hidden">
-                <button class="list-group-item evenement-button
-                      {% if plan.UUID|stringformat:'s' == planning_uuid|stringformat:'s' %}active{% endif %}"
-                      {% if plan.description %}
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="{{plan.description}}"
-                      {% endif %}>
-                  <a>{{ plan.nom }}</a>
-                </button>
-              </form>
-            </li>
-          {% elif not equipe_uuid %} {# affiche tous les planning de toutes les équipes de l'evenement #}
-            <li class="nav-item">
-              <form class="form evenement-form" method="post">
-                {% csrf_token %}
-                <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                <input  name="equipe" value="{{ plan.equipe_id }}" type="hidden"-->
-                <input  name="planning" value="{{ plan.UUID }}" type="hidden">
-                <button class="list-group-item evenement-button
-                      {% if plan.UUID|stringformat:'s' == planning_uuid|stringformat:'s' %}active{% endif %}"
-                      {% if plan.description %}
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="{{plan.description}}"
-                      {% endif %}>
-                  <a>{{ plan.equipe.nom }} <i class="bi bi-chevron-right"></i> {{ plan.nom }} </a>
-                </button>
-              </form>
-          {% endif %}
-        {% endfor %}
-      </ul>
-    {# sinon si on a plusieurs evenement, on affiche les evenements dans la sidebar#}
-    {% elif Evenements %}
-      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-        <span>Liste des évènements: </span>
-        <a class="link-secondary" href="#" aria-label="Add a new report">
-          <span data-feather="plus-circle"></span>
-        </a>
-      </h6>
-      <ul class="nav flex-column mb-2">
-        {% for event in Evenements %}
-          <li class="nav-item">
-            <form class="form evenement-form" method="get" action="{% url 'evenement' uuid_evenement=event.UUID %}">
-              <button class="list-group-item evenement-button">
-                <a>{{ event.nom }}</a>
-              </button>
-            </form>
-          </li>
-        {% endfor %}
-      </ul>
 
-    {# sinon pas encore d evenement il va faloir mettre un bouton pour en creer #}
-    {% else %}
-      <p>il n'y a pas encore d'évènement créé pour cette association.</p>
-    {% endif %}
 
-  </div>
-</nav>
+
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-auto bg-light sticky-top">
+            <div class="d-flex flex-sm-column flex-row flex-nowrap bg-light align-items-center sticky-top">
+              {# si un evenement a été selectionné on affiche les equipes et planning dans la sidebar #}
+              {% if Evenement.UUID %}
+                {# planning du benevole sur l evenement#}
+                {% comment "" %}
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                  <span>Mes Infos: </span>
+                  <a class="link-secondary" href="#" aria-label="Add a new report">
+                    <span data-feather="plus-circle"></span>
+                  </a>
+                </h6>
+                {% endcomment %}
+                <ul class="nav flex-column bouton-sidebar">
+                    <li class="nav-item">
+                      <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
+                        {% csrf_token %}
+                        <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                        <input  name="equipe" value="{{ team.UUID }}" type="hidden">
+                        <input type="hidden" name="planning_perso" value="oui">
+                        <button class="list-group-item evenement-button {% if planning_perso == 'oui' %}active{% endif %}"
+                        data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="
+                        Ton planning personnel sur tout l'évènement.">
+                        Mon Planning</button>
+                      </form>
+                    </li>
+                </ul>
+                {# liste équipes #}
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                  <a><i class="bi-people fs-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="Equipes"></i></a>
+                </h6>
+                <ul class="nav flex-column bouton-sidebar">
+                  {% if 'change_evenement'  in perms %} {# admins ont la liste de toutes les équipes #}
+                    <li class="nav-item">
+                      <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
+                          <button class="list-group-item evenement-button {% if not equipe_uuid %}active{% endif %}" 
+                          data-bs-toggle="tooltip" data-bs-placement="right" title="Planning Global">
+                              <a>Toutes</a>
+                              {% csrf_token %}
+                              <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                          </button>
+                      </form>
+                    </li>
+                  {% endif %}
+                  {% for team in Equipes %}
+                    {% if team.UUID|stringformat:'s' in plannings_equipes|stringformat:'s' %} 
+                      {# affiche uniquement les equipes avec planning#}
+                      <li class="nav-item">
+                        <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
+                            {% csrf_token %}
+                            <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                            <input  name="equipe" value="{{ team.UUID }}" type="hidden">
+                            <button class="list-group-item evenement-button 
+                                    {% if team.UUID|stringformat:'s' == equipe_uuid|stringformat:'s' %}active{% endif %}"
+                                    {% if team.description %}
+                                      data-bs-toggle="tooltip" data-bs-placement="right" title="{{team.description}}"
+                                    {% endif %}>
+                                <a>{{ team.nom|capfirst }}</a>
+                            </button>
+                        </form>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+                {# liste plannings #}
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                  <span>
+                  <a><i class="bi-calendar3 fs-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="Plannings"></i></a>
+                  {% for team in Equipes %}
+                    {% if team.UUID|stringformat:'s' == equipe_uuid|stringformat:'s' %}{{ team.nom }}{% endif %}
+                  {% endfor %}
+                  </span>
+                </h6>
+                <ul class="nav flex-column mb-2 bouton-sidebar">
+                  {% for plan in Plannings %}
+                    {% if  plan.equipe_id|stringformat:'s' == equipe_uuid|stringformat:'s' %} {# affiche que les planning de l'equipe #}
+                      <li class="nav-item">
+                        <form class="form evenement-form" method="post">
+                          {% csrf_token %}
+                          <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                          <input  name="equipe" value="{{ plan.equipe_id }}" type="hidden"-->
+                          <input  name="planning" value="{{ plan.UUID }}" type="hidden">
+                          <button class="list-group-item evenement-button
+                                {% if plan.UUID|stringformat:'s' == planning_uuid|stringformat:'s' %}active{% endif %}"
+                                {% if plan.description %}
+                                  data-bs-toggle="tooltip" data-bs-placement="right" title="{{plan.description}}"
+                                {% endif %}>
+                            <a>{{ plan.nom }}</a>
+                          </button>
+                        </form>
+                      </li>
+                    {% elif not equipe_uuid %} {# affiche tous les planning de toutes les équipes de l'evenement #}
+                      <li class="nav-item">
+                        <form class="form evenement-form" method="post">
+                          {% csrf_token %}
+                          <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                          <input  name="equipe" value="{{ plan.equipe_id }}" type="hidden"-->
+                          <input  name="planning" value="{{ plan.UUID }}" type="hidden">
+                          <button class="list-group-item evenement-button
+                                {% if plan.UUID|stringformat:'s' == planning_uuid|stringformat:'s' %}active{% endif %}"
+                                {% if plan.description %}
+                                  data-bs-toggle="tooltip" data-bs-placement="right" title="{{plan.description}}"
+                                {% endif %}>
+                            <a>{{ plan.equipe.nom }} <i class="bi bi-chevron-right"></i> {{ plan.nom }} </a>
+                          </button>
+                        </form>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              {# sinon si on a plusieurs evenement, on affiche les evenements dans la sidebar#}
+              {% elif Evenements %}
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                  <span>Liste des évènements: </span>
+                  <a class="link-secondary" href="#" aria-label="Add a new report">
+                    <span data-feather="plus-circle"></span>
+                  </a>
+                </h6>
+                <ul class="nav flex-column mb-2 bouton-sidebar">
+                  {% for event in Evenements %}
+                    <li class="nav-item">
+                      <form class="form evenement-form" method="get" action="{% url 'evenement' uuid_evenement=event.UUID %}">
+                        <button class="list-group-item evenement-button">
+                          <a>{{ event.nom }}</a>
+                        </button>
+                      </form>
+                    </li>
+                  {% endfor %}
+                </ul>
+
+              {# sinon pas encore d evenement il va faloir mettre un bouton pour en creer #}
+              {% else %}
+                <p>il n'y a pas encore d'évènement créé pour cette association.</p>
+              {% endif %}
+
+            </div>
+        </div>
+
 {# modal d'ajout d'un planning pour les admins #}
 {% if 'evenement.add_planning' in perms %}
     {% include "evenement/modal_planning_ajoute.html" %}

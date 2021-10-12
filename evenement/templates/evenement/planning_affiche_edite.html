@@ -1,4 +1,4 @@
-{# evenement/planning_affiche_edite.html #}
+<!-- evenement/planning_affiche_edite.html -->
 
 {# orga : permet d'afficher la form d'edition dans le modal #}
 {% if 'evenement.change_equipe' in perms %}
@@ -111,7 +111,7 @@
         <input  name="planning" value="{{ planning.UUID }}" type="hidden">
         <button  class="planning equipe-{{ equipe.UUID }}" 
         title="{{ equipe.nom|upper }} > {{ planning.nom }}"
-        type="submit"/>
+        type="submit">
         <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
         </button>
     </form>
