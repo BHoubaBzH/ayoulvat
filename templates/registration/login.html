@@ -6,39 +6,57 @@
 {% block title %}Se Connecter{% endblock %}
 
 {% block content %}
-  <form action="{% url 'login' %}" method="post">
-        {% csrf_token %}
-        <div class="row card card-default">
-            <div class="card-header">Connexion</div>
+     <div class="row card card-default">
+        <div class="card-header">Connexion</div>
             <div class="card-body">
-                {% if error_message %}
-                    <p class="bg-danger p-d ml-b">{{ error_message }}</p>
-                {% endif %}
-                <div class="form-group clearfix">
-                    <label for="username" class="col-md-4 control-label text-right">Courriel:</label>
-                    <div class="col-md-6">
-                        <input name="username" value="" type="text" class="form-control" />
+                <div class="row">
+                    <div class="col">
+                        <form action="{% url 'login' %}" method="post">
+                            {% csrf_token %}
+                            {% if error_message %}
+                                <p class="bg-danger p-d ml-b">{{ error_message }}</p>
+                            {% endif %}
+                            <div class="form-group clearfix">
+                                Tu possède déjà un compte:<br><br>
+                                <label for="username" class="col-md-4 control-label text-right">Courriel:</label>
+                                <div class="col-md-6">
+                                    <input name="username" value="" type="text" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="form-group clearfix">
+                                <label for="password" class="col-md-4 control-label text-right">Mot de Passe:</label>
+                                <div class="col-md-6">
+                                    <input name="password" type="password" class="form-control" />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="col-md-6 col-md-offset-4">
+                                <!-- retourne a la page precedent si login ok, si ko HS a voir-->
+                                <!--input type="hidden" name="next" value="{{ request.GET.next }}"/-->
+                                <input type="hidden" name="next" value="{% url 'home' %}"> 
+                                <input name="login" type="submit" value="Connexion" class="btn btn-success" /> &nbsp;
+                            </div>
+                        </form>
+                    
+                    </div>
+                    <div class="col align-self-end">
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-4">
+                                Pas encore inscrit?
+                                <input name="login" type="submit" value="Créer un Compte" class="btn btn-info" onclick="window.location.href='{% url 'inscription' %}';" /> &nbsp;
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-4">
+                                <br>
+                                Mot de passe perdu?
+                                <input name="login" type="submit" value="Réinitialiser le mot de passe" class="btn btn-warning" onclick="window.location.href='{% url 'password_reset' %}';"/> &nbsp;
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group clearfix">
-                    <label for="password" class="col-md-4 control-label text-right">Mot de Passe:</label>
-                    <div class="col-md-6">
-                        <input name="password" type="password" class="form-control" />
-                    </div>
-                </div>
-                <div class="col-md-6 col-md-offset-4">
-                    <!-- retourne a la page precedent si login ok, si ko HS a voir-->
-                    <!--input type="hidden" name="next" value="{{ request.GET.next }}"/-->
-                    <input type="hidden" name="next" value="{% url 'home' %}"> 
-                    <input name="login" type="submit" value="Connexion" class="btn btn-success" /> &nbsp;
-                </div>
-                <div class="col-md-6 col-md-offset-4">
-                    <a href="{% url 'password_reset' %}">Mot de passe perdu?</a>
-                </div>
-                <div class="col-md-6 col-md-offset-4">
-                    <a href="{% url 'inscription' %}">Creer un Compte</a>
-                </div>
+
             </div>
         </div>
-  </form>
+    </div>
 {% endblock %}

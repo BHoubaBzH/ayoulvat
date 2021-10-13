@@ -1,7 +1,5 @@
 from datetime import date, datetime, time, timedelta
 import logging
-from django.contrib.auth.models import User
-from django.forms.fields import NullBooleanField
 from django.http.response import Http404, HttpResponseServerError
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -15,9 +13,7 @@ from benevole.views import GroupeUtilisateur
 from benevole.models import Personne, ProfileAdministrateur, ProfileBenevole, ProfileOrganisateur, ProfileResponsable
 from association.models import AssoPartenaire, Association
 
-from django.http import JsonResponse
 from django.shortcuts import render
-from django.core import serializers
 ################################################
 #            fonctions 
 ################################################
@@ -113,7 +109,16 @@ def emails_benevoles_evenement(evt):
     for bene in ProfileBenevole.objects.filter(BenevolesCreneau__evenement=evt):
             email = bene.personne.email
             listout.append(email)
-    print(listout)
+    return set(listout)
+
+def emails_benevoles_sans_creneaux(evt):
+    '''
+        sortie : liste emails des bénévoles sans créneau
+    '''
+    listout = []
+    for bene in ProfileBenevole.objects.all().exclude(BenevolesCreneau__evenement=evt):
+            email = bene.personne.email
+            listout.append(email)
     return set(listout)
 
 def emails_benevoles_par_equipe(evt):
@@ -207,6 +212,7 @@ class BenevolesListView(ListView):
             "Emails_benevoles_par_planning" : emails_benevoles_par_planning(self.Evt),
             "Emails_benevoles_par_equipe" : emails_benevoles_par_equipe(self.Evt),
             "Emails_benevoles_evenement" : emails_benevoles_evenement(self.Evt),
+            "Emails_benevoles_sans_creneaux" : emails_benevoles_sans_creneaux(self.Evt),
         }
         return super().dispatch(request, *args, **kwargs)
 
