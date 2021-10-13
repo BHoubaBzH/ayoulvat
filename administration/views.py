@@ -102,33 +102,33 @@ def repartition_par_assos(creneaux):
     return dict(sorted(repart.items(), key=lambda item: item[1],reverse=True))
 
 def emails_benevoles_evenement(evt):
-    '''
+    """
         sortie : liste emails des bénévoles ayant pris un créneau
-    '''
+    """
     listout = []
-    for bene in ProfileBenevole.objects.filter(BenevolesCreneau__evenement=evt):
+    for bene in ProfileBenevole.objects.filter(BenevolesCreneau__evenement=evt).prefetch_related('BenevolesCreneau'):
             email = bene.personne.email
             listout.append(email)
     return set(listout)
 
 def emails_benevoles_sans_creneaux(evt):
-    '''
+    """
         sortie : liste emails des bénévoles sans créneau
-    '''
+    """
     listout = []
-    for bene in ProfileBenevole.objects.all().exclude(BenevolesCreneau__evenement=evt):
+    for bene in ProfileBenevole.objects.all().exclude(BenevolesCreneau__evenement=evt).prefetch_related('BenevolesCreneau'):
             email = bene.personne.email
             listout.append(email)
     return set(listout)
 
 def emails_benevoles_par_equipe(evt):
-    '''
+    """
         sortie : dictionnaire de liste emails , clés : equipes
-    '''
+    """
     tabout = {}
     for equipe in list(Equipe.objects.filter(evenement=evt)):
         liste_emails = []
-        for bene in ProfileBenevole.objects.filter(BenevolesCreneau__equipe=equipe):
+        for bene in ProfileBenevole.objects.filter(BenevolesCreneau__equipe=equipe).prefetch_related('BenevolesCreneau'):
             email = bene.personne.email
             liste_emails.append(email)
             if liste_emails:
@@ -139,14 +139,15 @@ def emails_benevoles_par_equipe(evt):
     return tabout
 
 def emails_benevoles_par_planning(evt):
-    '''
+    """
         sortie : dictionnaire de liste[ equipe, planning nom, [liste emails]] , clés : plannings
-    '''
+    """
     tabout = {}
     for planning in list(Planning.objects.filter(evenement=evt).order_by("debut")):
         liste_emails = []
         liste_planning = []
-        for bene in ProfileBenevole.objects.filter(BenevolesCreneau__planning=planning):
+        #for bene in ProfileBenevole.objects.filter(BenevolesCreneau__planning=planning):
+        for bene in ProfileBenevole.objects.filter(BenevolesCreneau__planning=planning).prefetch_related('BenevolesCreneau'):
             email = bene.personne.email
             liste_emails.append(email)
         liste_planning.append(planning.equipe)
@@ -158,7 +159,18 @@ def emails_benevoles_par_planning(evt):
     #    print(k)
     #    print(*v)
     return tabout
- 
+
+def emails_responsables(evt):
+    """
+        sortie : liste emails des bénévoles responsables sur l'evenement
+    """
+    listout = []
+    for bene in ProfileBenevole.objects.filter(BenevolesEvenement=evt, personne__groups__name__in=['Responsable','Organisateur','Administrateur']):
+            email = bene.personne.email
+            listout.append(email)
+    return set(listout)
+    
+
 def inscription_ouvert(debut, fin):
     """
         prend une date de debut et une date de fin en entree
@@ -213,6 +225,7 @@ class BenevolesListView(ListView):
             "Emails_benevoles_par_equipe" : emails_benevoles_par_equipe(self.Evt),
             "Emails_benevoles_evenement" : emails_benevoles_evenement(self.Evt),
             "Emails_benevoles_sans_creneaux" : emails_benevoles_sans_creneaux(self.Evt),
+            "Emails_responsables" : emails_responsables(self.Evt),
         }
         return super().dispatch(request, *args, **kwargs)
 
