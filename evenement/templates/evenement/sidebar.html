@@ -74,18 +74,19 @@
                     {% endif %}
                   {% endfor %}
                 </ul>
-                {# liste plannings #}
-                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                  <span>
-                  <a><i class="bi-calendar3 fs-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="Plannings"></i></a>
-                  {% for team in Equipes %}
-                    {% if team.UUID|stringformat:'s' == equipe_uuid|stringformat:'s' %}{{ team.nom }}{% endif %}
-                  {% endfor %}
-                  </span>
-                </h6>
+
+                {# equipe selectionnée on affiche ses plannings #}
+                {% if equipe_uuid %}
+                  <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>
+                    <a><i class="bi-calendar3 fs-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="Plannings de l'équipe"></i></a>
+                    </span>
+                  </h6>
+                {% endif %}
                 <ul class="nav flex-column mb-2 bouton-sidebar">
                   {% for plan in Plannings %}
                     {% if  plan.equipe_id|stringformat:'s' == equipe_uuid|stringformat:'s' %} {# affiche que les planning de l'equipe #}
+                      {# liste plannings #}
                       <li class="nav-item">
                         <form class="form evenement-form" method="post">
                           {% csrf_token %}
@@ -101,7 +102,8 @@
                           </button>
                         </form>
                       </li>
-                    {% elif not equipe_uuid %} {# affiche tous les planning de toutes les équipes de l'evenement #}
+{% comment "affiche tous les planning de toutes les équipes de l'evenement" %}
+                    {% elif not equipe_uuid %}
                       <li class="nav-item">
                         <form class="form evenement-form" method="post">
                           {% csrf_token %}
@@ -116,6 +118,7 @@
                             <a>{{ plan.equipe.nom }} <i class="bi bi-chevron-right"></i> {{ plan.nom }} </a>
                           </button>
                         </form>
+{% endcomment %}
                     {% endif %}
                   {% endfor %}
                 </ul>

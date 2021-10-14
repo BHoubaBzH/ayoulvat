@@ -216,10 +216,10 @@ class BenevolesListView(ListView):
 
             "Equipes" : Equipe.objects.filter(evenement=self.Evt).order_by('nom'),
 
-            "Benevoles": self.queryset.filter(BenevolesEvenement=self.Evt).order_by('personne__last_name'),  # objets benevoles de l'evenement
-            "Administrateurs": ProfileAdministrateur.objects.filter(association=self.Asso),
-            "Organisteurs" : ProfileOrganisateur.objects.filter(OrganisateurEvenement=self.Evt),
-            "Responsables" : ProfileResponsable.objects.filter(ResponsableEquipe__in=Equipe.objects.filter(evenement=self.Evt)),
+            "Benevoles": self.queryset.select_related('personne').filter(BenevolesEvenement=self.Evt).order_by('personne__last_name'),  # objets benevoles de l'evenement
+            "Administrateurs": ProfileAdministrateur.objects.select_related('personne').filter(association=self.Asso),
+            "Organisteurs" : ProfileOrganisateur.objects.select_related('personne').filter(OrganisateurEvenement=self.Evt),
+            "Responsables" : ProfileResponsable.objects.select_related('personne').filter(ResponsableEquipe__in=Equipe.objects.filter(evenement=self.Evt)),
 
             "Emails_benevoles_par_planning" : emails_benevoles_par_planning(self.Evt),
             "Emails_benevoles_par_equipe" : emails_benevoles_par_equipe(self.Evt),
@@ -270,7 +270,7 @@ class BenevolesListView(ListView):
         # editer un benevole
         if all(k in request.POST for k in ('benevole_editer', 'BenevoleUUID')):
             print('benevole édité : {0} {1}'.format(personnesup.last_name, personnesup.first_name))
-
+ 
         return render(request, self.template_name, self.context)
 
     # envoi les datas au template
