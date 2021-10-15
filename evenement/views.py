@@ -450,6 +450,11 @@ def evenement(request, uuid_evenement):
             creneau_bene.benevole_id = request.user.profilebenevole.UUID if ('benevole_prend_creneau' in request.POST) else ""
             creneau_bene.save()
 
+        if 'benevole_prend_creneau' in request.POST:
+            logger.info('{0} {1} prend le créneau {2}'.format(request.user.first_name, request.user.last_name, Creneau.objects.get(UUID=request.POST.get('creneau')).nom))
+        elif 'benevole_libere_creneau'  in request.POST:
+            logger.info('{0} {1} libère le créneau {2}'.format(request.user.first_name, request.user.last_name, Creneau.objects.get(UUID=request.POST.get('creneau')).nom))
+
         # admin change un objet de l'evenement
         if  any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter', 'creneau_supprimer']):
             forms_creneau(request)
