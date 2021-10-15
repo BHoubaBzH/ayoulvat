@@ -173,14 +173,17 @@ class CreneauForm(ModelForm):
             if hasattr(self.personne_connectee, 'profilebenevole'):
                 liste_benevoles_inscrits = []
                 # si non admin/responsable, le benevole n'a pas accès a ces champs
+                """
                 if not self.personne_connectee.has_perm('evenement.change_creneau'):
                     for champs in self.fields:
                         self.fields[champs].widget.attrs['readonly'] = True
                     self.fields['editable'].widget = HiddenInput()
+                """
                 # par default, la liste des benevoles présentée est : vide + le benevole connecté
                 self.fields['benevole'].queryset = ProfileBenevole.objects.filter(UUID=self.personne_connectee.profilebenevole.UUID)
                 # si on edite une proposition de dispo benevole ou si on en cree une,
                 # on retire vide dans la liste benevoles et on permet de modifier les heures
+                """
                 if self.instance.type == "benevole" or self.type == "benevole" or self.type is None:
                     # un admin cree un nouveau creneau affecté a personne par defaut
                     # du coup on ne force pas le bénévole initial
@@ -190,6 +193,8 @@ class CreneauForm(ModelForm):
                             ProfileBenevole.objects.get(UUID=self.personne_connectee.profilebenevole.UUID)
                     self.fields['debut'].widget.attrs['readonly'] = False
                     self.fields['fin'].widget.attrs['readonly'] = False
+                """
+                """
                 # si c'est un creneau affecté à un autre benevole, on affiche juste ce benevole
                 elif self.instance.benevole_id != self.personne_connectee.profilebenevole.UUID and \
                         self.instance.benevole_id is not None and self.instance.benevole_id != "":
@@ -198,12 +203,14 @@ class CreneauForm(ModelForm):
                     # un admin peut enlever un benevole d un creneau, on ne lui retire pas vide de la liste des benevoles
                     if not self.personne_connectee.has_perm('evenement.change_creneau'):
                         self.fields['benevole'].empty_label = None
+                """
                 # si le bénévole est aussi un admin, et que le créneau est libre
                 # on propose a l admin la liste de tous les benevoles!!! attention , sur le benevole est deja sur un autre creneau à la meme heure ca ne fonctionne pas
-                elif self.personne_connectee.has_perm('evenement.change_creneau') and self.instance.benevole_id is None :
+                # elif
+                if self.personne_connectee.has_perm('evenement.change_creneau') and self.instance.benevole_id is None :
                     self.fields['benevole'].queryset = self.QuerySet
 
-
+                
                 # si le bénévole est déjà positionné sur un Creno au meme heures que celui-ci, on ne lui propose pas de prendre celui-ci
                 elif self.instance.benevole_id != self.personne_connectee.profilebenevole.UUID:
                     for Creno in Creneau.objects.filter(benevole_id=self.personne_connectee.profilebenevole.UUID, type="creneau"):
@@ -216,7 +223,7 @@ class CreneauForm(ModelForm):
                                 self.fields['benevole'].queryset = ProfileBenevole.objects.filter(UUID=None)
                         except:
                             pass
-
+                
 
             # orga, admin, responsable et pas benevole: on propose uniquement les bénévoles qui ont une
             # dispo sur le planning au heures qui vont bien et sur les plannning deja créés donc avec un self.instance.planning_id
