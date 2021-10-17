@@ -326,6 +326,7 @@ def dic_creneaux(request, data):
         dic_creneaux_init[creneau.UUID] = formcreneau  # dictionnaire des forms: key: UUID / val: form
         # print(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID))
     # print('*** Fin fonction forms_creneaux : {}'.format(datetime.datetime.now()))
+    
     return dic_creneaux_init
 
 

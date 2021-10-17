@@ -35,6 +35,16 @@
                 title="poste réservé adulte" disabled>
                 <a><b>Réservé Adultes</b></a>
             </button>
+
+        {# le bénévole est dejà pris sur cet horaire -> toujours disabled pour les simples benevoles #}
+        {% elif not user.profilebenevole|stringformat:"s" in creneauf.benevole|stringformat:"s" %}
+            <button  class="creneau_libre_moi_occupe poste poste-{{ poste.UUID }}" 
+                style="grid-row: ligne-{{ creno.poste_id }};
+                grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
+                title="tu es déjà occupé sur cet horaire" disabled>                            
+                <a><b></b></a>
+            </button>
         {# le benevole est dans la liste des benevoles du creneau #}
         {% elif user.profilebenevole|stringformat:"s" in creneauf.benevole|stringformat:"s" %}
             <button class="creneau_libre poste poste-{{ poste.UUID }}" style="grid-row: ligne-{{ creno.poste_id }};
@@ -44,15 +54,14 @@
                     title="Céneau Disponible, Cliquer pour s'y incrire" type="submit">
                 <a><b>Disponible</b></a>
             </button>
-
-        {# le bénévole est dejà pris sur cet horaire -> toujours disabled pour les simples benevoles #}
+        {# sinon , je sais pas comment on arrive ici, par défau#}
         {% else %}
-            <button  class="creneau_libre_moi_occupe poste poste-{{ poste.UUID }}" 
-                style="grid-row: ligne-{{ creno.poste_id }};
-                grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
-                title="tu es déjà occupé sur cet horaire" disabled>                            
-                <a><b></b></a>
+            <button class="creneau_libre poste poste-{{ poste.UUID }}" style="grid-row: ligne-{{ creno.poste_id }};
+                            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                    form="benevole_prend_creneau" name="creneau" value="{{ creno.UUID }}"
+                    data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
+                    title="Céneau Disponible, Cliquer pour s'y incrire" type="submit">
+                <a><b>Disponible</b></a>
             </button>
         {% endif %}
     {% endif %}
