@@ -1,0 +1,36 @@
+<!-- administration/benevole/modal_courriels.html -->
+
+{# modal liste emails #}
+<div class="modal fade"
+    id="liste-courriels"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="liste courriels"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">
+                    Liste des courriels
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div id="ListeCourriels"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+  $(document).on("click", ".liste-courriels", function (e) {
+    /*alert('script ! ');*/
+    e.preventDefault();
+    var Liste = $(this).attr('data-bs-id1');
+    document.getElementById("ListeCourriels").innerHTML = Liste;
+    $(_self.attr('href')).modal('show');
+  });
+</script>

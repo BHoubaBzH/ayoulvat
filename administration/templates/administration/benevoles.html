@@ -60,30 +60,30 @@
                         <tr style="vertical-align : middle;">
                             <td>{{benevole.personne.last_name|upper}}</a></td><td>{{benevole.personne.first_name|capfirst}}</td>
                             <td>{{benevole.personne.email}}</td><td>{{benevole.personne.portable}}</td>                 
-                        <td>
-                            {% for group in benevole.personne.groups.all %}
-                                {{ group }}{% if not forloop.last %}, {%endif%}
-                            {% endfor %}
-                        </td>
-                        <td>{{benevole.assopartenaire}}</td>   
-                        <td>
-                            <div style="display: flex;">
-                            {% comment "" %}
-                            <a href="#" class="d-block p-3 link-blue text-decoration-none" title="éditer" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
-                                <i class="bi-pencil-square fs-3"></i>
-                            </a>
-                            {% endcomment %}
-                            {% if not benevole.personne|has_group:"Administrateur" and not benevole.personne|has_group:"Organisateur" and not benevole.personne|has_group:"Responsable" %}
-                                <button style="" class="benevole-supprime btn btn-sm" title="supprimer un bénévole" 
-                                    data-bs-toggle="modal" data-bs-target="#modal-benevole-supprime"
-                                    data-bs-id1="{{benevole.personne.UUID}}" 
-                                    data-bs-id2="{{benevole.personne.last_name}}" 
-                                    data-bs-id3="{{benevole.personne.fisrt_name}}">
-                                    <i style="color: var(--bs-danger)" class="bi bi-x-square fs-6"></i>
-                                </button>
-                            {% endif %}
-                            </div>
-                        </td>
+                            <td>
+                                {% for group in benevole.personne.groups.all %}
+                                    {{ group }}{% if not forloop.last %}, {%endif%}
+                                {% endfor %}
+                            </td>
+                            <td>{{benevole.assopartenaire}}</td>   
+                            <td>
+                                <div style="display: flex;">
+                                {% comment "" %}
+                                <a href="#" class="d-block p-3 link-blue text-decoration-none" title="éditer" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
+                                    <i class="bi-pencil-square fs-3"></i>
+                                </a>
+                                {% endcomment %}
+                                {% if not benevole.personne|has_group:"Administrateur" and not benevole.personne|has_group:"Organisateur" and not benevole.personne|has_group:"Responsable" %}
+                                    <button style="" class="benevole-supprime btn btn-sm" title="supprimer un bénévole" 
+                                        data-bs-toggle="modal" data-bs-target="#modal-benevole-supprime"
+                                        data-bs-id1="{{benevole.personne.UUID}}" 
+                                        data-bs-id2="{{benevole.personne.last_name}}" 
+                                        data-bs-id3="{{benevole.personne.fisrt_name}}">
+                                        <i style="color: var(--bs-danger)" class="bi bi-x-square fs-6"></i>
+                                    </button>
+                                {% endif %}
+                                </div>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -112,19 +112,34 @@
                             <tr style="vertical-align : middle;">
                                 <td>Bénévoles inscrits avec créneau</td><td></td>
                                 <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles participant à l'évènement">
-                                    <a href="mailto:{{ Emails_benevoles_evenement|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a>
+                                    <!--a href="mailto:{{ Emails_benevoles_evenement|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->
+                                    <button style="" class="liste-courriels btn" title="afficher la liste des courriels" 
+                                            data-bs-toggle="modal" data-bs-target="#liste-courriels"
+                                            data-bs-id1="{{ Emails_benevoles_evenement|cut:'{'|cut:'}'|cut:'\'' }}">
+                                        <i style="color: var(--bs-blue)" class="bi-envelope fs-3"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr style="vertical-align : middle;">
                                 <td>Bénévoles inscrits sans créneau</td><td></td>
                                 <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles inscrits mais sans créneaux">
-                                    <a href="mailto:{{ Emails_benevoles_sans_creneaux|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a>
+                                    <!--a href="mailto:{{ Emails_benevoles_sans_creneaux|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->
+                                    <button style="" class="liste-courriels btn" title="afficher la liste des courriels" 
+                                            data-bs-toggle="modal" data-bs-target="#liste-courriels"
+                                            data-bs-id1="{{ Emails_benevoles_sans_creneaux|cut:'{'|cut:'}'|cut:'\'' }}">
+                                        <i style="color: var(--bs-blue)" class="bi-envelope fs-3"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr style="vertical-align : middle;">
                                 <td>Responsables de l'évènement</td><td></td>
                                 <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des responsables de l'évènement">
-                                    <a href="mailto:{{ Emails_responsables|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a>
+                                    <!--a href="mailto:{{ Emails_responsables|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->
+                                    <button style="" class="liste-courriels btn" title="afficher la liste des courriels" 
+                                            data-bs-toggle="modal" data-bs-target="#liste-courriels"
+                                            data-bs-id1="{{ Emails_responsables|cut:'{'|cut:'}'|cut:'\'' }}">
+                                        <i style="color: var(--bs-blue)" class="bi-envelope fs-3"></i>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -143,7 +158,12 @@
                             <tr class="table-row-border-top">
                                 <td>{{ equipe.nom }}</td><td>tous</td>
                                 <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles de l'équipe {{equipe.nom}}">
-                                    <a href="mailto:{{ emails|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a>
+                                    <!--a href="mailto:{{ emails|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->
+                                    <button style="" class="liste-courriels btn" title="afficher la liste des courriels" 
+                                            data-bs-toggle="modal" data-bs-target="#liste-courriels"
+                                            data-bs-id1="{{ emails|cut:'{'|cut:'}'|cut:'\'' }}">
+                                        <i style="color: var(--bs-blue)" class="bi-envelope fs-3"></i>
+                                    </button>
                                 </td></tr>
                             {% for plan, details in Emails_benevoles_par_planning.items %}
                                 <!--tr style="vertical-align : middle;" class="col col-lg-4"><td>{{ plan }}</td><td>{{ details }}</td></tr-->
@@ -151,7 +171,12 @@
                                     <tr style="vertical-align : middle;">
                                         <td></td><td>{{ details.1 }}</td>
                                         <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles du planning {{details.1}} de l'équipe {{equipe.nom}}">
-                                            <a href="mailto:{{ details.2|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a>
+                                            <!--a href="mailto:{{ details.2|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->
+                                            <button style="" class="liste-courriels btn" title="afficher la liste des courriels" 
+                                                    data-bs-toggle="modal" data-bs-target="#liste-courriels"
+                                                    data-bs-id1="{{ details.2|cut:'{'|cut:'}'|cut:'\'' }}">
+                                                <i style="color: var(--bs-blue)" class="bi-envelope fs-3"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -168,6 +193,7 @@
 
 </div>
 
+{% include "administration/benevole/modal_courriels.html" %}
 {% include "administration/benevole/modal_ajoute.html" %}
 {% include "administration/benevole/modal_supprime.html" %}
 {% endblock %}

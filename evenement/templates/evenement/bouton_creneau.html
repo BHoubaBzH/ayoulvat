@@ -54,7 +54,7 @@
                     title="Céneau Disponible, Cliquer pour s'y incrire" type="submit">
                 <a><b>Disponible</b></a>
             </button>
-        {# sinon , je sais pas comment on arrive ici, par défau#}
+        {# sinon , je sais pas comment on arrive ici, par défaut dispo #}
         {% else %}
             <button class="creneau_libre poste poste-{{ poste.UUID }}" style="grid-row: ligne-{{ creno.poste_id }};
                             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
@@ -141,7 +141,9 @@
             <button class="creneau_occupe poste poste-{{ poste.UUID }}"
                 style="grid-row: ligne-{{ creno.poste_id }};
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                title="créneau occupé"
+                title="infos bénévole:
+                email : {{creno.benevole.personne.email}}
+                tel : {{creno.benevole.personne.portable}}"
                 data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
                 data-bs-creneauuuid="{{ creno.UUID }}">
                 <a><b>{{ creno.benevole }}</b></a>
@@ -149,7 +151,7 @@
         {% endif %}
     {# creneau libre #}
     {% else %}
-{% comment " retiré car ca génére un temps de réponse enorme et pas dit que ca server a quelque chose de tester la liste" %}
+{% comment " retiré car ca génére un temps de réponse enorme et pas dit que ca serve a quelque chose de tester la liste" %}
         {# le benevole est dans la liste des benevoles du creneau #}
         {% if user.profilebenevole|stringformat:"s" in creneauf.benevole|stringformat:"s" %}
             <button class="creneau_libre poste poste-{{ poste.UUID }}"
