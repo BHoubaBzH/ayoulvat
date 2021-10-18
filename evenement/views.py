@@ -1,6 +1,5 @@
-import datetime
 from administration.views import inscription_ouvert
-from datetime import timedelta, date
+from datetime import datetime,timedelta, date
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http.response import HttpResponseRedirect
@@ -57,7 +56,7 @@ def planning_range(debut, fin, delta):
         clés  : valeurs
         dates : ( heures, datetimes)
     """
-    # print('*** Debut fonction planning_range : {}'.format(datetime.datetime.now()))
+    # print('*** Debut fonction planning_range : {}'.format(datetime.now()))
     # print('###### planning : {0} - {1}'.format(debut, fin))
     dates_heures = {}
     while debut <= fin:
@@ -66,7 +65,7 @@ def planning_range(debut, fin, delta):
         heure = debut.strftime("%H:%M")
         dates_heures[date] = [heure, debut]
         debut += timedelta(minutes=delta)
-    # print('*** Fin fonction planning_range : {}'.format(datetime.datetime.now()))
+    # print('*** Fin fonction planning_range : {}'.format(datetime.now()))
     return dates_heures
 
 
@@ -97,7 +96,7 @@ def tous_creneaux_entre_2_heures(debut, fin, uuid_evenement):
             creneaux : liste de creneaux
         donne tous les créneaux d'un evenement entre 2 date pour savor si un benevole est deja occupé
     """
-    # print('*** Debut fonction tous_creneaux_entre_2_heures : {}'.format(datetime.datetime.now()))
+    # print('*** Debut fonction tous_creneaux_entre_2_heures : {}'.format(datetime.now()))
     crenos_out = []  # liste
     crenos = Creneau.objects.filter(evenement_id=uuid_evenement)
     for creno in crenos:
@@ -114,7 +113,7 @@ def tous_creneaux_entre_2_heures(debut, fin, uuid_evenement):
             creno.fin = fin
             crenos_out.append(creno)
         # print(' creno : {}'.format(creno.nom))
-    # print('*** Fin fonction tous_creneaux_entre_2_heures : {}'.format(datetime.datetime.now()))
+    # print('*** Fin fonction tous_creneaux_entre_2_heures : {}'.format(datetime.now()))
     return crenos_out
 
 
@@ -126,7 +125,7 @@ def forms_equipe(request):
             None
         gère la création, modification et suppression des equipes en fonction du contenu de POST
     """
-    # print('*** Debut fonction forms_equipe : {}'.format(datetime.datetime.now()))
+    # print('*** Debut fonction forms_equipe : {}'.format(datetime.now()))
     if any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter']):
         if 'equipe_modifier' in request.POST:
             formequipe = EquipeForm(request.POST,
@@ -160,7 +159,7 @@ def dic_equipes(uuid_evenement):
         formequipe = EquipeForm(instance=Equipe.objects.get(UUID=equipe.UUID))
         dic_equipe_init[equipe.UUID] = formequipe  # dictionnaire des forms
         # print (' equipe UUID : {}'.format(equipe.UUID))
-    # print('*** Fin fonction forms_equipe : {}'.format(datetime.datetime.now()))
+    # print('*** Fin fonction forms_equipe : {}'.format(datetime.now()))
     return dic_equipe_init
 
 def forms_planning(request):
@@ -170,7 +169,7 @@ def forms_planning(request):
         sortie:
             None
     """
-    # print('*** Debut fonction forms_planning : {}'.format(datetime.datetime.now()))
+    # print('*** Debut fonction forms_planning : {}'.format(datetime.now()))
     if any(x in request.POST for x in ['planning_modifier', 'planning_ajouter']):
         if 'planning_modifier' in request.POST:
             formplanning = PlanningForm(request.POST,
@@ -205,7 +204,7 @@ def dic_plannings(uuid_evenement):
         formplanning = PlanningForm(instance=Planning.objects.get(UUID=planning.UUID))
         dic_planning_init[planning.UUID] = formplanning  # dictionnaire des forms
         # print (' planning UUID : {}'.format(planning.UUID))
-    # print('*** Fin fonction forms_planning : {}'.format(datetime.datetime.now()))
+    # print('*** Fin fonction forms_planning : {}'.format(datetime.now()))
     return dic_planning_init
 
 
@@ -217,7 +216,7 @@ def forms_poste(request):
             None
         gère la création, modification et suppression de poste en fonction du contenu de POST
     """
-    # print('*** Debut fonction forms_postes : {}'.format(datetime.datetime.now()))
+    # print('*** Debut fonction forms_postes : {}'.format(datetime.now()))
     # sauvegarde notre form modifée et crée envoyée en POST
     if any(x in request.POST for x in ['poste_modifier', 'poste_ajouter']):
         # form en lien avec l objet basé sur model et pk UUID poste
@@ -254,7 +253,7 @@ def dic_postes(data):
         formposte = PosteForm(instance=Poste.objects.get(UUID=poste.UUID))
         dic_postes_init[poste.UUID] = formposte  # dictionnaire des forms
         # print (' poste UUID : {1} form : {0}'.format(formposte, poste.UUID))
-    # print('*** Fin fonction forms_postes : {}'.format(datetime.datetime.now()))
+    # print('*** Fin fonction forms_postes : {}'.format(datetime.now()))
     return dic_postes_init
 
 
@@ -267,7 +266,7 @@ def forms_creneau(request):
         gère la création, modification et suppression de creneaux en fonction du contenu de POST
     """
     pas = planning_retourne_pas(request)
-    # print('*** Debut fonction forms_creneaux : {}'.format(datetime.datetime.now()))
+    # print('*** Debut fonction forms_creneaux : {}'.format(datetime.now()))
     if any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter']) and not request.POST.get('creneau_supprimer'):
         # form en lien avec l objet basé sur model et pk UUID creneau
         if 'creneau_modifier' in request.POST:
@@ -325,7 +324,7 @@ def dic_creneaux(request, data):
                                   type=creneau._meta.get_field('type').value_from_object(creneau), )
         dic_creneaux_init[creneau.UUID] = formcreneau  # dictionnaire des forms: key: UUID / val: form
         # print(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID))
-    # print('*** Fin fonction forms_creneaux : {}'.format(datetime.datetime.now()))
+    # print('*** Fin fonction forms_creneaux : {}'.format(datetime.now()))
     
     return dic_creneaux_init
 
@@ -376,7 +375,7 @@ def evenement(request, uuid_evenement):
     """
     print('')
     print('*******************************************************')
-    print('*** Debut traitement view : {}'.format(datetime.datetime.now()))
+    print('*** Debut traitement view : {}'.format(datetime.now()))
     # store dans la session le uuid de l'evenement
     # il apparait dans l'url pour pouvoir donner le liens directe aux bénévoles par la suite
     request.session['uuid_evenement'] = uuid_evenement.urn
@@ -543,7 +542,7 @@ def evenement(request, uuid_evenement):
         data["PlanningRange"] = planning_range(evenement.debut,
                                                evenement.fin,
                                                30)          
-    print('*** Fin traitement view : {}'.format(datetime.datetime.now()))
+    print('*** Fin traitement view : {}'.format(datetime.now()))
     return render(request, "evenement/evenement_principal.html", data)
 
 
