@@ -121,6 +121,17 @@
                                 </td>
                             </tr>
                             <tr style="vertical-align : middle;">
+                                <td>Bénévoles inscrits avec un seul créneau</td><td></td>
+                                <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles participant à l'évènement">
+                                    <!--a href="mailto:{{ Emails_benevoles_un_creneau|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->
+                                    <button style="" class="liste-courriels btn" title="afficher la liste des courriels" 
+                                            data-bs-toggle="modal" data-bs-target="#liste-courriels"
+                                            data-bs-id1="{{ Emails_benevoles_un_creneau|cut:'{'|cut:'}'|cut:'\'' }}">
+                                        <i style="color: var(--bs-blue)" class="bi-envelope fs-3"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr style="vertical-align : middle;">
                                 <td>Bénévoles inscrits sans créneau</td><td></td>
                                 <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles inscrits mais sans créneaux">
                                     <!--a href="mailto:{{ Emails_benevoles_sans_creneaux|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->

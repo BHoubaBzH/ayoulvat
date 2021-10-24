@@ -1,3 +1,4 @@
+import collections
 from datetime import date, datetime, time, timedelta
 import logging
 from django.http.response import Http404, HttpResponseServerError
@@ -121,6 +122,23 @@ def emails_benevoles_sans_creneaux(evt):
             listout.append(email)
     return set(listout)
 
+def emails_benevoles_un_creneau(evt):
+    """
+        sortie : liste emails des bénévoles ayant choisi un seul créneau
+    """ 
+    listtemp = []
+    listout = []
+    for bene in ProfileBenevole.objects.filter(BenevolesCreneau__evenement=evt).prefetch_related('BenevolesCreneau'):
+            email = bene.personne.email
+            listtemp.append(email)
+    #print(listtemp)
+    #print(dict(collections.Counter(listtemp)))
+    for key, val in dict(collections.Counter(listtemp)).items():
+        if val == 1:
+            listout.append(key)
+    return set(listout)
+
+
 def emails_benevoles_par_equipe(evt):
     """
         sortie : dictionnaire de liste emails , clés : equipes
@@ -225,6 +243,7 @@ class BenevolesListView(ListView):
             "Emails_benevoles_par_equipe" : emails_benevoles_par_equipe(self.Evt),
             "Emails_benevoles_evenement" : emails_benevoles_evenement(self.Evt),
             "Emails_benevoles_sans_creneaux" : emails_benevoles_sans_creneaux(self.Evt),
+            "Emails_benevoles_un_creneau" : emails_benevoles_un_creneau(self.Evt),
             "Emails_responsables" : emails_responsables(self.Evt),
         }
         return super().dispatch(request, *args, **kwargs)
