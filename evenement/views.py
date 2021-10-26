@@ -273,6 +273,7 @@ def forms_creneau(request):
             formcreneau = CreneauForm(request.POST,
                                       instance=Creneau.objects.get(UUID=request.POST.get('creneau')),
                                       pas_creneau=pas,
+                                      evenement=request.POST.get('evenement'),
                                       planning_uuid=request.POST.get('planning'),
                                       poste_uuid=request.POST.get('poste'),
                                       benevole_uuid=request.POST.get('benevole'),
@@ -282,6 +283,7 @@ def forms_creneau(request):
         if 'creneau_ajouter' in request.POST:
             formcreneau = CreneauForm(request.POST,
                                       pas_creneau=pas,
+                                      evenement=request.POST.get('evenement'),
                                       planning_uuid=request.POST.get('planning'),
                                       poste_uuid=request.POST.get('poste'),
                                       benevole_uuid=request.POST.get('benevole'),
@@ -317,6 +319,7 @@ def dic_creneaux(request, data):
         # form en lien avec l objet basé sur model et pk UUID creneau
         formcreneau = CreneauForm(instance=Creneau.objects.get(UUID=creneau.UUID),
                                   pas_creneau=pas,
+                                  evenement=request.POST.get('evenement'),
                                   planning_uuid=request.POST.get('planning'),
                                   poste_uuid=request.POST.get('poste'),
                                   benevole_uuid=request.POST.get('benevole'),
@@ -529,6 +532,7 @@ def evenement(request, uuid_evenement):
                                           poste_uuid=request.POST.get('poste'),
                                           benevole_uuid=request.POST.get('benevole'),
                                           personne_connectee=request.user,
+                                          evenement=uuid_evenement,
                                           type=request.POST.get('type'), )
         # si le benevole appuie sur le bouton "mon planning"
         if request.POST.get('planning_perso'):
@@ -551,7 +555,7 @@ def CreneauFetch(request):
     """
         view pour requete javascript fetch 
         retourne un form creneau
-        le but est de ne pas avoir a charger un modal par creneau affiché
+        le but est de ne pas avoir a charger un modal spécifique par creneau affiché
     """
     print(request)
     if request.method == "POST":
@@ -563,6 +567,7 @@ def CreneauFetch(request):
         if request.POST.get('creneau_affiche') == 'form' :
             creneau = CreneauForm(personne_connectee=request.user, 
                                 type="creneau",
+                                evenement=request.POST.get('evenement_uuid'),
                                 instance=Creneau.objects.get(UUID=request.POST.get('creneau_uuid')))
             return HttpResponse(creneau.as_table(), content_type="text/plain")
             # return JsonResponse({'creneau_form' : creneau }, safe=False)

@@ -1,4 +1,6 @@
 from datetime import datetime
+
+from django.db.models.query import QuerySet
 from benevole.forms import PersonneForm
 from administration.views import evenement
 from uuid import UUID
@@ -93,13 +95,11 @@ class PosteForm(ModelForm):
 
 ################################################################################################
 class CreneauForm(ModelForm):
-    QuerySet = ProfileBenevole.objects.filter(personne__is_active='1').order_by('personne__last_name') # attention a filtrer par evenement!
-    benevole = ModelChoiceField(queryset=QuerySet,
-                                required=False,
-                                empty_label="Libre")
     debut = DateTimeField(widget=SplitDateTimeMultiWidget())
     fin = DateTimeField(widget=SplitDateTimeMultiWidget())
-
+    benevole = ModelChoiceField(queryset=None,
+                                required=False,
+                                empty_label="Libre")
     class Meta:
         model = Creneau
         # exclude = ['benevole',]
@@ -142,11 +142,16 @@ class CreneauForm(ModelForm):
             self.personne_connectee = kwargs.pop('personne_connectee')
         except:
             pass
-
-        # si type = creneau et poste_uuid et benevole_uuid , creneau avec benevole affecté
-        # si type = creneau et poste_uuid sans benevole_uuid, creneau disponible
-        # si type = benevole et benevole_uuid, dispo du benevole
+        try:
+            self.evenement = kwargs.pop('evenement')
+        except:
+            pass
+        
         super(CreneauForm, self).__init__(*args, **kwargs)
+
+        # les bénévoles actif et inscrit sur l evenement
+        self.querysetbenevoles = ProfileBenevole.objects.filter(personne__is_active='1', BenevolesEvenement=self.evenement).order_by('personne__last_name') 
+
         # cache certains champs
         self.fields['poste'].widget = HiddenInput()
         self.fields['planning'].widget = HiddenInput()
@@ -169,7 +174,7 @@ class CreneauForm(ModelForm):
         # formulaire ayant une instance, on va travailler dessus pour afficher le fomulaire comme il faut
         # en fonction du profile utilisateur
         instance = getattr(self, 'instance', None)
-        # print('benevole asso : {}'.format(self.personne_connectee.assopartenaire_id))
+        # print('benevole : {}'.format(self.personne_connectee))
         if instance:
             if not self.personne_connectee:
                 pass
@@ -177,7 +182,7 @@ class CreneauForm(ModelForm):
             if hasattr(self.personne_connectee, 'profilebenevole') and not self.personne_connectee.has_perm('evenement.change_creneau'):
                 # par default, la liste de bénévole contient le benevole connecté
                 id_benevole = self.personne_connectee.profilebenevole.UUID
-                for Creno in Creneau.objects.filter(type="creneau"):
+                for Creno in Creneau.objects.filter(type="creneau", evenement_id=self.evenement):
                     if self.instance.debut and self.instance.fin:
                         #  l'instance est sur l'horaire du creneau de la liste
                         if Creno.debut <= self.instance.debut < Creno.fin or Creno.debut < self.instance.fin <= Creno.fin \
@@ -186,21 +191,22 @@ class CreneauForm(ModelForm):
                                 if Creno.benevole_id == self.personne_connectee.profilebenevole.UUID:
                                     # on vide la liste de benevole
                                     id_benevole = None
-                self.fields['benevole'].queryset = self.QuerySet.filter(UUID=id_benevole)
+
+                self.fields['benevole'].queryset = self.querysetbenevoles.filter(UUID=id_benevole)
 
             # la personne connectée est un responsbale/orga/admin
             elif self.personne_connectee.has_perm('evenement.change_creneau'): 
                 # creneau disponible, on affiche tout la liste des bénévoles
                 #if self.instance.benevole_id is None:
-                self.fields['benevole'].queryset = self.QuerySet
+                self.fields['benevole'].queryset = self.querysetbenevoles
                 liste_benevoles_occupes = []
-                for Creno in Creneau.objects.filter(type="creneau"):
+                for Creno in Creneau.objects.filter(type="creneau", evenement_id=self.evenement):
                     # si un bénévole est déjà pris sur l'horaire, on le sort de la liste
                     if self.instance.debut and self.instance.fin:
                         if Creno.debut <= self.instance.debut < Creno.fin or Creno.debut < self.instance.fin <= Creno.fin \
                             or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin and Creno.benevole_id :
                             liste_benevoles_occupes.append(Creno.benevole_id)
-                self.fields['benevole'].queryset = self.QuerySet.exclude(UUID__in=liste_benevoles_occupes)
+                self.fields['benevole'].queryset = self.querysetbenevoles.exclude(UUID__in=liste_benevoles_occupes)
 
 
     ################ methode controle_coherence_creneaux

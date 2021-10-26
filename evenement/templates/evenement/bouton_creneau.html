@@ -133,6 +133,7 @@
                     grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                     title="Mon Créneau" 
                     data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
+                    data-bs-evenementuuid="{{ Evenement.UUID }}"
                     data-bs-creneauuuid="{{ creno.UUID }}">
                     <a><b>{{ creno.benevole }}</b></a>
                 </button>
@@ -145,40 +146,19 @@
                 email : {{creno.benevole.personne.email}}
                 tel : {{creno.benevole.personne.portable}}"
                 data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
+                data-bs-evenementuuid="{{ Evenement.UUID }}"
                 data-bs-creneauuuid="{{ creno.UUID }}">
                 <a><b>{{ creno.benevole }}</b></a>
             </button>
         {% endif %}
     {# creneau libre #}
     {% else %}
-{% comment " retiré car ca génére un temps de réponse enorme et pas dit que ca serve a quelque chose de tester la liste" %}
-        {# le benevole est dans la liste des benevoles du creneau #}
-        {% if user.profilebenevole|stringformat:"s" in creneauf.benevole|stringformat:"s" %}
-            <button class="creneau_libre poste poste-{{ poste.UUID }}"
-                style="grid-row: ligne-{{ creno.poste_id }};
-                grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                title="créneau disponible"
-                data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
-                data-bs-creneauuuid="{{ creno.UUID }}">
-                <a><b>Disponible</b></a>
-            </button>
-        {# le bénévole est dejà pris sur cet horaire #}
-        {% else %}
-            <button  class="creneau_libre poste poste-{{ poste.UUID }}" 
-                style="grid-row: ligne-{{ creno.poste_id }};
-                grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                title="tu es déjà occupé sur cet horaire"
-                data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
-                data-bs-creneauuuid="{{ creno.UUID }}">                          
-                <a><b>Non Dispo</b></a>
-            </button>
-        {% endif %}
-{% endcomment %}
         <button class="creneau_libre poste poste-{{ poste.UUID }}"
             style="grid-row: ligne-{{ creno.poste_id }};
             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
             title="créneau disponible"
             data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
+            data-bs-evenementuuid="{{ Evenement.UUID }}"
             data-bs-creneauuuid="{{ creno.UUID }}">
             <a><b>Disponible</b></a>
         </button>
@@ -195,6 +175,7 @@
             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
             title="" 
             data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
+            data-bs-evenementuuid="{{ Evenement.UUID }}"
             data-bs-creneauuuid="{{ creno.UUID }}">
             <a><b>{{ creno.benevole }}</b></a>
         </button>
@@ -205,6 +186,7 @@
             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
             title="Disponible" 
             data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
+            data-bs-evenementuuid="{{ Evenement.UUID }}"
             data-bs-creneauuuid="{{ creno.UUID }}">
             <a><b>Disponible</b></a>
         </button>

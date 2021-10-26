@@ -138,7 +138,6 @@ def emails_benevoles_un_creneau(evt):
             listout.append(key)
     return set(listout)
 
-
 def emails_benevoles_par_equipe(evt):
     """
         sortie : dictionnaire de liste emails , clés : equipes
@@ -187,7 +186,6 @@ def emails_responsables(evt):
             email = bene.personne.email
             listout.append(email)
     return set(listout)
-    
 
 def inscription_ouvert(debut, fin):
     """

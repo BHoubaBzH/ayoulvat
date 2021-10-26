@@ -6,6 +6,7 @@
     {% csrf_token %}
     <input type="hidden" name="benevole_prend_creneau">
     {# ajoute les infos au poste pour rester sur la page apres envoi du form#}
+    <input type="hidden" name="evenement" value="{{ Evenement.UUID }}">
     <input type="hidden" name="planning" value="{{ planning_uuid }}">
     <input type="hidden" name="equipe" value="{{ equipe_uuid }}">
 </form>
@@ -14,6 +15,7 @@
     {% csrf_token %}
     <input type="hidden" name="benevole_libere_creneau">
     {# ajoute les infos au poste pour rester sur la page apres envoi du form#}
+    <input type="hidden" name="evenement" value="{{ Evenement.UUID }}">
     <input type="hidden" name="planning" value="{{ planning_uuid }}">
     <input type="hidden" name="equipe" value="{{ equipe_uuid }}">
 </form>

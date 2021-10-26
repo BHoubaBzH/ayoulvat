@@ -1,7 +1,5 @@
 <!-- evenement/modal_creneau_edite.html -->
 
-{# javascript Fetch en cours , pas encore utilisé #}
-
 {##################################################################}
 {# modal admin de modification des creneaux#}
 {# si admin, affiche les details et les boutons d action #}
@@ -106,16 +104,18 @@
 
     /* script de popul du modal editer : utilise api fetch javascript et recupere la form du creneau */
     var modalCreneauCreneauEditer = document.getElementById('modal-creneau_creneau_editer')
-   if (modalCreneauCreneauEditer) {
+    if (modalCreneauCreneauEditer) {
         modalCreneauCreneauEditer.addEventListener('show.bs.modal', function (event) {
             /* Button that triggered the modal */
-            var button = event.relatedTarget
+            var button = event.relatedTarget;
             /* Extract info from data-bs-* attributes */
-            creneau_bs_data = button.getAttribute('data-bs-creneauuuid')
+            creneau_bs_data = button.getAttribute('data-bs-creneauuuid');
+            evenement_bs_data = button.getAttribute('data-bs-evenementuuid');
             // console.log(creneau_bs_data);
             // fetch process pour récuperer les infos de notre creneau
             let form = new FormData();
             form.append("creneau_uuid", creneau_bs_data);
+            form.append("evenement_uuid", evenement_bs_data);
             form.append("creneau_affiche", 'form');
             let csrfTokenValue = document.querySelector('[name=csrfmiddlewaretoken]').value;
             var requete = new Request('{% url "creneau_fetch" %}', {
