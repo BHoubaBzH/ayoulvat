@@ -314,7 +314,7 @@ def dic_creneaux(request, data):
     pas = planning_retourne_pas(request)
     # key : UUID postes
     # val : form de creneau initialisée objet db lié
-    # parcours les creneaux de l'evenement dans la base
+    # parcours les creneaux du planning dans la base
     for creneau in Creneau.objects.filter(planning_id=data["planning_uuid"]):  # liste des creneaux du planning
         # form en lien avec l objet basé sur model et pk UUID creneau
         formcreneau = CreneauForm(instance=Creneau.objects.get(UUID=creneau.UUID),

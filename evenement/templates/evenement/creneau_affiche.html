@@ -11,9 +11,9 @@
         {% if uuid|stringformat:"s" == creno.UUID|stringformat:"s" %}
             {# check si les benevoles peuvent editer ou non des creneaux, en fonction des paramètres de l'evenement , du poste...#}
             {% if creno.poste.ouvert and EvtOuvertBenevoles|stringformat:"s" == '1' and Evenement.editable %}
-                {% include "evenement/bouton_creneau.html" with ouvert='oui' %}
+                {% include "evenement/creneau_bouton.html" with ouvert='oui' %}
             {% else %}
-                {% include "evenement/bouton_creneau.html" with ouvert='non' %}
+                {% include "evenement/creneau_bouton.html" with ouvert='non' %}
             {% endif %}
         {% endif %}
     {% endfor %}

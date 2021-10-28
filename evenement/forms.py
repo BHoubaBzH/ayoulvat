@@ -113,7 +113,8 @@ class CreneauForm(ModelForm):
                   'poste',
                   'planning',
                   'equipe',
-                  'evenement',]
+                  'evenement',
+                  ]
 
     ################ methode __init__
     # surcharge les definition précédente de la class et permet de gerer les champs
