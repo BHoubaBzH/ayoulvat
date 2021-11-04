@@ -192,7 +192,6 @@ class CreneauForm(ModelForm):
                                 if Creno.benevole_id == self.personne_connectee.profilebenevole.UUID:
                                     # on vide la liste de benevole
                                     id_benevole = None
-
                 self.fields['benevole'].queryset = self.querysetbenevoles.filter(UUID=id_benevole)
 
             # la personne connectée est un responsbale/orga/admin
@@ -208,6 +207,7 @@ class CreneauForm(ModelForm):
                             or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin and Creno.benevole_id :
                             liste_benevoles_occupes.append(Creno.benevole_id)
                 self.fields['benevole'].queryset = self.querysetbenevoles.exclude(UUID__in=liste_benevoles_occupes)
+
 
 
     ################ methode controle_coherence_creneaux

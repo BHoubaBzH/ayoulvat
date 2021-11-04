@@ -111,7 +111,6 @@
             /* Extract info from data-bs-* attributes */
             creneau_bs_data = button.getAttribute('data-bs-creneauuuid');
             evenement_bs_data = button.getAttribute('data-bs-evenementuuid');
-            // console.log(creneau_bs_data);
             // fetch process pour récuperer les infos de notre creneau
             let form = new FormData();
             form.append("creneau_uuid", creneau_bs_data);

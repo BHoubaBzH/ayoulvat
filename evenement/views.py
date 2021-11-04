@@ -317,8 +317,8 @@ def dic_creneaux(request, data):
     # parcours les creneaux du planning dans la base
     for creneau in Creneau.objects.filter(planning_id=data["planning_uuid"]):  # liste des creneaux du planning
         # form en lien avec l objet basé sur model et pk UUID creneau
-        formcreneau = CreneauForm(instance=Creneau.objects.get(UUID=creneau.UUID),
-                                  pas_creneau=pas,
+        formcreneau = CreneauForm(instance=Creneau.objects.get(UUID=creneau.UUID), 
+                                  pas_creneau=pas, 
                                   evenement=request.POST.get('evenement'),
                                   planning_uuid=request.POST.get('planning'),
                                   poste_uuid=request.POST.get('poste'),
@@ -569,6 +569,7 @@ def CreneauFetch(request):
                                 type="creneau",
                                 evenement=request.POST.get('evenement_uuid'),
                                 instance=Creneau.objects.get(UUID=request.POST.get('creneau_uuid')))
+            #print(creneau)
             return HttpResponse(creneau.as_table(), content_type="text/plain")
             # return JsonResponse({'creneau_form' : creneau }, safe=False)
         elif request.POST.get('creneau_affiche') == 'json':

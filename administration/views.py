@@ -38,11 +38,15 @@ def assos_part(asso):
     return list_assos
 
 def total_heures_benevoles(creneaux):
+    """ total d'heures de bénévolat sur l'évènement retourne un timedelta """
     total = timedelta(0, 0, 0, 0)
     for c in creneaux:
         if c.benevole and c.benevole.assopartenaire:
             c_duree = c.fin - c.debut
             total += c_duree
+    print('{}'.format(total))
+    hrs, mins, secs = str(total).split(':')
+    print('heures: {} , minutes: {}'.format(hrs, mins))
     return total
 
 def nb_benevoles_par_asso(list_assos):
@@ -306,6 +310,7 @@ class DashboardView(View):
         self.Evt = Evenement.objects.get(UUID=self.request.session['uuid_evenement']) # recuper l evenement
         self.Asso = Association.objects.get(UUID=self.request.session['uuid_association']) # recuper l asso
         self.queryset_c = Creneau.objects.filter(evenement=self.Evt, type="creneau")
+        hrs, mins, secs = str(total_heures_benevoles(self.queryset_c)).split(':') # récupère sous un format propre le timedelta
         self.context = { 
             # nav bar infos : debut
             "EvtOuvertBenevoles" : inscription_ouvert(self.Evt.inscription_debut, self.Evt.inscription_fin), # integer précisant si on est avant/dans/après la période de modification des creneaux
@@ -322,8 +327,10 @@ class DashboardView(View):
             "Plannings_occupation" : plannings_occupation(Planning.objects.filter(evenement=self.Evt).order_by('equipe__nom','debut')),
             "Equipes_occupation" : equipes_occupation(Equipe.objects.filter(evenement=self.Evt).order_by('nom')),
             "Repartition_par_assos" : repartition_par_assos(self.queryset_c),
+            "Total_heures_benevoles" : '{} heures {} min'.format(hrs, mins),
 
-            "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=self.Evt),  # objets benevoles de l'evenement
+            "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=self.Evt),  # objets benevoles inscrits à l'evenement
+            "Benevoles_c": self.queryset_c.filter(benevole__isnull=False).values('benevole_id').distinct(), # objets benevoles inscrits à l'evenement avec au moins un creneau
             "Administrateurs": ProfileAdministrateur.objects.filter(association=self.Asso),
             "Organisteurs" : ProfileOrganisateur.objects.filter(OrganisateurEvenement=self.Evt),
             "Responsables" : ProfileResponsable.objects.filter(ResponsableEquipe__in=Equipe.objects.filter(evenement=self.Evt)),

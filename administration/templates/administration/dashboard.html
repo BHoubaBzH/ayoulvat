@@ -27,12 +27,16 @@
             <table class="table table-dark table-striped table-hover"  id="table_benevoles">
                 <thead>
                     <tr>
-                    <th scope="col" class="col col-lg-8">bénévoles</th><th scope="col">nombre</th>
+                    <th scope="col" class="col col-lg-8">quoi</th><th scope="col">combien</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr style="vertical-align : middle;">
-                    <td>Inscrits</td><td>{{ Benevoles.count }}</tr>
+                    <td>bénévoles Inscrits à l'évènement</td><td>{{ Benevoles.count }}</tr>
+                    <tr style="vertical-align : middle;">
+                    <td>bénévoles Participants à l'évènement</td><td>{{ Benevoles_c.count }}</tr>
+                    <tr style="vertical-align : middle;">
+                    <td>heures de bénévolat remplies</td><td>{{ Total_heures_benevoles }}</tr>
                 </tbody>
             </table>
 
