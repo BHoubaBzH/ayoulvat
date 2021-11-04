@@ -41,18 +41,16 @@ def total_heures_benevoles(creneaux):
     """ total d'heures de bénévolat sur l'évènement retourne un timedelta """
     total = timedelta(0, 0, 0, 0)
     for c in creneaux:
-        if c.benevole and c.benevole.assopartenaire:
+        if c.benevole:
             c_duree = c.fin - c.debut
             total += c_duree
-    print('{}'.format(total))
-    hrs, mins, secs = str(total).split(':')
-    print('heures: {} , minutes: {}'.format(hrs, mins))
+    print('heures bénévolat: {}'.format(total))
     return total
 
 def nb_benevoles_par_asso(list_assos):
     """ returne un dictionnaire de nombre de bénévole par asso """
     dic = {}
-    for asso in list_assos :
+    for asso in list_assos:
         dic[asso]= ProfileBenevole.objects.filter(assopartenaire=asso).count()
     dic ={k: v for k, v in sorted(dic.items(), key=lambda x: x[1], reverse=True)}
     return dic
@@ -86,7 +84,8 @@ def equipes_occupation(contenants):
     return occup
 
 def repartition_par_assos(creneaux):
-    """ retoune la répartition horaire par assos
+    """ 
+        retoune la répartition horaire par assos
         entree : queryset des creneaux de l evenement
         sortie : dictionnaire key : assos , pourcentage total
     """
@@ -303,15 +302,14 @@ class BenevolesListView(ListView):
 @method_decorator(login_required(login_url='login'), name='dispatch')
 @method_decorator(user_passes_test(lambda u: u.groups.filter(name__in=['Administrateur','Organisteur','Responsable']).exists()), name='dispatch')
 class DashboardView(View):
-    template_name = "administration/dashboard.html" 
+    template_name = "administration/dashboard.html"
  
     def dispatch(self, request, *args, **kwargs):
         print('{} : dispatch'.format(__class__.__name__))
         self.Evt = Evenement.objects.get(UUID=self.request.session['uuid_evenement']) # recuper l evenement
         self.Asso = Association.objects.get(UUID=self.request.session['uuid_association']) # recuper l asso
         self.queryset_c = Creneau.objects.filter(evenement=self.Evt, type="creneau")
-        hrs, mins, secs = str(total_heures_benevoles(self.queryset_c)).split(':') # récupère sous un format propre le timedelta
-        self.context = { 
+        self.context = {
             # nav bar infos : debut
             "EvtOuvertBenevoles" : inscription_ouvert(self.Evt.inscription_debut, self.Evt.inscription_fin), # integer précisant si on est avant/dans/après la période de modification des creneaux
             "GroupeUtilisateur" : GroupeUtilisateur(self.request),
@@ -327,7 +325,7 @@ class DashboardView(View):
             "Plannings_occupation" : plannings_occupation(Planning.objects.filter(evenement=self.Evt).order_by('equipe__nom','debut')),
             "Equipes_occupation" : equipes_occupation(Equipe.objects.filter(evenement=self.Evt).order_by('nom')),
             "Repartition_par_assos" : repartition_par_assos(self.queryset_c),
-            "Total_heures_benevoles" : '{} heures {} min'.format(hrs, mins),
+            "Total_heures_benevoles" : '{}'.format(total_heures_benevoles(self.queryset_c.filter(benevole__isnull=False)).total_seconds()/3600),
 
             "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=self.Evt),  # objets benevoles inscrits à l'evenement
             "Benevoles_c": self.queryset_c.filter(benevole__isnull=False).values('benevole_id').distinct(), # objets benevoles inscrits à l'evenement avec au moins un creneau
@@ -337,7 +335,7 @@ class DashboardView(View):
         }
         return super(DashboardView, self).dispatch(request, *args, **kwargs)
 
-    # 
+    #  
     def get(self, request, *args, **kwargs):
         print('{} : get_context_data'.format(__class__.__name__))
         return render(request, self.template_name, self.context)
