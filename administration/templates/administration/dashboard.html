@@ -27,7 +27,7 @@
             <table class="table table-dark table-striped table-hover"  id="table_benevoles">
                 <thead>
                     <tr>
-                    <th scope="col" class="col col-lg-8">quoi</th><th scope="col">combien</th>
+                    <th scope="col" class="col col-lg-8">resumé</th><th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -102,9 +102,9 @@
                 <tbody>
                     {% for a, b in  Plannings_occupation.items %}
                         <tr style="vertical-align : middle;"><td>{{ a.equipe.nom }} - {{ a.nom }}</td>
-                        {% if b < 50 %}
+                        {% if b < a.seuil1 %}
                             <td style="background:var(--bs-danger)">{{ b }}</tr>
-                        {% elif b < 80 %}
+                        {% elif b < a.seuil2 %}
                             <td style="background:var(--bs-warning)">{{ b }}</tr>
                         {% else %}
                             <td style="background:var(--bs-success)">{{ b }}</tr>
@@ -121,9 +121,9 @@
                 <tbody>
                     {% for a, b in  Equipes_occupation.items %}
                         <tr style="vertical-align : middle;"><td>{{ a.nom }}</td>
-                        {% if b < 50 %}
+                        {% if b < a.seuil1 %}
                             <td style="background:var(--bs-danger)">{{ b }}</tr>
-                        {% elif b < 80 %}
+                        {% elif b < a.seuil2 %}
                             <td style="background:var(--bs-warning)">{{ b }}</tr>
                         {% else %}
                             <td style="background:var(--bs-success)">{{ b }}</tr>

@@ -22,7 +22,7 @@
 
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          {# si l evenment est bloqué ou pas ouvert aux inscriptions , on l'affiche#}
+          {# si l evenment est bloqué ou pas ouvert aux inscriptions , on affiche#}
           {% if Evenement and not Evenement.editable %}
             <div class="btn-group me-2">
               <button type="submit" id="profile" class="btn btn-sm btn-outline-danger"
@@ -30,7 +30,7 @@
                 data-bs-toggle="tooltip" data-bs-placement="bottom" title="L'administrateur n'a pas encore ouvert les inscriptions">
                 Evènement bloqué</button>
             </div>
-          {# si les inscriptions à l evenements n ont pas commencees , on l'affiche#}
+          {# si les inscriptions à l evenements n ont pas commencees , on affiche#}
           {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '0'%}
             <div class="btn-group me-2">
               <button type="submit" id="profile" class="btn btn-sm btn-outline-warning"
@@ -38,7 +38,7 @@
                 data-bs-toggle="tooltip" data-bs-placement="bottom" title="les inscriptions ouvrirons le {{Evenement.inscription_debut}}">
                 Inscriptions à Venir</button>
             </div>
-          {# si les inscriptions à l evenements sont en cours , on l'affiche#}
+          {# si les inscriptions à l evenements sont en cours , on affiche#}
           {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '1'%}
             <div class="btn-group me-2">
               <button type="submit" id="profile" class="btn btn-sm btn-outline-success"
@@ -46,12 +46,12 @@
                 data-bs-toggle="tooltip" data-bs-placement="bottom" title="les inscriptions seront closes le {{Evenement.inscription_fin}}">
                 Inscriptions En Cours</button>
             </div>
-          {# si les inscriptions à l evenements sont terminees , on l'affiche#}
+          {# si les inscriptions à l evenements sont terminees , on affiche#}
           {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '2'%}
             <div class="btn-group me-2">
               <button type="submit" id="profile" class="btn btn-sm btn-outline-danger"
                 formaction="{% url 'evenement' uuid_evenement=Evenement.UUID %}"
-                data-bs-toggle="tooltip" data-bs-placement="bottom" title="les inscriptions sont finies depuis le {{Evenement.inscription_fin}}">
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="les inscriptions sont closes depuis le {{Evenement.inscription_fin}}">
                 Inscriptions Closes</button>
             </div>
           {% endif %}
@@ -71,7 +71,7 @@
           {% endif %}
         </li>
         {% endcomment %}
-
+        {% comment "ancien accès au dashboard. déporté sur la sidebar" %}
         {#% if Evenement and 'benevole.add_benevole' in perms %#}
         {% if Evenement and GroupeUtilisateur in 'Administrateur,Organisateur,Responsable' %}
           <li class="nav-item text-nowrap" id="boutons_navbar">
@@ -79,7 +79,7 @@
                 formaction="{% url 'dashboard' %}">Administration</button>
             </div>
           </li>
-
+        {% endcomment %}
         {% comment "exemple menu déroulant" %}
           <li class="nav-item dropdown">
               <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
@@ -94,9 +94,8 @@
                 <li><a class="dropdown-item" href="#">Action</a></li>
               </ul>
           </li>
-        {% endcomment %}
         {% endif %}
-
+        {% endcomment %}
       </ul>
     {% endif %}
 

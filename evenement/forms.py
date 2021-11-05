@@ -27,6 +27,8 @@ class EquipeForm(ModelForm):
                   'description',
                   'editable',
                   'couleur',
+                  'seuil1',
+                  'seuil2',
                   'evenement',]
                 
     # cache certains champs
@@ -34,7 +36,11 @@ class EquipeForm(ModelForm):
         super(EquipeForm, self).__init__(*args, **kwargs)
         # pas encore codé, on cache le champs
         self.fields['editable'].widget = HiddenInput()
-
+        self.fields['seuil1'].widget.attrs['min'] = '0'
+        self.fields['seuil1'].widget.attrs['max'] = '100'
+        self.fields['seuil2'].widget.attrs['min'] = '0'
+        self.fields['seuil2'].widget.attrs['max'] = '100'
+        
 ################################################################################################
 class PlanningForm(ModelForm):
     debut = DateTimeField(widget=SplitDateTimeMultiWidget())
@@ -51,6 +57,8 @@ class PlanningForm(ModelForm):
                   'description',
                   'editable',
                   'couleur',
+                  'seuil1',
+                  'seuil2',
                   'equipe',
                   'evenement',]
 
@@ -60,6 +68,10 @@ class PlanningForm(ModelForm):
         # pas encore codé, on cache le champs
         self.fields['editable'].widget = HiddenInput()
         self.fields['ouvert_mineur'].widget = HiddenInput()
+        self.fields['seuil1'].widget.attrs['min'] = '0'
+        self.fields['seuil1'].widget.attrs['max'] = '100'
+        self.fields['seuil2'].widget.attrs['min'] = '0'
+        self.fields['seuil2'].widget.attrs['max'] = '100'
 
 
 
@@ -207,7 +219,6 @@ class CreneauForm(ModelForm):
                             or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin and Creno.benevole_id :
                             liste_benevoles_occupes.append(Creno.benevole_id)
                 self.fields['benevole'].queryset = self.querysetbenevoles.exclude(UUID__in=liste_benevoles_occupes)
-
 
 
     ################ methode controle_coherence_creneaux

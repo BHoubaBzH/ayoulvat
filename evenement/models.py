@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.urls.base import set_urlconf
 from association.models import AssoPartenaire, Association
 from benevole.models import ProfileOrganisateur, ProfileResponsable, ProfileBenevole
@@ -68,6 +69,16 @@ class Equipe(models.Model):
     description = models.TextField(max_length=1000, blank=True, default='')
     courriel_responsable = models.EmailField(default='', help_text="courriel accessible aux bénévoles en bas de page")
     couleur = RGBColorField(default="#0d6efd")
+    seuil1 = models.IntegerField(default=50,
+                                validators=[
+                                    MinValueValidator(1),
+                                    MaxValueValidator(100)],
+                                help_text="pourcentage à partir du quel la stat du dashboard devient jaune")
+    seuil2 = models.IntegerField(default=80,
+                                validators=[
+                                    MinValueValidator(1),
+                                    MaxValueValidator(100)],    
+                                help_text="pourcentage à partir du quel la stat du dashboard devient verte")
     benevole = models.ManyToManyField(ProfileBenevole,
                                       related_name='BenevolesEquipe',
                                       blank=True,
@@ -120,6 +131,16 @@ class Planning(models.Model):
     couleur = RGBColorField(default="#0d6efd")
     pas = models.PositiveSmallIntegerField(choices=PasMinute.choices,blank=False, default=30,
                                            help_text="pas de reglage des creneaux en minutes: 15 / 30 / 60")
+    seuil1 = models.IntegerField(default=50,
+                                validators=[
+                                    MinValueValidator(0),
+                                    MaxValueValidator(100)],
+                                help_text="pourcentage à partir du quel la stat du dashboard devient jaune")
+    seuil2 = models.IntegerField(default=80,
+                                validators=[
+                                    MinValueValidator(0),
+                                    MaxValueValidator(100)],    
+                                help_text="pourcentage à partir du quel la stat du dashboard devient verte")
     creneau_moyen = models.PositiveSmallIntegerField(choices=CreneauMoyen.choices,blank=False, default=120,
                                            help_text="duree classique d'un créneau en minutes")
     editable = models.BooleanField(default=True, help_text="si éditable, les postes du planning sont ouverts."
