@@ -44,7 +44,6 @@ def total_heures_benevoles(creneaux):
         if c.benevole:
             c_duree = c.fin - c.debut
             total += c_duree
-    print('heures bénévolat: {}'.format(total))
     return total
 
 def nb_benevoles_par_asso(list_assos):
@@ -333,7 +332,7 @@ class DashboardView(View):
             "Organisteurs" : ProfileOrganisateur.objects.filter(OrganisateurEvenement=self.Evt),
             "Responsables" : ProfileResponsable.objects.filter(ResponsableEquipe__in=Equipe.objects.filter(evenement=self.Evt)),
         }
-        return super(DashboardView, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     #  
     def get(self, request, *args, **kwargs):

@@ -30,7 +30,7 @@ class RegisterForm(UserCreationForm):
     def save(self):
         # genere un username aleatoire pour remplir le champs, pas utilisé vu qu'on utilise email pour se logguer
         self.instance.username = uuid.uuid4().hex[:16].upper()
-        return super(RegisterForm, self).save()
+        return super().save()
 
 ################################################################################################
 class LoginForm(AuthenticationForm):
@@ -48,9 +48,9 @@ class BenevoleForm(ModelForm):
         print('personne {}'.format(personne.UUID))
         self.instance.personne = personne
         if commit:
-            return super(BenevoleForm, self).save()
+            return super().save()
         else:
-            return super(BenevoleForm, self).save(commit=False)        
+            return super().save(commit=False)        
     ## !! filtrer les asso partenaires par evenement 
 
 ################################################################################################
@@ -63,12 +63,12 @@ class PersonneForm(ModelForm):
         exclude = ['description',]
 
     def save(self, commit=True): # si pas indiqué commit est à true
-        # genere un username aleatoire pour remplir le champs, pas utilisé vu qu'on utilise email pour se logguer
+        # genere un username aleatoire et unique pour remplir le champs, pas utilisé vu qu'on utilise email pour se logguer
         if not self.instance.username:
             self.instance.username = uuid.uuid4().hex[:16].upper()
         if commit:
             if not self.instance.password:
                 self.instance.password = 'mot_de_passe_temporaire'
-            return super(PersonneForm, self).save()
+            return super().save()
         else:
-            return super(PersonneForm, self).save(commit=False)        
+            return super().save(commit=False)        

@@ -9,7 +9,7 @@ from django.forms import ModelChoiceField, ModelMultipleChoiceField, CheckboxSel
 from django_range_slider.fields import RangeSliderField
 
 from evenement.models import Equipe, Planning, Poste, Creneau
-from benevole.models import ProfileBenevole
+from benevole.models import Personne, ProfileBenevole
 from evenement.customwidgets import SplitDateTimeMultiWidget
 
 # import the logging library
@@ -33,14 +33,14 @@ class EquipeForm(ModelForm):
                 
     # cache certains champs
     def __init__(self, *args, **kwargs):
-        super(EquipeForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # pas encore codé, on cache le champs
         self.fields['editable'].widget = HiddenInput()
         self.fields['seuil1'].widget.attrs['min'] = '0'
         self.fields['seuil1'].widget.attrs['max'] = '100'
         self.fields['seuil2'].widget.attrs['min'] = '0'
         self.fields['seuil2'].widget.attrs['max'] = '100'
-        
+
 ################################################################################################
 class PlanningForm(ModelForm):
     debut = DateTimeField(widget=SplitDateTimeMultiWidget())
@@ -64,7 +64,7 @@ class PlanningForm(ModelForm):
 
     # cache certains champs
     def __init__(self, *args, **kwargs):
-        super(PlanningForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # pas encore codé, on cache le champs
         self.fields['editable'].widget = HiddenInput()
         self.fields['ouvert_mineur'].widget = HiddenInput()
@@ -98,7 +98,7 @@ class PosteForm(ModelForm):
 
     # cache certains champs
     def __init__(self, *args, **kwargs):
-        super(PosteForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['planning'].widget = HiddenInput()
         self.fields['equipe'].widget = HiddenInput()
         self.fields['benevole'].widget = HiddenInput()
@@ -160,10 +160,10 @@ class CreneauForm(ModelForm):
         except:
             pass
         
-        super(CreneauForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         # les bénévoles actif et inscrit sur l evenement
-        self.querysetbenevoles = ProfileBenevole.objects.filter(personne__is_active='1', BenevolesEvenement=self.evenement).order_by('personne__last_name') 
+        self.querysetbenevoles = ProfileBenevole.objects.filter(personne__is_active='1', BenevolesEvenement=self.evenement).order_by('personne__last_name', 'personne__first_name') 
 
         # cache certains champs
         self.fields['poste'].widget = HiddenInput()
@@ -186,9 +186,10 @@ class CreneauForm(ModelForm):
 
         # formulaire ayant une instance, on va travailler dessus pour afficher le fomulaire comme il faut
         # en fonction du profile utilisateur
-        instance = getattr(self, 'instance', None)
+        #instance = getattr(self, 'instance', None)
+        print(self.instance.UUID)
         # print('benevole : {}'.format(self.personne_connectee))
-        if instance:
+        if self.instance:
             if not self.personne_connectee:
                 pass
             # la personne connectée est un pur bénévole
@@ -216,10 +217,11 @@ class CreneauForm(ModelForm):
                     # si un bénévole est déjà pris sur l'horaire, on le sort de la liste
                     if self.instance.debut and self.instance.fin:
                         if Creno.debut <= self.instance.debut < Creno.fin or Creno.debut < self.instance.fin <= Creno.fin \
-                            or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin and Creno.benevole_id :
-                            liste_benevoles_occupes.append(Creno.benevole_id)
-                self.fields['benevole'].queryset = self.querysetbenevoles.exclude(UUID__in=liste_benevoles_occupes)
-
+                            or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin and Creno.benevole_id:
+                            # on n'exclue pas le bénévole lié à l'objet, pou qu'il soit le choix par defaut dans la liste
+                            if Creno.UUID != self.instance.UUID:
+                                liste_benevoles_occupes.append(Creno.benevole_id)
+                self.fields['benevole'].queryset = self.querysetbenevoles.select_related('personne').exclude(UUID__in=liste_benevoles_occupes)
 
     ################ methode controle_coherence_creneaux
     def controle_coherence_creneaux(self, Creno, debut, fin):
