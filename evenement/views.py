@@ -42,8 +42,6 @@ def envoi_courriel(request, evenement):
             return HttpResponse('Header incorrect détecté.')
         return HttpResponseRedirect('')
     else:
-        # In reality we'd use a form class
-        # to get proper validation errors.
         return HttpResponse('Tous les champs ne sont pas remplis correctement.')
 
 def planning_range(debut, fin, delta):
@@ -77,7 +75,7 @@ def planning_retourne_pas(request):
             pas_value : pas d'incrément du planning
         recuperer le pas du planning principalement pour les creneau et le choix des heures
     """
-    if 'planning' in request.POST:
+    if 'planning' in request.POST and not 'planning_supprimer'in request.POST :
         # retrouve le pas du planning à partir des infos du creneau
         Plan = Planning.objects.get(UUID=request.POST.get('planning'))
         pas_value = Plan.pas
@@ -192,7 +190,6 @@ def dic_plannings(uuid_evenement):
             l'uid de l'evenement
         sortie:
             dictionnaire des forms planning: key: UUID / val: form
-        gère la création, modification et suppression des plannings en fonction du contenu de POST
     """
     # cree dans la page toutes nos from pour les postes du planning
     dic_planning_init = {}  # dictionnaire des forms
@@ -206,7 +203,6 @@ def dic_plannings(uuid_evenement):
         # print (' planning UUID : {}'.format(planning.UUID))
     # print('*** Fin fonction forms_planning : {}'.format(datetime.now()))
     return dic_planning_init
-
 
 def forms_poste(request):
     """
@@ -426,8 +422,6 @@ def evenement(request, uuid_evenement):
     }
 
     data["DicEquipes"] = dic_equipes(evenement)
-    #data["FormEquipe"] = EquipeForm(initial={'evenement': evenement})
-    #data["DicPlannings"] = dic_plannings(evenement)
     data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})  
 
     # check du groupe du user connecté:
@@ -472,7 +466,7 @@ def evenement(request, uuid_evenement):
         if request.POST.get('equipe'):  # selection d'une équipe
             data["equipe_uuid"] = request.POST.get('equipe')  # UUID equipe selectionnée
             
-            if request.POST.get('planning'):  # selection d'un planning
+            if request.POST.get('planning') and not request.POST.get('planning_supprimer'):  # selection d'un planning
                 data["planning_uuid"] = request.POST.get('planning')
                 data["Planning"] = Planning.objects.get(UUID=request.POST.get('planning'))  # planning selectionnée
                 # instances de form poste & creneau liées : modifs & suppression & liste des postes
@@ -486,7 +480,6 @@ def evenement(request, uuid_evenement):
                     tous_creneaux_entre_2_heures(Planning.objects.get(UUID=request.POST.get('planning')).debut,
                                                 Planning.objects.get(UUID=request.POST.get('planning')).fin,
                                                 uuid_evenement)
-
             else:
                 # selection d'une equipe uniquement, pas de planning, on affiche le premier planning en date
                 try:
@@ -503,6 +496,7 @@ def evenement(request, uuid_evenement):
                     data["PlanningRange"] = planning_range(evenement.debut,
                                         evenement.fin,
                                         30)
+
             # envoi les forms au template
             data["DicPostes"] = dic_postes(data)
             data["DicCreneaux"] = dic_creneaux(request, data)
@@ -590,5 +584,31 @@ def CreneauFetch(request):
                 'planning_nom': planning,
                 'equipe_nom' : equipe,
                 'benevole_nom' : benevole,
+            }
+            return JsonResponse(context, safe=False) 
+
+@login_required(login_url='login')
+def PlanningFetch(request):
+    """
+        view pour requete javascript fetch 
+        retourne un form planning
+        le but est de ne pas avoir a charger un modal spécifique par planning affiché
+    """
+    print(request)
+    if request.method == "POST":
+        print('##################### PlanningFetch ######################')
+        for key, value in request.POST.items():
+            print('#        POST -> {0} : {1}'.format(key, value))
+        print('#########################################################')
+        if request.POST.get('planning_affiche') == 'form' :
+            planning = PlanningForm(instance=Planning.objects.get(UUID=request.POST.get('planning_uuid')))
+            return HttpResponse(planning.as_table(), content_type="text/plain")
+        elif request.POST.get('planning_affiche') == 'json':
+            planning = Planning.objects.filter(UUID = request.POST.get('planning_uuid')).values()
+            equipe_nom = Equipe.objects.get(planning__UUID=request.POST.get('planning_uuid')).nom
+            print(equipe_nom)
+            context = {
+                'planning' : list(planning)[0],
+                'equipe_nom' : equipe_nom,
             }
             return JsonResponse(context, safe=False) 

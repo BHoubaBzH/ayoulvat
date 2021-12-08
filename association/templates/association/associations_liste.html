@@ -2,6 +2,10 @@
 <!-- association/association_liste.html -->
 {% block asso_nom %}
     {% for asso in Assos %}
-        <a href="{{ asso.UUID }}"><H2>{{ asso.nom }}</H2></a>
+            <H2>{{ asso.nom }}
+            <a href="{% url 'detail_asso' uuid_asso=asso.UUID %}"><i class="bi bi-list fs-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="Details"></i></a>
+            <a href="{% url 'liste_evenements' %}"><i class="bi bi-view-stacked fs-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="liste evenements"></i></a>
+            <input type="button" name="uuid_asso" value="{{ asso.UUID }}">
+            </H2>
     {% endfor %}
 {% endblock asso_nom %}

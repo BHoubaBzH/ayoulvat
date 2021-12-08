@@ -27,7 +27,7 @@ if config('PROJET_ENV') == 'DEV':
     import debug_toolbar
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin_ayoulvat/', admin.site.urls),
 
     #path('', TemplateView.as_view(template_name='benevole/home.html'), name='home'),
     path('', views.Home, name='home'),

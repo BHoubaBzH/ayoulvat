@@ -1,4 +1,5 @@
 import logging
+from association.models import Association
 
 from benevole.models import Personne, ProfileBenevole
 from evenement.models import Evenement
@@ -49,6 +50,7 @@ def Home(request):
     data = {
         "FormPersonne" : PersonneForm(),  # form personne non liée
         "Evenements" : Evenement.objects.all(),  # liste de tous les evenements
+        "Assos": Association.objects.all() # liste toutes les assosciations pour admin, a filtrer par assos affectées a administrateur
     }
     # récupère dans la session l'uuid de l'association, si on est passé par l'asso
     try:

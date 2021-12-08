@@ -1,4 +1,4 @@
-<!-- evenement/planning_affiche_edite.html -->
+<!-- evenement/planning_bouton.html -->
 
 {# orga : permet d'afficher la form d'edition dans le modal #}
 {% if 'evenement.change_equipe' in perms %}
@@ -7,7 +7,7 @@
             style="grid-row: ligne-{{ equipe.UUID }};
             grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|date:'Y-m-d-Hi' }};"
             title='{{ equipe.nom|upper }} > {{ planning.nom }}'
-            data-bs-toggle="modal" data-bs-target="#modal-edite-planning-{{ planning.UUID }}"/>
+            data-bs-toggle="modal" data-bs-target="#modal-edite-planning-{{ planning.UUID }}">
             <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
     </button>
 
@@ -26,11 +26,13 @@
                     <div class="modal-body">
                         {% csrf_token %}
                         <table class="table">
+                            {% comment "" %}
                             {% for uuid, planningf in DicPlannings.items %}
                                 {% if uuid|stringformat:"s" == planning.UUID|stringformat:"s" %}
                                     {{ planningf.as_table }}
                                 {% endif %}
                             {% endfor %}
+                            {% endcomment %}
                         </table>
                     </div>
 

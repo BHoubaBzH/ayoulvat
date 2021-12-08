@@ -13,6 +13,7 @@ $(document).ready(function(){
 
     {% if not planning_perso %}
         {# si planning selectionné, on affiche #}
+
         {% if Planning or Poste %}
             {% if 'benevole.change_profilebenevole' in perms%} {# admins et orgas #}
                 {% comment "affichage tab postes et benevole" %}
@@ -49,7 +50,7 @@ $(document).ready(function(){
 
         {# une equipe est selectionnée par un benevole, pas de planning ou de poste #}
         {# page par defaut admin: plannings  evenement et equipes #} 
-        {% elif  Evenement and not Planning and not Poste and 'evenement.change_planning' in perms %} 
+        {% elif Evenement and not Planning and not Poste and 'evenement.change_planning' in perms %} 
             <div class="tab-content post_display_javascript" id="nav-tabContent">
                 <div class="tab-pane fade show active post_display_javascript" id="nav-equipes"  
                     role="tabpanel" aria-labelledby="nav-equipes-tab">

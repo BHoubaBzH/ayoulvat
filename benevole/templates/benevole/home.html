@@ -4,7 +4,11 @@
 {% block content %}
 
     {% if user.is_authenticated %}{# deja connecté #}
-      {% include 'benevole/homepage.html'%}
+      {% if 'association.view_association' in perms %}
+        {% include 'association/associations_liste.html' %}
+      {% else %}
+        {% include 'benevole/homepage.html'%}
+      {% endif %}
     {% else %}{# pas authentifié #}
       {% include 'benevole/connexion.html'%}
     {% endif %}
