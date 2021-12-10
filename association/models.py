@@ -54,7 +54,7 @@ class Abonnement(models.Model):
     facture_courriel = models.EmailField(default='')
     description = models.CharField(max_length=500, blank=True, default='')
     # on ne peut pas suprimer un tarif/formule si un abonnement pointe dessus
-    formule = models.OneToOneField(Formule,
+    formule = models.ForeignKey(Formule,
                                    primary_key=False,
                                    default='',
                                    null=True,
