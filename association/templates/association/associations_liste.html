@@ -2,10 +2,12 @@
 <!-- association/association_liste.html -->
 {% block asso_nom %}
     {% for asso in Assos %}
-            <H2>{{ asso.nom }}
-            <a href="{% url 'detail_asso' uuid_asso=asso.UUID %}"><i class="bi bi-list fs-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="Details"></i></a>
-            <a href="{% url 'liste_evenements' %}"><i class="bi bi-view-stacked fs-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="liste evenements"></i></a>
-            <input type="button" name="uuid_asso" value="{{ asso.UUID }}">
-            </H2>
+        <H2><a href="{% url 'detail_asso' uuid_asso=asso.UUID %}">{{ asso.nom }}</a>
+            <form method="get" id="{{ asso.UUID }}_evts" action="{% url 'liste_evenements' %}">
+                <button type="submit" name="uuid_asso" value="{{ asso.UUID }}">
+                        <i class="bi bi-list fs-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="liste evenements"></i>
+                </button>
+            </form>
+        </H2>
     {% endfor %}
 {% endblock asso_nom %}

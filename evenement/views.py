@@ -350,11 +350,16 @@ def liste_evenements(request):
     """
     liste les evenements de l'asso
     """
-    # récupère dans la session l'uuid de l'association
-    uuid_asso = request.session['uuid_association']
+    if request.method == 'GET' and 'uuid_asso' in request.GET :
+        print('get')
+        # récupère dans url uuid de l association
+        uuid_asso = request.GET.get('uuid_asso')
+    else:
+         # récupère dans la session uuid de l association
+        uuid_asso = request.session['uuid_association']
     association = Association.objects.get(UUID=uuid_asso)
 
-    try: # on filtre les évènements sur ceux de l'asso uniquement
+    try: # on filtre les évènements sur ceux de l asso uniquement
         liste_evenements = Evenement.objects.filter(association_id=uuid_asso)
     except:
         print('Pas encore d\'évènement pour cette asso, voulez-vous en creer un?')
@@ -442,6 +447,8 @@ def evenement(request, uuid_evenement):
     if request.method == "POST":
         uuid_evenement = request.POST.get('evenement')
         # le bénévole prend ou libère un créneau
+
+        # traitement normal, ne force pas le retour sur le planning global de l evenement
         if any(x in  request.POST for x in ['benevole_prend_creneau', 'benevole_libere_creneau']):
             creneau_bene = Creneau.objects.get(UUID=request.POST.get('creneau'))
             creneau_bene.benevole_id = request.user.profilebenevole.UUID if ('benevole_prend_creneau' in request.POST) else ""
@@ -511,35 +518,35 @@ def evenement(request, uuid_evenement):
 
         # on envoie la form non liée au template pour ajout d un nouveau poste
         data["FormPoste"] = PosteForm(initial={'evenement': evenement,
-                                               'equipe': data["equipe_uuid"],
-                                               'planning': data["planning_uuid"]})
+                                            'equipe': data["equipe_uuid"],
+                                            'planning': data["planning_uuid"]})
                         
         # on envoie la form non liée au template pour ajout d un nouveau creneau
         # si pas de creneau selectionné : type = "", sinon type = "creneau" ou "benevole" 
         # print('POST TYPE : {}'.format(request.POST.get('type')))
         data["FormCreneau"] = CreneauForm(initial={'evenement': evenement,
-                                                   'equipe': data["equipe_uuid"],
-                                                   'planning': data["planning_uuid"],
-                                                   'id_benevole': ProfileBenevole.UUID},
-                                          pas_creneau=planning_retourne_pas(request),
-                                          planning_uuid=request.POST.get('planning'),
-                                          poste_uuid=request.POST.get('poste'),
-                                          benevole_uuid=request.POST.get('benevole'),
-                                          personne_connectee=request.user,
-                                          evenement=uuid_evenement,
-                                          type=request.POST.get('type'), )
+                                                'equipe': data["equipe_uuid"],
+                                                'planning': data["planning_uuid"],
+                                                'id_benevole': ProfileBenevole.UUID},
+                                        pas_creneau=planning_retourne_pas(request),
+                                        planning_uuid=request.POST.get('planning'),
+                                        poste_uuid=request.POST.get('poste'),
+                                        benevole_uuid=request.POST.get('benevole'),
+                                        personne_connectee=request.user,
+                                        evenement=uuid_evenement,
+                                        type=request.POST.get('type'), )
         # si le benevole appuie sur le bouton "mon planning"
         if request.POST.get('planning_perso'):
             data["planning_perso"] = "oui"
             data["PlanningRange"] = planning_range(evenement.debut,
-                                                   evenement.fin,
-                                                   30)
-            
+                                                evenement.fin,
+                                                30)
+        
     # si pas de données post, affiche le planning global de l'evenement
     else:
         data["PlanningRange"] = planning_range(evenement.debut,
-                                               evenement.fin,
-                                               30)          
+                                            evenement.fin,
+                                            30)          
     print('*** Fin traitement view : {}'.format(datetime.now()))
     return render(request, "evenement/evenement_principal.html", data)
 

@@ -69,7 +69,7 @@
                     {% endif %}
                     {% for creno in Creneaux %}
                         {% if creno.planning_id|stringformat:'s' == planning_uuid|stringformat:'s' and creno.poste_id == poste.UUID and creno.type == "creneau" %}
-                            {# AFFICHE LES CRENEAU DANS LA GRID  CSS et construit les modals associés #}
+                            {# AFFICHE LES CRENEAU DANS LA GRID CSS et construit les modals associés #}
                             {% include "evenement/creneau_affiche.html" with source_type="creneau" %}
                         {% endif %}
                     {% endfor %}

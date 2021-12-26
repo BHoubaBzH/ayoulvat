@@ -45,6 +45,12 @@ class Personne(AbstractUser):
                                 help_text='Option. Un numéro pour te joindre le jour J.')
     description = models.CharField(max_length=500, blank=True, default='', help_text='Option')
 
+    def __str__(self):
+        if not self.last_name and not self.first_name:
+            return "{0}".format(self.personne.username)
+        else:
+            return "{0} {1}".format(self.last_name.upper(), \
+                                    self.first_name.capitalize())
 
 # paramètres specifiques administrateurs de l'asso
 class ProfileAdministrateur(models.Model):

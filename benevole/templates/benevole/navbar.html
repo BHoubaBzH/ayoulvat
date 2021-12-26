@@ -59,27 +59,6 @@
       </ul>
 
       <ul class="navbar-nav px-3">
-        {% comment "ancien accès a mon planning. déporté sur la sidebar" %}
-        <li class="nav-item text-nowrap" id="boutons_navbar">
-          {# si c'est un bénévole inscrit à l'evenement, il peut consulter son planning perso #}
-          {% if Evenement and user.profilebenevole in Benevoles %}
-
-            <div class="btn-group me-2">
-              <button type="submit" id="planning_perso" class="btn btn-sm btn-outline-secondary"
-                formaction="{% url 'evenement' uuid_evenement=Evenement.UUID %}">Mon Planning</button>
-            </div>
-          {% endif %}
-        </li>
-        {% endcomment %}
-        {% comment "ancien accès au dashboard. déporté sur la sidebar" %}
-        {#% if Evenement and 'benevole.add_benevole' in perms %#}
-        {% if Evenement and GroupeUtilisateur in 'Administrateur,Organisateur,Responsable' %}
-          <li class="nav-item text-nowrap" id="boutons_navbar">
-            <button type="submit" id="menu_admin" class="btn btn-sm btn-outline-secondary"
-                formaction="{% url 'dashboard' %}">Administration</button>
-            </div>
-          </li>
-        {% endcomment %}
         {% comment "exemple menu déroulant" %}
           <li class="nav-item dropdown">
               <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">

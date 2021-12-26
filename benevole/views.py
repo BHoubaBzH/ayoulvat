@@ -50,6 +50,7 @@ def Home(request):
     data = {
         "FormPersonne" : PersonneForm(),  # form personne non liée
         "Evenements" : Evenement.objects.all(),  # liste de tous les evenements
+
         "Assos": Association.objects.all() # liste toutes les assosciations pour admin, a filtrer par assos affectées a administrateur
     }
     # récupère dans la session l'uuid de l'association, si on est passé par l'asso
@@ -61,6 +62,9 @@ def Home(request):
         data["Benevoles"] = ProfileBenevole.objects.filter(BenevolesEvenement=evenement)  # objets benevoles de l'evenement
     except:
         print('pas passé la page evenement')
+
+    # ajouter un tableau des evenements avec : pas encore ouvert / ouvert / inscriptions closes /en cours /fini / benevole inscrit
+    # pour trier dans le home du benevoles les evenements et le fait qu'il puisse s'y inscrire
 
     # on redirige vers la page profile tant que celui-ci n est pas rempli
     if request.user.is_authenticated :
@@ -108,19 +112,17 @@ def Profile(request):
             # on redirige vers la page homepage si les forms sont remplies
             return redirect("home")
             
-    # on construit nos objets a passer au template dans le dictionnaire data
     try : 
         profile_benevole = BenevoleForm(instance=ProfileBenevole.objects.get(personne_id=request.user.UUID))  # form benevole liée
     except :
         # sinon initial, on va lier le profile à l evenement
         # profile_benevole = BenevoleForm(initial={'evenement' : [i.id for i in Evenement_inst.evenement.all()]})
         profile_benevole = BenevoleForm()
-
+    # on construit nos objets a passer au template dans le dictionnaire data
     data = {
         "FormPersonne" : PersonneForm(instance=Personne.objects.get(UUID=request.user.UUID)),  # form personne liée
         "FormBenevole" : profile_benevole, # form benevole liée
         "Evenements" : "",  # liste de tous les evenements
         "Action" : "modifier",
     }
-
     return render(request, "benevole/profile.html", data)
