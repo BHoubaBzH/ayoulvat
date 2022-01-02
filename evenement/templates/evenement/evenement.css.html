@@ -38,6 +38,8 @@
 			;
 	}
 
+
+
 	{# colorise les créneaux en fonction du poste et la couleur dans la table poste#}
 	{% for poste in Postes %}
 		{% if poste.planning_id|stringformat:'s' == planning_uuid|stringformat:'s' %}
@@ -152,27 +154,45 @@
 		width: 20px;
 	}
 
+	.poste-slot, .benevole-slot, .equipe-slot, .poste-bouton-slot, .benevole-bouton-slot   {
+		display: block;
+		padding: 10px 5px 5px;
+		position: sticky;
+		height: 2em;
+		top: 0;
+		z-index: 20;
+		background-color: rgb(255, 255, 255);
+	}
+
+	.bouton_edite_poste  {
+		padding: 1;
+		margin-left: -5px;
+		margin-top: 5px;
+	}
+
 }
 
-@supports( display:grid ) {
-	@media screen and (min-width:700px) {
-		.poste-slot, .benevole-slot, .equipe-slot, .poste-bouton-slot, .benevole-bouton-slot   {
-			display: block;
-			padding: 10px 5px 5px;
-			position: sticky;
-			height: 2em;
-			top: 0;
-			z-index: 20;
-			background-color: rgb(255, 255, 255);
-		}
-
-		.bouton_edite_poste  {
-			padding: 1;
-			margin-left: -5px;
-			margin-top: 5px;
-		}
+@media screen and (max-width:400px) {
+	{# PLANNING CRENEAUX #}
+	.planning-creneaux, .planning-equipes {
+		display: none;
+	}
+	.sidebar {
+		display: none;
+	}
+	#nav-creneaux {
+		display: none;
 	}
 }
+
+/*
+@supports( display:grid ) {
+	@media screen and (min-width:700px) {
+
+	}
+}
+*/
+
 
 /* Small-screen & fallback styles */
 .session {
@@ -239,6 +259,7 @@ body {
 	justify-content: center;
 	font-weight: bold;
 	# font-size:.75em;
+	font-size:1vw;
 	overflow : hidden;
 }
 

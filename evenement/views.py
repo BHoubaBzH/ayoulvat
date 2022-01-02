@@ -398,7 +398,7 @@ def evenement(request, uuid_evenement):
     data = {
         "Association": Association.objects.get(UUID=uuid_asso),
         "Evenement": evenement,
-        "Equipes":  Equipe.objects.filter(evenement_id=evenement),  # objets equipes de l'evenement
+        "Equipes":  Equipe.objects.filter(evenement_id=evenement).order_by('nom'),  # objets equipes de l'evenement
         "Plannings": Planning.objects.filter(evenement_id=evenement).order_by('debut'),  # objets planning de l'evenement
         "Postes": Poste.objects.filter(evenement_id=evenement).order_by('nom'),  # objets postes de l'evenement pour planning perso
         "Creneaux": Creneau.objects.filter(evenement_id=evenement).order_by('debut'),  # objets creneaux de l'evenement pour planning perso

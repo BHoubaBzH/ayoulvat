@@ -3,14 +3,9 @@
 {% load filters_perso %}
 
 
-
-
-
-
-
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-auto bg-light sticky-top">
+<div class="container-fluid  overflow-hidden">
+    <div class="row flex-nowrap overflow-auto">
+        <div class="col-sm-auto bg-light d-flex">
             <div class="d-flex flex-sm-column flex-row flex-nowrap bg-light align-items-center sticky-top">
               {# si un evenement a été selectionné on affiche les equipes et planning dans la sidebar #}
               {% if Evenement.UUID %}
