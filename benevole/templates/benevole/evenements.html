@@ -1,4 +1,4 @@
-<!-- benevole/homepage.html : page principale du benevole -->
+<!-- benevole/evenements.html : page principale du benevole -->
 <div class="row card card-default">
     <div class="card-header">Bienvenue {% if user.last_name or user.first.name %}{{ user.first_name|capfirst }} {{ user.last_name|upper }}{% else %}{{ user.username }}{% endif %} !</div>
     <div class="card-body">
@@ -18,26 +18,31 @@
     </form>
 {% endfor %}
 {# on va creer une carte par evenement ou le benevole est enregistré #}
+
+{% now "Y-m-d" as todays_date %}
 <div class="evenements">
     <div class="container overflow-hidden">
         <div class="row gy-5 gx-5" style="margin-top: 0px;">
             {% for EV in Evenements %}
-                <div class="row row-cols-1 row-cols-md-3 g-4">
-                    <div class="col">
-                        <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="{{ EV }}" title="vers {{ EV }}">
-                            <div class="card h-100">
-                            {% if EV.vignette %}
-                                <img src="{{ EV.vignette.url }}" class="card-img-top" alt="vers {{ EV }}">
-                            {% else %}
-                                <img src="media/empty.jpg" class="card-img-top" alt="vers {{ EV }}">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title">{{ EV.nom }}</h5>
-                                <p class="card-text">{{ EV.description }}</p>
-                            </div>
-                        </button>
+                {# affiche dans la liste que les evenements à venir ou en cours #}
+                {%if todays_date < EV.fin|date:"Y-m-d" %}
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <div class="col">
+                            <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="{{ EV }}" title="vers {{ EV }}">
+                                <div class="card h-100">
+                                {% if EV.vignette %}
+                                    <img src="{{ EV.vignette.url }}" class="card-img-top" alt="vers {{ EV }}">
+                                {% else %}
+                                    <img src="media/empty.jpg" class="card-img-top" alt="vers {{ EV }}">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ EV.nom }}</h5>
+                                    <p class="card-text">{{ EV.description }}</p>
+                                </div>
+                            </button>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             {% endfor %}
         </div>
     </div>

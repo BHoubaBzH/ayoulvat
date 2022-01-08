@@ -32,7 +32,7 @@ $(document).ready(function(){
                     {# planning on affiche que si un planning ou un poste est selectionné #}
                     <div class="tab-pane fade show active post_display_javascript" id="nav-creneaux" 
                         role="tabpanel" aria-labelledby="nav-creneaux-tab">
-                            {% include "evenement/gridplan_postes.html" %}
+                            {% include "evenement/gridplan_equipe.html" %}
                     </div>
                     {% comment "affichage tab benevole" %}
                     <div class="tab-pane post_display_javascript" id="nav-benevoles" 
@@ -44,7 +44,7 @@ $(document).ready(function(){
 
             {% else %} {# benevoles #}
                 <div class="tab-content post_display_javascript" id="nav-tabContent">
-                    {% include "evenement/gridplan_postes.html" %}
+                    {% include "evenement/gridplan_equipe.html" %}
                 </div>
             {% endif %}
 
@@ -54,7 +54,7 @@ $(document).ready(function(){
             <div class="tab-content post_display_javascript" id="nav-tabContent">
                 <div class="tab-pane fade show active post_display_javascript" id="nav-equipes"  
                     role="tabpanel" aria-labelledby="nav-equipes-tab">
-                        {% include "evenement/gridplan_equipes.html" %}
+                        {% include "evenement/gridplan_evenement.html" %}
                 </div>
             </div>
         {# a analyser comment on arrive ici , on part sur planning perso #}    
@@ -69,7 +69,7 @@ $(document).ready(function(){
                 <div class="tab-pane fade show active" id="nav-equipes"
                     role="tabpanel" aria-labelledby="nav-equipes-tab">
                     {%if equipe_uuid%}
-                        {% include "evenement/gridplan_equipes.html" %}
+                        {% include "evenement/gridplan_evenement.html" %}
                     {% else %}
                         {% include "evenement/gridplan_planningperso.html" %}
                     {% endif %}

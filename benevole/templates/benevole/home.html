@@ -5,13 +5,15 @@
 
     {% if user.is_authenticated %}{# deja connecté #}
       {% if 'association.view_association' in perms %}
+        {# admin connecté arrive sur sa liste d assos #}
         {% include 'association/associations_liste.html' %}
       {% else %}
-        {% include 'benevole/homepage.html'%}
+        {# benevole connecté arrive sur la liste de evenements #}
+        {% include 'benevole/evenements.html'%}
       {% endif %}
     {% else %}{# pas authentifié #}
       {% include 'benevole/connexion.html'%}
     {% endif %}
-    </br>
-    </br>
+    <br>
+    <br>
 {% endblock %}

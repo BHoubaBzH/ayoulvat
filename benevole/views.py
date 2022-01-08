@@ -49,7 +49,7 @@ def Home(request):
     """
     data = {
         "FormPersonne" : PersonneForm(),  # form personne non liée
-        "Evenements" : Evenement.objects.all(),  # liste de tous les evenements
+        "Evenements" : Evenement.objects.all().order_by("debut"),  # liste de tous les evenements
 
         "Assos": Association.objects.all() # liste toutes les assosciations pour admin, a filtrer par assos affectées a administrateur
     }
@@ -109,7 +109,7 @@ def Profile(request):
             plop = ProfileBenevole.objects.get(UUID=request.user.profilebenevole.UUID)
             # ajoute notre benevole dans le champs manytomany 
             evenement.benevole.add(ProfileBenevole.objects.get(UUID=plop.UUID)) 
-            # on redirige vers la page homepage si les forms sont remplies
+            # on redirige vers la page evenements si les forms sont remplies
             return redirect("home")
             
     try : 
