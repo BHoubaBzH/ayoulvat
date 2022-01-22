@@ -8,6 +8,8 @@ from django.shortcuts import redirect, render
 from django.urls.base import reverse
 from django.urls import reverse_lazy
 from django.views import generic
+from django.db.models import Q
+from datetime import date
 
 from benevole.forms import BenevoleForm, PersonneForm, RegisterForm
 
@@ -47,9 +49,16 @@ def Home(request):
     """
         page profile de login et principale du benevole
     """
+    # log les donnees post
+    print('#########################################################')
+    for key, value in request.POST.items():
+        print('#        POST -> {0} : {1}'.format(key, value))
+    print('#########################################################')
     data = {
         "FormPersonne" : PersonneForm(),  # form personne non liée
         "Evenements" : Evenement.objects.all().order_by("debut"),  # liste de tous les evenements
+        "Evenements_inscrit" : Evenement.objects.filter(Q(debut__gt=date.today()),Q(benevole__personne_id=request.user.UUID)).order_by("debut"), # evenements à venir où le benevole est deja inscrit
+        "Evenements_disponible" : Evenement.objects.filter(Q(debut__gt=date.today()),~Q(benevole__personne_id=request.user.UUID)).order_by("debut"), # evenements à venir où le benevole peut s inscrire
 
         "Assos": Association.objects.all() # liste toutes les assosciations pour admin, a filtrer par assos affectées a administrateur
     }
@@ -65,6 +74,15 @@ def Home(request):
 
     # ajouter un tableau des evenements avec : pas encore ouvert / ouvert / inscriptions closes /en cours /fini / benevole inscrit
     # pour trier dans le home du benevoles les evenements et le fait qu'il puisse s'y inscrire
+
+    if request.method == 'POST':
+        if 'inscription_event' in request.POST:
+            # on ajoute le bénévole à l evenement
+            insc_ev = Evenement.objects.get(UUID=request.POST.get('inscription_event'))
+            insc_be = ProfileBenevole.objects.get(personne_id=request.user.UUID)
+            if insc_be and insc_ev:
+                print('on ajoute le bénévole {} à l\'evenement {}'.format(insc_be, insc_ev))
+                insc_ev.benevole.add(insc_be)
 
     # on redirige vers la page profile tant que celui-ci n est pas rempli
     if request.user.is_authenticated :

@@ -49,19 +49,20 @@
                     <div class="poste-slot ligne-{{ poste.UUID }}"
                         aria-hidden="true"
                         style="grid-row: ligne-{{ poste.UUID }}; grid-column: postes;"
+                        data-bs-toggle="tooltip" data-bs-placement="right"  data-bs-html="true"
+                        title="
+                        poste : {{ poste.nom }}<br>
+                        {# affiche les infos aux bénévoles sur les raisons de non accès a ce poste #}
+                        {% if not poste.ouvert and not 'evenement.change_poste'  in perms %}
+                            <b>Ce poste n'est pas ouvert.</b><br><br>
+                        {% elif not poste.ouvert_mineur and not 'evenement.change_poste'  in perms %}
+                            <b>Ce poste n'est pas ouvert aux mineurs.</b><br><br>
+                        {% endif %}
                         {% if poste.description %}
-                            data-bs-toggle="tooltip" data-bs-placement="right"  data-bs-html="true"
-                            title="
-                            {# affiche les infos aux bénévoles sur les raisons de non accès a ce poste #}
-                            {% if not poste.ouvert and not 'evenement.change_poste'  in perms %}
-                                <b>Ce poste n'est pas ouvert.</b><br><br>
-                            {% elif not poste.ouvert_mineur and not 'evenement.change_poste'  in perms %}
-                                <b>Ce poste n'est pas ouvert aux mineurs.</b><br><br>
-                            {% endif %}
+                            description :
                             {{poste.description}}
-                            "
-                        {% endif %}>
-                        
+                        {% endif %}
+                        ">
                             {{ poste.nom }}
                     </div>
                     {% if 'evenement.change_poste'  in perms %}

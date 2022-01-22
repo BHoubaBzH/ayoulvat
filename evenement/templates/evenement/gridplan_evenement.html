@@ -33,12 +33,21 @@
             {# affiche les entetes des lignes du planning : equipes #}
             <div class="equipe-slot"
                 aria-hidden="true"
-                style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;">
+                style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;"
+
+                data-bs-toggle="tooltip" data-bs-placement="right"  data-bs-html="true"
+                title="
+                equipe : {{ equipe.nom }}<br>
+                {% if equipe.description %}
+                    description :
+                    {{equipe.description}}
+                {% endif %}
+                ">
                     <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
             </div>
             {% if 'evenement.change_equipe'  in perms %}
                     {% include "evenement/equipe_edite.html" %}
-            {% endif %}
+            {% endif %} 
             {% for planning in Plannings %}
                     {% if planning.equipe_id == equipe.UUID %}
                     {# AFFICHE LES PLANNINGS DANS LA GRID CSS #}

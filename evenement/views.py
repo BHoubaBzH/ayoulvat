@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
+from django.db.models import Q
 
 from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
@@ -412,7 +413,7 @@ def evenement(request, uuid_evenement):
         "planning_uuid": "",  # par defaut, pas de planning selectionée
         "PlanningRange": "",  # dictionnaire formaté des dates heures de l'objet selectionné
         "plannings_equipes": Planning.objects.all().values_list('equipe_id', flat=True).distinct(), # liste des équipes ayant au moins un planning créé
-        "creneaux_benevole" : Creneau.objects.filter(benevole_id=request.user.profilebenevole.UUID), # crenaux du bénévole connecté
+        "creneaux_benevole" : Creneau.objects.filter(Q(benevole_id=request.user.profilebenevole.UUID),Q(evenement_id=evenement)).order_by('debut'), # crenaux du bénévole connecté
         
         "FormEquipe" : EquipeForm(initial={'evenement': evenement}), # form non liée au template pour ajout d une nouvelle equipe
         "DicEquipes" : "",
@@ -515,7 +516,7 @@ def evenement(request, uuid_evenement):
             # si la personne a cliqué sur le bouton pour recevoir ses créneaux par email
             if request.POST.get('creneaux_courriel'):
                 envoi_courriel(request, evenement)
-
+        
         # on envoie la form non liée au template pour ajout d un nouveau poste
         data["FormPoste"] = PosteForm(initial={'evenement': evenement,
                                             'equipe': data["equipe_uuid"],
