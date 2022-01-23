@@ -30,10 +30,8 @@ class AssoPartenairesDetails(admin.ModelAdmin):
         return Association.objects.get(UUID=self.Association_id).nom
     list_display = ['nom', asso_nom]
 
-
 class AbonnementAdmin(admin.ModelAdmin):
     pass
-
 
 admin.site.register(Association, AssociationDetails)
 admin.site.register(Abonnement)
@@ -63,7 +61,6 @@ class ProfileInline(admin.StackedInline):
     can_delete = False  # prohibit removal
     fields = ('last_name',)  # Specify which field to display,
     readonly_fields = ['last_name','first_name','role']  # Specify that this read only field
-
 
 admin.site.register(ProfileAdministrateur, ProfileAdministrateurAdmin)
 '''

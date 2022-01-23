@@ -1,13 +1,35 @@
 {% extends 'association/base.html' %}
 <!-- association/association_liste.html -->
 {% block asso_nom %}
-    {% for asso in Assos %}
-        <H2><a href="{% url 'detail_asso' uuid_asso=asso.UUID %}">{{ asso.nom }}</a>
-            <form method="get" id="{{ asso.UUID }}_evts" action="{% url 'liste_evenements' %}">
-                <button type="submit" name="uuid_asso" value="{{ asso.UUID }}">
-                        <i class="bi bi-list fs-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="liste evenements"></i>
-                </button>
-            </form>
-        </H2>
-    {% endfor %}
+
+    <div class="container">
+
+        <table class="table table-dark table-striped table-hover"  id="table_associations">
+            <thead>
+                <tr>
+                <th scope="col" class="col col-lg-8">associations</th><th scope="col">evenements</th>
+                </tr>
+            </thead>
+            <tbody>
+
+
+                {% for asso in Assos %}
+                <tr style="vertical-align : middle;">
+                    <td>
+                    <H2><a href="{% url 'detail_asso' uuid_asso=asso.UUID %}">{{ asso.nom }}</a></H2>
+                    </td>
+                    <td>
+                        <form method="get" id="{{ asso.UUID }}_evts" action="{% url 'liste_evenements' %}">
+                            <button type="submit" name="uuid_asso" value="{{ asso.UUID }}">
+                                    <i class="bi bi-list fs-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="liste evenements"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+
+
+            </tbody>
+        </table>
+    </div>
 {% endblock asso_nom %}

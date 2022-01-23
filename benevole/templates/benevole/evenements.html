@@ -7,7 +7,7 @@
         Bienvenue sur le site AYOULVAT. Tu vas pouvoir t'inscrire comme bénévole sur des évènements.<br>
         Pour revenir sur cette page click sur "home" dans la barre du haut. <br>
         Pour éditer tes informations, click sur "mon profil" dans la barre du haut.<br><br>
-        Choisis un evenement dans la liste ci-dessous pour y participer.
+        Voici la liste des evenements
     </div>
 </div>
 
@@ -27,7 +27,7 @@
             <div class="col-md-12">
                 <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
                     title="les évènements">
-                    Les évènements aux quels tu participes
+                    Tu y es inscrits
                 </h2>
             </div>
         </div>
@@ -40,7 +40,7 @@
             <div class="row gy-5 gx-5" style="margin-top: 0px;">
                 {% for EV in Evenements_inscrit %}
                     {# affiche dans la liste que les evenements à venir ou en cours #}
-                    <div class="col">
+                    <div class="col-sm-4">
                         <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="{{ EV.UUID }}" title="aller vers {{ EV }}">
                             <div class="card h-100">
                             {% if EV.vignette %}
@@ -78,7 +78,7 @@
             <div class="col-md-12">
                 <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
                     title="les évènements">
-                    Les évènements à venir
+                    Tu n'y es pas encore inscrit
                 </h2>
             </div>
         </div>
@@ -87,7 +87,7 @@
 
     <div class="container">
         <div class="row align-items-end">
-            <p>Choisis ceux aux quels tu veux participer: </p>
+            <p>Evenements disponible aux quels tu ne participes pas encore: </p>
         </div>
     </div>   
 
@@ -97,13 +97,13 @@
             <div class="row gy-5 gx-5" style="margin-top: 0px;">
                 {% for EV in Evenements_disponible %}
                     {# affiche dans la liste que les evenements à venir ou en cours #}
-                    <div class="col">
-                        <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="{{ EV.UUID }}" title="cliques si tu veux etre bénévole à {{ EV }}">
+                    <div class="col-sm-4">
+                        <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="{{ EV.UUID }}" title="devenir bénévole à {{ EV }} et accéder à l'evenement">
                             <div class="card h-100">
                             {% if EV.vignette %}
-                                <img src="{{ EV.vignette.url }}" class="card-img-top" alt="cliques si tu veux etre bénévole à {{ EV }}">
+                                <img src="{{ EV.vignette.url }}" class="card-img-top" alt="devenir bénévole à {{ EV }} et accéder à l'evenement">
                             {% else %}
-                                <img src="media/empty.jpg" class="card-img-top" alt="cliques si tu veux etre bénévole à {{ EV }}">
+                                <img src="media/empty.jpg" class="card-img-top" alt="cdevenir bénévole à {{ EV }} et accéder à l'evenement">
                             {% endif %}
                             <div class="card-body">
                                 <h5 class="card-title">{{ EV.nom }}</h5>

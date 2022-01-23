@@ -1,4 +1,6 @@
 import logging
+
+from django.http import HttpResponseRedirect
 from association.models import Association
 
 from benevole.models import Personne, ProfileBenevole
@@ -58,7 +60,10 @@ def Home(request):
         "FormPersonne" : PersonneForm(),  # form personne non liée
         "Evenements" : Evenement.objects.all().order_by("debut"),  # liste de tous les evenements
         "Evenements_inscrit" : Evenement.objects.filter(Q(debut__gt=date.today()),Q(benevole__personne_id=request.user.UUID)).order_by("debut"), # evenements à venir où le benevole est deja inscrit
-        "Evenements_disponible" : Evenement.objects.filter(Q(debut__gt=date.today()),~Q(benevole__personne_id=request.user.UUID)).order_by("debut"), # evenements à venir où le benevole peut s inscrire
+        "Evenements_disponible" : Evenement.objects.filter(Q(debut__gt=date.today()),
+                                                           ~Q(benevole__personne_id=request.user.UUID),
+                                                           Q(inscription_debut__lte=date.today()), 
+                                                           Q(inscription_fin__gt=date.today())).order_by("debut"),# evenements à venir , benevole pas inscrit , inscription ouvertes
 
         "Assos": Association.objects.all() # liste toutes les assosciations pour admin, a filtrer par assos affectées a administrateur
     }
@@ -81,8 +86,10 @@ def Home(request):
             insc_ev = Evenement.objects.get(UUID=request.POST.get('inscription_event'))
             insc_be = ProfileBenevole.objects.get(personne_id=request.user.UUID)
             if insc_be and insc_ev:
-                print('on ajoute le bénévole {} à l\'evenement {}'.format(insc_be, insc_ev))
+                logger.info('bénévole {} inscrit à l\'evenement {}'.format(insc_be, insc_ev))
                 insc_ev.benevole.add(insc_be)
+                # redirige vers la page evenement
+                return HttpResponseRedirect('evenement/{}'.format(insc_ev.UUID))
 
     # on redirige vers la page profile tant que celui-ci n est pas rempli
     if request.user.is_authenticated :
