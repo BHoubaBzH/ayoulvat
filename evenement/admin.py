@@ -24,7 +24,7 @@ class EvenementAdmin(admin.ModelAdmin):
             'classes': ('wide', 'extrapretty'),
         }),
     )
-    filter_horizontal = ('benevole',)
+    filter_horizontal = ('benevole', 'assopartenaire')
 
 #admin.site.register(Evenement)
 admin.site.register(Equipe)
