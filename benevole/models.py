@@ -49,7 +49,7 @@ class Personne(AbstractUser):
         if not self.last_name and not self.first_name:
             return "{0}".format(self.personne.username)
         else:
-            return "{0} {1} {2}".format(self.last_name.upper(), \
+            return "{0} {1}".format(self.last_name.upper(), \
                                     self.first_name.capitalize())
 
 # paramètres specifiques administrateurs de l'asso
