@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from association.models import Association
 
 from benevole.models import Personne, ProfileBenevole
-from evenement.models import Evenement
+from evenement.models import Creneau, Equipe, Evenement
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.urls.base import reverse
@@ -14,6 +14,7 @@ from django.db.models import Q
 from datetime import date
 
 from benevole.forms import BenevoleForm, PersonneForm, RegisterForm
+from benevole.models import ProfileAdministrateur, ProfileOrganisateur, ProfileResponsable, ProfileBenevole
 
 # import the logging library
 import logging
@@ -34,6 +35,46 @@ def GroupeUtilisateur(request):
         return 'Responsable'
     elif request.user.groups.filter(name = 'Benevole').exists():
         return 'Benevole'
+
+def RoleUtilisateur(request, evenement=None): # remplace GroupeUtilisateur pour avoir le role par evenement
+    """renvoi le role du user connecte par rapport a levenement """
+    groupes_liste=['Administrateur', 'Organisateur', 'Responsable', 'Benevole']
+    # profiles_liste=[ProfileAdministrateur, ProfileOrganisateur,ProfileResponsable , ProfileBenevole]
+    for role in groupes_liste:
+            if request.user.groups.filter(name = role).exists(): # le user a un role
+                if role == 'Administrateur' :
+                    if Association.objects.filter( \
+                            administrateur=ProfileAdministrateur.objects.get(personne=request.user)).exists():
+                        # administrateur de l asso
+                        logger.info('{} de l\'association {}'.format(role,Association.objects.filter( \
+                            administrateur=ProfileAdministrateur.objects.get(personne=request.user))))
+                if role == 'Organisateur' and evenement: 
+                    if Evenement.objects.filter( \
+                            Q(UUID=evenement.UUID), \
+                            Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)) \
+                            ).exists():
+                        #organisateur de l evenement
+                        logger.info('{} de l\'évènement {}'.format(role,evenement))
+                if role == 'Responsable' and evenement: 
+                    if Equipe.objects.filter( \
+                            Q(evenement_id=evenement.UUID), \
+                            Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)) \
+                            ).exists():
+                        #responsable d equipe/s
+                        logger.info('{} de l\'équipe {}'.format(role,Equipe.objects.filter( \
+                            Q(evenement_id=evenement.UUID), \
+                            Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)) \
+                            )))
+                if role == 'Benevole' and evenement: 
+                    if Creneau.objects.filter( \
+                            Q(evenement_id=evenement.UUID), \
+                            Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)) \
+                            ).exists():
+                        # benevole inscrit sur un ou des creneaux de l evenement
+                        logger.info('{} des créneaux {}'.format(role,Creneau.objects.filter( \
+                            Q(evenement_id=evenement.UUID), \
+                            Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)) \
+                            )))
 
 
 ################################################

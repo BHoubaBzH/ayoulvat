@@ -18,7 +18,7 @@ class EvenementAdmin(admin.ModelAdmin):
             'fields': (('nom', 'association', 'organisateur', 'editable'), 
                         ('debut', 'fin'), 
                         ('inscription_debut', 'inscription_fin'), 
-                        'courriel_responsable', 'site_web', 'description', 'vignette', 'couleur',
+                        'courriel_organisateur', 'site_web', 'description', 'vignette', 'couleur',
                         ('benevole', 'assopartenaire')),
             # affichage
             'classes': ('wide', 'extrapretty'),

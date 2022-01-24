@@ -20,7 +20,8 @@ class PersonneDetails(admin.ModelAdmin):
             groups.append(group.name)
         return ' '.join(groups)
     group.short_description = 'Groupes'
-    list_display = ( "last_name", "first_name", "username", "date_joined", "is_superuser", "group")
+    list_display = ( "last_name", "first_name", "email", "date_joined", "is_superuser", "group")
+    
 
 '''
 class BenevoleDetails(UserAdmin):

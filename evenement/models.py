@@ -42,7 +42,7 @@ class Evenement(models.Model):
     editable = models.BooleanField(default=True, help_text="si éditable, l'évènement est ouvert à tous. Sinon, il n'est pas modifiable")
     site_web = models.URLField(blank=True, default='')
     description = models.TextField(max_length=2000, blank=True, default='')
-    courriel_responsable = models.EmailField(default='', help_text="courriel accessible aux bénévoles en bas de page")
+    courriel_organisateur = models.EmailField(default='', help_text="courriel accessible aux bénévoles en bas de page", blank=True)
     vignette = models.ImageField(upload_to=upload_dir_vignette, blank=True)
     couleur = RGBColorField(default="#0d6efd")
 
@@ -67,7 +67,6 @@ class Equipe(models.Model):
     responsable_valide = models.BooleanField(help_text="les responsables doivent valider les créneaux choisis")
     responsable_creer = models.BooleanField(help_text="les responsables peuvent creer des bénévoles")
     description = models.TextField(max_length=1000, blank=True, default='')
-    courriel_responsable = models.EmailField(default='', help_text="courriel accessible aux bénévoles en bas de page")
     couleur = RGBColorField(default="#0d6efd")
     seuil1 = models.IntegerField(default=50,
                                 validators=[

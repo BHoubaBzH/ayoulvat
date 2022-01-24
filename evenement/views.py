@@ -1,4 +1,4 @@
-from administration.views import inscription_ouvert
+from administration.views import association, inscription_ouvert
 from datetime import datetime,timedelta, date
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -9,8 +9,8 @@ from django.db.models import Q
 
 from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
-from benevole.models import ProfileBenevole, Personne, ProfileResponsable, ProfileOrganisateur
-from benevole.views import GroupeUtilisateur
+from benevole.models import ProfileBenevole
+from benevole.views import GroupeUtilisateur, RoleUtilisateur
 from association.models import Association
 
 from django.core.mail import BadHeaderError, send_mail
@@ -342,7 +342,7 @@ def check_majeur(date_naissance, date_evenement):
     else:
         return True # majeur
 
-
+ 
 ################################################
 #            views 
 ################################################
@@ -431,10 +431,15 @@ def evenement(request, uuid_evenement):
     data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})  
 
     # check du groupe du user connecté:
+    # print('#########################################################')
+    # print ('#   utilisateur connecté: ')
+    # print ('#        {2} : {0} {1} '.format(request.user.first_name, request.user.last_name, GroupeUtilisateur(request)))
+    data['GroupeUtilisateur'] = GroupeUtilisateur(request)
+    # check du groupe du user connecté:
     print('#########################################################')
     print ('#   utilisateur connecté: ')
-    print ('#        {2} : {0} {1} '.format(request.user.first_name, request.user.last_name, GroupeUtilisateur(request)))
-    data['GroupeUtilisateur'] = GroupeUtilisateur(request)
+    print ('#        {2} : {0} {1} '.format(request.user.first_name, request.user.last_name, RoleUtilisateur(request)))
+    data['RoleUtilisateur'] = RoleUtilisateur(request, evenement)
 
     # log les donnees post
     print('##################### evenement ########################')
