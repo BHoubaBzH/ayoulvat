@@ -444,6 +444,7 @@ def evenement(request, uuid_evenement):
             RolesUtilisateur.append(role)
     print('#########################################################')
     data['RolesUtilisateur'] = RolesUtilisateur
+    print(RolesUtilisateur)
 
     # log les donnees post
     print('##################### evenement ########################')

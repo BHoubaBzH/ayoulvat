@@ -58,76 +58,139 @@ def RoleUtilisateur(request, **kwargs): # remplace GroupeUtilisateur pour avoir 
         equipe = Equipe.objects.get(UUID=planning.equipe_id)
         evenement = Evenement.objects.get(UUID=planning.evenement_id)
         association = Association.objects.get(UUID=evenement.association_id)
-        out['Administrateur'] = Association.objects.filter( \
-                                Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)), \
-                                Q(UUID=association.UUID))
-        out['Organisateur'] = Evenement.objects.filter( \
-                                Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)), \
-                                Q(UUID=evenement.UUID))
-        out['Responsable'] = Equipe.objects.filter( \
-                                Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)), \
-                                Q(UUID=equipe.UUID))
-        out['Benevole'] = Creneau.objects.filter( \
-                                Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)), \
-                                Q(planning_id=planning.UUID))
+        try:
+            out['Administrateur'] = Association.objects.filter( \
+                                    Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)), \
+                                    Q(UUID=association.UUID))
+        except:
+            out['Administrateur'] = ""
+        try:
+            out['Organisateur'] = Evenement.objects.filter( \
+                                    Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)), \
+                                    Q(UUID=evenement.UUID))
+        except:
+            out['Organisateur'] = ""
+        try:
+            out['Responsable'] = Equipe.objects.filter( \
+                                    Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)), \
+                                    Q(UUID=equipe.UUID))
+        except:
+            out['Responsable'] = ""
+        try:
+            out['Benevole'] = Creneau.objects.filter( \
+                                    Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)), \
+                                    Q(planning_id=planning.UUID))
+        except:
+            out['Benevole'] = ""
+
     if kwargs.get('eq'):
         # roles de la personne dans l equipe
         equipe = kwargs.get('eq')
         evenement = Evenement.objects.get(UUID=equipe.evenement_id)
         association = Association.objects.get(UUID=evenement.association_id)
-        out['Administrateur'] = Association.objects.filter( \
-                                Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)), \
-                                Q(UUID=association.UUID))
-        out['Organisateur'] = Evenement.objects.filter( \
-                                Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)), \
-                                Q(UUID=evenement.UUID))
-        out['Responsable'] = Equipe.objects.filter( \
-                                Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)), \
-                                Q(UUID=equipe.UUID))
-        out['Benevole'] = Creneau.objects.filter( \
-                                Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)), \
-                                Q(equipe=equipe))
+        try:
+            out['Administrateur'] = Association.objects.filter( \
+                                    Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)), \
+                                    Q(UUID=association.UUID))
+        except:
+            out['Administrateur'] = ""
+        try:    
+            out['Organisateur'] = Evenement.objects.filter( \
+                                    Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)), \
+                                    Q(UUID=evenement.UUID))
+        except:
+            out['Organisateur'] = ""
+        try:    
+            out['Responsable'] = Equipe.objects.filter( \
+                                    Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)), \
+                                    Q(UUID=equipe.UUID))
+        except:
+            out['Responsable'] = ""
+        try:    
+            out['Benevole'] = Creneau.objects.filter( \
+                                    Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)), \
+                                    Q(equipe=equipe))
+        except:
+            out['Benevole'] = ""
+
     if kwargs.get('ev'):
         # roles de la personne dans l evenement
         evenement = kwargs.get('ev')
         association = Association.objects.get(UUID=evenement.association_id)
-        out['Administrateur'] = Association.objects.filter( \
-                                Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)), \
-                                Q(UUID=association.UUID))
-        out['Organisateur'] = Evenement.objects.filter( \
-                                Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)), \
-                                Q(UUID=evenement.UUID))
-        out['Responsable'] = Equipe.objects.filter( \
-                                Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)), \
-                                Q(evenement=evenement))
-        out['Benevole'] = Creneau.objects.filter( \
-                                Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)), \
-                                Q(evenement=evenement))
+        try:
+            out['Administrateur'] = Association.objects.filter( \
+                                    Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)), \
+                                    Q(UUID=association.UUID))
+        except:
+            out['Administrateur'] = ""
+        try:
+            out['Organisateur'] = Evenement.objects.filter( \
+                                    Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)), \
+                                    Q(UUID=evenement.UUID))
+        except:
+            out['Organisateur'] = ""
+        try:
+            out['Responsable'] =  Equipe.objects.filter( \
+                                    Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)), \
+                                    Q(evenement=evenement))
+        except:
+            out['Responsable'] = ""
+        try:
+            out['Benevole'] = Creneau.objects.filter( \
+                                    Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)), \
+                                    Q(evenement=evenement))
+        except:
+            out['Benevole'] = ""
     if kwargs.get('ass'):
         # roles de la personne dans l asso
         association = kwargs.get('ass')
-        out['Administrateur'] = Association.objects.filter( \
-                                Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)), \
-                                Q(UUID=association.UUID))
-        out['Organisateur'] = Evenement.objects.filter( \
-                                Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)), \
-                                Q(association_id=association.UUID))
-        out['Responsable'] = Equipe.objects.filter( \
-                                Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)), \
-                                Q(evenement__association=association))
-        out['Benevole'] = Creneau.objects.filter( \
-                                Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)), \
-                                Q(evenement__association=association))
+        try:
+            out['Administrateur'] = Association.objects.filter( \
+                                    Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)), \
+                                    Q(UUID=association.UUID))
+        except:
+            out['Administrateur'] = ""
+        try:
+            out['Organisateur'] = Evenement.objects.filter( \
+                                    Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)), \
+                                    Q(association_id=association.UUID))
+        except:
+            out['Organisateur'] = ""
+        try:
+            out['Responsable'] = Equipe.objects.filter( \
+                                    Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)), \
+                                    Q(evenement__association=association))
+        except:
+            out['Responsable'] = ""
+        try:    
+            out['Benevole'] = Creneau.objects.filter( \
+                                    Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)), \
+                                    Q(evenement__association=association))
+        except:
+            out['Benevole'] = ""
+
     if not planning and not equipe and not evenement and not association:
         # roles de la personne sur tout le logiciel
-        out['Administrateur'] = Association.objects.filter( \
-                                Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)))
-        out['Organisateur'] = Evenement.objects.filter( \
-                                Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)))
-        out['Responsable'] = Equipe.objects.filter( \
-                                Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)))
-        out['Benevole'] = Creneau.objects.filter( \
-                                Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)))      
+        try:    
+            out['Administrateur'] = Association.objects.filter( \
+                                    Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)))
+        except:
+            out['Administrateur'] = ""
+        try:    
+            out['Organisateur'] = Evenement.objects.filter( \
+                                    Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)))
+        except:
+            out['Organisateur'] = ""
+        try:    
+            out['Responsable'] = Equipe.objects.filter( \
+                                    Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)))
+        except:
+            out['Responsable'] = ""
+        try:    
+            out['Benevole'] = Creneau.objects.filter( \
+                                    Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)))      
+        except:
+            out['Benevole'] = ""
 
     return out
 
