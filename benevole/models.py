@@ -144,6 +144,5 @@ class ProfileBenevole(models.Model):
                                     verbose_name=" Association Partenaire", # nom humainement comprehensible
                                     help_text='associations partenaires que vous voulez représenter')
     def __str__(self):
-        return "{0} {1} : {2}".format(self.personne.last_name.upper(), \
-                                    self.personne.first_name.capitalize(), \
-                                    self.personne.email)
+        return "{0} {1}".format(self.personne.last_name.upper(), \
+                                    self.personne.first_name.capitalize())

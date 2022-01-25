@@ -49,7 +49,7 @@
                     </li>
                 </ul>
 
-                {% if 'change_evenement'  in perms %} {# admins ont la liste de toutes les équipes #}
+                {% if 'Administrateur' or 'Organisateur'  in RolesUtilisateur %} {# admins ont la liste de toutes les équipes #}
                   <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
                     <a></a>
                   </h6>

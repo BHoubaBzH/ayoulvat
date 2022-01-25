@@ -1,3 +1,4 @@
+from queue import Empty
 from administration.views import association, inscription_ouvert
 from datetime import datetime,timedelta, date
 
@@ -430,16 +431,19 @@ def evenement(request, uuid_evenement):
     data["DicEquipes"] = dic_equipes(evenement)
     data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})  
 
-    # check du groupe du user connecté:
-    # print('#########################################################')
-    # print ('#   utilisateur connecté: ')
-    # print ('#        {2} : {0} {1} '.format(request.user.first_name, request.user.last_name, GroupeUtilisateur(request)))
     data['GroupeUtilisateur'] = GroupeUtilisateur(request)
-    # check du groupe du user connecté:
+    # check des roles de user sur l evenement:
     print('#########################################################')
     print ('#   utilisateur connecté: ')
-    print ('#        {2} : {0} {1} '.format(request.user.first_name, request.user.last_name, RoleUtilisateur(request)))
-    data['RoleUtilisateur'] = RoleUtilisateur(request, evenement)
+    print ('#        {0} {1} '.format(request.user.first_name, request.user.last_name))
+    print ('#   roles : ')
+    RolesUtilisateur = []
+    for role, entite in RoleUtilisateur(request, ev=evenement).items():
+        if entite:
+            print ('#        {:<15} ->    {} '.format(role, entite))
+            RolesUtilisateur.append(role)
+    print('#########################################################')
+    data['RolesUtilisateur'] = RolesUtilisateur
 
     # log les donnees post
     print('##################### evenement ########################')

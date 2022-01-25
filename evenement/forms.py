@@ -187,7 +187,7 @@ class CreneauForm(ModelForm):
         # formulaire ayant une instance, on va travailler dessus pour afficher le fomulaire comme il faut
         # en fonction du profile utilisateur
         #instance = getattr(self, 'instance', None)
-        print(self.instance.UUID)
+        # print(self.instance.UUID)
         # print('benevole : {}'.format(self.personne_connectee))
         if self.instance:
             if not self.personne_connectee:
