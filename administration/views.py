@@ -101,9 +101,9 @@ def repartition_par_assos(creneaux):
         else:
             c_duree = c.fin - c.debut
             try:
-                repart["sans asso"] += c_duree
+                repart["sans association"] += c_duree
             except:
-                repart["sans asso"] = c_duree
+                repart["sans association"] = c_duree
     for rep, val in repart.items():
         repart[rep] = round(val / total *100, 1)
         # print('{} : {}'.format(rep, repart[rep]))
