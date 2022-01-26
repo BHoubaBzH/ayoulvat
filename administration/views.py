@@ -10,7 +10,6 @@ from django.views.generic import ListView, View
 from benevole.forms import BenevoleForm, PersonneForm
 from evenement.models import Creneau, Equipe, Evenement, Planning
 #from evenement.views import inscription_ouvert
-from benevole.views import GroupeUtilisateur
 from benevole.models import Personne, ProfileAdministrateur, ProfileBenevole, ProfileOrganisateur, ProfileResponsable
 from association.models import AssoPartenaire, Association
 
@@ -225,7 +224,6 @@ class BenevolesListView(ListView):
         self.context = { 
             # nav bar infos : debut
             "EvtOuvertBenevoles" : inscription_ouvert(self.Evt.inscription_debut, self.Evt.inscription_fin), # integer précisant si on est avant/dans/après la période de modification des creneaux
-            "GroupeUtilisateur" : GroupeUtilisateur(self.request),
             # nav bar infos : fin
             "Association" : self.Asso,
             "Evenement" : self.Evt, 
@@ -311,7 +309,7 @@ class DashboardView(View):
         self.context = {
             # nav bar infos : debut
             "EvtOuvertBenevoles" : inscription_ouvert(self.Evt.inscription_debut, self.Evt.inscription_fin), # integer précisant si on est avant/dans/après la période de modification des creneaux
-            "GroupeUtilisateur" : GroupeUtilisateur(self.request),
+
             # nav bar infos : fin
             "Association" : self.Asso,
             "Evenement" : self.Evt, 

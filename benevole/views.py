@@ -26,18 +26,7 @@ logger = logging.getLogger(__name__)
 #            fonctions 
 ################################################
 
-def GroupeUtilisateur(request):
-    """renvoi le groupe le plus permissif du user connecté """
-    if request.user.groups.filter(name = 'Administrateur').exists():
-        return 'Administrateur'
-    elif request.user.groups.filter(name = 'Organisateur').exists():
-        return 'Organisateur'
-    elif request.user.groups.filter(name = 'Responsable').exists():
-        return 'Responsable'
-    elif request.user.groups.filter(name = 'Benevole').exists():
-        return 'Benevole'
-
-def RoleUtilisateur(request, **kwargs): # remplace GroupeUtilisateur pour avoir le role par evenement
+def RoleUtilisateur(request, objet, filtre): # remplace GroupeUtilisateur pour avoir le role par evenement
     """
         renvoi les roles du user connecte 
         filtre si en parametre est passé 
@@ -47,153 +36,91 @@ def RoleUtilisateur(request, **kwargs): # remplace GroupeUtilisateur pour avoir 
         plan : pour le planning uniquement
 
         sortie
-        dictionnaire: groupe, queryset
-     """
-    groupes_liste = ['Administrateur', 'Organisateur', 'Responsable', 'Benevole']
+            dictionnaire: groupe, queryset
+    """
     association, evenement, equipe, planning = "", "" , "", ""
     out={}
-    if kwargs.get('plan'):
+    if objet=='plan':
         # roles de la personne dans le planning
-        planning = kwargs.get('plan')
+        planning = filtre
         equipe = Equipe.objects.get(UUID=planning.equipe_id)
         evenement = Evenement.objects.get(UUID=planning.evenement_id)
         association = Association.objects.get(UUID=evenement.association_id)
-        try:
-            out['Administrateur'] = Association.objects.filter( \
-                                    Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)), \
-                                    Q(UUID=association.UUID))
-        except:
-            out['Administrateur'] = ""
-        try:
-            out['Organisateur'] = Evenement.objects.filter( \
-                                    Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)), \
-                                    Q(UUID=evenement.UUID))
-        except:
-            out['Organisateur'] = ""
-        try:
-            out['Responsable'] = Equipe.objects.filter( \
-                                    Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)), \
-                                    Q(UUID=equipe.UUID))
-        except:
-            out['Responsable'] = ""
-        try:
-            out['Benevole'] = Creneau.objects.filter( \
-                                    Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)), \
-                                    Q(planning_id=planning.UUID))
-        except:
-            out['Benevole'] = ""
-
-    if kwargs.get('eq'):
+        filtre_asso = 'Q(administrateur=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
+        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, evenement.UUID)
+        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, equipe.UUID)
+        filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(planning_id="{}")'.format(request.user.UUID, planning.UUID)
+    if objet=='eq':
         # roles de la personne dans l equipe
-        equipe = kwargs.get('eq')
+        equipe = filtre
         evenement = Evenement.objects.get(UUID=equipe.evenement_id)
         association = Association.objects.get(UUID=evenement.association_id)
-        try:
-            out['Administrateur'] = Association.objects.filter( \
-                                    Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)), \
-                                    Q(UUID=association.UUID))
-        except:
-            out['Administrateur'] = ""
-        try:    
-            out['Organisateur'] = Evenement.objects.filter( \
-                                    Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)), \
-                                    Q(UUID=evenement.UUID))
-        except:
-            out['Organisateur'] = ""
-        try:    
-            out['Responsable'] = Equipe.objects.filter( \
-                                    Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)), \
-                                    Q(UUID=equipe.UUID))
-        except:
-            out['Responsable'] = ""
-        try:    
-            out['Benevole'] = Creneau.objects.filter( \
-                                    Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)), \
-                                    Q(equipe=equipe))
-        except:
-            out['Benevole'] = ""
-
-    if kwargs.get('ev'):
+        filtre_asso = 'Q(administrateur=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
+        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, evenement.UUID)
+        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, equipe.UUID)
+        filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(equipe_id="{}")'.format(request.user.UUID, equipe.UUID)
+    if objet=='ev':
         # roles de la personne dans l evenement
-        evenement = kwargs.get('ev')
+        evenement = filtre
         association = Association.objects.get(UUID=evenement.association_id)
-        try:
-            out['Administrateur'] = Association.objects.filter( \
-                                    Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)), \
-                                    Q(UUID=association.UUID))
-        except:
-            out['Administrateur'] = ""
-        try:
-            out['Organisateur'] = Evenement.objects.filter( \
-                                    Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)), \
-                                    Q(UUID=evenement.UUID))
-        except:
-            out['Organisateur'] = ""
-        try:
-            out['Responsable'] =  Equipe.objects.filter( \
-                                    Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)), \
-                                    Q(evenement=evenement))
-        except:
-            out['Responsable'] = ""
-        try:
-            out['Benevole'] = Creneau.objects.filter( \
-                                    Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)), \
-                                    Q(evenement=evenement))
-        except:
-            out['Benevole'] = ""
-    if kwargs.get('ass'):
+        filtre_asso='Q(administrateur=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
+        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, evenement.UUID)
+        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(evenement_id="{}")'.format(request.user.UUID, evenement.UUID)
+        filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(evenement_id="{}")'.format(request.user.UUID, evenement.UUID)
+    if objet=='ass':
         # roles de la personne dans l asso
-        association = kwargs.get('ass')
-        try:
-            out['Administrateur'] = Association.objects.filter( \
-                                    Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)), \
-                                    Q(UUID=association.UUID))
-        except:
-            out['Administrateur'] = ""
-        try:
-            out['Organisateur'] = Evenement.objects.filter( \
-                                    Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)), \
-                                    Q(association_id=association.UUID))
-        except:
-            out['Organisateur'] = ""
-        try:
-            out['Responsable'] = Equipe.objects.filter( \
-                                    Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)), \
-                                    Q(evenement__association=association))
-        except:
-            out['Responsable'] = ""
-        try:    
-            out['Benevole'] = Creneau.objects.filter( \
-                                    Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)), \
-                                    Q(evenement__association=association))
-        except:
-            out['Benevole'] = ""
-
+        association = filtre
+        filtre_asso = 'Q(administrateur=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
+        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(association_id="{}")'.format(request.user.UUID, association.UUID)
+        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(evenement__association_id="{}")'.format(request.user.UUID, association.UUID)
+        filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(evenement__association_id="{}")'.format(request.user.UUID, association.UUID)
     if not planning and not equipe and not evenement and not association:
         # roles de la personne sur tout le logiciel
-        try:    
-            out['Administrateur'] = Association.objects.filter( \
-                                    Q(administrateur=ProfileAdministrateur.objects.get(personne=request.user)))
-        except:
-            out['Administrateur'] = ""
-        try:    
-            out['Organisateur'] = Evenement.objects.filter( \
-                                    Q(organisateur=ProfileOrganisateur.objects.get(personne_id=request.user.UUID)))
-        except:
-            out['Organisateur'] = ""
-        try:    
-            out['Responsable'] = Equipe.objects.filter( \
-                                    Q(responsable=ProfileResponsable.objects.get(personne_id=request.user.UUID)))
-        except:
-            out['Responsable'] = ""
-        try:    
-            out['Benevole'] = Creneau.objects.filter( \
-                                    Q(benevole=ProfileBenevole.objects.get(personne_id=request.user.UUID)))      
-        except:
-            out['Benevole'] = ""
-
+        filtre_asso = 'Q(administrateur=ProfileAdministrateur.objects.get(personne_id="{}"))'.format(request.user.UUID)
+        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}"))'.format(request.user.UUID)
+        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}"))'.format(request.user.UUID)
+        filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}"))'.format(request.user.UUID)
+ 
+    try:
+        out['Administrateur'] = eval('Association.objects.filter({})'.format(filtre_asso))
+    except:
+        out['Administrateur'] = ""
+    try:
+        out['Organisateur'] = eval('Evenement.objects.filter({})'.format(filtre_ev))
+    except:
+        out['Organisateur'] = ""
+    try:
+        out['Responsable'] = eval('Equipe.objects.filter({})'.format(filtre_eq))
+    except:
+        out['Responsable'] = ""
+    try:
+        out['Benevole'] = eval('Creneau.objects.filter({})'.format(filtre_cre))
+    except:
+        out['Benevole'] = ""
     return out
 
+def ListeGroupesUserFiltree(request, objet, filtre):
+    """
+        roles du user connecte 
+        filtre si en parametre est passé 
+        objet :
+            ass : pour l'asso uniquement
+            ev : pour l'evenement uniquement
+            eq : pour l'equipe uniquement
+            plan : pour le planning uniquement
+        filtre : objet bdd 
+
+        sortie
+            liste: groupes aux quel le user appartient en fonction du filtre
+    """
+    groupes_liste = ['Administrateur', 'Organisateur', 'Responsable', 'Benevole']
+    RolesUtilisateur = []
+    for role, entite in RoleUtilisateur(request, objet, filtre).items():
+        if entite:
+            print ('#        {:<15} ->    {} '.format(role, entite))
+            RolesUtilisateur.append(role)
+    return RolesUtilisateur
+ 
 
 ################################################
 #            views 

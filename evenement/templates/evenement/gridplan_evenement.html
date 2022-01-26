@@ -58,7 +58,7 @@
             {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" %}
         {% endfor %}
         {# ajoute une ligne vide pour pouvoir ajouter des equipes au besoins et le modal de modif des plannings #}
-        {% if GroupeUtilisateur in 'Administrateur,Organisateur,Responsable' %}
+        {% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur or 'Responsable' in RolesUtilisateur %}
             {% include "evenement/equipe_ajoute.html" %}
             {% include "evenement/modal_planning_edite.html"  %}
         {% endif %}

@@ -3,7 +3,7 @@
 {##################################################################}
 {# modal admin de modification des creneaux#}
 {# si admin, affiche les details et les boutons d action #}
-{% if GroupeUtilisateur in 'Administrateur,Organisateur,Responsable' %}
+{% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur or 'Responsable' in RolesUtilisateur %}
     <div class="modal fade" 
         id="modal-creneau_{% if source_type == 'creneau' %}creneau{% elif source_type == 'benevole' %}benevole{% endif %}_editer" 
         tabindex="-1" role="dialog" aria-labelledby="Creneaudetails" aria-hidden="true">

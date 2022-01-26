@@ -87,7 +87,7 @@
             {% endcomment %}
         {% endif %}
         {# ajoute une ligne vide pour pouvoir ajouter des postes #}
-        {% if GroupeUtilisateur in 'Administrateur,Organisateur,Responsable' %}
+        {% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur or 'Responsable' in RolesUtilisateur %}
             <span class="poste-ajoute" aria-hidden="true" style="grid-row: poste-add; grid-column: postes;">
                 <form  id="form-poste_ajouter" method='post'>
                     {% csrf_token %}
@@ -110,7 +110,7 @@
 </div>
 {# modal d ajout et de modif des creneaux type=creneau #}
 {% comment "" %}{% endcomment %}
-{% if GroupeUtilisateur in 'Administrateur,Organisateur,Responsable' %}
+{% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur or 'Responsable' in RolesUtilisateur %}
     {% include "evenement/modal_creneau_ajoute.html" with type='poste' %}
     {% include "evenement/modal_creneau_edite.html" with type='poste' source_type="creneau" %}
 {% endif %} 

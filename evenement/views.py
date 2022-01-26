@@ -11,7 +11,7 @@ from django.db.models import Q
 from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
 from benevole.models import ProfileBenevole
-from benevole.views import GroupeUtilisateur, RoleUtilisateur
+from benevole.views import ListeGroupesUserFiltree, RoleUtilisateur
 from association.models import Association
 
 from django.core.mail import BadHeaderError, send_mail
@@ -407,6 +407,7 @@ def evenement(request, uuid_evenement):
         "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=evenement),  # objets benevoles de l'evenement
 
         "dispo_actif": "False", # active ou non la gestion des disponibilités des bénévoles; par défaut désactivé
+        "RolesUtilisateur": [], # liste des roles/groupes de utilisateur connecté 
 
         "Planning": "",  # objet planning selectionné
         "Creneaux_plage": "",  # objets creneaux de l'evenement entre 2 dateheure
@@ -431,31 +432,17 @@ def evenement(request, uuid_evenement):
     data["DicEquipes"] = dic_equipes(evenement)
     data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})  
 
-    data['GroupeUtilisateur'] = GroupeUtilisateur(request)
-    # check des roles de user sur l evenement:
-    print('#########################################################')
-    print ('#   utilisateur connecté: ')
-    print ('#        {0} {1} '.format(request.user.first_name, request.user.last_name))
-    print ('#   roles : ')
-    RolesUtilisateur = []
-    for role, entite in RoleUtilisateur(request, ev=evenement).items():
-        if entite:
-            print ('#        {:<15} ->    {} '.format(role, entite))
-            RolesUtilisateur.append(role)
-    print('#########################################################')
-    data['RolesUtilisateur'] = RolesUtilisateur
-    print(RolesUtilisateur)
-
-    # log les donnees post
-    print('##################### evenement ########################')
-    print ('#   données POST passées: ')
-    for key, value in request.POST.items():
-        print('#        POST -> {0} : {1}'.format(key, value))
-    print('#########################################################')
-
     # recupere les uuid en POST, but est de tout gerer dans une seule page
     # et d'afficher les infos en fonction des POST recus :
     if request.method == "POST":
+
+        # log les donnees post
+        print('##################### evenement ########################')
+        print ('#   données POST passées: ')
+        for key, value in request.POST.items():
+            print('#        POST -> {0} : {1}'.format(key, value))
+        print('#########################################################')
+
         uuid_evenement = request.POST.get('evenement')
         # le bénévole prend ou libère un créneau
 
@@ -483,10 +470,11 @@ def evenement(request, uuid_evenement):
 
         if request.POST.get('equipe'):  # selection d'une équipe
             data["equipe_uuid"] = request.POST.get('equipe')  # UUID equipe selectionnée
-            
+
             if request.POST.get('planning') and not request.POST.get('planning_supprimer'):  # selection d'un planning
                 data["planning_uuid"] = request.POST.get('planning')
-                data["Planning"] = Planning.objects.get(UUID=request.POST.get('planning'))  # planning selectionnée
+                data["Planning"] = Planning.objects.get(UUID=data["planning_uuid"])  # planning selectionnée
+
                 # instances de form poste & creneau liées : modifs & suppression & liste des postes
                 # data["DicPostes"] = forms_postes(request, data, uuid_evenement) # bug creation poste en double
                 # heures formatées du planning
@@ -557,7 +545,24 @@ def evenement(request, uuid_evenement):
     else:
         data["PlanningRange"] = planning_range(evenement.debut,
                                             evenement.fin,
-                                            30)          
+                                            30)
+
+    # check des roles de user sur l evenement:
+    print('#########################################################')
+    print ('#   utilisateur connecté: ')
+    print ('#        {0} {1} '.format(request.user.first_name, request.user.last_name))
+    print ('#   roles : ')
+
+    # groupes/roles de l utilisateur
+    if not request.method == "POST" or (request.POST.get('evenement') and not request.POST.get('equipe') and not request.POST.get('planning')):
+        data['RolesUtilisateur'] = ListeGroupesUserFiltree(request, "ev", evenement)
+    elif request.POST.get('equipe') and not request.POST.get('planning'):
+        data['RolesUtilisateur'] = ListeGroupesUserFiltree(request, "eq", Equipe.objects.get(UUID=request.POST.get('equipe')))
+    elif request.POST.get('planning'):
+        data['RolesUtilisateur'] = ListeGroupesUserFiltree(request, "plan", Planning.objects.get(UUID=request.POST.get('planning')))
+    print('#       ', data['RolesUtilisateur'])
+    print('#########################################################')                                            
+
     print('*** Fin traitement view : {}'.format(datetime.now()))
     return render(request, "evenement/evenement_principal.html", data)
 

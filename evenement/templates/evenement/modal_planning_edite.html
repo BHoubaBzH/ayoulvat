@@ -2,7 +2,7 @@
 
 {##################################################################}
 {# modal admin de modification des plannings#}
-{% if GroupeUtilisateur in 'Administrateur,Organisateur,Responsable' %}
+{% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur or 'Responsable' in RolesUtilisateur %}
     <div class="modal fade" 
         id="modal-planning_editer" 
         tabindex="-1" role="dialog" aria-labelledby="Planningdetails" aria-hidden="true">
