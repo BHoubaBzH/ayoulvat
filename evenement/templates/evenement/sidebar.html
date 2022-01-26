@@ -170,7 +170,7 @@
             </div>
         </div>
 
-{# modal d'ajout d'un planning pour les admins #}
-{% if 'evenement.add_planning' in perms %}
+{# modal d'ajout d'un planning pour les organisateurs #}
+{% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur %} 
     {% include "evenement/modal_planning_ajoute.html" %}
 {% endif %} 

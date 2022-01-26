@@ -90,7 +90,7 @@ def repartition_par_assos(creneaux):
     repart = {}
     total = total_heures_benevoles(creneaux)
     for c in creneaux:
-        if c.benevole and c.benevole.assopartenaire:
+        if c.benevole.assopartenaire:
             c_duree = c.fin - c.debut
             # print('{} : {}'.format(c.benevole.assopartenaire, c_duree))
             try:
@@ -98,6 +98,12 @@ def repartition_par_assos(creneaux):
             except:
                 repart[c.benevole.assopartenaire] = c_duree
             # print('{} : {}'.format(c.benevole.assopartenaire, repart[c.benevole.assopartenaire]))
+        else:
+            c_duree = c.fin - c.debut
+            try:
+                repart["sans asso"] += c_duree
+            except:
+                repart["sans asso"] = c_duree
     for rep, val in repart.items():
         repart[rep] = round(val / total *100, 1)
         # print('{} : {}'.format(rep, repart[rep]))
@@ -321,7 +327,7 @@ class DashboardView(View):
             "Benevoles_par_asso" : nb_benevoles_par_asso(assos_part(self.Asso)),
             "Plannings_occupation" : plannings_occupation(Planning.objects.filter(evenement=self.Evt).order_by('equipe__nom','debut')),
             "Equipes_occupation" : equipes_occupation(Equipe.objects.filter(evenement=self.Evt).order_by('nom')),
-            "Repartition_par_assos" : repartition_par_assos(self.queryset_c),
+            "Repartition_par_assos" : repartition_par_assos(self.queryset_c.filter(benevole__isnull=False)),
             "Total_heures_benevoles" : '{}'.format(total_heures_benevoles(self.queryset_c.filter(benevole__isnull=False)).total_seconds()/3600),
 
             "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=self.Evt),  # objets benevoles inscrits à l'evenement

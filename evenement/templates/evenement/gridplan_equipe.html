@@ -65,7 +65,7 @@
                         ">
                             {{ poste.nom }}
                     </div>
-                    {% if 'evenement.change_poste'  in perms %}
+                    {% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur or 'Responsable' in RolesUtilisateur %} 
                         {% include "evenement/poste_edite.html" %}
                     {% endif %}
                     {% for creno in Creneaux %}
