@@ -27,12 +27,18 @@
             <div class="col-md-12">
                 <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
                     title="les évènements">
-                    Tu y es inscrits
+                    Tes évènements
                 </h2>
             </div>
         </div>
     </div>    
     <hr class="border-2 border-top border-dark"> {# barre horizontale #}
+
+    <div class="container">
+        <div class="row align-items-end">
+            <p>Choisis un association que tu veux représenter, et cliques sur la photo de l'évènement pour y choisir des créneaux: </p>
+        </div>
+    </div>   
 
     {# on va creer une carte par evenement à venir ou le benevole est enregistré #}
     <div class="evts_inscrit">
@@ -57,6 +63,43 @@
                                 {# <button type="button" class="btn btn-danger">Désinscription</button> #}
                             </div>
                         </button>
+
+                        <div class="card-footer">
+                            <p class="card-text">
+                                {#{ EV.benevole.all }} {{ user.profilebenevole }} {{ Ev_ass_par_benevole }#}
+                                {% for a in Ev_ass_par_benevole %} {# a les inscriptions du benevoles aux evenements#}
+                                    {#{ a.profilebenevole }} | {{ a.evenement }} | {{ a.asso_part }#}
+                                    {% if a.evenement == EV %} {# si notre benevole est inscrit a cet evenement#}
+                                        sélectionne l'asso que tu représenteras à {{EV.nom}}:{#{ a.asso_part }#}
+                                        {# prepare la form pour selectionner son asso #}
+                                        {# les asso partenaires #}
+                                        <form action="#" method='POST' id="select_asso-{{EV.UUID}}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="evenement" value="{{EV.UUID}}">
+                                            <input type="hidden" name="asso_perso_change" value="">
+                                            <div class="dropdown-menu" style="display:contents">
+                                                {# les asso partenaires de l evenement#}
+                                                {% for assopart in EV.assopartenaire.all %}
+                                                    {#{ assopart.nom }} {{ assopart.UUID }} : {{ a.asso_part.nom }} {{ a.asso_part.UUID }#}
+                                                    {% if assopart == a.asso_part %}
+                                                        <button class="dropdown-item active" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="{{assopart.UUID}}">{{assopart}}</button>
+                                                    {% else %}
+                                                        <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="{{assopart.UUID}}">{{assopart}}</button>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                    {% if a.asso_part == None %}
+                                                        <button class="dropdown-item active" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">aucune</button>
+                                                    {% else %}
+                                                        <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">aucune</button>
+                                                    {% endif %}
+                                            </div>
+                                        </form>
+                                        {% endif %}
+                                {% endfor %}
+
+                            </p>
+
+                        </div>
                     </div>
                 {% endfor %}
             </div>
@@ -78,7 +121,7 @@
             <div class="col-md-12">
                 <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
                     title="les évènements">
-                    Tu n'y es pas encore inscrit
+                    Evenements à venir
                 </h2>
             </div>
         </div>

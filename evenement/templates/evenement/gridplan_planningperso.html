@@ -4,7 +4,7 @@
     {% if user.profilebenevole in Benevoles %}
         {% if dispo_actif == 'True' %} {# si le bénévole peut ajouter ses disponibilités #}
             <h6>Tu peux sélectionner un planning d'équipe pour y inscrire tes disponibilités. En fonction, un responsable viendra vous affecter aux créneaux.</h6>
-            <h6>Sinon vous pouvez directement choisir des créneaux dans le menu de gauche.</h6>
+            <h6>Sinon tu peux directement choisir des créneaux dans le menu de gauche.</h6>
         {% else %}
             <h6> <i class="bi bi-arrow-left-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i> Dans le menu de gauche, choisis une équipe et un planning pour t'inscrire ou te désinscrire des créneaux</h6>
         {% endif %}
@@ -79,18 +79,21 @@
             <div class="col-md-12">
                 {# tableau des creneaux du bénévole#}
                 <h2 class="d-inline-block align-middle" style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" title="liste de tes créneaux.">Mon planning sur l'évènement</h2> 
-                {# bouton envoi courriel #}
-                <button style="" form="form_courriel_creneaux" class="benevole-supprime btn btn-sm" title="si tu veux recevoir la liste de tes créneaux par courriel." 
-                    data-bs-toggle="modal" data-bs-target="#modal-benevole-supprime">
-                    <i style="color: var(--bs-blue)" class="bi bi-envelope-fill fs-1"></i>
-                </button>
             </div>
 
 
         </div>
-    </div>
-
+    </div> 
     <hr class="border-2 border-top border-dark"> {# barre horizontale #}
+
+    <div class="d-grid gap-2">
+        {# bouton envoi courriel #}
+        <button class="btn btn-primary" form="form_courriel_creneaux" title="pour recevoir la liste de tes créneaux par courriel." 
+        data-bs-toggle="modal" data-bs-target="#modal-benevole-supprime">
+            <i style="color: var(--bs-white)" class="bi bi-envelope-fill fs-1"></i>
+        </button>
+    </div>   
+    <br>
     <table class="table table-dark  table-striped table-hover">
     <thead>
         <tr>

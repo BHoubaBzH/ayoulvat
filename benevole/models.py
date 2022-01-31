@@ -14,7 +14,6 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
 
-
 class Personne(AbstractUser):
     #MIN = "MINEUR"
     HOM = "HOMME"
@@ -133,16 +132,6 @@ class ProfileBenevole(models.Model):
     message = models.TextField(max_length=1000, blank=True, default='')
     couleur = RGBColorField(default="#6610f2")
 
-    # on ne peut pas supprimer une asso origine tant
-    # qu'une personne en fait partie, le bénévole choisi son asso partenaire
-    assopartenaire = models.ForeignKey(AssoPartenaire,
-                                    primary_key=False,
-                                    null=True,
-                                    blank=True,
-                                    default='',
-                                    on_delete=models.PROTECT,
-                                    verbose_name=" Association Partenaire", # nom humainement comprehensible
-                                    help_text='associations partenaires que vous voulez représenter')
     def __str__(self):
         return "{0} {1}".format(self.personne.last_name.upper(), \
                                     self.personne.first_name.capitalize())

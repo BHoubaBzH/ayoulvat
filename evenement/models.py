@@ -22,18 +22,19 @@ class Evenement(models.Model):
                                     default='',
                                     on_delete=models.CASCADE)
     assopartenaire = models.ManyToManyField(AssoPartenaire,
-                                            primary_key=False,
-                                            blank=True,
-                                            default='',
-                                            help_text='associations partenaires de \'évèmenement ')
+                                    primary_key=False,
+                                    blank=True,
+                                    default='',
+                                    help_text='associations partenaires de \'évèmenement ')
     organisateur = models.ManyToManyField(ProfileOrganisateur,
-                                          related_name='OrganisateurEvenement',
-                                          blank=True,
-                                          default='')
+                                    related_name='OrganisateurEvenement',
+                                    blank=True,
+                                    default='')
     benevole = models.ManyToManyField(ProfileBenevole,
-                                      related_name='BenevolesEvenement',
-                                      blank=True,
-                                      default='les benevoles peuvent s inscrire a l envenement',)
+                                    related_name='BenevolesEvenement',
+                                    blank=True,
+                                    default='les benevoles peuvent s inscrire a l envenement',
+                                    through='evenement_benevole_assopart')
     nom = models.CharField(max_length=50)
     debut = models.DateTimeField(blank=False, default='')
     fin = models.DateTimeField(blank=False, default='')
@@ -49,6 +50,15 @@ class Evenement(models.Model):
     def __str__(self):
         return self.nom
 
+class evenement_benevole_assopart(models.Model):
+    """
+        remplace la table M2M  evenement_benevole créée par defaut.
+        permet de lier evenement / benevole / asso partenaire
+    """
+    id = models.AutoField(primary_key=True, editable=False, unique=True)
+    evenement = models.ForeignKey(Evenement, on_delete=models.CASCADE)
+    profilebenevole = models.ForeignKey(ProfileBenevole, on_delete=models.CASCADE)
+    asso_part = models.ForeignKey(AssoPartenaire, default='', blank=True, null=True, on_delete=models.SET_NULL) 
 
 class Equipe(models.Model):
     UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)

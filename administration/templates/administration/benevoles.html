@@ -65,7 +65,12 @@
                                     {{ group }}{% if not forloop.last %}, {%endif%}
                                 {% endfor %}
                             </td>
-                            <td>{{benevole.assopartenaire}}</td>   
+                            
+                            {% for asso in EvtBeneAssopar %}
+                                {% if benevole == asso.profilebenevole%}
+                                    <td>{{asso.asso_part}}</td>   
+                                {% endif %}
+                            {% endfor %}
                             <td>
                                 <div style="display: flex;">
                                 {% comment "" %}

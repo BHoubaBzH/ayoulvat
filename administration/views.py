@@ -6,9 +6,10 @@ from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, View
+from django.db.models import Q
 
 from benevole.forms import BenevoleForm, PersonneForm
-from evenement.models import Creneau, Equipe, Evenement, Planning
+from evenement.models import Creneau, Equipe, Evenement, Planning, evenement_benevole_assopart
 #from evenement.views import inscription_ouvert
 from benevole.models import Personne, ProfileAdministrateur, ProfileBenevole, ProfileOrganisateur, ProfileResponsable
 from association.models import AssoPartenaire, Association
@@ -31,9 +32,11 @@ def association(request):
     association = Association.objects.get(UUID=uuid)
     return association
 
-def assos_part(asso):
-    """ retourne les assos partenaire de l'asso organisatrice de l evenement"""
-    list_assos = AssoPartenaire.objects.filter(Association=asso)
+def assos_part(evt):
+    """ retourne Qeuryset des assos partenaire de l evenement"""
+        # liste de uuid des assos partenaire de l evenement, retire le none (sans asso) de la liste 
+    list_uuid = evenement_benevole_assopart.objects.filter(Q(evenement=evt),~Q(asso_part=None)).values_list('asso_part', flat=True).distinct()
+    list_assos = AssoPartenaire.objects.filter(UUID__in=list_uuid)
     return list_assos
 
 def total_heures_benevoles(creneaux):
@@ -45,11 +48,12 @@ def total_heures_benevoles(creneaux):
             total += c_duree
     return total
 
-def nb_benevoles_par_asso(list_assos):
-    """ returne un dictionnaire de nombre de bénévole par asso """
+def nb_benevoles_par_asso(list_assos, evt):
+    """ returne un dictionnaire de nombre de bénévole par asso sur l evenement"""
     dic = {}
     for asso in list_assos:
-        dic[asso]= ProfileBenevole.objects.filter(assopartenaire=asso).count()
+        dic[asso] = evenement_benevole_assopart.objects.filter(Q(asso_part=asso),Q(evenement=evt)).count()
+    dic['Sans association'] = evenement_benevole_assopart.objects.filter(Q(asso_part=None),Q(evenement=evt)).count()
     dic ={k: v for k, v in sorted(dic.items(), key=lambda x: x[1], reverse=True)}
     return dic
 
@@ -89,14 +93,19 @@ def repartition_par_assos(creneaux):
     """
     repart = {}
     total = total_heures_benevoles(creneaux)
+
     for c in creneaux:
-        if c.benevole.assopartenaire:
+        #print('ev ', c, c.evenement.UUID)
+        #print('ben', c, c.benevole.UUID)
+        #print(evenement_benevole_assopart.objects.get(Q(evenement=c.evenement),Q(profilebenevole=c.benevole)).asso_part)
+        asso_du_creneau=evenement_benevole_assopart.objects.get(Q(evenement=c.evenement),Q(profilebenevole=c.benevole)).asso_part
+        if asso_du_creneau:
             c_duree = c.fin - c.debut
             # print('{} : {}'.format(c.benevole.assopartenaire, c_duree))
             try:
-                repart[c.benevole.assopartenaire] += c_duree
+                repart[asso_du_creneau.nom] += c_duree
             except:
-                repart[c.benevole.assopartenaire] = c_duree
+                repart[asso_du_creneau.nom] = c_duree
             # print('{} : {}'.format(c.benevole.assopartenaire, repart[c.benevole.assopartenaire]))
         else:
             c_duree = c.fin - c.debut
@@ -239,6 +248,7 @@ class BenevolesListView(ListView):
             "Equipes" : Equipe.objects.filter(evenement=self.Evt).order_by('nom'),
 
             "Benevoles": self.queryset.select_related('personne').filter(BenevolesEvenement=self.Evt).order_by('personne__last_name'),  # objets benevoles de l'evenement
+            "EvtBeneAssopar": evenement_benevole_assopart.objects.filter(evenement=self.Evt),
             "Administrateurs": ProfileAdministrateur.objects.select_related('personne').filter(association=self.Asso),
             "Organisteurs" : ProfileOrganisateur.objects.select_related('personne').filter(OrganisateurEvenement=self.Evt),
             "Responsables" : ProfileResponsable.objects.select_related('personne').filter(ResponsableEquipe__in=Equipe.objects.filter(evenement=self.Evt)),
@@ -311,7 +321,7 @@ class DashboardView(View):
         print('{} : dispatch'.format(__class__.__name__))
         self.Evt = Evenement.objects.get(UUID=self.request.session['uuid_evenement']) # recuper l evenement
         self.Asso = Association.objects.get(UUID=self.request.session['uuid_association']) # recuper l asso
-        self.queryset_c = Creneau.objects.filter(evenement=self.Evt, type="creneau")
+        self.queryset_c = Creneau.objects.filter(evenement=self.Evt, type="creneau") # les creneau de l evenement
         self.context = {
             # nav bar infos : debut
             "EvtOuvertBenevoles" : inscription_ouvert(self.Evt.inscription_debut, self.Evt.inscription_fin), # integer précisant si on est avant/dans/après la période de modification des creneaux
@@ -323,8 +333,8 @@ class DashboardView(View):
             "Creneaux" : self.queryset_c,
             "Creneaux_libres" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=True).count,
             "Creneaux_occupes" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=False).count,
-            "Assos_partenaires" : assos_part(self.Asso),
-            "Benevoles_par_asso" : nb_benevoles_par_asso(assos_part(self.Asso)),
+            "Assos_partenaires" : assos_part(self.Evt), # partenaire de l evenement
+            "Benevoles_par_asso" : nb_benevoles_par_asso(assos_part(self.Evt), self.Evt),
             "Plannings_occupation" : plannings_occupation(Planning.objects.filter(evenement=self.Evt).order_by('equipe__nom','debut')),
             "Equipes_occupation" : equipes_occupation(Equipe.objects.filter(evenement=self.Evt).order_by('nom')),
             "Repartition_par_assos" : repartition_par_assos(self.queryset_c.filter(benevole__isnull=False)),

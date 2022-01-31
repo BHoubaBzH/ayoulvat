@@ -13,7 +13,6 @@ class PersonneInLine(admin.TabularInline):
     extra = 1
 
 class PersonneDetails(admin.ModelAdmin):
-
     def group(self, user):
         groups = []
         for group in user.groups.all():

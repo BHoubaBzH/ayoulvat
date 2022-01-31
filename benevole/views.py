@@ -2,10 +2,10 @@ import logging
 from sys import api_version
 
 from django.http import HttpResponseRedirect
-from association.models import Association
+from association.models import AssoPartenaire, Association
 
 from benevole.models import Personne, ProfileBenevole
-from evenement.models import Creneau, Equipe, Evenement
+from evenement.models import Creneau, Equipe, Evenement, evenement_benevole_assopart
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.urls.base import reverse
@@ -145,15 +145,22 @@ def Home(request):
     data = {
         "FormPersonne" : PersonneForm(),  # form personne non liée
         "Evenements" : Evenement.objects.all().order_by("debut"),  # liste de tous les evenements
-        "Evenements_inscrit" : Evenement.objects.filter(Q(debut__gt=date.today()),Q(benevole__personne_id=request.user.UUID)).order_by("debut"), # evenements à venir où le benevole est deja inscrit
-        "Evenements_disponible" : Evenement.objects.filter(Q(debut__gt=date.today()),
-                                                           ~Q(benevole__personne_id=request.user.UUID),
-                                                           Q(inscription_debut__lte=date.today()), 
-                                                           Q(inscription_fin__gt=date.today())).order_by("debut"),# evenements à venir , benevole pas inscrit , inscription ouvertes
-
+        "Evenements_inscrit" : Evenement.objects.filter(
+                                        Q(debut__gt=date.today()),
+                                        Q(benevole__personne_id=request.user.UUID)).order_by("debut"), # evenements à venir où le benevole est deja inscrit
+        "Evenements_disponible" : Evenement.objects.filter(
+                                        Q(debut__gt=date.today()),
+                                        ~Q(benevole__personne_id=request.user.UUID),
+                                        Q(inscription_debut__lte=date.today()), 
+                                        Q(inscription_fin__gt=date.today())).order_by("debut"),# evenements à venir , benevole pas inscrit , inscription ouvertes
         "Assos": Association.objects.all() # liste toutes les assosciations pour admin, a filtrer par assos affectées a administrateur
     }
     # récupère dans la session l'uuid de l'association, si on est passé par l'asso
+    try:
+        data["Ev_ass_par_benevole"] = evenement_benevole_assopart.objects.filter(
+                                        Q(profilebenevole=request.user.profilebenevole)) # contient la queryset de la table relationnelle evenement, benevole, asso part filtrée sur le bénévole connecté
+    except:
+        print('pas encore de profile benevole -> page de profile')
     try:
         uuid_evenement = request.session['uuid_evenement']
         print('evenement : {}'.format(uuid_evenement))
@@ -163,10 +170,8 @@ def Home(request):
     except:
         print('pas passé la page evenement')
 
-    # ajouter un tableau des evenements avec : pas encore ouvert / ouvert / inscriptions closes /en cours /fini / benevole inscrit
     # pour trier dans le home du benevoles les evenements et le fait qu'il puisse s'y inscrire
-
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.last_name: #post et le user a renseigné son profile
         if 'inscription_event' in request.POST:
             # on ajoute le bénévole à l evenement
             insc_ev = Evenement.objects.get(UUID=request.POST.get('inscription_event'))
@@ -175,7 +180,23 @@ def Home(request):
                 logger.info('bénévole {} inscrit à l\'evenement {}'.format(insc_be, insc_ev))
                 insc_ev.benevole.add(insc_be)
                 # redirige vers la page evenement
-                return HttpResponseRedirect('evenement/{}'.format(insc_ev.UUID))
+                # return HttpResponseRedirect('evenement/{}'.format(insc_ev.UUID))
+
+        if 'asso_perso_change' in request.POST:
+            # modifie l asso partenaire pour la quelle le benevole travail
+            ben_ev = Evenement.objects.get(UUID=request.POST.get('evenement'))
+            ben_ben = ProfileBenevole.objects.get(personne_id=request.user.UUID)
+            if request.POST.get('asso_perso'):
+                ben_asso = AssoPartenaire.objects.get(UUID=request.POST.get('asso_perso'))
+                if ben_ev:
+                    obj = evenement_benevole_assopart.objects.get(Q(evenement=ben_ev),Q(profilebenevole=ben_ben))
+                    obj.asso_part=ben_asso
+                    obj.save()
+            else:
+                # pas d asso de choisi
+                obj = evenement_benevole_assopart.objects.get(Q(evenement=ben_ev),Q(profilebenevole=ben_ben))
+                obj.asso_part=None
+                obj.save()
 
     # on redirige vers la page profile tant que celui-ci n est pas rempli
     if request.user.is_authenticated :
@@ -214,12 +235,16 @@ def Profile(request):
 
         if FormPersonne.is_valid() and FormBenevole.is_valid():
             FormPersonne.save()   
-            FormBenevole.save(Personne.objects.get(UUID=request.POST.get('personne')))
+            #new_profilebenevole = FormBenevole.save(Personne.objects.get(UUID=request.POST.get('personne')))
+            #print ('profile :', new_profilebenevole)
             # cree le lien evenement - benevole : a changer ici on est sur un seul evenement, il faudra voir comment s'inscrire a un evenement parmis d'autres
-            evenement = Evenement.objects.filter().first()
-            plop = ProfileBenevole.objects.get(UUID=request.user.profilebenevole.UUID)
-            # ajoute notre benevole dans le champs manytomany 
-            evenement.benevole.add(ProfileBenevole.objects.get(UUID=plop.UUID)) 
+            #evenement = Evenement.objects.filter().first()
+            #try: # benevole deja cree
+            #    plop = ProfileBenevole.objects.get(UUID=request.user.profilebenevole.UUID)
+            #except: # benevole en cours de creation
+            #    plop = ProfileBenevole.objects.get(UUID=new_profilebenevole.UUID)
+            #    # ajoute notre benevole dans le champs manytomany 
+            #evenement.benevole.add(ProfileBenevole.objects.get(UUID=plop.UUID),through_defaults={'asso_part':None})
             # on redirige vers la page evenements si les forms sont remplies
             return redirect("home")
             

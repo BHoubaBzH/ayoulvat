@@ -40,7 +40,7 @@ class LoginForm(AuthenticationForm):
 class BenevoleForm(ModelForm):
     class Meta:
         model = ProfileBenevole
-        fields = ['message', 'assopartenaire', 'personne']
+        fields = ['message', 'personne']
         exclude = ['personne',]
 
     def save(self, personne, commit=True):
@@ -51,7 +51,6 @@ class BenevoleForm(ModelForm):
             return super().save()
         else:
             return super().save(commit=False)        
-    ## !! filtrer les asso partenaires par evenement 
 
 ################################################################################################
 class PersonneForm(ModelForm):
