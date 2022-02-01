@@ -155,12 +155,13 @@ def Home(request):
                                         Q(inscription_fin__gt=date.today())).order_by("debut"),# evenements à venir , benevole pas inscrit , inscription ouvertes
         "Assos": Association.objects.all() # liste toutes les assosciations pour admin, a filtrer par assos affectées a administrateur
     }
-    # récupère dans la session l'uuid de l'association, si on est passé par l'asso
+    
     try:
         data["Ev_ass_par_benevole"] = evenement_benevole_assopart.objects.filter(
                                         Q(profilebenevole=request.user.profilebenevole)) # contient la queryset de la table relationnelle evenement, benevole, asso part filtrée sur le bénévole connecté
     except:
         print('pas encore de profile benevole -> page de profile')
+    # récupère dans la session l'uuid de l'association, si on est passé par l'asso
     try:
         uuid_evenement = request.session['uuid_evenement']
         print('evenement : {}'.format(uuid_evenement))
@@ -171,12 +172,12 @@ def Home(request):
         print('pas passé la page evenement')
 
     # pour trier dans le home du benevoles les evenements et le fait qu'il puisse s'y inscrire
-    if request.method == 'POST' and request.user.last_name: #post et le user a renseigné son profile
+    if request.method == 'POST' and ProfileBenevole.objects.filter(personne_id=request.user.UUID).exists(): #post et le user a renseigné son profile
         if 'inscription_event' in request.POST:
             # on ajoute le bénévole à l evenement
             insc_ev = Evenement.objects.get(UUID=request.POST.get('inscription_event'))
             insc_be = ProfileBenevole.objects.get(personne_id=request.user.UUID)
-            if insc_be and insc_ev:
+            if insc_ev:
                 logger.info('bénévole {} inscrit à l\'evenement {}'.format(insc_be, insc_ev))
                 insc_ev.benevole.add(insc_be)
                 # redirige vers la page evenement
@@ -235,7 +236,7 @@ def Profile(request):
 
         if FormPersonne.is_valid() and FormBenevole.is_valid():
             FormPersonne.save()   
-            #new_profilebenevole = FormBenevole.save(Personne.objects.get(UUID=request.POST.get('personne')))
+            new_profilebenevole = FormBenevole.save(Personne.objects.get(UUID=request.POST.get('personne')))
             #print ('profile :', new_profilebenevole)
             # cree le lien evenement - benevole : a changer ici on est sur un seul evenement, il faudra voir comment s'inscrire a un evenement parmis d'autres
             #evenement = Evenement.objects.filter().first()

@@ -7,7 +7,7 @@ from evenement.models import *
 class CreneauAdmin(admin.ModelAdmin):
     list_display = ("nom", "debut", "benevole", "type")
     list_filter = (
-        "benevole", "debut", 
+        "evenement", "benevole", "debut", 
     )
 
 class BenevoleInlineEvenement(admin.TabularInline):
