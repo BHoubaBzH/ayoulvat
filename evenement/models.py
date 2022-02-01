@@ -60,6 +60,9 @@ class evenement_benevole_assopart(models.Model):
     profilebenevole = models.ForeignKey(ProfileBenevole, on_delete=models.CASCADE)
     asso_part = models.ForeignKey(AssoPartenaire, default='', blank=True, null=True, on_delete=models.SET_NULL) 
 
+    def __str__(self):
+        return '{} - {}'.format(self.evenement, self.asso_part)
+
 class Equipe(models.Model):
     UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # supprime equipe si evenement supprimé

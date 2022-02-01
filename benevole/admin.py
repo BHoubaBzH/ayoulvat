@@ -20,7 +20,9 @@ class PersonneDetails(admin.ModelAdmin):
         return ' '.join(groups)
     group.short_description = 'Groupes'
     list_display = ( "last_name", "first_name", "email", "date_joined", "is_superuser", "group")
-    
+    list_filter = ( "last_name", 
+                    "profilebenevole__evenement_benevole_assopart__evenement",
+                    "profilebenevole__evenement_benevole_assopart",)
 
 '''
 class BenevoleDetails(UserAdmin):
