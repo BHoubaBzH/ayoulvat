@@ -68,11 +68,7 @@ class ProfileAdministrateur(models.Model):
     referent = models.BooleanField(default=False)
 
     def __str__(self):
-        if not self.personne.last_name and not self.personne.first_name:
-            return "{0}".format(self.personne.username)
-        else:
-            return "{0} {1}".format(self.personne.last_name.upper(), \
-                                    self.personne.first_name.capitalize())
+        return "{}".format(self.personne)
 
 
 # paramètres specifiques organisateur de l'evenement
@@ -84,18 +80,8 @@ class ProfileOrganisateur(models.Model):
                                     null=True,
                                     on_delete=models.CASCADE)
 
-    # pas de sens
-    # evenement = models.ForeignKey('evenement.Evenement',
-    #                              default='',
-    #                              null=True,
-    #                              on_delete=models.CASCADE)
-
     def __str__(self):
-        if not self.personne.last_name and not self.personne.first_name:
-            return "{0}".format(self.personne.username)
-        else:
-            return "{0} {1}".format(self.personne.last_name.upper(), \
-                                    self.personne.first_name.capitalize())
+        return "{}".format(self.personne)
 
 
 # paramètres specifiques responsable d'equipe
@@ -107,18 +93,8 @@ class ProfileResponsable(models.Model):
                                     null=True,
                                     on_delete=models.CASCADE)
 
-    # pas de sens
-    # equipe = models.ForeignKey('evenement.Equipe',
-    #                           default='',
-    #                           null=True,
-    #                           on_delete=models.CASCADE)
-
     def __str__(self):
-        if not self.personne.last_name and not self.personne.first_name:
-            return "{0}".format(self.personne.username)
-        else:
-            return "{0} {1}".format(self.personne.last_name.upper(), \
-                                    self.personne.first_name.capitalize())
+        return "{}".format(self.personne)
 
 
 # paramètres specifiques benevole
@@ -130,8 +106,7 @@ class ProfileBenevole(models.Model):
                                     null=True,
                                     on_delete=models.CASCADE)
     message = models.TextField(max_length=1000, blank=True, default='')
-    couleur = RGBColorField(default="#6610f2")
+    couleur = RGBColorField(default="#6610f2") 
 
     def __str__(self):
-        return "{0} {1}".format(self.personne.last_name.upper(), \
-                                    self.personne.first_name.capitalize())
+        return "{}".format(self.personne)

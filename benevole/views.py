@@ -145,9 +145,10 @@ def Home(request):
     data = {
         "FormPersonne" : PersonneForm(),  # form personne non liée
         "Evenements" : Evenement.objects.all().order_by("debut"),  # liste de tous les evenements
+        # evenements a venir ou le benevole est deja inscrit 
         "Evenements_inscrit" : Evenement.objects.filter(
                                         Q(debut__gt=date.today()),
-                                        Q(benevole__personne_id=request.user.UUID)).order_by("debut"), # evenements à venir où le benevole est deja inscrit
+                                        Q(benevole__personne_id=request.user.UUID)).order_by("debut"), 
         "Evenements_disponible" : Evenement.objects.filter(
                                         Q(debut__gt=date.today()),
                                         ~Q(benevole__personne_id=request.user.UUID),
@@ -237,16 +238,7 @@ def Profile(request):
         if FormPersonne.is_valid() and FormBenevole.is_valid():
             FormPersonne.save()   
             new_profilebenevole = FormBenevole.save(Personne.objects.get(UUID=request.POST.get('personne')))
-            #print ('profile :', new_profilebenevole)
-            # cree le lien evenement - benevole : a changer ici on est sur un seul evenement, il faudra voir comment s'inscrire a un evenement parmis d'autres
-            #evenement = Evenement.objects.filter().first()
-            #try: # benevole deja cree
-            #    plop = ProfileBenevole.objects.get(UUID=request.user.profilebenevole.UUID)
-            #except: # benevole en cours de creation
-            #    plop = ProfileBenevole.objects.get(UUID=new_profilebenevole.UUID)
-            #    # ajoute notre benevole dans le champs manytomany 
-            #evenement.benevole.add(ProfileBenevole.objects.get(UUID=plop.UUID),through_defaults={'asso_part':None})
-            # on redirige vers la page evenements si les forms sont remplies
+            print ('profile :', new_profilebenevole)
             return redirect("home")
             
     try : 
