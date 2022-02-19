@@ -46,7 +46,7 @@ class Personne(AbstractUser):
 
     def __str__(self):
         if not self.last_name and not self.first_name:
-            return "{0}".format(self.personne.username)
+            return "{0}".format(self.username)
         else:
             return "{0} {1}".format(self.last_name.upper(), \
                                     self.first_name.capitalize())
