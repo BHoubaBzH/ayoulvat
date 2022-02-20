@@ -77,22 +77,30 @@
                                             {% csrf_token %}
                                             <input type="hidden" name="evenement" value="{{EV.UUID}}">
                                             <input type="hidden" name="asso_perso_change" value="">
-                                            <div class="dropdown-menu" style="display:contents">
-                                                {# les asso partenaires de l evenement#}
-                                                {% for assopart in EV.assopartenaire.all %}
-                                                    {#{ assopart.nom }} {{ assopart.UUID }} : {{ a.asso_part.nom }} {{ a.asso_part.UUID }#}
-                                                    {% if assopart == a.asso_part %}
-                                                        <button class="dropdown-item active" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="{{assopart.UUID}}">{{assopart}}</button>
-                                                    {% else %}
-                                                        <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="{{assopart.UUID}}">{{assopart}}</button>
-                                                    {% endif %}
-                                                {% endfor %}
-                                                    {% if a.asso_part == None %}
-                                                        <button class="dropdown-item active" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">aucune</button>
-                                                    {% else %}
-                                                        <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">aucune</button>
-                                                    {% endif %}
+
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-warning btn-lg">ton asso</button>
+                                                <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                  <span class="visually-hidden">Toggle Dropdown</span>
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" >
+                                                    {# les asso partenaires de l evenement#}
+                                                    {% for assopart in EV.assopartenaire.all %}
+                                                        {#{ assopart.nom }} {{ assopart.UUID }} : {{ a.asso_part.nom }} {{ a.asso_part.UUID }#}
+                                                        {% if assopart == a.asso_part %}
+                                                            <button class="dropdown-item active" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="{{assopart.UUID}}">{{assopart}}</button>
+                                                        {% else %}
+                                                            <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="{{assopart.UUID}}">{{assopart}}</button>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                        {% if a.asso_part == None %}
+                                                            <button class="dropdown-item active" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">aucune</button>
+                                                        {% else %}
+                                                            <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">aucune</button>
+                                                        {% endif %}
+                                                </ul>
                                             </div>
+
                                         </form>
                                         {% endif %}
                                 {% endfor %}
@@ -134,7 +142,7 @@
         </div>
     </div>   
 
-    {# on va creer une carte par evenement à venir ou le benevole n est pas enregistré  #}
+    {# on va creer une carte par evenement à venir ou le benevole n est pas inscrit  #}
     <div class="evts_dispo">
         <div class="container overflow-hidden">
             <div class="row gy-5 gx-5" style="margin-top: 0px;">

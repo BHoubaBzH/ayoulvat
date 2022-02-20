@@ -23,7 +23,7 @@
                   <li class="nav-item text-nowrap" id="boutons_navbar">
                     <form class="form evenement-form" method="get">
                       {% csrf_token %}
-                      <button class="list-group-item evenement-button"
+                      <button class="list-group-item evenement-button btn-secondary"
                         data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="
                           Page d'Administration de l'évènement."
                           formaction="{% url 'dashboard' %}">Administration</button>
@@ -34,20 +34,40 @@
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
                   <a></a>
                 </h6>
-                <ul class="nav flex-column bouton-sidebar">
+
+                {% if IsBenevole %} 
+                  {# affiche le bouton mon planning si l admin est benevole sur le evenement#}
+                  <ul class="nav flex-column bouton-sidebar">
+                      <li class="nav-item">
+                        <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
+                          {% csrf_token %}
+                          <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                          <input  name="equipe" value="{{ team.UUID }}" type="hidden">
+                          <input type="hidden" name="planning_perso" value="oui">
+                          <button class="list-group-item evenement-button {% if planning_perso == 'oui' %}active{% endif %} btn-secondary"
+                          data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="
+                          Ton planning personnel sur tout l'évènement.">
+                          Mon Planning</button>
+                        </form>
+                      </li>
+                  </ul>
+                {% else %}
+                  {# admin et pas benevole sur l evenement, il peut le devenir#}
+                  <ul class="nav flex-column bouton-sidebar">
                     <li class="nav-item">
                       <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
                         {% csrf_token %}
                         <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                        <input  name="equipe" value="{{ team.UUID }}" type="hidden">
                         <input type="hidden" name="planning_perso" value="oui">
-                        <button class="list-group-item evenement-button {% if planning_perso == 'oui' %}active{% endif %}"
+                        <input type="hidden" name="devenir_benevole" value="">
+                        <button class="list-group-item evenement-button {% if planning_perso == 'oui' %}active{% endif %} btn-warning"
                         data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="
-                        Ton planning personnel sur tout l'évènement.">
-                        Mon Planning</button>
+                        Participer en tant que bénévole">
+                        Participer</button>
                       </form>
                     </li>
                 </ul>
+                {% endif %}
 
                 {% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur %} {# admins ont la liste de toutes les équipes #}
                   <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -56,7 +76,7 @@
                   <ul class="nav flex-column bouton-sidebar">
                     <li class="nav-item">
                       <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
-                          <button class="list-group-item evenement-button {% if not equipe_uuid %}active{% endif %}" 
+                          <button class="list-group-item evenement-button {% if not equipe_uuid %}active{% endif %} btn-secondary" 
                           data-bs-toggle="tooltip" data-bs-placement="right" title="Planning Global sur l'évènement">
                               <a>Evenement</a>
                               {% csrf_token %}
@@ -81,7 +101,7 @@
                             <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                             <input  name="equipe" value="{{ team.UUID }}" type="hidden">
                             <button class="list-group-item evenement-button 
-                                    {% if team.UUID|stringformat:'s' == equipe_uuid|stringformat:'s' %}active{% endif %}"
+                                    {% if team.UUID|stringformat:'s' == equipe_uuid|stringformat:'s' %}active{% endif %} btn-secondary"
                                     {% if team.description %}
                                       data-bs-toggle="tooltip" data-bs-placement="right" title="{{team.description}}"
                                     {% endif %}>

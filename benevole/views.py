@@ -121,6 +121,47 @@ def ListeGroupesUserFiltree(request, objet, filtre):
             RolesUtilisateur.append(role)
     return RolesUtilisateur
  
+def check_majeur(date_naissance, date_evenement):
+    '''
+        vérifie si le bénévole est majeur ou non au debut de l'evenement
+        entree : date de naissance du bénévole , date de début de l'evenement
+        sortie : booleen , True : Majeur , False : Mineur
+    '''
+    pivot = 6570 # age pivot : 18 ans = 6570 jours
+    delta = date_evenement - date_naissance
+    if delta.days < pivot:
+        return False # mineur
+    else:
+        return True # majeur
+
+def check_benevole(user, evt):
+    '''
+        vérifie si l admin ou responsable est bénévole
+        entree:
+            la requete (contenant les infos POST)
+            l'objet data renvoyé au template
+        sortie: objet evenement_benevole_assopart si existe, sinon None
+    '''
+    try:
+        req = evenement_benevole_assopart.objects.get(Q(profilebenevole=user.profilebenevole),Q(evenement=evt))
+    except:
+        req = None
+    return req
+
+def devenir_benevole(user, **kwargs):
+    # on ajoute le bénévole à l evenement
+    if 'POST' in kwargs:
+        # un benevole s inscrit a l evenement sur la page des evenements
+        post = kwargs.pop('POST')
+        insc_ev = Evenement.objects.get(UUID=post.get('inscription_event'))
+    elif 'EVENEMENT' :
+        # un admin/orga decide de devenir benevole sur l evenement
+        evt = kwargs.pop('EVENEMENT')
+        insc_ev = evt
+    insc_be = ProfileBenevole.objects.get(personne_id=user.UUID)
+    if insc_ev:
+        logger.info('bénévole {} inscrit à l\'evenement {}'.format(insc_be, insc_ev))
+        insc_ev.benevole.add(insc_be)
 
 ################################################
 #            views 
@@ -175,14 +216,9 @@ def Home(request):
     # pour trier dans le home du benevoles les evenements et le fait qu'il puisse s'y inscrire
     if request.method == 'POST' and ProfileBenevole.objects.filter(personne_id=request.user.UUID).exists(): #post et le user a renseigné son profile
         if 'inscription_event' in request.POST:
-            # on ajoute le bénévole à l evenement
-            insc_ev = Evenement.objects.get(UUID=request.POST.get('inscription_event'))
-            insc_be = ProfileBenevole.objects.get(personne_id=request.user.UUID)
-            if insc_ev:
-                logger.info('bénévole {} inscrit à l\'evenement {}'.format(insc_be, insc_ev))
-                insc_ev.benevole.add(insc_be)
-                # redirige vers la page evenement
-                # return HttpResponseRedirect('evenement/{}'.format(insc_ev.UUID))
+            devenir_benevole(request.user, POST=request.POST)
+            # redirige vers la page evenement
+            # return HttpResponseRedirect('evenement/{}'.format(insc_ev.UUID))
 
         if 'asso_perso_change' in request.POST:
             # modifie l asso partenaire pour la quelle le benevole travail

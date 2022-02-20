@@ -9,9 +9,9 @@ from django.http import JsonResponse
 from django.db.models import Q
 
 from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
-from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
+from evenement.models import Evenement, Equipe, Planning, Poste, Creneau, evenement_benevole_assopart
 from benevole.models import ProfileBenevole
-from benevole.views import ListeGroupesUserFiltree, RoleUtilisateur
+from benevole.views import ListeGroupesUserFiltree, RoleUtilisateur, check_benevole, check_majeur, devenir_benevole
 from association.models import Association
 
 from django.core.mail import BadHeaderError, send_mail
@@ -115,7 +115,6 @@ def tous_creneaux_entre_2_heures(debut, fin, uuid_evenement):
         # print(' creno : {}'.format(creno.nom))
     # print('*** Fin fonction tous_creneaux_entre_2_heures : {}'.format(datetime.now()))
     return crenos_out
-
 
 def forms_equipe(request):
     """
@@ -254,7 +253,6 @@ def dic_postes(data):
     # print('*** Fin fonction forms_postes : {}'.format(datetime.now()))
     return dic_postes_init
 
-
 def forms_creneau(request):
     """
         entree:
@@ -330,20 +328,6 @@ def dic_creneaux(request, data):
     return dic_creneaux_init
 
 
-def check_majeur(date_naissance, date_evenement):
-    '''
-        vérifie si le bénévole est majeur ou non au debut de l'evenement
-        entree : date de naissance du bénévole , date de début de l'evenement
-        sortie : booleen , True : Majeur , False : Mineur
-    '''
-    pivot = 6570 # age pivot : 18 ans = 6570 jours
-    delta = date_evenement - date_naissance
-    if delta.days < pivot:
-        return False # mineur
-    else:
-        return True # majeur
-
- 
 ################################################
 #            views 
 ################################################
@@ -408,6 +392,7 @@ def evenement(request, uuid_evenement):
 
         "dispo_actif": "False", # active ou non la gestion des disponibilités des bénévoles; par défaut désactivé
         "RolesUtilisateur": [], # liste des roles/groupes de utilisateur connecté 
+        "IsBenevole": check_benevole(request.user, evenement), # est ce que le user connecte est enregistré comme benevole sur cet evenement
 
         "Planning": "",  # objet planning selectionné
         "Creneaux_plage": "",  # objets creneaux de l'evenement entre 2 dateheure
@@ -418,7 +403,7 @@ def evenement(request, uuid_evenement):
         "creneaux_benevole" : Creneau.objects.filter(Q(benevole_id=request.user.profilebenevole.UUID),Q(evenement_id=evenement)).order_by('debut'), # crenaux du bénévole connecté
         
         "FormEquipe" : EquipeForm(initial={'evenement': evenement}), # form non liée au template pour ajout d une nouvelle equipe
-        "DicEquipes" : "",
+        "DicEquipes" : dic_equipes(evenement),
         "FormPlanning" : "", # form non liée au template pour ajout d un nouveau planning
         "DicPlannings" : dic_plannings(evenement),
         "DicPostes" : "",  # dictionnaire des formes de poste de l'evenement liées aux objets de la db
@@ -428,10 +413,7 @@ def evenement(request, uuid_evenement):
         "Majeur" : check_majeur(request.user.date_de_naissance, evenement.debut.date()), # booleen précisant si le bénévole est majeur
         "EvtOuvertBenevoles" : inscription_ouvert(evenement.inscription_debut, evenement.inscription_fin) , # integer précisant si on est avant/dans/après la période de modification des creneaux
     }
-
-    data["DicEquipes"] = dic_equipes(evenement)
-    data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})  
-
+    data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})
     # recupere les uuid en POST, but est de tout gerer dans une seule page
     # et d'afficher les infos en fonction des POST recus :
     if request.method == "POST":
@@ -445,13 +427,11 @@ def evenement(request, uuid_evenement):
 
         uuid_evenement = request.POST.get('evenement')
         # le bénévole prend ou libère un créneau
-
         # traitement normal, ne force pas le retour sur le planning global de l evenement
         if any(x in  request.POST for x in ['benevole_prend_creneau', 'benevole_libere_creneau']):
             creneau_bene = Creneau.objects.get(UUID=request.POST.get('creneau'))
             creneau_bene.benevole_id = request.user.profilebenevole.UUID if ('benevole_prend_creneau' in request.POST) else ""
             creneau_bene.save()
-
         if 'benevole_prend_creneau' in request.POST:
             print('{0} {1} prend le créneau {2}'.format(request.user.first_name, request.user.last_name, Creneau.objects.get(UUID=request.POST.get('creneau')).nom))
         elif 'benevole_libere_creneau'  in request.POST:
@@ -468,16 +448,15 @@ def evenement(request, uuid_evenement):
         if any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter', 'equipe_supprimer']):
             forms_equipe(request)
 
+        # dans equipe
         if request.POST.get('equipe'):  # selection d'une équipe
             data["equipe_uuid"] = request.POST.get('equipe')  # UUID equipe selectionnée
 
-            if request.POST.get('planning') and not request.POST.get('planning_supprimer'):  # selection d'un planning
+            if request.POST.get('planning') and not request.POST.get('planning_supprimer'):  
+                # selection d'un planning
                 data["planning_uuid"] = request.POST.get('planning')
                 data["Planning"] = Planning.objects.get(UUID=data["planning_uuid"])  # planning selectionnée
-
                 # instances de form poste & creneau liées : modifs & suppression & liste des postes
-                # data["DicPostes"] = forms_postes(request, data, uuid_evenement) # bug creation poste en double
-                # heures formatées du planning
                 data["PlanningRange"] = planning_range(Planning.objects.get(UUID=request.POST.get('planning')).debut,
                                                     Planning.objects.get(UUID=request.POST.get('planning')).fin,
                                                     Planning.objects.get(UUID=request.POST.get('planning')).pas)
@@ -509,11 +488,16 @@ def evenement(request, uuid_evenement):
             data["Postes"] = Poste.objects.filter(planning_id=data["planning_uuid"]).order_by('nom')  # objets postes du planning
             data["Creneaux"] = Creneau.objects.filter(planning_id=data["planning_uuid"]).order_by('debut')  # objets creneaux du planning
 
-        elif not request.POST.get('equipe'):  # selection d'un evenement uniquement
+        elif not request.POST.get('equipe'):  
+            # selection d'un evenement uniquement
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
             # si la personne a cliqué sur le bouton pour recevoir ses créneaux par email
-            if request.POST.get('creneaux_courriel'):
+            if 'creneaux_courriel' in request.POST:
                 envoi_courriel(request, evenement)
+            # un admin/orga veut devenir bénévole sur l evenement
+            if 'devenir_benevole' in request.POST:
+                devenir_benevole(request.user, EVENEMENT=evenement)
+                data["IsBenevole"]=check_benevole(request.user, evenement)
         
         # on envoie la form non liée au template pour ajout d un nouveau poste
         data["FormPoste"] = PosteForm(initial={'evenement': evenement,
@@ -546,7 +530,6 @@ def evenement(request, uuid_evenement):
         data["PlanningRange"] = planning_range(evenement.debut,
                                             evenement.fin,
                                             30)
-
     # check des roles de user sur l evenement:
     print('#########################################################')
     print ('#   utilisateur connecté: ')
@@ -560,7 +543,7 @@ def evenement(request, uuid_evenement):
         data['RolesUtilisateur'] = ListeGroupesUserFiltree(request, "eq", Equipe.objects.get(UUID=request.POST.get('equipe')))
     elif request.POST.get('planning'):
         data['RolesUtilisateur'] = ListeGroupesUserFiltree(request, "plan", Planning.objects.get(UUID=request.POST.get('planning')))
-    print('#       ', data['RolesUtilisateur'])
+    # print('#       ', data['RolesUtilisateur'])
     print('#########################################################')                                            
 
     print('*** Fin traitement view : {}'.format(datetime.now()))
