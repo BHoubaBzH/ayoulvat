@@ -8,10 +8,7 @@
     <meta charset="utf-8">
     <title>{% block title %}Evenement{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/ayoulvat.css' %}" type="text/css" />
-    <style>
-        {# internal CSS pour dynamique #}
-        {% include 'evenement/evenement.css.html'%}
-    </style>
+
 
 
     {# ressources JQUERY #}
@@ -34,6 +31,10 @@
 
     {% load bootstrap5 %}
     {% bootstrap_css %}
+    <style>
+      {# internal CSS pour dynamique #}
+      {% include 'evenement/evenement.css.html'%}
+  </style>
     {% bootstrap_messages %}
     {% bootstrap_javascript %}
 

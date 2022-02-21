@@ -101,7 +101,7 @@
                             <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                             <input  name="equipe" value="{{ team.UUID }}" type="hidden">
                             <button class="list-group-item evenement-button 
-                                    {% if team.UUID|stringformat:'s' == equipe_uuid|stringformat:'s' %}active{% endif %} btn-secondary"
+                                    {% if team.UUID|stringformat:'s' == equipe_uuid|stringformat:'s' %}active{% endif %} "
                                     {% if team.description %}
                                       data-bs-toggle="tooltip" data-bs-placement="right" title="{{team.description}}"
                                     {% endif %}>
