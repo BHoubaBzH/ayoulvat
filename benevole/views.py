@@ -152,11 +152,11 @@ def devenir_benevole(user, **kwargs):
     # on ajoute le bénévole à l evenement
     if 'POST' in kwargs:
         # un benevole s inscrit a l evenement sur la page des evenements
-        post = kwargs.pop('POST')
+        post = kwargs.get('POST')
         insc_ev = Evenement.objects.get(UUID=post.get('inscription_event'))
     elif 'EVENEMENT' :
         # un admin/orga decide de devenir benevole sur l evenement
-        evt = kwargs.pop('EVENEMENT')
+        evt = kwargs.get('EVENEMENT')
         insc_ev = evt
     insc_be = ProfileBenevole.objects.get(personne_id=user.UUID)
     if insc_ev:

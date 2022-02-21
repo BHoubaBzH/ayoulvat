@@ -8,7 +8,7 @@ from django.forms import ModelForm, DateTimeField, HiddenInput, ValidationError
 from django.forms import ModelChoiceField, ModelMultipleChoiceField, CheckboxSelectMultiple
 from django_range_slider.fields import RangeSliderField
 
-from evenement.models import Equipe, Planning, Poste, Creneau
+from evenement.models import Equipe, Evenement, Planning, Poste, Creneau
 from benevole.models import Personne, ProfileBenevole
 from evenement.customwidgets import SplitDateTimeMultiWidget
 
@@ -60,10 +60,11 @@ class PlanningForm(ModelForm):
                   'seuil1',
                   'seuil2',
                   'equipe',
-                  'evenement',]
+                  'evenement',
+                  ]
 
-    # cache certains champs
     def __init__(self, *args, **kwargs):
+
         super().__init__(*args, **kwargs)
         # pas encore codé, on cache le champs
         self.fields['editable'].widget = HiddenInput()
@@ -72,7 +73,8 @@ class PlanningForm(ModelForm):
         self.fields['seuil1'].widget.attrs['max'] = '100'
         self.fields['seuil2'].widget.attrs['min'] = '0'
         self.fields['seuil2'].widget.attrs['max'] = '100'
-
+        self.fields['equipe'].disabled = True
+        self.fields['evenement'].disabled = True
 
 
 ################################################################################################
@@ -96,9 +98,10 @@ class PosteForm(ModelForm):
                   'equipe', 
                   'evenement']
 
-    # cache certains champs
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # cache certains champs
         self.fields['planning'].widget = HiddenInput()
         self.fields['equipe'].widget = HiddenInput()
         self.fields['benevole'].widget = HiddenInput()

@@ -354,7 +354,7 @@ def liste_evenements(request):
         "Association": association,
         "Evenements": liste_evenements,
     }
-    return render(request, "evenement/evenement_principal.html", data)
+    return render(request, "evenement/base_evenement.html", data)
 
 
 @login_required(login_url='login')
@@ -547,7 +547,7 @@ def evenement(request, uuid_evenement):
     print('#########################################################')                                            
 
     print('*** Fin traitement view : {}'.format(datetime.now()))
-    return render(request, "evenement/evenement_principal.html", data)
+    return render(request, "evenement/base_evenement.html", data)
 
 
 @login_required(login_url='login')

@@ -1,8 +1,8 @@
-<!-- evenement/evenement_principal.html --> 
+<!-- evenement/base_evenement.html --> 
 {% extends 'evenement/base.html' %}
 
 {% load bootstrap5 %}
-{% block evenement_principal %}
+{% block base_evenement %}
 
 <!-- affiche le popup d'aide quand on passe sur un element contenant un tooltip -->
 <script>
@@ -32,19 +32,19 @@ $(document).ready(function(){
                     {# planning on affiche que si un planning ou un poste est selectionné #}
                     <div class="tab-pane fade show active post_display_javascript" id="nav-creneaux" 
                         role="tabpanel" aria-labelledby="nav-creneaux-tab">
-                            {% include "evenement/gridplan_equipe.html" %}
+                            {% include "evenement/page_planning.html" %}
                     </div>
                     {% comment "affichage tab benevole" %}
                     <div class="tab-pane post_display_javascript" id="nav-benevoles" 
                         role="tabpanel" aria-labelledby="nav-benevoles-tab">
-                            {% include "evenement/gridplan_benevoles.html" %}
+                            {% include "evenement/page_benevoles.html" %}
                     </div>
                     {% endcomment %}
                 </div>
 
             {% else %} {# benevoles #}
                 <div class="tab-content post_display_javascript" id="nav-tabContent">
-                    {% include "evenement/gridplan_equipe.html" %}
+                    {% include "evenement/page_planning.html" %}
                 </div>
             {% endif %}
 
@@ -54,12 +54,12 @@ $(document).ready(function(){
             <div class="tab-content post_display_javascript" id="nav-tabContent">
                 <div class="tab-pane fade show active post_display_javascript" id="nav-equipes"  
                     role="tabpanel" aria-labelledby="nav-equipes-tab">
-                        {% include "evenement/gridplan_evenement.html" %}
+                        {% include "evenement/page_evenement.html" %}
                 </div>
             </div>
         {# a analyser comment on arrive ici , on part sur planning perso #}    
         {% else %}
-            {% include "evenement/gridplan_planningperso.html" %}
+            {% include "evenement/page_planningperso.html" %}
         {% endif %}
 
     {% else %}
@@ -69,12 +69,12 @@ $(document).ready(function(){
                 <div class="tab-pane fade show active" id="nav-equipes"
                     role="tabpanel" aria-labelledby="nav-equipes-tab">
                     {%if equipe_uuid%}
-                        {% include "evenement/gridplan_evenement.html" %}
+                        {% include "evenement/page_evenement.html" %}
                     {% else %}
-                        {% include "evenement/gridplan_planningperso.html" %}
+                        {% include "evenement/page_planningperso.html" %}
                     {% endif %}
                 </div>
             </div>
         {% endif %}
     {% endif %}
-{% endblock evenement_principal %}
+{% endblock base_evenement %}
