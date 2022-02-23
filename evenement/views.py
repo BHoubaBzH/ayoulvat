@@ -7,6 +7,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.db.models import Q
+from ayoulvat.methods import envoi_courriel
 
 from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau, evenement_benevole_assopart
@@ -26,7 +27,7 @@ logger = logging.getLogger(__name__)
 #             fonctions
 ################################################
 
-def envoi_courriel(request, evenement):
+def envoi_courriel_plan_perso(request, evenement):
     """
         envoi le courrier de résumé des creneaux du bénévole
     """
@@ -35,16 +36,9 @@ def envoi_courriel(request, evenement):
     message_html = request.POST.get('creneaux_courriel_message_html')
     from_courriel = 'no-reply@deusta.bzh'
     to_courriel = [(request.user.email)]
-
+    logger.info('envoi des crenaux perso à : {0} '.format(request.user.email))
     if sujet and to_courriel and from_courriel:
-        logger.info('envoi des crenaux perso à : {0} '.format(request.user.email))
-        try:
-            send_mail(sujet, message_text, from_courriel, to_courriel, html_message=message_html)
-        except BadHeaderError:
-            return HttpResponse('Header incorrect détecté.')
-        return HttpResponseRedirect('')
-    else:
-        return HttpResponse('Tous les champs ne sont pas remplis correctement.')
+        envoi_courriel(sujet, message_text, from_courriel, to_courriel, message_html)
 
 def planning_range(debut, fin, delta):
     """
@@ -432,11 +426,7 @@ def evenement(request, uuid_evenement):
             creneau_bene = Creneau.objects.get(UUID=request.POST.get('creneau'))
             creneau_bene.benevole_id = request.user.profilebenevole.UUID if ('benevole_prend_creneau' in request.POST) else ""
             creneau_bene.save()
-        if 'benevole_prend_creneau' in request.POST:
-            print('{0} {1} prend le créneau {2}'.format(request.user.first_name, request.user.last_name, Creneau.objects.get(UUID=request.POST.get('creneau')).nom))
-        elif 'benevole_libere_creneau'  in request.POST:
-            print('{0} {1} libère le créneau {2}'.format(request.user.first_name, request.user.last_name, Creneau.objects.get(UUID=request.POST.get('creneau')).nom))
-
+ 
         # admin change un objet de l'evenement
         if  any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter', 'creneau_supprimer']):
             forms_creneau(request)
@@ -450,8 +440,8 @@ def evenement(request, uuid_evenement):
 
         # dans equipe
         if request.POST.get('equipe'):  # selection d'une équipe
-            data["equipe_uuid"] = request.POST.get('equipe')  # UUID equipe selectionnée
-
+            data["equipe_uuid"] = request.POST.get('equipe')  
+            # UUID equipe selectionnée
             if request.POST.get('planning') and not request.POST.get('planning_supprimer'):  
                 # selection d'un planning
                 data["planning_uuid"] = request.POST.get('planning')
@@ -460,11 +450,12 @@ def evenement(request, uuid_evenement):
                 data["PlanningRange"] = planning_range(Planning.objects.get(UUID=request.POST.get('planning')).debut,
                                                     Planning.objects.get(UUID=request.POST.get('planning')).fin,
                                                     Planning.objects.get(UUID=request.POST.get('planning')).pas)
-                # retourne les creneaux d'un evenement sur une plage et sur tous les plannings :
+                # retourne les creneaux d'un evenement sur une plage et sur tous les plannings 
+                # permet de savoir si le user est occupe sur la plage 
                 data["Creneaux_plage"] = \
                     tous_creneaux_entre_2_heures(Planning.objects.get(UUID=request.POST.get('planning')).debut,
-                                                Planning.objects.get(UUID=request.POST.get('planning')).fin,
-                                                uuid_evenement)
+                                                    Planning.objects.get(UUID=request.POST.get('planning')).fin,
+                                                    uuid_evenement)
             else:
                 # selection d'une equipe uniquement, pas de planning, on affiche le premier planning en date
                 try:
@@ -478,9 +469,7 @@ def evenement(request, uuid_evenement):
                     print("{} : équipe sans planning ".format(Equipe.objects.get(UUID=request.POST.get('equipe')).nom))
                     # logger.info('equipe selectionnée sans planning: {0} '.format(request.POST.get('equipe')))
                     data["planning_perso"] = "oui"
-                    data["PlanningRange"] = planning_range(evenement.debut,
-                                        evenement.fin,
-                                        30)
+                    data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
 
             # envoi les forms au template
             data["DicPostes"] = dic_postes(data)
@@ -493,7 +482,7 @@ def evenement(request, uuid_evenement):
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
             # si la personne a cliqué sur le bouton pour recevoir ses créneaux par email
             if 'creneaux_courriel' in request.POST:
-                envoi_courriel(request, evenement)
+                envoi_courriel_plan_perso(request, evenement)
             # un admin/orga veut devenir bénévole sur l evenement
             if 'devenir_benevole' in request.POST:
                 devenir_benevole(request.user, EVENEMENT=evenement)

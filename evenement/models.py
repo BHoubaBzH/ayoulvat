@@ -45,7 +45,7 @@ class Evenement(models.Model):
     description = models.TextField(max_length=2000, blank=True, default='')
     courriel_organisateur = models.EmailField(default='', help_text="courriel accessible aux bénévoles en bas de page", blank=True)
     vignette = models.ImageField(upload_to=upload_dir_vignette, blank=True)
-    couleur = RGBColorField(default="#0d6efd")
+    couleur = RGBColorField(default="#6610f2")
 
     def __str__(self):
         return self.nom
@@ -80,7 +80,7 @@ class Equipe(models.Model):
     responsable_valide = models.BooleanField(help_text="les responsables doivent valider les créneaux choisis")
     responsable_creer = models.BooleanField(help_text="les responsables peuvent creer des bénévoles")
     description = models.TextField(max_length=1000, blank=True, default='')
-    couleur = RGBColorField(default="#0d6efd")
+    couleur = RGBColorField(default="#e91e63")
     seuil1 = models.IntegerField(default=50,
                                 validators=[
                                     MinValueValidator(1),
@@ -140,7 +140,7 @@ class Planning(models.Model):
     ouvert_mineur = models.BooleanField(default=True,
                                         help_text='possibilité de bloquer l\'accès aux mineurs, ex : BAR')
     description = models.CharField(max_length=500, blank=True, default='')
-    couleur = RGBColorField(default="#0d6efd")
+    couleur = RGBColorField(default="#6610f2")
     pas = models.PositiveSmallIntegerField(choices=PasMinute.choices,blank=False, default=30,
                                            help_text="pas de reglage des creneaux en minutes: 15 / 30 / 60")
     seuil1 = models.IntegerField(default=50,

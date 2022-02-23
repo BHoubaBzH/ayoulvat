@@ -73,8 +73,8 @@ class PlanningForm(ModelForm):
         self.fields['seuil1'].widget.attrs['max'] = '100'
         self.fields['seuil2'].widget.attrs['min'] = '0'
         self.fields['seuil2'].widget.attrs['max'] = '100'
-        self.fields['equipe'].disabled = True
-        self.fields['evenement'].disabled = True
+        #self.fields['equipe'].disabled = True
+        #self.fields['evenement'].disabled = True
 
 
 ################################################################################################
@@ -162,7 +162,7 @@ class CreneauForm(ModelForm):
             self.evenement = kwargs.pop('evenement')
         except:
             pass
-        
+
         super().__init__(*args, **kwargs)
 
         # les bénévoles actif et inscrit sur l evenement

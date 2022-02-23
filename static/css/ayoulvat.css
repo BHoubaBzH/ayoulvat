@@ -1,4 +1,18 @@
+/*************************
+ * page evements
+ *************************/
 
+.card-inscrit{
+    opacity: 1;
+}
+
+.card-dispo {
+    opacity: .4;
+}
+
+/*************************
+ * footer
+ *************************/
 
 .footer, .sidebar {
     background-color: #dbd8d8;

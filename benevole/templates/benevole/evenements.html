@@ -48,7 +48,7 @@
                     {# affiche dans la liste que les evenements à venir ou en cours #}
                     <div class="col-sm-4">
                         <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="{{ EV.UUID }}" title="aller vers {{ EV }}">
-                            <div class="card h-100">
+                            <div class="card h-100 card-inscrit">
                             {% if EV.vignette %}
                                 <img src="{{ EV.vignette.url }}" class="card-img-top" alt="aller vers {{ EV }}">
                             {% else %}
@@ -150,7 +150,7 @@
                     {# affiche dans la liste que les evenements à venir ou en cours #}
                     <div class="col-sm-4">
                         <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="{{ EV.UUID }}" title="devenir bénévole à {{ EV }} et accéder à l'evenement">
-                            <div class="card h-100">
+                            <div class="card h-100 card-dispo">
                             {% if EV.vignette %}
                                 <img src="{{ EV.vignette.url }}" class="card-img-top" alt="devenir bénévole à {{ EV }} et accéder à l'evenement">
                             {% else %}

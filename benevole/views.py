@@ -2,7 +2,9 @@ import logging
 from sys import api_version
 
 from django.http import HttpResponseRedirect
+from administration.views import evenement
 from association.models import AssoPartenaire, Association
+from ayoulvat.methods import envoi_courriel
 
 from benevole.models import Personne, ProfileBenevole
 from evenement.models import Creneau, Equipe, Evenement, evenement_benevole_assopart
@@ -163,6 +165,29 @@ def devenir_benevole(user, **kwargs):
         logger.info('bénévole {} inscrit à l\'evenement {}'.format(insc_be, insc_ev))
         insc_ev.benevole.add(insc_be)
 
+def envoi_courriel_orga_inscription(request):
+    """
+        envoi un courrier quand un bénévole s inscrit a l evenement
+    """
+    evt_uuid = request.POST.get('inscription_event')
+    evt = Evenement.objects.get(UUID=evt_uuid)
+    emails_orga = []
+    print ('evt nom : ',evt.nom)
+    print ('ben nom : ',request.user)
+    for orga in evt.organisateur.all():
+        emails_orga.append(orga.personne.email)
+    if emails_orga:
+        sujet = '{} vient de s\'inscrit à l\'évènement {} comme bénévole'.format(request.user, evt)
+        message_text = 'Ayoulvat'
+        message_html = ' \
+            <html> <head> </head> <body> Ayoulvat </body> </html> \
+        '
+        from_courriel = 'no-reply@deusta.bzh'
+        to_courriel = emails_orga
+        print(to_courriel)
+        if sujet and to_courriel and from_courriel:
+            envoi_courriel(sujet, message_text, from_courriel, to_courriel, message_html)
+
 ################################################
 #            views 
 ################################################
@@ -217,6 +242,7 @@ def Home(request):
     if request.method == 'POST' and ProfileBenevole.objects.filter(personne_id=request.user.UUID).exists(): #post et le user a renseigné son profile
         if 'inscription_event' in request.POST:
             devenir_benevole(request.user, POST=request.POST)
+            envoi_courriel_orga_inscription(request)
             # redirige vers la page evenement
             # return HttpResponseRedirect('evenement/{}'.format(insc_ev.UUID))
 
