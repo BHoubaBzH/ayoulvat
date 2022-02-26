@@ -236,15 +236,12 @@ def dic_postes(data):
     """
     # cree dans la page toutes nos from pour les postes du planning
     dic_postes_init = {}  # dictionnaire des forms
-    # key : UUID postes
-    # val : form de poste initialisée objet db lié
     # parcours les postes du planning dans la base
     for poste in Poste.objects.filter(planning_id=data["planning_uuid"]):
         # form en lien avec l objet basé sur model et pk UUID poste
         formposte = PosteForm(instance=Poste.objects.get(UUID=poste.UUID))
         dic_postes_init[poste.UUID] = formposte  # dictionnaire des forms
         # print (' poste UUID : {1} form : {0}'.format(formposte, poste.UUID))
-    # print('*** Fin fonction forms_postes : {}'.format(datetime.now()))
     return dic_postes_init
 
 def forms_creneau(request):
@@ -318,7 +315,6 @@ def dic_creneaux(request, data):
         dic_creneaux_init[creneau.UUID] = formcreneau  # dictionnaire des forms: key: UUID / val: form
         # print(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID))
     # print('*** Fin fonction forms_creneaux : {}'.format(datetime.now()))
-    
     return dic_creneaux_init
 
 

@@ -99,6 +99,13 @@ def RoleUtilisateur(request, objet, filtre): # remplace GroupeUtilisateur pour a
         out['Benevole'] = eval('Creneau.objects.filter({})'.format(filtre_cre))
     except:
         out['Benevole'] = ""
+
+    print ('!!! ROLEUTILISATEUR !!!')
+    print ('!!! obj : ', objet)
+    print ('!!! filtre asso : ', filtre_asso)
+    print ('!!! filtre ev : ', filtre_ev)
+    print ('!!! filtre eq : ', filtre_eq)
+    print ('!!! filtre cre : ', filtre_cre)
     return out
 
 def ListeGroupesUserFiltree(request, objet, filtre):
@@ -177,11 +184,11 @@ def envoi_courriel_orga_inscription(request):
     for orga in evt.organisateur.all():
         emails_orga.append(orga.personne.email)
     if emails_orga:
-        sujet = '{} vient de s\'inscrit à l\'évènement {} comme bénévole'.format(request.user, evt)
-        message_text = 'Ayoulvat'
+        sujet = '[Ayoulvat] Nouveau bénévole inscrit à ton évènement'
+        message_text = '{} vient de s\'inscrit à l\'évènement {} comme bénévole'.format(request.user, evt)
         message_html = ' \
-            <html> <head> </head> <body> Ayoulvat </body> </html> \
-        '
+            <html> <head> </head> <body> {} vient de s\'inscrit à l\'évènement {} comme bénévole</body> </html> \
+            '.format(request.user, evt)
         from_courriel = 'no-reply@deusta.bzh'
         to_courriel = emails_orga
         print(to_courriel)

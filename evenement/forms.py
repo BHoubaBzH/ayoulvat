@@ -7,6 +7,7 @@ from uuid import UUID
 from django.forms import ModelForm, DateTimeField, HiddenInput, ValidationError
 from django.forms import ModelChoiceField, ModelMultipleChoiceField, CheckboxSelectMultiple
 from django_range_slider.fields import RangeSliderField
+from django.db.models import Q,F
 
 from evenement.models import Equipe, Evenement, Planning, Poste, Creneau
 from benevole.models import Personne, ProfileBenevole
@@ -199,31 +200,56 @@ class CreneauForm(ModelForm):
             if hasattr(self.personne_connectee, 'profilebenevole') and not self.personne_connectee.has_perm('evenement.change_creneau'):
                 # par default, la liste de bénévole contient le benevole connecté
                 id_benevole = self.personne_connectee.profilebenevole.UUID
-                for Creno in Creneau.objects.filter(type="creneau", evenement_id=self.evenement):
-                    if self.instance.debut and self.instance.fin:
-                        #  l'instance est sur l'horaire du creneau de la liste
-                        if Creno.debut <= self.instance.debut < Creno.fin or Creno.debut < self.instance.fin <= Creno.fin \
-                            or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin:
-                                # le benevole est pris sur l'intervale
-                                if Creno.benevole_id == self.personne_connectee.profilebenevole.UUID:
-                                    # on vide la liste de benevole
-                                    id_benevole = None
+                
+                # OLD
+                #for Creno in Creneau.objects.filter(Q(type="creneau"), Q(evenement_id=self.evenement), Q(benevole_id=id_benevole)):
+                #    if self.instance.debut and self.instance.fin:
+                #        #  l'instance est sur l'horaire du creneau de la liste
+                #        if Creno.debut <= self.instance.debut < Creno.fin or Creno.debut < self.instance.fin <= Creno.fin \
+                #            or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin:
+                #                # le benevole est pris sur l'intervale
+                #                id_benevole = None
+
+                if self.instance.debut and self.instance.fin:
+                    # si on trouve un creneau sur la meme plage horaire ou le benevole est pris, alors on retire le benevole de la liste
+                    for Creno in Creneau.objects.filter(Q(type="creneau"), 
+                                                        Q(evenement_id=self.evenement), 
+                                                        Q(benevole_id=id_benevole),
+                                                        Q(debut__lte=self.instance.debut)&Q(fin__gt=self.instance.debut)|
+                                                        Q(debut__lt=self.instance.fin)&Q(fin__gte=self.instance.fin)|
+                                                        Q(debut__gt=self.instance.debut)&Q(fin__lt=self.instance.fin)&Q(debut__lt=F('fin')),
+                                                        ):
+                        id_benevole = None
+
                 self.fields['benevole'].queryset = self.querysetbenevoles.filter(UUID=id_benevole)
 
             # la personne connectée est un responsbale/orga/admin
             elif self.personne_connectee.has_perm('evenement.change_creneau'): 
                 # creneau disponible, on affiche tout la liste des bénévoles
-                #if self.instance.benevole_id is None:
                 self.fields['benevole'].queryset = self.querysetbenevoles
                 liste_benevoles_occupes = []
-                for Creno in Creneau.objects.filter(type="creneau", evenement_id=self.evenement):
-                    # si un bénévole est déjà pris sur l'horaire, on le sort de la liste
-                    if self.instance.debut and self.instance.fin:
-                        if Creno.debut <= self.instance.debut < Creno.fin or Creno.debut < self.instance.fin <= Creno.fin \
-                            or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin and Creno.benevole_id:
-                            # on n'exclue pas le bénévole lié à l'objet, pou qu'il soit le choix par defaut dans la liste
-                            if Creno.UUID != self.instance.UUID:
-                                liste_benevoles_occupes.append(Creno.benevole_id)
+
+                # OLD
+                #for Creno in Creneau.objects.filter(Q(type="creneau"), Q(evenement_id=self.evenement)):
+                #    # si un bénévole est déjà pris sur l'horaire, on le sort de la liste
+                #    if self.instance.debut and self.instance.fin:
+                #        if Creno.debut <= self.instance.debut < Creno.fin or Creno.debut < self.instance.fin <= Creno.fin \
+                #            or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin and Creno.benevole_id:
+                #            # on n'exclue pas le bénévole lié à l'objet, pour qu'il soit le choix par defaut dans la liste
+                #            if Creno.UUID != self.instance.UUID:
+                #                liste_benevoles_occupes.append(Creno.benevole_id)
+                
+                if self.instance.debut and self.instance.fin:
+                    # on prend tous les creneaux sur la plage horaire avec un bénévole inscrit 
+                    for Creno in Creneau.objects.filter(Q(type="creneau"), 
+                                                        Q(evenement_id=self.evenement),
+                                                        Q(debut__lte=self.instance.debut)&Q(fin__gt=self.instance.debut)|
+                                                        Q(debut__lt=self.instance.fin)&Q(fin__gte=self.instance.fin)|
+                                                        Q(debut__gt=self.instance.debut)&Q(debut__lt=self.instance.fin)&Q(debut__lt=F('fin')),
+                                                        ).exclude(benevole_id=None):
+                        # si un bénévole est déjà pris sur l'horaire, on le sort de la liste
+                        if Creno.UUID != self.instance.UUID:
+                            liste_benevoles_occupes.append(Creno.benevole_id)
                 self.fields['benevole'].queryset = self.querysetbenevoles.select_related('personne').exclude(UUID__in=liste_benevoles_occupes)
 
     ################ methode controle_coherence_creneaux
