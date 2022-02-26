@@ -1,7 +1,7 @@
 <!-- evenement/creneau_bouton.html -->
 {##################################################################}
 {# la personne est uniquement benevole et les objets contenant le creneau sont ouverts : poste ouvert, evenement ouvert ...#}
-{% if user.profilebenevole.UUID and not 'evenement.delete_creneau' in perms and ouvert == 'oui' %}
+{% if not 'Administrateur' in RolesUtilisateur and not 'Organisateur' in RolesUtilisateur and not 'Responsable' in RolesUtilisateur and 'Benevole' in RolesUtilisateur and ouvert == 'oui' %}
     {# le creneau est occupé #}
     {% if creno.benevole %}
         {# par moi #}
@@ -68,7 +68,7 @@
 
 {##################################################################}
 {# la personne est uniquement benevole et les contenants du creneau sont fermés : poste fermé, evenement non editable ...#}
-{% elif user.profilebenevole.UUID and not 'evenement.delete_creneau' in perms and ouvert == 'non' %}
+{% elif not 'Administrateur' in RolesUtilisateur and not 'Organisateur' in RolesUtilisateur and not 'Responsable' in RolesUtilisateur and 'Benevole' in RolesUtilisateur and ouvert == 'non' %}
    {# le creneau est occupé #}
     {% if creno.benevole %}
         {# par moi #}
@@ -123,7 +123,7 @@
     {% endif %}
 {##################################################################}
 {# la personne est admin et bénévole #}
-{% elif user.profilebenevole.UUID and 'evenement.delete_creneau' in perms %} 
+{% elif 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur or 'Responsable' in RolesUtilisateur and 'Benevole' in RolesUtilisateur %}
     {# le creneau est occupé #}
     {% if creno.benevole %}
         {# par moi #}
@@ -167,7 +167,7 @@
   
 {##################################################################}
 {# la personne est pure admin et pas bénévole #}
-{% elif not user.profilebenevole.UUID and  'evenement.delete_creneau' in perms %}
+{% elif 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur or 'Responsable' in RolesUtilisateur and not 'Benevole' in RolesUtilisateur %}
     {# creneau occupé #}
     {% if creno.benevole %}
         <button class="creneau poste poste-{{ poste.UUID }}"
