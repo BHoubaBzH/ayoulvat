@@ -522,11 +522,14 @@ def evenement(request, uuid_evenement):
     print ('#   roles : ')
 
     # groupes/roles de l utilisateur
-    if not request.method == "POST" or (request.POST.get('evenement') and not request.POST.get('equipe') and not request.POST.get('planning')):
+    if not request.method == "POST" or (request.POST.get('evenement') and not request.POST.get('equipe') and not request.POST.get('planning'))or request.POST.get('planning') and request.POST.get('planning_supprimer'):
+        # pas de POST ou page evenement ou le planning vient d 'etre supprimé 
         data['RolesUtilisateur'] = ListeGroupesUserFiltree(request, "ev", evenement)
     elif request.POST.get('equipe') and not request.POST.get('planning'):
+        # equipe et pas de planning
         data['RolesUtilisateur'] = ListeGroupesUserFiltree(request, "eq", Equipe.objects.get(UUID=request.POST.get('equipe')))
-    elif request.POST.get('planning'):
+    elif request.POST.get('planning') and not request.POST.get('planning_supprimer'):
+        # planning et pas supprimé
         data['RolesUtilisateur'] = ListeGroupesUserFiltree(request, "plan", Planning.objects.get(UUID=request.POST.get('planning')))
     # print('#       ', data['RolesUtilisateur'])
     print('#########################################################')                                            

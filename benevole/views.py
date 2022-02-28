@@ -9,6 +9,7 @@ import benevole
 
 from benevole.models import Personne, ProfileBenevole
 from evenement.models import Creneau, Equipe, Evenement, evenement_benevole_assopart
+from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.urls.base import reverse
@@ -105,7 +106,7 @@ def RoleUtilisateur(request, objet, filtre): # remplace GroupeUtilisateur pour a
 
 def ListeGroupesUserFiltree(request, objet, filtre):
     """
-        roles du user connecte Z
+        roles du user connecte
         filtre si en parametre est passé 
         objet :
             ass : pour l'asso uniquement
@@ -117,7 +118,8 @@ def ListeGroupesUserFiltree(request, objet, filtre):
         sortie
             liste: groupes aux quel le user appartient en fonction du filtre
     """
-    groupes_liste = ['Administrateur', 'Organisateur', 'Responsable', 'Benevole']
+    # groupes du logiciel
+    groupes_liste=Group.objects.all()
     RolesUtilisateur = []
     for role, entite in RoleUtilisateur(request, objet, filtre).items():
         if entite:

@@ -37,10 +37,12 @@
   </style>
     {% bootstrap_messages %}
     {% bootstrap_javascript %}
-
 </head>
-<body class="override">  
 
+<body class="override">  
+  {#affiche un loader pendant que le client attend un retour du serveur#}
+  <div class="loader" id="loader" style="display:none"></div>
+  
   {% include "benevole/navbar.html" %}
 
 <div class="container-fluid">
