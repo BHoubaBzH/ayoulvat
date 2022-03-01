@@ -52,7 +52,7 @@ def nb_creneaux_par_benevole(evt, benevoles):
     """ out dictionnaire: objet benevole - nombre de creneaux """
     out={}
     for benevole in benevoles: 
-        out[benevole]=Creneau.objects.filter(benevole=benevole).count()
+        out[benevole]=Creneau.objects.filter(Q(benevole=benevole),Q(evenement=evt)).count()
     return out
 
 
