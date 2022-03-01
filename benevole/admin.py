@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 
 from benevole import models
+from evenement.models import Creneau
 
 class PersonneInLine(admin.TabularInline):
     model = models.Personne
@@ -49,6 +50,7 @@ class BenevoleCustom(admin.ModelAdmin):
 
     list_filter = ( "evenement_benevole_assopart__evenement",
                 )
+
     # redefini le query set sur benevole pour y inclurer "personne" ->un join dans la requete sql
     # optimise les requetes 
     def get_queryset(self, request):

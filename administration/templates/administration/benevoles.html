@@ -52,7 +52,7 @@
                     <thead>
                         <tr>
                         <th scope="col">nom</th><th scope="col">prenom</th><th scope="col">email</th><th scope="col">portable</th>
-                        <th scope="col">role</th><th scope="col">Asso Partenaire</th><th scope="col">Action</th>
+                        <th scope="col">role</th><th scope="col">nb créneaux</th><th scope="col">Asso Partenaire</th><th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -65,7 +65,13 @@
                                     {{ group }}{% if not forloop.last %}, {%endif%}
                                 {% endfor %}
                             </td>
-                            
+                            <td>
+                                {% for ben, nb in NbCreneauxParBenevole.items %}
+                                    {% if ben == benevole %}
+                                        {{nb}}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
                             {% for asso in EvtBeneAssopar %}
                                 {% if benevole == asso.profilebenevole%}
                                     <td>{{asso.asso_part}}</td>   

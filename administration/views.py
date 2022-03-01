@@ -48,6 +48,14 @@ def total_heures_benevoles(creneaux):
             total += c_duree
     return total
 
+def nb_creneaux_par_benevole(evt, benevoles):
+    """ out dictionnaire: objet benevole - nombre de creneaux """
+    out={}
+    for benevole in benevoles: 
+        out[benevole]=Creneau.objects.filter(benevole=benevole).count()
+    return out
+
+
 def nb_benevoles_par_asso(list_assos, evt):
     """ returne un dictionnaire de nombre de bénévole par asso sur l evenement"""
     dic = {}
@@ -235,6 +243,7 @@ class BenevolesListView(ListView):
         print('{} : dispatch'.format(__class__.__name__))
         self.Evt = Evenement.objects.get(UUID=self.request.session['uuid_evenement']) # recuper l evenement
         self.Asso = Association.objects.get(UUID=self.request.session['uuid_association']) # recuper l asso
+        self.ListeBenevoles = self.queryset.select_related('personne').filter(BenevolesEvenement=self.Evt).order_by('personne__last_name')  # objets benevoles de l'evenement
         # definit les infos a envoyer au tempate
         self.context = { 
             # nav bar infos : debut
@@ -247,7 +256,8 @@ class BenevolesListView(ListView):
 
             "Equipes" : Equipe.objects.filter(evenement=self.Evt).order_by('nom'),
 
-            "Benevoles": self.queryset.select_related('personne').filter(BenevolesEvenement=self.Evt).order_by('personne__last_name'),  # objets benevoles de l'evenement
+            "Benevoles": self.ListeBenevoles,
+            "NbCreneauxParBenevole": nb_creneaux_par_benevole(self.Evt, self.ListeBenevoles), 
             "EvtBeneAssopar": evenement_benevole_assopart.objects.filter(evenement=self.Evt),
             "Administrateurs": ProfileAdministrateur.objects.select_related('personne').filter(association=self.Asso),
             "Organisteurs" : ProfileOrganisateur.objects.select_related('personne').filter(OrganisateurEvenement=self.Evt),
@@ -260,6 +270,7 @@ class BenevolesListView(ListView):
             "Emails_benevoles_un_creneau" : emails_benevoles_un_creneau(self.Evt),
             "Emails_responsables" : emails_responsables(self.Evt),
         }
+
         return super().dispatch(request, *args, **kwargs)
 
     # recupere et traite les données post

@@ -240,8 +240,8 @@ def Home(request):
         #data["Evenement"] = evenement
         data["Benevoles"] = ProfileBenevole.objects.filter(BenevolesEvenement=evenement)  # objets benevoles de l'evenement
     except:
-        print('pas passé la page evenement')
-
+        # pas passé la page evenement
+        pass
     # pour trier dans le home du benevoles les evenements et le fait qu'il puisse s'y inscrire
     if request.method == 'POST' and ProfileBenevole.objects.filter(personne_id=request.user.UUID).exists(): #post et le user a renseigné son profile
         if 'inscription_event' in request.POST:

@@ -1,4 +1,3 @@
-
 // afficher un loader pendant que le client attend un retour du serveur
 // utile dans la sideber dans l evenement
 function loader() {
