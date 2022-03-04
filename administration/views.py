@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, View
 from django.db.models import Q
+import benevole
 
 from benevole.forms import BenevoleForm, PersonneForm
 from evenement.models import Creneau, Equipe, Evenement, Planning, evenement_benevole_assopart
@@ -106,7 +107,12 @@ def repartition_par_assos(creneaux):
         #print('ev ', c, c.evenement.UUID)
         #print('ben', c, c.benevole.UUID)
         #print(evenement_benevole_assopart.objects.get(Q(evenement=c.evenement),Q(profilebenevole=c.benevole)).asso_part)
-        asso_du_creneau=evenement_benevole_assopart.objects.get(Q(evenement=c.evenement),Q(profilebenevole=c.benevole)).asso_part
+        try:
+            # on a un evenement, un benevole et une asso_prt de liés
+            asso_du_creneau=evenement_benevole_assopart.objects.get(Q(evenement=c.evenement),Q(profilebenevole=c.benevole)).asso_part
+        except:
+            # on a pas de lien
+            pass
         if asso_du_creneau:
             c_duree = c.fin - c.debut
             # print('{} : {}'.format(c.benevole.assopartenaire, c_duree))
@@ -131,7 +137,7 @@ def emails_benevoles_evenement(evt):
         sortie : liste emails des bénévoles ayant pris un créneau
     """
     listout = []
-    for bene in ProfileBenevole.objects.filter(BenevolesCreneau__evenement=evt).prefetch_related('BenevolesCreneau'):
+    for bene in ProfileBenevole.objects.filter(BenevolesCreneau__evenement=evt).prefetch_related('BenevolesCreneau').select_related('personne'):
             email = bene.personne.email
             listout.append(email)
     return set(listout)
@@ -141,7 +147,7 @@ def emails_benevoles_sans_creneaux(evt):
         sortie : liste emails des bénévoles sans créneau
     """
     listout = []
-    for bene in ProfileBenevole.objects.all().exclude(BenevolesCreneau__evenement=evt).prefetch_related('BenevolesCreneau'):
+    for bene in ProfileBenevole.objects.all().exclude(BenevolesCreneau__evenement=evt).prefetch_related('BenevolesCreneau').select_related('personne'):
             email = bene.personne.email
             listout.append(email)
     return set(listout)
@@ -152,7 +158,7 @@ def emails_benevoles_un_creneau(evt):
     """ 
     listtemp = []
     listout = []
-    for bene in ProfileBenevole.objects.filter(BenevolesCreneau__evenement=evt).prefetch_related('BenevolesCreneau'):
+    for bene in ProfileBenevole.objects.filter(BenevolesCreneau__evenement=evt).prefetch_related('BenevolesCreneau').select_related('personne'):
             email = bene.personne.email
             listtemp.append(email)
     #print(listtemp)
@@ -169,7 +175,7 @@ def emails_benevoles_par_equipe(evt):
     tabout = {}
     for equipe in list(Equipe.objects.filter(evenement=evt)):
         liste_emails = []
-        for bene in ProfileBenevole.objects.filter(BenevolesCreneau__equipe=equipe).prefetch_related('BenevolesCreneau'):
+        for bene in ProfileBenevole.objects.filter(BenevolesCreneau__equipe=equipe).prefetch_related('BenevolesCreneau').select_related('personne'):
             email = bene.personne.email
             liste_emails.append(email)
             if liste_emails:
@@ -188,17 +194,13 @@ def emails_benevoles_par_planning(evt):
         liste_emails = []
         liste_planning = []
         #for bene in ProfileBenevole.objects.filter(BenevolesCreneau__planning=planning):
-        for bene in ProfileBenevole.objects.filter(BenevolesCreneau__planning=planning).prefetch_related('BenevolesCreneau'):
+        for bene in ProfileBenevole.objects.filter(BenevolesCreneau__planning=planning).prefetch_related('BenevolesCreneau').select_related('personne'):
             email = bene.personne.email
             liste_emails.append(email)
         liste_planning.append(planning.equipe)
         liste_planning.append(planning.nom)
         liste_planning.append(set(liste_emails))
         tabout[planning] = liste_planning
-    #for k, v in tabout.items():
-    #    print('##')
-    #    print(k)
-    #    print(*v)
     return tabout
 
 def emails_responsables(evt):
@@ -270,7 +272,6 @@ class BenevolesListView(ListView):
             "Emails_benevoles_un_creneau" : emails_benevoles_un_creneau(self.Evt),
             "Emails_responsables" : emails_responsables(self.Evt),
         }
-
         return super().dispatch(request, *args, **kwargs)
 
     # recupere et traite les données post
@@ -291,29 +292,34 @@ class BenevolesListView(ListView):
                 # lien entre l evenement et le profilebenevole
                 evenementObj = get_object_or_404(Evenement, UUID=request.session['uuid_evenement'])
                 evenementObj.benevole.add(benevoleObj)
-                return render(request, self.template_name, self.context )
+                #return render(request, self.template_name, self.context )
             else:
                 print('erreur de creation de bénévole : {}'.format(formpersonne.errors))
                 raise Http404('erreur de creation de bénévole : {}'.format(formpersonne.errors))
+            ### ajouter la possibilité de lier à un benevole existant deja
+            ###             creer lien evenement-profilebenevole
+            ### ajouter la possibilite de lier à une personne dans profilebenevole
+            ###             creer profilebenevole + line evenement-profilebenevole 
 
-        # supprimer un benevole
-        if all(k in request.POST for k in ('benevole_supprimer', 'BenevoleUUID')):
-            personnesup = get_object_or_404(Personne, UUID=request.POST.get('BenevoleUUID'))
-            # secu : on ne supprime les personnes étant également admins
-            if  ProfileAdministrateur.objects.filter(personne=personnesup) or \
-                ProfileOrganisateur.objects.filter(personne=personnesup) or \
-                ProfileResponsable.objects.filter(personne=personnesup):
-                print('ne pas supprimer ')
-                raise Http404('attention, ne pas supprimer les admins')
-            else:
-                print('benevole supprimé : {0} {1}'.format(personnesup.last_name, personnesup.first_name))
-                benevolesup = get_object_or_404(ProfileBenevole, personne=personnesup).delete()
-                personnesup = get_object_or_404(Personne, UUID=request.POST.get('BenevoleUUID')).delete()
-                
+        # supprime un benevole de l evenement
+        if all(k in request.POST for k in ('benevole_supprimer', 'BenevoleUUID')):   
+            # supprime le lien evenement benevole = desinscrit le benevole de l evenement
+            benev=ProfileBenevole.objects.get(UUID=request.POST.get('BenevoleUUID'))
+            self.Evt.benevole.remove(benev)
+            # supprimer les liens des creneaux affecté vers le bénévole
+            cren=Creneau.objects.filter(benevole=benev,evenement=self.Evt)
+            for cre in cren:
+                setattr(cre, 'benevole_id', '')
+                cre.save()
+        # recharge les liste infos pour mettre à jour suite aux modifs ( creation ou suppression de benevole)
+        self.context['Benevoles']=self.queryset.select_related('personne').filter(BenevolesEvenement=self.Evt).order_by('personne__last_name')
+        self.context['NbCreneauxParBenevole']= nb_creneaux_par_benevole(self.Evt, self.context['Benevoles'])
+            
 
         # editer un benevole
-        if all(k in request.POST for k in ('benevole_editer', 'BenevoleUUID')):
-            print('benevole édité : {0} {1}'.format(personnesup.last_name, personnesup.first_name))
+        #personnesup = get_object_or_404(Personne, UUID=request.POST.get('BenevoleUUID'))
+        #if all(k in request.POST for k in ('benevole_editer', 'BenevoleUUID')):
+        #    print('benevole édité : {0} {1}'.format(personnesup.last_name, personnesup.first_name))
  
         return render(request, self.template_name, self.context)
 

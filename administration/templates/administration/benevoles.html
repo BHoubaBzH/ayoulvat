@@ -52,7 +52,7 @@
                     <thead>
                         <tr>
                         <th scope="col">nom</th><th scope="col">prenom</th><th scope="col">email</th><th scope="col">portable</th>
-                        <th scope="col">role</th><th scope="col">nb créneaux</th><th scope="col">Asso Partenaire</th><th scope="col">Action</th>
+                        <th scope="col">nb créneaux</th><th scope="col">Asso Partenaire</th><th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,11 +60,6 @@
                         <tr style="vertical-align : middle;">
                             <td>{{benevole.personne.last_name|upper}}</a></td><td>{{benevole.personne.first_name|capfirst}}</td>
                             <td>{{benevole.personne.email}}</td><td>{{benevole.personne.portable}}</td>                 
-                            <td>
-                                {% for group in benevole.personne.groups.all %}
-                                    {{ group }}{% if not forloop.last %}, {%endif%}
-                                {% endfor %}
-                            </td>
                             <td>
                                 {% for ben, nb in NbCreneauxParBenevole.items %}
                                     {% if ben == benevole %}
@@ -79,20 +74,20 @@
                             {% endfor %}
                             <td>
                                 <div style="display: flex;">
-                                {% comment "" %}
-                                <a href="#" class="d-block p-3 link-blue text-decoration-none" title="éditer" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
-                                    <i class="bi-pencil-square fs-3"></i>
-                                </a>
-                                {% endcomment %}
-                                {% if not benevole.personne|has_group:"Administrateur" and not benevole.personne|has_group:"Organisateur" and not benevole.personne|has_group:"Responsable" %}
-                                    <button style="" class="benevole-supprime btn btn-sm" title="supprimer un bénévole" 
+                                    {% comment "" %}
+                                    <a href="#" class="d-block p-3 link-blue text-decoration-none" title="éditer" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
+                                        <i class="bi-pencil-square fs-3"></i>
+                                    </a>
+                                    {% endcomment %}
+                                    {# bouton pour supprimer le lien evenement - benevole #}
+                                    {# si la personne est benevole sur cet evenement#}
+                                    <button style="" class="benevole-supprime btn btn-sm" title="supprimer l'inscription à cet évènement en tant que bénévole" 
                                         data-bs-toggle="modal" data-bs-target="#modal-benevole-supprime"
-                                        data-bs-id1="{{benevole.personne.UUID}}" 
+                                        data-bs-id1="{{benevole.UUID}}" 
                                         data-bs-id2="{{benevole.personne.last_name}}" 
                                         data-bs-id3="{{benevole.personne.fisrt_name}}">
                                         <i style="color: var(--bs-danger)" class="bi bi-x-square fs-6"></i>
                                     </button>
-                                {% endif %}
                                 </div>
                             </td>
                         </tr>
