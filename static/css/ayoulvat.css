@@ -1,4 +1,14 @@
 /*************************
+* general
+ *************************/
+ :root {
+    --planning_couleur: #ffc31e88;
+    --planning_hover: #52531a;
+    --creneau_hover: #52531a;
+  }
+  
+
+/*************************
  * page evements
  *************************/
 
@@ -25,3 +35,66 @@
 .footer .right {
     text-align: right;
 }
+
+/*************************
+ * pages evenements / plannings
+ *************************/
+ 
+.titre_page {
+    padding-top: 1em;
+    text-align: center;
+}
+
+/* styles des plannings*/
+
+.planning-perso {
+	/*box-shadow: 3px 2px #888;*/
+	background-color: var(--planning_couleur);
+	/*border-width: 1px;*/
+	/*font-size: .75em;*/
+	padding: 0 .75em;
+	/*line-height: 2em;*/
+	/*margin-bottom: 1px;*/
+	/*border-radius: 10px;*/
+	width:100%;
+	height:100%;
+	opacity:80%;
+
+}
+
+.planning-perso:hover {background-color: var(--planning_hover)}
+
+.planning-perso:active {
+    background-color: var(--planning_couleur);
+    /*box-shadow: 0 5px #666;*/
+    transform: translateY(4px);
+  }
+
+.creneau-planningperso {
+	align-self: end; 
+}
+
+/* styles des creneaux*/
+
+.creneau, .creneau_libre, .creneau_libre_bloque, .creneau_libre_moi_occupe, .creneau_autre_occupe, .creneau_occupe, .creneau_occupe_bloque, .planning, .creneau-planningperso {
+	box-shadow: 3px 2px #888;
+	background-repeat: repeat-x;
+	border-width: 1px;
+	font-size: .75em;
+	padding: 0 .75em;
+	line-height: 2em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 1px;
+	/*border-radius: 10px;*/
+}
+
+.creneau_libre:hover, .creneau:hover {
+    background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--creneau_hover) 50%);
+    background-color: var(--creneau_hover)}
+
+.creneau:active, .creneau_libre:active {
+    /*box-shadow: 0 5px #666;*/
+    transform: translateY(4px);
+  }

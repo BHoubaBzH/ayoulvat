@@ -227,21 +227,21 @@ def forms_poste(request):
         Poste.objects.filter(UUID=request.POST.get('poste_supprimer')).delete()
     return None
 
-def dic_postes(data):
+def dic_postes(plan_uuid):
     """
         entree:
-            l'objet data renvoyé au template
+            uuid du planning en cours
         sortie:
             dictionnaire des forms postes: key: UUID / val: form
     """
     # cree dans la page toutes nos from pour les postes du planning
     dic_postes_init = {}  # dictionnaire des forms
     # parcours les postes du planning dans la base
-    for poste in Poste.objects.filter(planning_id=data["planning_uuid"]):
+    for poste in Poste.objects.filter(planning_id=plan_uuid):
         # form en lien avec l objet basé sur model et pk UUID poste
         formposte = PosteForm(instance=Poste.objects.get(UUID=poste.UUID))
         dic_postes_init[poste.UUID] = formposte  # dictionnaire des forms
-        # print (' poste UUID : {1} form : {0}'.format(formposte, poste.UUID))
+        #print (' poste UUID : {1} form : {0}'.format(formposte, poste.UUID))
     return dic_postes_init
 
 def forms_creneau(request):
@@ -465,7 +465,7 @@ def evenement(request, uuid_evenement):
                     data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
 
             # envoi les forms au template
-            data["DicPostes"] = dic_postes(data)
+            data["DicPostes"] = dic_postes(data["planning_uuid"])
             data["DicCreneaux"] = dic_creneaux(request, data)
             data["Postes"] = Poste.objects.filter(planning_id=data["planning_uuid"]).order_by('nom')  # objets postes du planning
             data["Creneaux"] = Creneau.objects.filter(planning_id=data["planning_uuid"]).order_by('debut')  # objets creneaux du planning

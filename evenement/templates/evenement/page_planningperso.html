@@ -3,10 +3,10 @@
 <div class="table-responsive">
     {% if user.profilebenevole in Benevoles %}
         {% if dispo_actif == 'True' %} {# si le bénévole peut ajouter ses disponibilités #}
-            <h6>Tu peux sélectionner un planning d'équipe pour y inscrire tes disponibilités. En fonction, un responsable viendra vous affecter aux créneaux.</h6>
-            <h6>Sinon tu peux directement choisir des créneaux dans le menu de gauche.</h6>
+            <h5 class="titre_page">Tu peux sélectionner un planning d'équipe pour y inscrire tes disponibilités. En fonction, un responsable viendra vous affecter aux créneaux.</h5>
+            <h5 class="titre_page">Sinon tu peux directement choisir des créneaux dans le menu de gauche.</h6>
         {% else %}
-            <h6> <i class="bi bi-arrow-left-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i> Dans le menu de gauche, choisis une équipe et un planning pour t'inscrire ou te désinscrire des créneaux</h6>
+            <h5 class="titre_page"> choisis une équipe et un planning pour t'inscrire ou te désinscrire des créneaux. Dans le planning en bas ou dans le menu de gauche</h5>
         {% endif %}
 
 {########################################################}
@@ -172,14 +172,23 @@
                         <input  name="evenement" value="{{ equipe.evenement.UUID }}" type="hidden">
                         <input  name="equipe" value="{{ equipe.UUID }}" type="hidden">
                         <input  name="planning" value="{{ planning.UUID }}" type="hidden">
-                        <button class="planning-perso" type="button" 
-                            id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
-                            data-bs-toggle="modal" data-bs-target="#modal-dispo_creer-{{ planning.UUID }}"
-                            {# on autorise l ajout de dispo que si dispo_actif=True #}
-                            {% if dispo_actif == "True" %}title="me déclarer disponible" {% else %} disabled{% endif %}
-                            >
-                            <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
-                        </button>
+                        {% if dispo_actif == "True" %}
+                            {# possible de donner ses disponibilités sur le planning #}
+                            <button class="planning-perso" type="button" 
+                                id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
+                                data-bs-toggle="modal" data-bs-target="#modal-dispo_creer-{{ planning.UUID }}"
+                                title="me déclarer disponible">
+                                <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
+                            </button>
+                        {% else %}
+                            <button class="planning-perso" type="submit" 
+                                id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
+                                data-bs-toggle="modal" data-bs-target="#modal-dispo_creer-{{ planning.UUID }}"
+                                title="aller aux details du planning">
+                                <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
+                            </button>
+
+                        {% endif %}
                     </form>
                 {% endif %}
             {% endfor %}
