@@ -21,27 +21,41 @@
 </form>
 
 <div class="container-fluid row align-items-start text-white" style="padding-top: 1em;">
-    <div class="col col-5 card mb-3" style="background-color:{{ Planning.equipe.couleur }}">
-        <div class="card-header">Equipe : </div>
-        <div class="card-body">
-        <h5 class="card-title">{{ Planning.equipe.nom|upper }}</h5>
-        <!--p class="card-text"></p-->
-        </div>
+    <div class="col col-5 mb-3">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col" style="background-color:{{ Planning.equipe.couleur }}55;">Equipe :</th>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row"><h5>{{ Planning.equipe.nom|upper }}</h5></th>
+            </tr>
+            </tbody>
+        </table>
     </div>
-
     <div class="col col-2 text-center" style="max-width: 10rem;">
-        <i class="bi bi-caret-right" style='font-size:5em;color:black'></i>
+        <i class="bi bi-caret-right" style='font-size:4em;color:black'></i>
     </div>
+    <div class="col col-5 mb-3">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col" style="background-color:{{ Planning.couleur }}55;">Planning :</th>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">
+                    {% if  Planning.debut|date:'l j F'|stringformat:"s" ==  Planning.fin|date:'l j F'|stringformat:"s" %}
+                    <h5>{{ Planning.debut|date:'l j F'|upper }} de {{ Planning.debut|date:'H:i' }} à {{ Planning.fin|date:'H:i' }}</h5>
+                    {% else %}
+                        <h5>{{ Planning.debut|date:'l j F'|upper }} {{ Planning.debut|date:'H:i' }} au {{ Planning.fin|date:'l j F'|upper }} {{ Planning.fin|date:'H:i' }}</h5>
+                    {% endif %}
 
-    <div class="col col-5 card mb-3" style="background-color:{{ Planning.couleur }}">
-        <div class="card-header">Planning : </div>
-        <div class="card-body">
-        {% if  Planning.debut|date:'l j F'|stringformat:"s" ==  Planning.fin|date:'l j F'|stringformat:"s" %}
-            <h5 class="card-title">{{ Planning.debut|date:'l j F'|upper }} de {{ Planning.debut|date:'H:i' }} à {{ Planning.fin|date:'H:i' }}</h5>
-        {% else %}
-            <h5 class="card-title">{{ Planning.debut|date:'l j F'|upper }} {{ Planning.debut|date:'H:i' }} au {{ Planning.fin|date:'l j F'|upper }} {{ Planning.fin|date:'H:i' }}</h5>
-        {% endif %}
-        </div>
+                </th>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 

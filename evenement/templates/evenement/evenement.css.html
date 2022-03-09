@@ -91,8 +91,10 @@
 		display: grid;
 		gap: 0.2em;
 		border: 1px solid #ffffff;
-		padding-top: 2em;
+		padding-top: 3em;
 		padding-bottom: 2em;
+		padding-left: 2em;
+		padding-right: 2em;
 		{# construction des entetes et des lignes de la grille planning: heures puis equipes #}
 		grid-template-rows:
 			[heures] 3em
@@ -161,7 +163,7 @@
 		height: 2em;
 		top: 0;
 		z-index: 20;
-		background-color: rgb(255, 255, 255);
+		#background-color: rgb(255, 255, 255);
 	}
 
 	.bouton_edite_poste  {
@@ -209,185 +211,7 @@
 	}
 }
 
-/*************************
- * VISUAL STYLES
- * 
- *************************/
 
-body {
-	padding: 50px;
-	#max-width: 1100px;
-	margin: 0 auto;
-	line-height: 1.5;
-}
 
-.grid-cell-last {
-	border-left: inherit; 
-	border-color: lightgray;
-	background-color: transparent;
-	border-top: transparent;
-	border-right: transparent;
-}
 
-.grid-cell, .grid-cell-minuit {
-	border-left: inherit; 
-	border-bottom: inherit; 
-	border-color: lightgray;
-	background-color: transparent;
-	border-top: transparent;
-	border-right: transparent;
-	display: flex;
-}
 
-.grid-cell-minuit{
-	# border-left-color: black;
-	border-left-width: 2px;
-}
-
-{# boutons cellule pour creer des creneaux #}
-.bouton-cell {
-	display: flex;
-	width: 100%;
-}
-
-.poste-slot,
-.equipe-slot,
-.benevole-slot, 
-.time-slot {
-	display: flex;
-	# align-items: center;
-	# justify-content: center;
-	font-weight: bold;
-	# font-size:.75em;
-	overflow : hidden;
-}
-
-.time-slot {
-	overflow : visible;
-}	
-
-.planning-head, .planning-head-equipes {
-	display: inline-grid;
-	# width: 1.5em;
-	max-width: 2em;
-}
-
-.planning-head-equipes {
-	width: 1em;
-}
-
-.planning-head-planningperso {
-	width: 0.3em;
-}
-
-.text {
-	max-width: 750px;
-	font-size: 18px;
-	margin: 0 auto 50px;
-}
-
-.meta {
-	color: #555;
-	font-style: italic;
-}
-
-.meta a {
-	color: #555;
-}
-
-hr {
-	margin: 40px 0;
-}
-
-{# styles evenement #}
-.evenement-button {
-	/* width: -webkit-fill-available; */
-	width: 100%;
-	text-align: left;
-}
-
-.evenement-form {
-	margin: inherit;
-}
-
-{# utilisé si personne affecté au creneau et si pas bloqué : créneau libre #}
-.creneau_libre, .creneau_libre_bloque, .creneau_libre_moi_occupe {
-	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-teal) 50%);
-}
-{# utilisé si personne affecté au creneau et si poste/creneau/planning bloqué : créneau libre ou occupé #}
-.creneau_libre_bloque, .creneau_occupe_bloque, .creneau_libre_moi_occupe, .creneau_autre_occupe  {
-	opacity: 40%
-}
-{# pour les non admin, utilisé pour l'affichage des creneaux occupé par d'autre benevole #}
-//.creneau_autre_occupe {
-//	#background-color: var(--bs-secondary);
-//}
-{# créneau occupé dans la vue planning benevole(s) #}
-.creneau_occupe {
-	# background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-dark) 70%);
-	z-index: 50;
-}
-
-.form_grid_button {
-	margin: 0;
-}
-
-.form_grid_button .planning, .form_grid_button_planningperso .planningperso {
-	display: block;
-	width: 100%;
-	height: 100%;
-}
-
-.equipe-slot-planningperso {
-	height: 3em;
-	width: 6em;
-}
-
-.form_grid_button_planningperso .planningperso { 
-	background-image: linear-gradient(to bottom, #dff0d82b 0px, #bce5d636 100%);
-	position: relative;
-}
-
-{################# sidebar ###################}
-{# sidebar #}
-
-.bouton-sidebar {
-	width: 100%;
-}
-
-.evenement-button.active {
-	background-color: darkmagenta;
-	border-color: black;
-}
-
-.evenement-button.active:hover, .evenement-button:hover {
-	background-color: black;
-	border-color: black;
-	color: white; # text
-}
-
-{# boutons lien vers evenement #}
-.bouton-evenement {
-	border: 0px;
-	padding: 0px;
-}
-
-{################# administration ###################}
-.table-row-border-top {
-	border-top: double;
-	vertical-align : middle;
-}
-
-{# charge les grilles à la fin du chargement de la page #}
-.post_display_javascript  {display:none;}
-
-{# affiche en fade la page: elle apparait doucement #}
-.loader {
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  width: 100%;
-  height: 100%;
-  z-index: 9999;
-  background: url('/static/evenement/page_loader.gif') 50% 50% no-repeat rgb(0 0 0 / 58%);
-} 

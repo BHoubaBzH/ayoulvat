@@ -1,9 +1,8 @@
 <!-- benevole/footer.html -->
-<footer style="padding-top: 1em;">
-    <div class="container">
-        <div class="row card footer sl-t">
+<footer class="bg-light text-center text-lg-start">
+
             <div class="card-body row ">
-                <div class="col-lg-4 col-md-8 left">
+                <div class="col-lg-2 left">
                     {% if Evenement %} 
                         <p>besoins d'aide? un renseignement?</p>
                         <p style="padding-left: 15%;"><a href="mailto:{{ Evenement.courriel_organisateur }}" target="_blank">
@@ -11,7 +10,7 @@
                     {% endif %}
                 </div>
 
-                <div class="col-lg-4 col-md-2 d-flex align-items-center"> 
+                <div class="col-lg-8 d-flex align-items-center"> 
                     <!--div class="row align-items-center">
                     <p><b> site en développement, 
                         en cas de soucis merci d'envoyer un mail: <br>
@@ -20,14 +19,20 @@
                     </div-->
                 </div>
 
-                <div class="col-lg-4 col-md-4 right">
+                <div class="col-lg-2 right">
                     <p>Developpé par: <a href="mailto:bhouba@zohomail.eu" target="_blank">Phil Rioual</a></p>
-                    <p class="m-t">Copyright &copy <a href="mailto:bhouba@zohomail.eu" target="_blank">Phil Rioual</a> {% now 'Y' %}</p>
                     <p>All Rights Reserved.</p>
                     <p></p>
                     <p>Powered by <a href="https://www.djangoproject.com/" target="_blank">Django Framewok</a></p>
                 </div>
             </div>
-        </div>
-    </div>
+
 </footer>
+
+<footer class="bg-light text-center text-lg-start">
+    <!-- Copyright -->
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        <p class="m-t">Copyright {% now 'Y' %} &copy <a href="mailto:Gizhm0@protonmail.com" target="_blank">Phil Rioual</a></p>
+    </div>
+    <!-- Copyright -->
+  </footer>
