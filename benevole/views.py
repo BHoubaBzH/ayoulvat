@@ -2,7 +2,6 @@ import logging
 from sys import api_version
 
 from django.http import HttpResponseRedirect
-from administration.views import evenement
 from association.models import AssoPartenaire, Association
 from ayoulvat.methods import envoi_courriel
 import benevole

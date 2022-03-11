@@ -1,8 +1,6 @@
 from django.contrib import admin
 from django.forms.models import BaseInlineFormSet
 
-from administration.views import evenement
-
 from evenement import models
 
 @admin.register(models.Creneau)

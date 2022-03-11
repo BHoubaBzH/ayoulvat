@@ -2,7 +2,6 @@ from datetime import datetime
 
 from django.db.models.query import QuerySet
 from benevole.forms import PersonneForm
-from administration.views import evenement
 from uuid import UUID
 from django.forms import ModelForm, DateTimeField, HiddenInput, ValidationError
 from django.forms import ModelChoiceField, ModelMultipleChoiceField, CheckboxSelectMultiple

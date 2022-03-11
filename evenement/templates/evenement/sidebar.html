@@ -18,23 +18,42 @@
                   </a>
                 </h6>
                 {% endcomment %}
-                {% if Evenement and 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur or 'Responsable' in RolesUtilisateur %}
-                <ul class="nav flex-column bouton-sidebar">
-                  <li class="nav-item text-nowrap" id="boutons_navbar">
-                    <form class="form evenement-form" method="get">
-                      {% csrf_token %}
-                      <button class="list-group-item evenement-button btn-secondary"
-                        data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="
-                          Page d'Administration de l'évènement."
-                          formaction="{% url 'dashboard' %}">Administration</button>
-                    </form>
-                  </li>
-                </ul>
+                {% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur or 'Responsable' in RolesUtilisateur %}
+                  <ul class="nav flex-column bouton-sidebar">
+                    <li class="nav-item text-nowrap" id="boutons_navbar">
+                      <form class="form evenement-form" method="get">
+                        {% csrf_token %}
+                        <button class="list-group-item evenement-button btn-secondary"
+                          data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="
+                            tableau de bord de l'évènement et des bénévoles."
+                            formaction="{% url 'dashboard' %}">Tableau de bord</button>
+                      </form>
+                    </li>
+                  </ul>
+                {% endif %}
+                {% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur %} {# admins ont la liste de toutes les équipes #}
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                      <a></a>
+                    </h6>
+                    <ul class="nav flex-column bouton-sidebar">
+                      <li class="nav-item">
+                        <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
+                            <button class="list-group-item evenement-button {% if not equipe_uuid and not planning_perso == 'oui' %}active{% endif %} btn-secondary" 
+                            data-bs-toggle="tooltip" data-bs-placement="right" title="Gestion des équipes">
+                                <a>Gestion</a>
+                                {% csrf_token %}
+                                <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                            </button>
+                        </form>
+                      </li>
+                    </ul>
+                {% endif %}
+
+                <hr class="border-2 border-top ">
+              
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
                   <a></a>
                 </h6>
-                {% endif %}
-
                 {% if IsBenevole %} 
                   {# affiche le bouton mon planning si l admin est benevole sur le evenement#}
                   <ul class="nav flex-column bouton-sidebar">
@@ -64,24 +83,6 @@
                         data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="
                         Participer en tant que bénévole">
                         Participer</button>
-                      </form>
-                    </li>
-                </ul>
-                {% endif %}
-                <hr class="border-2 border-top ">
-                {% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur %} {# admins ont la liste de toutes les équipes #}
-                  <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                    <a></a>
-                  </h6>
-                  <ul class="nav flex-column bouton-sidebar">
-                    <li class="nav-item">
-                      <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
-                          <button class="list-group-item evenement-button {% if not equipe_uuid and not planning_perso == 'oui' %}active{% endif %} btn-secondary" 
-                          data-bs-toggle="tooltip" data-bs-placement="right" title="Planning Global sur l'évènement">
-                              <a>Evenement</a>
-                              {% csrf_token %}
-                              <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                          </button>
                       </form>
                     </li>
                   </ul>

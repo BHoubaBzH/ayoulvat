@@ -19,26 +19,6 @@ from django.shortcuts import render
 ################################################
 #            fonctions 
 ################################################
-def evenement(request):
-    """ retourne l'objet evenement en base de l evenement """
-    # si on est arrivé là, l evenement existe forcément, donc pas de test à faire
-    uuid = request.session['uuid_evenement'] 
-    evenement = Evenement.objects.get(UUID=uuid)
-    return evenement
-
-def association(request):
-    """ retourne l'objet association en base de l evenement """
-    # si on est arrivé là, l evenement existe forcément, donc pas de test à faire
-    uuid = request.session['uuid_association']
-    association = Association.objects.get(UUID=uuid)
-    return association
-
-def assos_part(evt):
-    """ retourne Qeuryset des assos partenaire de l evenement"""
-        # liste de uuid des assos partenaire de l evenement, retire le none (sans asso) de la liste 
-    list_uuid = evenement_benevole_assopart.objects.filter(Q(evenement=evt),~Q(asso_part=None)).values_list('asso_part', flat=True).distinct()
-    list_assos = AssoPartenaire.objects.filter(UUID__in=list_uuid)
-    return list_assos
 
 def total_heures_benevoles(creneaux):
     """ total d'heures de bénévolat sur l'évènement retourne un timedelta """
@@ -53,15 +33,15 @@ def nb_creneaux_par_benevole(evt, benevoles):
     """ out dictionnaire: objet benevole - nombre de creneaux """
     out={}
     for benevole in benevoles: 
-        out[benevole]=Creneau.objects.filter(Q(benevole=benevole),Q(evenement=evt)).count()
+        out[benevole]=benevole.BenevolesCreneau.filter(evenement=evt).count()
     return out
-
 
 def nb_benevoles_par_asso(list_assos, evt):
     """ returne un dictionnaire de nombre de bénévole par asso sur l evenement"""
     dic = {}
     for asso in list_assos:
         dic[asso] = evenement_benevole_assopart.objects.filter(Q(asso_part=asso),Q(evenement=evt)).count()
+        print('toto : ', dic[asso])
     dic['Sans association'] = evenement_benevole_assopart.objects.filter(Q(asso_part=None),Q(evenement=evt)).count()
     dic ={k: v for k, v in sorted(dic.items(), key=lambda x: x[1], reverse=True)}
     return dic
@@ -137,9 +117,10 @@ def emails_benevoles_evenement(evt):
         sortie : liste emails des bénévoles ayant pris un créneau
     """
     listout = []
-    for bene in ProfileBenevole.objects.filter(BenevolesCreneau__evenement=evt).prefetch_related('BenevolesCreneau').select_related('personne'):
-            email = bene.personne.email
-            listout.append(email)
+    for bene in evt.benevole.all():
+        if Creneau.objects.filter(Q(benevole=bene),Q(evenement=evt)).count() != 0:
+            listout.append(bene.personne.email)
+    return set(listout)
     return set(listout)
 
 def emails_benevoles_sans_creneaux(evt):
@@ -147,25 +128,20 @@ def emails_benevoles_sans_creneaux(evt):
         sortie : liste emails des bénévoles sans créneau
     """
     listout = []
-    for bene in ProfileBenevole.objects.all().exclude(BenevolesCreneau__evenement=evt).prefetch_related('BenevolesCreneau').select_related('personne'):
-            email = bene.personne.email
-            listout.append(email)
+    for bene in evt.benevole.all():
+        if Creneau.objects.filter(Q(benevole=bene),Q(evenement=evt)).count() == 0:
+            listout.append(bene.personne.email)
     return set(listout)
 
 def emails_benevoles_un_creneau(evt):
     """
         sortie : liste emails des bénévoles ayant choisi un seul créneau
     """ 
-    listtemp = []
     listout = []
-    for bene in ProfileBenevole.objects.filter(BenevolesCreneau__evenement=evt).prefetch_related('BenevolesCreneau').select_related('personne'):
-            email = bene.personne.email
-            listtemp.append(email)
-    #print(listtemp)
-    #print(dict(collections.Counter(listtemp)))
-    for key, val in dict(collections.Counter(listtemp)).items():
-        if val == 1:
-            listout.append(key)
+    for bene in evt.benevole.all():
+        if Creneau.objects.filter(Q(benevole=bene),Q(evenement=evt)).count() == 1:
+            listout.append(bene.personne.email)
+    return set(listout)
     return set(listout)
 
 def emails_benevoles_par_equipe(evt):
@@ -208,10 +184,19 @@ def emails_responsables(evt):
         sortie : liste emails des bénévoles responsables sur l'evenement
     """
     listout = []
-    for bene in ProfileBenevole.objects.filter(BenevolesEvenement=evt, personne__groups__name__in=['Responsable','Organisateur','Administrateur']):
-            email = bene.personne.email
-            listout.append(email)
-    return set(listout)
+    try:
+        # admin de l asso
+        listout.append(evt.association.administrateur.personne.email)
+    except:
+        pass
+    for org in evt.organisateur.all():
+        # organisateurs de l evenement
+        listout.append(org.personne.email)
+    for equ in evt.equipe_set.all():
+        for res in equ.responsable.all():
+            # responsables d equipes
+            listout.append(res.personne.email)
+    return set(listout) # set suprime les
 
 def inscription_ouvert(debut, fin):
     """
@@ -350,8 +335,8 @@ class DashboardView(View):
             "Creneaux" : self.queryset_c,
             "Creneaux_libres" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=True).count,
             "Creneaux_occupes" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=False).count,
-            "Assos_partenaires" : assos_part(self.Evt), # partenaire de l evenement
-            "Benevoles_par_asso" : nb_benevoles_par_asso(assos_part(self.Evt), self.Evt),
+            "Assos_partenaires" : self.Evt.assopartenaire.all(), # partenaire de l evenement
+            "Benevoles_par_asso" : nb_benevoles_par_asso(self.Evt.assopartenaire.all(), self.Evt),
             "Plannings_occupation" : plannings_occupation(Planning.objects.filter(evenement=self.Evt).order_by('equipe__nom','debut')),
             "Equipes_occupation" : equipes_occupation(Equipe.objects.filter(evenement=self.Evt).order_by('nom')),
             "Repartition_par_assos" : repartition_par_assos(self.queryset_c.filter(benevole__isnull=False)),

@@ -1,5 +1,5 @@
 from queue import Empty
-from administration.views import association, inscription_ouvert
+from administration.views import inscription_ouvert
 from datetime import datetime,timedelta, date
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -92,7 +92,7 @@ def tous_creneaux_entre_2_heures(debut, fin, uuid_evenement):
     """
     # print('*** Debut fonction tous_creneaux_entre_2_heures : {}'.format(datetime.now()))
     crenos_out = []  # liste
-    crenos = Creneau.objects.filter(evenement_id=uuid_evenement)
+    crenos = Creneau.objects.filter(evenement_id=uuid_evenement) 
     for creno in crenos:
         if debut <= creno.debut < fin and debut < creno.fin <= fin:
             crenos_out.append(creno)
