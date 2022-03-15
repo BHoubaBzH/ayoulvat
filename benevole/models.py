@@ -20,7 +20,7 @@ class Personne(AbstractUser):
     FEM = "FEMME"
     NSP = "NSP"
     genreListe = [
-        #(MIN, 'Mineur'),  # a remplacer a terme pour le choix par un calcul sur l'age
+        #(MIN, 'Mineur'),  # remplacé par un calcul sur l'age
         (HOM, 'Homme'),
         (FEM, 'Femme'),
         (NSP, 'Ne se prononce pas'),

@@ -26,7 +26,7 @@ def detail_asso(request, uuid_asso):
 
     association = Association.objects.get(UUID=uuid_asso)
     data = {
-        "Asso": association,
+        "Association": association,
     }
     print(' details de l asso : '.format(association.UUID))
     return render(request, "association/association_detail.html", data)

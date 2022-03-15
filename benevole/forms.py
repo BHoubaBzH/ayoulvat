@@ -29,12 +29,14 @@ class RegisterForm(UserCreationForm):
 
     def save(self):
         # genere un username aleatoire pour remplir le champs, pas utilisé vu qu'on utilise email pour se logguer
-        self.instance.username = uuid.uuid4().hex[:16].upper()
+        # self.instance.username = uuid.uuid4().hex[:16].upper()
+        # met le mail au niveau du username
+        self.instance.username = self.instance.email
         return super().save()
 
 ################################################################################################
-class LoginForm(AuthenticationForm):
-    username = forms.CharField(label='Email')
+#class LoginForm(AuthenticationForm):
+#    username = forms.CharField(label='Email')
 
 ################################################################################################
 class BenevoleForm(ModelForm):
@@ -64,7 +66,9 @@ class PersonneForm(ModelForm):
     def save(self, commit=True): # si pas indiqué commit est à true
         # genere un username aleatoire et unique pour remplir le champs, pas utilisé vu qu'on utilise email pour se logguer
         if not self.instance.username:
-            self.instance.username = uuid.uuid4().hex[:16].upper()
+            #self.instance.username = uuid.uuid4().hex[:16].upper()
+            # met le mail au niveau du username
+            self.instance.username = self.instance.email
         if commit:
             if not self.instance.password:
                 self.instance.password = 'mot_de_passe_temporaire'

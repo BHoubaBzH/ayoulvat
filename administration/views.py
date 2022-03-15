@@ -238,8 +238,8 @@ class BenevolesListView(ListView):
             # nav bar infos : fin
             "Association" : self.Asso,
             "Evenement" : self.Evt, 
-            "FormPersonne" : PersonneForm(),
-            "FormBenevole" : BenevoleForm(), 
+            "FormPersonne" : PersonneForm(), # sert a creer un benevole
+            "FormBenevole" : BenevoleForm(), # sert a creer un benevole
 
             "Equipes" : Equipe.objects.filter(evenement=self.Evt).order_by('nom'),
 
