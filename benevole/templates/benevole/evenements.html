@@ -13,7 +13,7 @@
 
 {# prepare les forms pour acceder aux evenements#}
 {% for EV in Evenements_inscrit %}
-    <form action="{% url 'evenement' uuid_evenement=EV.UUID %}" method='POST' id="{{ EV.UUID }}">
+    <form action="{% url 'evenement' uuid_evenement=EV.UUID %}" method='POST' id="inscrit_{{ EV.UUID }}">
         {% csrf_token %}
         {# par defaut, on arrive sur le planning perso du benevole #}
         <input type="hidden" name="planning_perso" value="oui"> 
@@ -47,7 +47,7 @@
                 {% for EV in Evenements_inscrit %}
                     {# affiche dans la liste que les evenements à venir ou en cours #}
                     <div class="col-sm-4">
-                        <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="{{ EV.UUID }}" title="aller vers {{ EV }}">
+                        <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="inscrit_{{ EV.UUID }}" title="aller vers {{ EV }}">
                             <div class="card h-100 card-inscrit">
                             {% if EV.vignette %}
                                 <img src="{{ EV.vignette.url }}" class="card-img-top" alt="aller vers {{ EV }}">
@@ -117,7 +117,7 @@
 
 {# prepare les forms pour s inscrire aux evenements#}
 {% for EV in Evenements_disponible %}
-    <form action="#" method='POST' id="{{ EV.UUID }}">
+    <form action="#" method='POST' id="dispo_{{ EV.UUID }}">
         {% csrf_token %}
         <input type="hidden" name="inscription_event" value="{{ EV.UUID }}"> 
     </form>
@@ -149,12 +149,12 @@
                 {% for EV in Evenements_disponible %}
                     {# affiche dans la liste que les evenements à venir ou en cours #}
                     <div class="col-sm-4">
-                        <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="{{ EV.UUID }}" title="devenir bénévole à {{ EV }} et accéder à l'evenement">
+                        <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="dispo_{{ EV.UUID }}" title="devenir bénévole à {{ EV }} et accéder à l'evenement">
                             <div class="card h-100 card-dispo">
                             {% if EV.vignette %}
                                 <img src="{{ EV.vignette.url }}" class="card-img-top" alt="devenir bénévole à {{ EV }} et accéder à l'evenement">
                             {% else %}
-                                <img src="media/empty.jpg" class="card-img-top" alt="cdevenir bénévole à {{ EV }} et accéder à l'evenement">
+                                <img src="media/empty.jpg" class="card-img-top" alt="devenir bénévole à {{ EV }} et accéder à l'evenement">
                             {% endif %}
                             <div class="card-body">
                                 <h5 class="card-title">{{ EV.nom }}</h5>

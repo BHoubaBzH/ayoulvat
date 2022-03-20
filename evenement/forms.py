@@ -76,6 +76,19 @@ class PlanningForm(ModelForm):
         #self.fields['equipe'].disabled = True
         #self.fields['evenement'].disabled = True
 
+    ################ methode clean
+    # on valide les données pour avoir de la cohérence
+    def clean(self):
+        # list des arguments de la fonction
+        saved_args = locals()
+        print("arguments : ", saved_args)
+
+        super().clean()
+        debut = self.cleaned_data['debut']
+        fin = self.cleaned_data['fin']
+        print('from debut : ', debut)
+        evenement = self.fields['evenement']
+        print ('evt debut : ', evenement)
 
 ################################################################################################
 class PosteForm(ModelForm):
@@ -265,9 +278,9 @@ class CreneauForm(ModelForm):
             # print ('autre debut  : {0}  fin : {1}'.format(debut_autre_creno, fin_autre_creno))
             # print('debut    : {}'.format(debut))
             if debut_autre_creno <= debut < fin_autre_creno:
-                raise ValidationError("Wopolo le créneau commence sur un autre!")
+                raise ValidationError("le créneau commence sur un autre!")
             if debut_autre_creno < fin < fin_autre_creno:
-                raise ValidationError("Wopolo le créneau fini sur un autre!")
+                raise ValidationError("le créneau fini sur un autre!")
 
     ################ methode clean
     # on valide les données pour avoir de la cohérence
@@ -280,11 +293,11 @@ class CreneauForm(ModelForm):
         planning_fin = Plan._meta.get_field('fin')
         # cohérence avec le planning
         if debut < planning_debut.value_from_object(Plan):
-            raise ValidationError("Wopolo le créneau ne peut pas commencer avant le début du planning!")
+            raise ValidationError("le créneau ne peut pas commencer avant le début du planning!")
         if fin > planning_fin.value_from_object(Plan):
-            raise ValidationError("Wopolo le créneau ne peut pas finir après la fin du planning!")
+            raise ValidationError("le créneau ne peut pas finir après la fin du planning!")
         if debut >= fin:
-            raise ValidationError("Wopolo la fin du créneau c'est après son début!")
+            raise ValidationError("la fin du créneau doit être après son début!")
         # cohérence avec les autre créneaux du poste sur le planning
         if self.poste_uuid and self.type=="creneau":
             for Creno in Creneau.objects.filter(planning=self.planning_uuid,
@@ -304,4 +317,4 @@ class CreneauForm(ModelForm):
                 self.controle_coherence_creneaux(Creno, debut, fin)                                
         # pas de créneau type benevole sans benevole associé
         if self.type == "benevole" and self.benevole_uuid == "":
-            raise ValidationError("Wopolo une dispo benevole sans benevole associé!")
+            raise ValidationError("une dispo benevole sans benevole associé!")

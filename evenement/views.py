@@ -249,7 +249,7 @@ def forms_creneau(request):
         entree:
             la requete (contenant les infos POST)
         sortie:
-                None
+            Form
         gère la création, modification et suppression de creneaux en fonction du contenu de POST
     """
     pas = planning_retourne_pas(request)
@@ -281,6 +281,8 @@ def forms_creneau(request):
         if formcreneau.is_valid():
             print('creneau modifié ou ajouté')
             formcreneau.save()
+        # retourne le statut ou l erreur si il y a 
+        return formcreneau
 
     if 'creneau_supprimer' in request.POST:
         print('creneau {} supprimé'.format(Creneau.objects.filter(UUID=request.POST.get('creneau'))))
@@ -422,14 +424,14 @@ def evenement(request, uuid_evenement):
  
         # admin change un objet de l'evenement
         if  any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter', 'creneau_supprimer']):
-            forms_creneau(request)
+            data["Form"]=forms_creneau(request)
         if any(x in request.POST for x in ['poste_modifier', 'poste_ajouter','poste_supprimer']):
-            forms_poste(request)
+            data["Form"]=forms_poste(request)
         if any(x in request.POST for x in ['planning_modifier', 'planning_ajouter', 'planning_supprimer']):
-            forms_planning(request)
+            data["Form"]=forms_planning(request)
             data["retour_grid_equipes"] = "1" # si edite un planning, ie on est sur le grid_equipe, alors on reste sur la page apres soumission
         if any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter', 'equipe_supprimer']):
-            forms_equipe(request)
+            data["Form"]=forms_equipe(request)
 
         # dans equipe
         if request.POST.get('equipe'):  # selection d'une équipe

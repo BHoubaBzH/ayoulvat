@@ -188,7 +188,7 @@ class Poste(models.Model):
                                       blank=True,
                                       default='',
                                       help_text='responsable de poste, ca n a surement pas de sens')
-    nom = models.CharField(max_length=50)
+    nom = models.CharField(max_length=100)
     description = models.TextField(max_length=500, blank=True, default='')
     couleur = RGBColorField(default="#0d6efd")
     ouvert = models.BooleanField(default=True, help_text="si sélectionné, Les créneaux sont ouverts aux bénévoles."
@@ -237,7 +237,7 @@ class Creneau(models.Model):
                                  blank=True,
                                  default='',
                                  on_delete=models.SET_NULL)
-    nom = models.CharField(max_length=80,
+    nom = models.CharField(max_length=50,
                            blank=True,
                            default='',
                            help_text='le champs sera écrasé automatiquement')
@@ -260,18 +260,21 @@ class Creneau(models.Model):
     # surcharge la methode save pour mettre un nom automatiquement
     def save(self, *args, **kwargs):
         if self.type == "creneau":
-            nom1 = str(self.poste).replace(' ', '')  # retire les espaces
+            nom1 = str(self.poste.nom).replace(' ', '')  # retire les espaces
+            nom2 = str(self.planning.nom).replace(' ', '')  # retire les espaces
         elif self.type == "benevole":
             nom1 = str(self.benevole)\
                        .replace(' ', '-')\
 
         else:
             nom1 = "error"
-        self.nom = '{0}_{1}_{2}'.format(
+            nom2 = "error"
+        self.nom = '{}_{}_{}_{}'.format(
             nom1,
+            nom2,
             self.debut.strftime('%H-%M'),
             self.fin.strftime('%H-%M')
-        )
+        )[-50:]# la string ne peut pas faire plus de 50 char
         super(Creneau, self).save(*args, **kwargs)
 
     def __str__(self):
