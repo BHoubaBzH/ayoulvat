@@ -264,6 +264,9 @@ def Home(request):
                 obj = evenement_benevole_assopart.objects.get(Q(evenement=ben_ev),Q(profilebenevole=ben_ben))
                 obj.asso_part=None
                 obj.save()
+                
+            # empeche les renvois multiples d email d inscription aux admins 
+            HttpResponseRedirect(request.path_info)
 
     # on redirige vers la page profile tant que celui-ci n est pas rempli
     if request.user.is_authenticated :
