@@ -12,6 +12,9 @@
 </div>    
 <hr class="border-2 border-top border-dark"> {# barre horizontale #}
 
+{# bandeau message d erreur si besoins #}
+{% include "evenement/error_message.html" %}
+
 <div class="planning-equipes" aria-labelledby="planning-heading">
     {# affiche les entetes des colonnes du planning : les heures #}
 
@@ -27,7 +30,7 @@
         </div>
     {% endfor %}
 
-    {% if Evenement and not equipe_uuid %}
+    {% if Evenement and not equipe_uuid or equipe_uuid %}
         {# affiche toutes les equipes #}
         {% for equipe in Equipes %}
             {# affiche les entetes des lignes du planning : equipes #}

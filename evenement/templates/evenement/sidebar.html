@@ -40,7 +40,7 @@
                         <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
                             <button class="list-group-item evenement-button {% if not equipe_uuid and not planning_perso == 'oui' %}active{% endif %} btn-secondary" 
                             data-bs-toggle="tooltip" data-bs-placement="right" title="Gestion des équipes">
-                                <a>Gestion</a>
+                                <a>Equipes/Plannings</a>
                                 {% csrf_token %}
                                 <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                             </button>

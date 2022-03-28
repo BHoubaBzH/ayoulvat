@@ -79,16 +79,43 @@ class PlanningForm(ModelForm):
     ################ methode clean
     # on valide les données pour avoir de la cohérence
     def clean(self):
-        # list des arguments de la fonction
-        saved_args = locals()
-        print("arguments : ", saved_args)
 
         super().clean()
         debut = self.cleaned_data['debut']
         fin = self.cleaned_data['fin']
-        print('from debut : ', debut)
-        evenement = self.fields['evenement']
-        print ('evt debut : ', evenement)
+        event = self.cleaned_data['evenement']
+        equipe = self.cleaned_data['equipe']
+        uuid = self.instance.UUID
+        #    si debut planning est avant debut evenement ou apres fin evenement ou
+        #    si fin planning est avant debut evenement ou apres fin evenement
+        if debut < event.debut  or event.fin < debut or \
+            fin < event.debut  or event.fin < fin :
+            raise ValidationError("Le planning doit etre dans l'évènement")
+        #    si debut self est entre debut et fin autres planning equipe 
+        #    si fin self est entre debut et fin autres planning equipe
+        #    si self contient un autre planning
+        #    si self est contenu dans un autre planning
+        plans = Planning.objects.filter(equipe_id=equipe.UUID)
+        for plan in plans:
+            if  uuid != plan.UUID:
+                # le planning de la liste n est pas self
+                if plan.debut <= debut < plan.fin or \
+                    plan.debut < fin <= plan.fin or \
+                    debut <= plan.debut and plan.fin <= fin or \
+                    plan.debut <= debut and fin <= plan.fin :
+                    raise ValidationError("Le planning ne peut pas chevaucher un autre planning de la même équipe")
+        #   si debut self est apres fin self
+        if fin <= debut:
+            raise ValidationError("mais tu es un grand malade toi!")
+        # ou si encore des creneaux dedans
+        # ou si debut self est apres debut d'un des creneaux du planning
+        # ou si fin self est avant la fin d'un des creneaux du planning
+        for cren in Creneau.objects.filter(planning_id=self.instance.UUID):
+            if debut > cren.debut:
+                raise ValidationError("impossible: au moins un creneau du planning commence avant.")
+            if fin < cren.fin:
+                raise ValidationError("impossible: au moins un creneau du planning fini plus tard.")
+
 
 ################################################################################################
 class PosteForm(ModelForm):

@@ -46,7 +46,8 @@ class BenevoleCustom(admin.ModelAdmin):
     get_user_name.short_description = 'Nom'
     get_user_fisrtname.short_description = 'Prénom'
     get_user_email.short_description = 'Courriel'
-    get_user_name.admin_order_field = 'personne_first_name'
+
+    get_user_name.admin_order_field = 'personne__last_name'
 
     list_filter = ( "evenement_benevole_assopart__evenement",
                 )
@@ -57,8 +58,6 @@ class BenevoleCustom(admin.ModelAdmin):
             qs = self.model._default_manager.select_related(
                 'personne',
             )
-            # This stuff is marked as TODO in Django 3.1
-            # so it might change in the future
             ordering = self.get_ordering(request)
             if ordering:
                 qs = qs.order_by(*ordering)
@@ -76,7 +75,8 @@ class AdministrateurCustom(admin.ModelAdmin):
     get_user_name.short_description = 'Nom'
     get_user_fisrtname.short_description = 'Prénom'
     get_user_email.short_description = 'Courriel'
-    get_user_name.admin_order_field = 'personne_first_name'
+
+    get_user_name.admin_order_field = 'personne__last_name'
 
 @admin.register(models.ProfileOrganisateur)
 class OrganisateurCustom(admin.ModelAdmin):
@@ -90,7 +90,8 @@ class OrganisateurCustom(admin.ModelAdmin):
     get_user_name.short_description = 'Nom'
     get_user_fisrtname.short_description = 'Prénom'
     get_user_email.short_description = 'Courriel'
-    get_user_name.admin_order_field = 'personne_first_name'
+
+    get_user_name.admin_order_field = 'personne__last_name'
 
 @admin.register(models.ProfileResponsable)
 class ResponsableCustom(admin.ModelAdmin):
@@ -104,7 +105,8 @@ class ResponsableCustom(admin.ModelAdmin):
     get_user_name.short_description = 'Nom'
     get_user_fisrtname.short_description = 'Prénom'
     get_user_email.short_description = 'Courriel'
-    get_user_name.admin_order_field = 'personne_first_name'
+
+    get_user_name.admin_order_field = 'personne__last_name'
 
 #admin.site.unregister(User)
 #admin.site.register(User, BenevoleDetails)

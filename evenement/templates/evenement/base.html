@@ -28,10 +28,10 @@
 
     {% load bootstrap5 %}
     {% bootstrap_css %}
+    {# internal CSS pour dynamique #}
     <style>
-      {# internal CSS pour dynamique #}
       {% include 'evenement/evenement.css.html'%}
-  </style>
+    </style>
     {% bootstrap_messages %}
     {% bootstrap_javascript %}
     <link rel="stylesheet" href="{% static 'css/ayoulvat.css' %}" type="text/css" />
@@ -57,9 +57,12 @@
 </div>
    {% include "benevole/footer.html" %}
 
-  {# debut : cookie consent #}
+  {# cookie consent #}
   <script src="{% static 'js/cookie.notice.js' %}"></script>
-  {# fin : cookie consent #}
+  {# timeout flash message #}
+  <script src="{% static 'js/timeout.flashmessage.js' %}"></script>
 
 </body>
 </html>
+
+

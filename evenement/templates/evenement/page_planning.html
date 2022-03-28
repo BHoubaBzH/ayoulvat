@@ -61,21 +61,8 @@
 
 <hr class="border-2 border-top border-dark"> {# barre horizontale #}
 
-<!-- Error message -->
-{% if Form.errors %}
-	<div id="errors">
-		<div class="inner">
-            <div class="row">
-                    <button type="button" class="btn btn-danger"> <i class="bi bi-exclamation-octagon"></i> <b> Attention : </b>
-                        {% for error in Form.non_field_errors %}
-                            {{error}}
-                        {% endfor %}
-                    </button>
-            </div>
-		</div>
-	</div>
-{% endif %}
-<!-- /Error message -->
+{# bandeau message d erreur si besoins #}
+{% include "evenement/error_message.html" %}
 
 <div class="overflow-scroll">
     <div class="planning-creneaux" aria-labelledby="planning-heading" id="planning-creneaux">
