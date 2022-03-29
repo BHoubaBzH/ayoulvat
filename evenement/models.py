@@ -43,6 +43,7 @@ class Evenement(models.Model):
     editable = models.BooleanField(default=True, help_text="si éditable, l'évènement est ouvert à tous. Sinon, il n'est pas modifiable")
     site_web = models.URLField(blank=True, default='')
     description = models.TextField(max_length=2000, blank=True, default='')
+    commentaire = models.TextField(max_length=500, blank=True, default='', help_text="texte expliquant ce que le bénévole peut demander par courriel")
     courriel_organisateur = models.EmailField(default='', help_text="courriel accessible aux bénévoles en bas de page", blank=True)
     vignette = models.ImageField(upload_to=upload_dir_vignette, blank=True)
     couleur = RGBColorField(default="#6610f2")
@@ -237,7 +238,7 @@ class Creneau(models.Model):
                                  blank=True,
                                  default='',
                                  on_delete=models.SET_NULL)
-    nom = models.CharField(max_length=50,
+    nom = models.CharField(max_length=200,
                            blank=True,
                            default='',
                            help_text='le champs sera écrasé automatiquement')

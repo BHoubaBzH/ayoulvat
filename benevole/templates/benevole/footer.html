@@ -4,7 +4,11 @@
             <div class="card-body row ">
                 <div class="col-lg-2 left">
                     {% if Evenement %} 
-                        <p>besoins d'aide? un renseignement?</p>
+                        {% if Evenement.commentaire %}
+                            <p>{{ Evenement.commentaire }}</p>
+                        {% else %}
+                            <p>besoins d'aide? un renseignement?</p>
+                        {% endif %}
                         <p style="padding-left: 15%;"><a href="mailto:{{ Evenement.courriel_organisateur }}" target="_blank">
                         <i class="bi bi-envelope-fill" style="font-size: 2rem; color: cornflowerblue;"></i></p></a>
                     {% endif %}

@@ -42,7 +42,7 @@ class EvenementAdmin(admin.ModelAdmin):
             'fields': (('nom', 'association', 'organisateur', 'editable'), 
                         ('debut', 'fin'), 
                         ('inscription_debut', 'inscription_fin'), 
-                        'courriel_organisateur', 'site_web', 'description', 'vignette', 'couleur',
+                        ('commentaire', 'courriel_organisateur'), 'site_web', 'description', 'vignette', 'couleur',
                         #('benevole', 'assopartenaire')),
                         'assopartenaire'),
             # affichage

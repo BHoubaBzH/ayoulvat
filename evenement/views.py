@@ -248,10 +248,11 @@ def forms_poste(request):
     # suppression du poste
     if request.POST.get('poste_supprimer'):
         print('poste {} supprimé'.format(Poste.objects.filter(UUID=request.POST.get('poste_supprimer'))))
-        try:
-            Poste.objects.filter(UUID=request.POST.get('poste_supprimer')).delete()
+        poste_supp = Poste.objects.get(UUID=request.POST.get('poste_supprimer'))
+        if not poste_supp.creneau_set.all():
+            poste_supp.delete()
             messages.success(request, poste_sup_success)
-        except:
+        else:
             messages.error(request, poste_sup_error)
     return None
 
