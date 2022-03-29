@@ -2,12 +2,12 @@
 
 
 <div class="row card card-default">
-    <div class="card-header">Bienvenue {% if user.last_name or user.first.name %}{{ user.first_name|capfirst }} {{ user.last_name|upper }}{% else %}{{ user.username }}{% endif %} !</div>
+    <div class="card-header">{{Text.evenements_welcome}} {% if user.last_name or user.first.name %}{{ user.first_name|capfirst }} {{ user.last_name|upper }}{% else %}{{ user.username }}{% endif %} !</div>
     <div class="card-body">
-        Bienvenue sur le site AYOULVAT. Tu vas pouvoir t'inscrire comme bénévole sur des évènements.<br>
-        Pour revenir sur cette page click sur "home" dans la barre du haut. <br>
-        Pour éditer tes informations, click sur "mon profil" dans la barre du haut.<br><br>
-        Voici la liste des evenements
+        {{Text.evenements_welcome_2}}<br>
+        {{Text.evenements_retour}}<br>
+        {{Text.evenements_profil}}<br><br>
+        {{Text.evenements_liste}}
     </div>
 </div>
 
@@ -27,7 +27,7 @@
             <div class="col-md-12">
                 <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
                     title="les évènements">
-                    Tes évènements
+                    {{Text.evenements_yours}}
                 </h2>
             </div>
         </div>
@@ -36,7 +36,7 @@
 
     <div class="container">
         <div class="row align-items-end">
-            <p>Choisis un association que tu veux représenter, et cliques sur la photo de l'évènement pour y choisir des créneaux: </p>
+            <p>{{Text.evenements_yours_h}}</p>
         </div>
     </div>   
 
@@ -57,8 +57,8 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ EV.nom }}</h5>
                                 <p class="card-text">
-                                    du : {{ EV.debut|date:'D, d F Y' }}<br>
-                                    au : {{ EV.fin|date:'D, d F Y' }}</p>
+                                    {{Text.evenements_evt_begin}} {{ EV.debut|date:'D, d F Y' }}<br>
+                                    {{Text.evenements_evt_end}} {{ EV.fin|date:'D, d F Y' }}</p>
                                 <p class="card-text">{{ EV.description }}</p>
                                 {# <button type="button" class="btn btn-danger">Désinscription</button> #}
                             </div>
@@ -70,7 +70,7 @@
                                 {% for a in Ev_ass_par_benevole %} {# a les inscriptions du benevoles aux evenements#}
                                     {#{ a.profilebenevole }} | {{ a.evenement }} | {{ a.asso_part }#}
                                     {% if a.evenement == EV %} {# si notre benevole est inscrit a cet evenement#}
-                                        sélectionne l'asso que tu représenteras à {{EV.nom}}:{#{ a.asso_part }#}
+                                    {{Text.evenements_assoperso}} {{EV.nom}}:{#{ a.asso_part }#}
                                         {# prepare la form pour selectionner son asso #}
                                         {# les asso partenaires #}
                                         <form action="#" method='POST' id="select_asso-{{EV.UUID}}">
@@ -79,7 +79,7 @@
                                             <input type="hidden" name="asso_perso_change" value="">
 
                                             <div class="btn-group">
-                                                <button type="button" class="btn btn-warning btn-lg">ton asso</button>
+                                                <button type="button" class="btn btn-warning btn-lg">{{Text.evenements_tonasso}}</button>
                                                 <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                                   <span class="visually-hidden">Toggle Dropdown</span>
                                                 </button>
@@ -129,7 +129,7 @@
             <div class="col-md-12">
                 <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
                     title="les évènements">
-                    Evenements à venir
+                    {{Text.evenements_not_yours}}
                 </h2>
             </div>
         </div>
@@ -138,7 +138,7 @@
 
     <div class="container">
         <div class="row align-items-end">
-            <p>Evenements disponible aux quels tu ne participes pas encore: </p>
+            <p>{{Text.evenements_not_yours_h}}</p>
         </div>
     </div>   
 
@@ -159,8 +159,8 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ EV.nom }}</h5>
                                 <p class="card-text">
-                                    du : {{ EV.debut|date:'D, d F Y' }}<br>
-                                    au : {{ EV.fin|date:'D, d F Y' }}</p>
+                                    {{Text.evenements_evt_begin}} {{ EV.debut|date:'D, d F Y' }}<br>
+                                    {{Text.evenements_evt_end}} {{ EV.fin|date:'D, d F Y' }}</p>
                                 <p class="card-text">{{ EV.description }}</p>
                             </div>
                         </button>

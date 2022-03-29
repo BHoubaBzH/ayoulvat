@@ -9,7 +9,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.db.models import Q
 from ayoulvat.methods import envoi_courriel
-from ayoulvat.constants import *
+from ayoulvat.languages import *
 
 from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau, evenement_benevole_assopart
@@ -172,19 +172,19 @@ def forms_planning(request):
             formplanning = PlanningForm(request.POST,
                                         instance=Planning.objects.get(UUID=request.POST.get('planning')),)
             if formplanning.is_valid():
-                messages.success(request, plan_mod_success)
+                messages.success(request, flash[language]['plan_mod_success'])
                 formplanning.save()
             else:
-                messages.error(request, plan_mod_error)
+                messages.error(request, flash[language]['plan_mod_error'])
         # nouvel objet en base
         if 'planning_ajouter' in request.POST:
             formplanning = PlanningForm(request.POST)
             if formplanning.is_valid():
-                messages.success(request, plan_new_success)
+                messages.success(request, flash[language]['plan_new_success'])
                 logger.info('planning modifié ou ajouté')
                 formplanning.save()
             else:
-                messages.error(request, plan_new_error)
+                messages.error(request, flash[language]['plan_new_error'])
             
 
     if request.POST.get('planning_supprimer'):
@@ -192,9 +192,9 @@ def forms_planning(request):
         logger.warn('planning supprimer : {}'.format(plan_supp))
         if not plan_supp.creneau_set.all():
             plan_supp.delete()
-            messages.success(request, plan_sup_success)
+            messages.success(request, flash[language]['plan_sup_success'])
         else :
-            messages.error(request, plan_sup_error)
+            messages.error(request, flash[language]['plan_sup_error'])
     return formplanning
 
 def dic_plannings(uuid_evenement):
@@ -234,26 +234,26 @@ def forms_poste(request):
                                   instance=Poste.objects.get(UUID=request.POST.get('poste')))
             if formposte.is_valid():
                 formposte.save()
-                messages.success(request, poste_mod_success)
+                messages.success(request, flash[language]['poste_mod_success'])
             else:
-                messages.error(request, poste_mod_error)
+                messages.error(request, flash[language]['poste_mod_error'])
         # nouvel objet en base
         if 'poste_ajouter' in request.POST: 
             formposte = PosteForm(request.POST)
             if formposte.is_valid():
                 formposte.save()
-                messages.success(request, poste_new_succes)
+                messages.success(request, flash[language]['poste_new_succes'])
             else:
-                messages.error(request, poste_new_error)
+                messages.error(request, flash[language]['poste_new_error'])
     # suppression du poste
     if request.POST.get('poste_supprimer'):
         print('poste {} supprimé'.format(Poste.objects.filter(UUID=request.POST.get('poste_supprimer'))))
         poste_supp = Poste.objects.get(UUID=request.POST.get('poste_supprimer'))
         if not poste_supp.creneau_set.all():
             poste_supp.delete()
-            messages.success(request, poste_sup_success)
+            messages.success(request, flash[language]['poste_sup_success'])
         else:
-            messages.error(request, poste_sup_error)
+            messages.error(request, flash[language]['poste_sup_error'])
     return None
 
 def dic_postes(plan_uuid):
@@ -282,6 +282,7 @@ def forms_creneau(request):
         gère la création, modification et suppression de creneaux en fonction du contenu de POST
     """
     pas = planning_retourne_pas(request)
+    formcreneau = ""
     # print('*** Debut fonction forms_creneaux : {}'.format(datetime.now()))
     if any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter']) and not request.POST.get('creneau_supprimer'):
         # form en lien avec l objet basé sur model et pk UUID creneau
@@ -295,7 +296,11 @@ def forms_creneau(request):
                                       benevole_uuid=request.POST.get('benevole'),
                                       personne_connectee=request.user,
                                       type=request.POST.get('type'), )
-            messages.success(request, 'créneau modifié')
+            if formcreneau.is_valid():
+                messages.success(request, flash[language]['creneau_mod_success'])
+                formcreneau.save()
+            else:
+                messages.error(request, flash[language]['creneau_mod_error'])
         # nouvel objet en base
         if 'creneau_ajouter' in request.POST:
             formcreneau = CreneauForm(request.POST,
@@ -306,19 +311,22 @@ def forms_creneau(request):
                                       benevole_uuid=request.POST.get('benevole'),
                                       personne_connectee=request.user,
                                       type=request.POST.get('type'), )
-            messages.success(request, 'créneau ajouté')
-        # print(formcreneau['benevole'])
-        print(formcreneau.errors)
-        if formcreneau.is_valid():
-            print('creneau modifié ou ajouté')
-            formcreneau.save()
-        # retourne le statut ou l erreur si il y a 
-        return formcreneau
+            if formcreneau.is_valid():
+                messages.success(request, flash[language]['creneau_new_success'])
+                formcreneau.save()
+            else:
+                messages.error(request, flash[language]['creneau_new_error'])
 
     if 'creneau_supprimer' in request.POST:
-        print('creneau {} supprimé'.format(Creneau.objects.filter(UUID=request.POST.get('creneau'))))
-        Creneau.objects.filter(UUID=request.POST.get('creneau')).delete()
-    return None
+        cren_supp = Creneau.objects.get(UUID=request.POST.get('creneau'))
+        logger.warn('creneau {} supprimé'.format(cren_supp))
+        try:
+            cren_supp.delete()
+            messages.success(request, flash[language]['creneau_sup_success'])
+        except:
+            messages.error(request, flash[language]['creneau_sup_error'])
+    # retourne la form avec l erreur si il y a 
+    return formcreneau
 
 
 def dic_creneaux(request, data):
@@ -454,9 +462,10 @@ def evenement(request, uuid_evenement):
             creneau_bene.save()
             # messages aux bénévoles
             if ('benevole_prend_creneau' in request.POST):
-                messages.success(request, inscr_creneau_success)
+                #messages.success(request, inscr_creneau_success)
+                messages.success(request, flash[language]['inscr_creneau_success'])
             if ('benevole_libere_creneau' in request.POST):
-                messages.info(request, free_creneau_success)
+                messages.info(request, flash[language]['free_creneau_success'])
 
         # admin change un objet de l'evenement
         if  any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter', 'creneau_supprimer']):
@@ -518,9 +527,9 @@ def evenement(request, uuid_evenement):
                 if 'creneaux_courriel' in request.POST:
                     try:
                         envoi_courriel_plan_perso(request, evenement)
-                        messages.success(request, message_sent_success)
+                        messages.success(request, flash[language]['message_sent_success'])
                     except:
-                        messages.error(request, message_sent_error)
+                        messages.error(request, flash[language]['message_sent_error'])
                 # un admin/orga veut devenir bénévole sur l evenement
                 if 'devenir_benevole' in request.POST:
                     devenir_benevole(request.user, EVENEMENT=evenement)

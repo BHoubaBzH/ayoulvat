@@ -3,7 +3,7 @@
       // messages timeout for 10 sec 
       setTimeout(function() {
           $('.alert-dismissible').fadeOut('slow');
-      }, 4000); // <-- time in milliseconds, 4000 =  4 sec
+      }, 4000); // <-- time in milliseconds, 3000 =  3 sec
 
       // delete message
       $('.del-msg').live('click',function(){

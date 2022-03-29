@@ -13,7 +13,7 @@ $(document).ready(function(){
         {# si planning selectionné, on affiche #}
         {% if Planning or Poste %}
             {% if 'benevole.change_profilebenevole' in perms %} {# admins et orgas #}
-                {% comment "affichage tab postes et benevole" %}
+                {#% comment "affichage tab postes et benevole" %}
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <button class="nav-link active" id="nav-creneaux-tab" data-bs-toggle="tab" 
@@ -24,7 +24,7 @@ $(document).ready(function(){
                                 aria-controls="nav-benevoles" aria-selected="false">Bénévoles</button>    
                     </div>
                 </nav>
-                {% endcomment %}
+                {% endcomment %#}
                 <div class="tab-content post_display_javascript" id="nav-tabContent">
                     {# planning on affiche que si un planning ou un poste est selectionné #}
                     <div class="tab-pane fade show active post_display_javascript" id="nav-creneaux" 

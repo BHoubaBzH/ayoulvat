@@ -4,7 +4,7 @@ from sys import api_version
 from django.http import HttpResponseRedirect
 from association.models import AssoPartenaire, Association
 from ayoulvat.methods import envoi_courriel
-from ayoulvat.constants import *
+from ayoulvat.languages import *
 
 from benevole.models import Personne, ProfileBenevole
 from evenement.models import Creneau, Equipe, Evenement, evenement_benevole_assopart
@@ -224,7 +224,8 @@ def Home(request):
                                         ~Q(benevole__personne_id=request.user.UUID),
                                         Q(inscription_debut__lte=date.today()), 
                                         Q(inscription_fin__gt=date.today())).order_by("debut"),# evenements à venir , benevole pas inscrit , inscription ouvertes
-        "Assos": Association.objects.all() # liste toutes les assosciations pour admin, a filtrer par assos affectées a administrateur
+        "Assos": Association.objects.all(), # liste toutes les assosciations pour admin, a filtrer par assos affectées a administrateur
+        "Text": text_template[language],
     }
     
     try:
@@ -247,7 +248,7 @@ def Home(request):
         if 'inscription_event' in request.POST:
             devenir_benevole(request.user, POST=request.POST)
             envoi_courriel_orga_inscription(request)
-            messages.success(request, inscr_event_success.format(Evenement.objects.get(UUID=request.POST.get('inscription_event'))))
+            messages.success(request, flash[language]['inscr_event_success'].format(Evenement.objects.get(UUID=request.POST.get('inscription_event'))))
             # redirige vers la page evenement
             # return HttpResponseRedirect('evenement/{}'.format(insc_ev.UUID))
 
@@ -309,7 +310,7 @@ def Profile(request):
             FormPersonne.save()   
             new_profilebenevole = FormBenevole.save(Personne.objects.get(UUID=request.POST.get('personne')))
             print ('profile :', new_profilebenevole)
-            messages.success(request, profile_up_success)
+            messages.success(request, flash[language]['profile_up_success'])
             return redirect("home")
             
     try : 

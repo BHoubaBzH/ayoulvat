@@ -267,16 +267,6 @@ class CreneauForm(ModelForm):
                 # creneau disponible, on affiche tout la liste des bénévoles
                 self.fields['benevole'].queryset = self.querysetbenevoles
                 liste_benevoles_occupes = []
-
-                # OLD
-                #for Creno in Creneau.objects.filter(Q(type="creneau"), Q(evenement_id=self.evenement)):
-                #    # si un bénévole est déjà pris sur l'horaire, on le sort de la liste
-                #    if self.instance.debut and self.instance.fin:
-                #        if Creno.debut <= self.instance.debut < Creno.fin or Creno.debut < self.instance.fin <= Creno.fin \
-                #            or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin and Creno.benevole_id:
-                #            # on n'exclue pas le bénévole lié à l'objet, pour qu'il soit le choix par defaut dans la liste
-                #            if Creno.UUID != self.instance.UUID:
-                #                liste_benevoles_occupes.append(Creno.benevole_id)
                 
                 if self.instance.debut and self.instance.fin:
                     # on prend tous les creneaux sur la plage horaire avec un bénévole inscrit 
