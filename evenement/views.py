@@ -171,14 +171,20 @@ def forms_planning(request):
         if 'planning_modifier' in request.POST:
             formplanning = PlanningForm(request.POST,
                                         instance=Planning.objects.get(UUID=request.POST.get('planning')),)
-            messages.success(request, plan_mod_success)
+            if formplanning.is_valid():
+                messages.success(request, plan_mod_success)
+                formplanning.save()
+            else:
+                messages.error(request, plan_mod_error)
         # nouvel objet en base
         if 'planning_ajouter' in request.POST:
             formplanning = PlanningForm(request.POST)
-            messages.success(request, plan_new_success)
-        if formplanning.is_valid():
-            logger.info('planning modifié ou ajouté')
-            formplanning.save()
+            if formplanning.is_valid():
+                messages.success(request, plan_new_success)
+                logger.info('planning modifié ou ajouté')
+                formplanning.save()
+            else:
+                messages.error(request, plan_new_error)
             
 
     if request.POST.get('planning_supprimer'):
@@ -226,19 +232,27 @@ def forms_poste(request):
         if 'poste_modifier' in request.POST:
             formposte = PosteForm(request.POST,
                                   instance=Poste.objects.get(UUID=request.POST.get('poste')))
-            messages.success(request, poste_mod_success)
+            if formposte.is_valid():
+                formposte.save()
+                messages.success(request, poste_mod_success)
+            else:
+                messages.error(request, poste_mod_error)
         # nouvel objet en base
         if 'poste_ajouter' in request.POST: 
             formposte = PosteForm(request.POST)
-            messages.success(request, poste_new_succes)
-        if formposte.is_valid():
-            formposte.save()
-            print('poste modifié ou ajouté')
-
+            if formposte.is_valid():
+                formposte.save()
+                messages.success(request, poste_new_succes)
+            else:
+                messages.error(request, poste_new_error)
     # suppression du poste
     if request.POST.get('poste_supprimer'):
         print('poste {} supprimé'.format(Poste.objects.filter(UUID=request.POST.get('poste_supprimer'))))
-        Poste.objects.filter(UUID=request.POST.get('poste_supprimer')).delete()
+        try:
+            Poste.objects.filter(UUID=request.POST.get('poste_supprimer')).delete()
+            messages.success(request, poste_sup_success)
+        except:
+            messages.error(request, poste_sup_error)
     return None
 
 def dic_postes(plan_uuid):
