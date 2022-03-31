@@ -19,7 +19,7 @@
                             style="grid-row: ligne-{{ benevole.UUID }}; grid-column: benevoles;">
                                 <p style="margin-bottom: 0px;">{{ benevole }}</p>
                         </div>
-                        {% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur or 'Responsable' in RolesUtilisateur %} 
+                        {% if Administrateur or Organisateur or Responsable %} 
                             {% include "evenement/poste_edite.html" %}
                         {% endif %}
                         {% for creno in Creneaux_plage %}
@@ -41,7 +41,7 @@
 
 {% comment "" %}
     {# ajoute une ligne vide pour pouvoir ajouter des postes au besoins #}
-    {% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur or 'Responsable' in RolesUtilisateur %} 
+    {% if Administrateur or Organisateur or Responsable %} 
         {% include "evenement/benevole_ajoute.html" %}
     {% endif %}
 {% endcomment %}
@@ -49,7 +49,7 @@
 {# modal d ajout des creneaux type=benevole #}
 {# il est dejà présent si admin, orga, on rajoute si benevole uniquement #}
 {% comment "" %}{% endcomment %}
-{% if 'Benevole' in RolesUtilisateur and 'Administrateur' not in RolesUtilisateur and 'Organisateur' not in RolesUtilisateur and 'Responsable' not in RolesUtilisateur %}
+{% if Benevole and not Administrateur and not Organisateur and not  Responsable %}
     {% include "evenement/modal_creneau_ajoute.html" %}
 {% endif %}
 

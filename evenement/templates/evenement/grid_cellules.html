@@ -10,7 +10,7 @@
                 style="grid-row: ligne-{% if le_benevole == 'oui' %}{{ user.profilebenevole.UUID }}{% else %}{{ row_type.UUID }}{% endif %};
                     grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};">
 
-            {% if ligne == "poste" and 'evenement.add_creneau' in perms %}
+            {% if ligne == "poste" and Administrateur or Organisateur or Responsable %}
                 {# si utilisateur a le droit, on presente les form pour ajouter un creneau (creneau type creneau) sur le poste #}
                 <form id ="form-case-bouton-planning" class="bouton-cell" method="post">
                     <input type="hidden" name="case-ligne-init" value="{{ row_type.UUID }}">
@@ -34,14 +34,14 @@
                     {# si un admin ou orga, il peut editer sa ligne ou si c'est un benevole il peut editer sa ligne #}
                     <form id ="form-case-bouton-planning" class="bouton-cell" method="post">
                         <input type="hidden" name="case-ligne-init" 
-                            value="{% if 'benevole.change_profilebenevole' in perms %}{{ row_type.UUID }}{% else %}{{ user.profilebenevole.UUID }}{% endif %}">
+                            value="{% if Administrateur or Organisateur or Responsable %}{{ row_type.UUID }}{% else %}{{ user.profilebenevole.UUID }}{% endif %}">
                         {# format du champs compatible avec SplitDateTimeMultiWidget de la form #}
                         <input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'Y-m-d H:i' }}">
                         <input type="hidden" name="creneau-moyen" value="{{ Planning.creneau_moyen }}">
                         <input type="hidden" name="type" value="benevole">
                         
                         <button class="grid-cell ligne-{{ poste.UUID }}" type="button" 
-                                id="creneau_ajouter-{% if 'benevole.change_profilebenevole' in perms %}{{ row_type.UUID }}
+                                id="creneau_ajouter-{% if Administrateur or Organisateur or Responsable %}{{ row_type.UUID }}
                                 {% else %}{{ user.profilebenevole.UUID}}{% endif %}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
                                 style="width:100%; height:100%" title="me déclarer disponible à partir de {{ dateheure.0 }}"
                                 onClick="cellule_pre_modal_info(this.form)"
@@ -50,7 +50,7 @@
                     </form>
                 {% endif %}
 
-            {% elif ligne == "equipe" and 'evenement.add_planning' in perms %}
+            {% elif ligne == "equipe" and Administrateur or Organisateur or Responsable %}
                 {# si utilisateur a le droit, on presente les form pour ajouter un planning a l equipe #}
                 <form id ="form-case-bouton-planning-{{ row_type.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}" class="bouton-cell" method="post">
                     <input type="hidden" name="case-ligne-init" value="{{ row_type.UUID }}">

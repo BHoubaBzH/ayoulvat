@@ -440,6 +440,7 @@ def evenement(request, uuid_evenement):
         "FormCreneau" : "",  # form non liée au template pour ajout d un nouveau creneau
         "Majeur" : check_majeur(request.user.date_de_naissance, evenement.debut.date()), # booleen précisant si le bénévole est majeur
         "EvtOuvertBenevoles" : inscription_ouvert(evenement.inscription_debut, evenement.inscription_fin) , # integer précisant si on est avant/dans/après la période de modification des creneaux
+        "Text": text_template[language], # textes traduits 
     }
     data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})
     # recupere les uuid en POST, but est de tout gerer dans une seule page
@@ -575,13 +576,21 @@ def evenement(request, uuid_evenement):
     # groupes/roles de l utilisateur
     if not request.method == "POST" or (request.POST.get('evenement') and not request.POST.get('equipe') and not request.POST.get('planning'))or request.POST.get('planning') and request.POST.get('planning_supprimer'):
         # pas de POST ou page evenement ou le planning vient d 'etre supprimé 
-        data['RolesUtilisateur'] = ListeGroupesUserFiltree(request, "ev", evenement)
+        RolesUtilisateur = ListeGroupesUserFiltree(request, "ev", evenement)
     elif request.POST.get('equipe') and not request.POST.get('planning'):
         # equipe et pas de planning
-        data['RolesUtilisateur'] = ListeGroupesUserFiltree(request, "eq", Equipe.objects.get(UUID=request.POST.get('equipe')))
+        RolesUtilisateur = ListeGroupesUserFiltree(request, "eq", Equipe.objects.get(UUID=request.POST.get('equipe')))
     elif request.POST.get('planning') and not request.POST.get('planning_supprimer'):
         # planning et pas supprimé
-        data['RolesUtilisateur'] = ListeGroupesUserFiltree(request, "plan", Planning.objects.get(UUID=request.POST.get('planning')))
+        RolesUtilisateur = ListeGroupesUserFiltree(request, "plan", Planning.objects.get(UUID=request.POST.get('planning')))
+    else:
+        # le benevole arrive sur la page de l evenement
+        RolesUtilisateur = ListeGroupesUserFiltree(request, "ev", evenement)
+    try:
+        for role in RolesUtilisateur:
+            data[role] = "oui" # passe les roles 
+    except:
+        logger.error('erreur dans les RolesUtilisateur')
     print('#########################################################')                                            
 
     print('*** Fin traitement view : {}'.format(datetime.now()))

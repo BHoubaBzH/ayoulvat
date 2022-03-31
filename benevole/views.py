@@ -225,7 +225,7 @@ def Home(request):
                                         Q(inscription_debut__lte=date.today()), 
                                         Q(inscription_fin__gt=date.today())).order_by("debut"),# evenements à venir , benevole pas inscrit , inscription ouvertes
         "Assos": Association.objects.all(), # liste toutes les assosciations pour admin, a filtrer par assos affectées a administrateur
-        "Text": text_template[language],
+        "Text": text_template[language], # textes traduits 
     }
     
     try:

@@ -18,7 +18,7 @@
                   </a>
                 </h6>
                 {% endcomment %}
-                {% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur or 'Responsable' in RolesUtilisateur %}
+                {% if Administrateur or Organisateur or Responsable %}
                   <ul class="nav flex-column bouton-sidebar">
                     <li class="nav-item text-nowrap" id="boutons_navbar">
                       <form class="form evenement-form" method="get">
@@ -31,7 +31,7 @@
                     </li>
                   </ul>
                 {% endif %}
-                {% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur %} {# admins ont la liste de toutes les équipes #}
+                {% if Administrateur or Organisateur %} {# admins ont la liste de toutes les équipes #}
                     <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
                       <a></a>
                     </h6>
@@ -193,6 +193,6 @@
         </div>
 
 {# modal d'ajout d'un planning pour les organisateurs #}
-{% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur %} 
+{% if Administrateur or Organisateur %} 
     {% include "evenement/modal_planning_ajoute.html" %}
 {% endif %} 

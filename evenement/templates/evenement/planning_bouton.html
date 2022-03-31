@@ -1,7 +1,7 @@
 <!-- evenement/planning_bouton.html -->
 
 {# orga : permet d'afficher la form d'edition dans le modal #}
-{% if 'evenement.change_equipe' in perms %}
+{% if Administrateur or Organisateur or Responsable %}
     {# pour le placement dans la grille planning garder le filtre sur planning.debut et planning.fin comme la fonction planning_range de views.py : #}
     <button  class="planning equipe-{{ equipe.UUID }}" 
             style="grid-row: ligne-{{ equipe.UUID }};

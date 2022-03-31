@@ -51,7 +51,8 @@
                     <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                     <input  name="equipe" value="{{ equipe.UUID }}" type="hidden">
                     
-                    {% if 'evenement.delete_equipe'  in perms %}
+                    {% if Administrateur or Organisateur %}
+                        {# peut supprimer une équipe #}
                         <button class="btn btn-danger" title="supprimer cette equipe" name="equipe_supprimer"
                                 id="equipe_supprimer-{{ equipe.UUID }}" value="supprimer" type="button"
                                 data-bs-toggle="modal" data-bs-target="#modal-confirme-equipe-supprime-{{ equipe.UUID }}">
@@ -67,7 +68,7 @@
 </div>
 
 {# modal de confirmation de suppression doit etre en dehors du div pour s'afficher correctement #}
-{% if 'evenement.delete_equipe'  in perms %}
+{% if Administrateur or Organisateur %}
 <div class="modal fade"
      id="modal-confirme-equipe-supprime-{{ equipe.UUID }}"
      tabindex="-1"

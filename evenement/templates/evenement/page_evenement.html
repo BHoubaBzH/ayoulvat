@@ -4,8 +4,8 @@
     <div class="row align-items-end">
         <div class="col-md-12">
             <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
-                title="les planning des différentes équipes pour l'évènement.">
-                Evenement : Les équipes et leurs plannings associés
+                title="{{Text.evenement_title_h}}">
+                {{Text.evenement_title}}
             </h2>
         </div>
     </div>
@@ -48,7 +48,7 @@
                 ">
                     <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
             </div>
-            {% if 'evenement.change_equipe'  in perms %}
+            {% if Administrateur or Organisateur or Responsable %}
                     {% include "evenement/equipe_edite.html" %}
             {% endif %} 
             {% for planning in Plannings %}
@@ -61,7 +61,7 @@
             {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" %}
         {% endfor %}
         {# ajoute une ligne vide pour pouvoir ajouter des equipes au besoins et le modal de modif des plannings #}
-        {% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur or 'Responsable' in RolesUtilisateur %}
+        {% if Administrateur or Organisateur or Responsable %}
             {% include "evenement/equipe_ajoute.html" %}
             {% include "evenement/modal_planning_edite.html"  %}
         {% endif %}

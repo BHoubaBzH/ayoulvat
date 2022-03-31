@@ -12,19 +12,19 @@ $(document).ready(function(){
     {% if not planning_perso %}
         {# si planning selectionné, on affiche #}
         {% if Planning or Poste %}
-            {% if 'benevole.change_profilebenevole' in perms %} {# admins et orgas #}
-                {#% comment "affichage tab postes et benevole" %}
-                <nav>
-                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <button class="nav-link active" id="nav-creneaux-tab" data-bs-toggle="tab" 
-                                data-bs-target="#nav-creneaux" type="button" role="tab" 
-                                aria-controls="nav-creneaux" aria-selected="true">Créneaux</button>
-                        <button class="nav-link" id="nav-benevoles-tab" data-bs-toggle="tab" 
-                                data-bs-target="#nav-benevoles" type="button" role="tab" 
-                                aria-controls="nav-benevoles" aria-selected="false">Bénévoles</button>    
-                    </div>
-                </nav>
-                {% endcomment %#}
+            {% if Administrateur or Organisateur or Responsable %}
+                            {% comment "affichage tab postes et benevole" %}
+                            <nav>
+                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                    <button class="nav-link active" id="nav-creneaux-tab" data-bs-toggle="tab" 
+                                            data-bs-target="#nav-creneaux" type="button" role="tab" 
+                                            aria-controls="nav-creneaux" aria-selected="true">Créneaux</button>
+                                    <button class="nav-link" id="nav-benevoles-tab" data-bs-toggle="tab" 
+                                            data-bs-target="#nav-benevoles" type="button" role="tab" 
+                                            aria-controls="nav-benevoles" aria-selected="false">Bénévoles</button>    
+                                </div>
+                            </nav>
+                            {% endcomment %}
                 <div class="tab-content post_display_javascript" id="nav-tabContent">
                     {# planning on affiche que si un planning ou un poste est selectionné #}
                     <div class="tab-pane fade show active post_display_javascript" id="nav-creneaux" 
@@ -47,7 +47,7 @@ $(document).ready(function(){
 
         {# une equipe est selectionnée par un benevole, pas de planning ou de poste #}
         {# page par defaut admin: plannings  evenement et equipes #} 
-        {% elif Evenement and not Planning and not Poste and 'evenement.change_planning' in perms %} 
+        {% elif Evenement and not Planning and not Poste and Administrateur or Organisateur or Responsable %} 
             <div class="tab-content post_display_javascript" id="nav-tabContent">
                 <div class="tab-pane fade show active post_display_javascript" id="nav-equipes"  
                     role="tabpanel" aria-labelledby="nav-equipes-tab">
@@ -61,11 +61,11 @@ $(document).ready(function(){
 
     {% else %}
         {# page par defaut des benevoles de l'evenement: son planning perso #}
-        {% if Evenement and user.profilebenevole in Benevoles %}
+        {% if Evenement and user.profilebenevole in Benevoles %} 
             <div class="tab-content post_display_javascript" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-equipes"
-                    role="tabpanel" aria-labelledby="nav-equipes-tab">
-                    {%if equipe_uuid%}
+                    role="tabpanel" aria-labelledby="nav-equipes-tab"> 
+                    {%if equipe_uuid%} 
                         {% include "evenement/page_evenement.html" %}
                     {% else %}
                         {% include "evenement/page_planningperso.html" %}

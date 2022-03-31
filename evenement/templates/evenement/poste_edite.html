@@ -55,7 +55,7 @@
                     <input  name="planning" value="{{ Planning.UUID }}" type="hidden">
                     <input  name="poste" value="{{ poste.UUID }}" type="hidden">
                     <input name="benevole" value="" type="hidden">
-                    {% if 'evenement.delete_poste'  in perms %}
+                    {% if Administrateur or Organisateur or Responsable %}
                         <button class="btn btn-danger" title="supprimer ce poste" name="poste_supprimer"
                                 id="poste_supprimer" value="supprimer" type="button"
                                 data-bs-toggle="modal" data-bs-target="#modal-confirme-poste-supprime-{{ poste.UUID }}">
@@ -71,7 +71,7 @@
 </div>
 
 {# modal de confirmation de suppression doit etre en dehors du div pour s'afficher correctement #}
-{% if 'evenement.delete_poste'  in perms %}
+{% if Administrateur or Organisateur or Responsable %}
 <div class="modal fade"
      id="modal-confirme-poste-supprime-{{ poste.UUID }}"
      tabindex="-1"

@@ -6,8 +6,8 @@
       <div class="navbar-brand col-md-3 col-lg-2 me-0 px-3">
         {% if Evenement %}
           {% if Evenement.vignette %}<img src="{{ Evenement.vignette.url }}" style="max-width: 40px;max-height: 40px;">{% endif %}
-          {% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur %}<a  href="{% url 'liste_evenements' %}">{{ Association.nom }}</a>{% endif %}
-          {%if Evenement.nom%}<a> {% if 'Administrateur' in RolesUtilisateur or 'Organisateur' in RolesUtilisateur %}<i class="bi bi-chevron-right"></i>{% endif %} {{ Evenement.nom }}</a>{%endif%}
+          {% if Administrateur or Organisateur %}<a  href="{% url 'liste_evenements' %}">{{ Association.nom }}</a>{% endif %}
+          {%if Evenement.nom%}<a> {% if Administrateur or Organisateur%}<i class="bi bi-chevron-right"></i>{% endif %} {{ Evenement.nom }}</a>{%endif%}
         {% elif Association %}
           <a  href="{% url 'detail_asso' uuid_asso=Association.UUID %}" 
             data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="détails de l'association">
