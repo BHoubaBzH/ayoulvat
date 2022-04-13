@@ -4,7 +4,6 @@ from django.shortcuts import render
 # test phil premiere page
 from association.models import Association
 
-
 @login_required(login_url='login')
 def liste_assos(request):
     """
@@ -25,8 +24,10 @@ def detail_asso(request, uuid_asso):
     request.session['uuid_association'] = uuid_asso.urn
 
     association = Association.objects.get(UUID=uuid_asso)
+    #benevoles_l = Personne.objects.select_related("profilebenevole", "profileresponsable", "profileorganisateur", "profileadministrateur").all()
     data = {
         "Association": association,
     }
+
     print(' details de l asso : '.format(association.UUID))
     return render(request, "association/association_detail.html", data)

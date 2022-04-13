@@ -6,7 +6,7 @@
       }, 4000); // <-- time in milliseconds, 3000 =  3 sec
 
       // delete message
-      $('.del-msg').live('click',function(){
+      $('body').on('click','.del-msg', function(){
           $('.del-msg').parent().attr('style', 'display:none;');
       })
   });

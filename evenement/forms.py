@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.db import connection
 
 from django.db.models.query import QuerySet
 from benevole.forms import PersonneForm
@@ -270,17 +271,18 @@ class CreneauForm(ModelForm):
                 
                 if self.instance.debut and self.instance.fin:
                     # on prend tous les creneaux sur la plage horaire avec un bénévole inscrit 
-                    for Creno in Creneau.objects.filter(Q(type="creneau"), 
+                    crenos = Creneau.objects.filter(Q(type="creneau"), 
                                                         Q(evenement_id=self.evenement),
                                                         Q(debut__lte=self.instance.debut)&Q(fin__gt=self.instance.debut)|
                                                         Q(debut__lt=self.instance.fin)&Q(fin__gte=self.instance.fin)|
                                                         Q(debut__gt=self.instance.debut)&Q(debut__lt=self.instance.fin)&Q(debut__lt=F('fin')),
-                                                        ).exclude(benevole_id=None):
+                                                        ).exclude(benevole_id=None)
+                    for Creno in crenos:
                         # si un bénévole est déjà pris sur l'horaire, on le sort de la liste
                         if Creno.UUID != self.instance.UUID:
                             liste_benevoles_occupes.append(Creno.benevole_id)
                 self.fields['benevole'].queryset = self.querysetbenevoles.select_related('personne').exclude(UUID__in=liste_benevoles_occupes)
-
+ 
     ################ methode controle_coherence_creneaux
     def controle_coherence_creneaux(self, Creno, debut, fin):
         # print(' ======== ')

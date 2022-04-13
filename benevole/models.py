@@ -1,14 +1,11 @@
-from datetime import datetime, timedelta
-from dateutil.relativedelta import relativedelta
 import uuid
 
 from django.db import models
-from django.db.models.fields.related import ForeignKey
 
 from phonenumber_field.modelfields import PhoneNumberField
 from colorful.fields import RGBColorField
 
-from association.models import AssoPartenaire, Association
+from association.models import Association
 
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _

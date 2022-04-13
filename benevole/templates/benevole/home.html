@@ -4,7 +4,7 @@
 {% block content %}
 
     {% if user.is_authenticated %}{# deja connecté #}
-      {% if 'association.view_association' in perms %}
+      {% if Administrateur %}
         {# admin connecté arrive sur sa liste d assos #}
         {% include 'association/associations_liste.html' %}
       {% else %}

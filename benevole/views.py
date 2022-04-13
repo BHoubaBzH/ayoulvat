@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 #            fonctions 
 ################################################
 
-def RoleUtilisateur(request, objet, filtre): # remplace GroupeUtilisateur pour avoir le role par evenement
+def RoleUtilisateur(request, objet="", filtre=""): # remplace GroupeUtilisateur pour avoir le role par evenement
     """
         renvoi les roles du user connecte 
         filtre si en parametre est passé 
@@ -104,7 +104,7 @@ def RoleUtilisateur(request, objet, filtre): # remplace GroupeUtilisateur pour a
         out['Benevole'] = ""
     return out
 
-def ListeGroupesUserFiltree(request, objet, filtre):
+def ListeGroupesUserFiltree(request, objet="", filtre=""):
     """
         roles du user connecte
         filtre si en parametre est passé 
@@ -228,6 +228,20 @@ def Home(request):
         "Text": text_template[language], # textes traduits 
     }
     
+    # check si on a un administrateur:
+    print('#########################################################')
+    print ('#   utilisateur connecté: ')
+    print ('#        {0} {1} '.format(request.user.first_name, request.user.last_name))
+    print ('#   roles : ')
+
+    RolesUtilisateur = ListeGroupesUserFiltree(request)
+    try:
+        if 'Administrateur' in RolesUtilisateur:
+            data['Administrateur'] = "oui" # passe les roles 
+    except:
+        logger.error('erreur dans les RolesUtilisateur')
+    print('#########################################################')  
+
     try:
         data["Ev_ass_par_benevole"] = evenement_benevole_assopart.objects.filter(
                                         Q(profilebenevole=request.user.profilebenevole)) # contient la queryset de la table relationnelle evenement, benevole, asso part filtrée sur le bénévole connecté

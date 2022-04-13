@@ -1,24 +1,21 @@
-from audioop import reverse
-from queue import Empty
+from django.db import connection
 from administration.views import inscription_ouvert
 from datetime import datetime,timedelta, date
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.http.response import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.db.models import Q
 from ayoulvat.methods import envoi_courriel
 from ayoulvat.languages import *
 
 from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
-from evenement.models import Evenement, Equipe, Planning, Poste, Creneau, evenement_benevole_assopart
+from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
 from benevole.models import ProfileBenevole
-from benevole.views import ListeGroupesUserFiltree, RoleUtilisateur, check_benevole, check_majeur, devenir_benevole
+from benevole.views import ListeGroupesUserFiltree, check_benevole, check_majeur, devenir_benevole
 from association.models import Association
 
-from django.core.mail import BadHeaderError, send_mail
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.contrib import messages
 
 # import the logging library
@@ -147,12 +144,11 @@ def dic_equipes(uuid_evenement):
     """
     # cree dans la page toutes nos from pour les equipes
     dic_equipe_init = {}  # dictionnaire des forms
-    # key : UUID postes
-    # val : form de poste initialisée objet db lié
-    # parcours les equipes de l'evenement dans la base
-    for equipe in Equipe.objects.filter(evenement_id=uuid_evenement):
+    equipes = Equipe.objects.filter(evenement_id=uuid_evenement)
+    for equipe in equipes:
         # form en lien avec l objet basé sur model et pk UUID equipe
-        formequipe = EquipeForm(instance=Equipe.objects.get(UUID=equipe.UUID))
+        #formequipe = EquipeForm(instance=Equipe.objects.get(UUID=equipe.UUID)) # trop de queries db
+        formequipe = EquipeForm(instance=equipe)
         dic_equipe_init[equipe.UUID] = formequipe  # dictionnaire des forms
         # print (' equipe UUID : {}'.format(equipe.UUID))
     # print('*** Fin fonction forms_equipe : {}'.format(datetime.now()))
@@ -209,9 +205,11 @@ def dic_plannings(uuid_evenement):
     # key : UUID postes
     # val : form de poste initialisée objet db lié
     # parcours les plannings de l'evenement dans la base
-    for planning in Planning.objects.filter(evenement_id=uuid_evenement):
+    plannings = Planning.objects.filter(evenement_id=uuid_evenement)
+    for planning in plannings:
         # form en lien avec l objet basé sur model et pk UUID equipe
-        formplanning = PlanningForm(instance=Planning.objects.get(UUID=planning.UUID))
+        # formplanning = PlanningForm(instance=Planning.objects.get(UUID=planning.UUID)) # trop de queries db
+        formplanning = PlanningForm(instance=planning)
         dic_planning_init[planning.UUID] = formplanning  # dictionnaire des forms
         # print (' planning UUID : {}'.format(planning.UUID))
     # print('*** Fin fonction forms_planning : {}'.format(datetime.now()))
@@ -242,7 +240,7 @@ def forms_poste(request):
             formposte = PosteForm(request.POST)
             if formposte.is_valid():
                 formposte.save()
-                messages.success(request, flash[language]['poste_new_succes'])
+                messages.success(request, flash[language]['poste_new_success'])
             else:
                 messages.error(request, flash[language]['poste_new_error'])
     # suppression du poste
@@ -266,9 +264,11 @@ def dic_postes(plan_uuid):
     # cree dans la page toutes nos from pour les postes du planning
     dic_postes_init = {}  # dictionnaire des forms
     # parcours les postes du planning dans la base
-    for poste in Poste.objects.filter(planning_id=plan_uuid):
+    postes = Poste.objects.filter(planning_id=plan_uuid)
+    for poste in postes:
         # form en lien avec l objet basé sur model et pk UUID poste
-        formposte = PosteForm(instance=Poste.objects.get(UUID=poste.UUID))
+        #formposte = PosteForm(instance=Poste.objects.get(UUID=poste.UUID))  # trop de queries db
+        formposte = PosteForm(instance=poste)
         dic_postes_init[poste.UUID] = formposte  # dictionnaire des forms
         #print (' poste UUID : {1} form : {0}'.format(formposte, poste.UUID))
     return dic_postes_init
@@ -343,9 +343,11 @@ def dic_creneaux(request, data):
     # key : UUID postes
     # val : form de creneau initialisée objet db lié
     # parcours les creneaux du planning dans la base
-    for creneau in Creneau.objects.filter(planning_id=data["planning_uuid"]):  # liste des creneaux du planning
+    creneaux = Creneau.objects.filter(planning_id=data["planning_uuid"])
+    for creneau in creneaux:  # liste des creneaux du planning
         # form en lien avec l objet basé sur model et pk UUID creneau
-        formcreneau = CreneauForm(instance=Creneau.objects.get(UUID=creneau.UUID), 
+        #formcreneau = CreneauForm(instance=Creneau.objects.get(UUID=creneau.UUID),  # trop de queries db
+        formcreneau = CreneauForm(instance=creneau,
                                   pas_creneau=pas, 
                                   evenement=request.POST.get('evenement'),
                                   planning_uuid=request.POST.get('planning'),
@@ -400,22 +402,20 @@ def evenement(request, uuid_evenement):
     # store dans la session le uuid de l'evenement
     # il apparait dans l'url pour pouvoir donner le liens directe aux bénévoles par la suite
     request.session['uuid_evenement'] = uuid_evenement.urn
-    # récupère dans la session l'uuid de l'association, si on est passé par l'asso
-
-    uuid_asso= getattr(Evenement.objects.get(UUID=uuid_evenement), 'association_id')
-
-    # on stock dans la session
-    request.session['uuid_association'] = uuid_asso.urn
 
     # on construit nos objets a passer au template dans le dictionnaire data
     evenement = Evenement.objects.get(UUID=uuid_evenement)
+    # récupère dans la session l'uuid de l'association, si on est passé par l'asso
+    uuid_asso= evenement.association_id
+    # on stock dans la session
+    request.session['uuid_association'] = uuid_asso.urn
     data = {
         "Association": Association.objects.get(UUID=uuid_asso),
         "Evenement": evenement,
-        "Equipes":  Equipe.objects.filter(evenement_id=evenement).order_by('nom'),  # objets equipes de l'evenement
-        "Plannings": Planning.objects.filter(evenement_id=evenement).order_by('debut'),  # objets planning de l'evenement
-        "Postes": Poste.objects.filter(evenement_id=evenement).order_by('nom'),  # objets postes de l'evenement pour planning perso
-        "Creneaux": Creneau.objects.filter(evenement_id=evenement).order_by('debut'),  # objets creneaux de l'evenement pour planning perso
+        "Equipes":  Equipe.objects.filter(evenement_id=evenement).select_related('evenement').order_by('nom'),  # objets equipes de l'evenement
+        "Plannings": Planning.objects.filter(evenement_id=evenement).select_related('equipe', 'evenement').order_by('debut'),  # objets planning de l'evenement
+        "Postes": Poste.objects.filter(evenement_id=evenement).select_related('planning', 'equipe', 'evenement').order_by('nom'),  # objets postes de l'evenement pour planning perso
+        "Creneaux": Creneau.objects.filter(evenement_id=evenement).select_related('poste', 'planning', 'equipe', 'evenement').order_by('debut'),  # objets creneaux de l'evenement pour planning perso
         "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=evenement),  # objets benevoles de l'evenement
 
         "dispo_actif": "False", # active ou non la gestion des disponibilités des bénévoles; par défaut désactivé
@@ -428,7 +428,7 @@ def evenement(request, uuid_evenement):
         "planning_uuid": "",  # par defaut, pas de planning selectionée
         "PlanningRange": "",  # dictionnaire formaté des dates heures de l'objet selectionné
         "plannings_equipes": Planning.objects.all().values_list('equipe_id', flat=True).distinct(), # liste des équipes ayant au moins un planning créé
-        "creneaux_benevole" : Creneau.objects.filter(Q(benevole_id=request.user.profilebenevole.UUID),Q(evenement_id=evenement)).order_by('debut'), # crenaux du bénévole connecté
+        "creneaux_benevole" : Creneau.objects.filter(Q(benevole_id=request.user.profilebenevole.UUID),Q(evenement_id=evenement)).select_related('poste', 'planning', 'equipe', 'evenement').order_by('debut'), # crenaux du bénévole connecté
         
         "FormEquipe" : EquipeForm(initial={'evenement': evenement}), # form non liée au template pour ajout d une nouvelle equipe
         "DicEquipes" : dic_equipes(evenement),
@@ -592,7 +592,6 @@ def evenement(request, uuid_evenement):
     except:
         logger.error('erreur dans les RolesUtilisateur')
     print('#########################################################')                                            
-
     print('*** Fin traitement view : {}'.format(datetime.now()))
     return render(request, "evenement/base_evenement.html", data)
 

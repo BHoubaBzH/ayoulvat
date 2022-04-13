@@ -10,23 +10,25 @@
                 style="grid-row: ligne-{% if le_benevole == 'oui' %}{{ user.profilebenevole.UUID }}{% else %}{{ row_type.UUID }}{% endif %};
                     grid-column: time-{{ dateheure.1|date:'Y-m-d-Hi' }};">
 
-            {% if ligne == "poste" and Administrateur or Organisateur or Responsable %}
-                {# si utilisateur a le droit, on presente les form pour ajouter un creneau (creneau type creneau) sur le poste #}
-                <form id ="form-case-bouton-planning" class="bouton-cell" method="post">
-                    <input type="hidden" name="case-ligne-init" value="{{ row_type.UUID }}">
-                    <!--input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'d/m/Y H:i' }}"-->
-                    {# format du champs compatible avec SplitDateTimeMultiWidget de la form #}
-                    <input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'Y-m-d H:i' }}">
-                    <input type="hidden" name="creneau-moyen" value="{{ Planning.creneau_moyen }}">
-                    <input type="hidden" name="type" value="creneau">
-                    {% comment "bouton -> modal" %}{% endcomment %}
-                    <button class="grid-cell ligne-{{ poste.UUID }}" type="button" id="creneau_ajouter-{{ row_type.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
-                            style="width:100%; height:100%" title="ajouter un créneau commençant à {{ dateheure.0 }}, poste {{ poste.nom }}"
-                            onClick="cellule_pre_modal_info(this.form)"
-                            data-bs-toggle="modal" data-bs-target="#modal-creneau_ajouter">
-                    </button>
-                    
-                </form>
+            {% if ligne == "poste"  %}
+                {%if Administrateur or Organisateur or Responsable %}
+                    {# si utilisateur a le droit, on presente les form pour ajouter un creneau (creneau type creneau) sur le poste #}
+                    <form id ="form-case-bouton-planning" class="bouton-cell" method="post">
+                        <input type="hidden" name="case-ligne-init" value="{{ row_type.UUID }}">
+                        <!--input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'d/m/Y H:i' }}"-->
+                        {# format du champs compatible avec SplitDateTimeMultiWidget de la form #}
+                        <input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'Y-m-d H:i' }}">
+                        <input type="hidden" name="creneau-moyen" value="{{ Planning.creneau_moyen }}">
+                        <input type="hidden" name="type" value="creneau">
+                        {% comment "bouton -> modal" %}{% endcomment %}
+                        <button class="grid-cell ligne-{{ poste.UUID }}" type="button" id="creneau_ajouter-{{ row_type.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
+                                style="width:100%; height:100%" title="ajouter un créneau commençant à {{ dateheure.0 }}, poste {{ poste.nom }}"
+                                onClick="cellule_pre_modal_info(this.form)"
+                                data-bs-toggle="modal" data-bs-target="#modal-creneau_ajouter">
+                        </button>
+                        
+                    </form>
+                {% endif %}
 
             {% elif ligne == "benevole" %}
                 {# pour tous les utilisateurs, presente les form pour ajouter une dispo (creneau type benevole) au benevole #}
@@ -50,21 +52,22 @@
                     </form>
                 {% endif %}
 
-            {% elif ligne == "equipe" and Administrateur or Organisateur or Responsable %}
-                {# si utilisateur a le droit, on presente les form pour ajouter un planning a l equipe #}
-                <form id ="form-case-bouton-planning-{{ row_type.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}" class="bouton-cell" method="post">
-                    <input type="hidden" name="case-ligne-init" value="{{ row_type.UUID }}">
-                    <!--input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'d/m/Y H:i' }}"-->
-                    {# format du champs compatible avec SplitDateTimeMultiWidget de la form #}
-                    <input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'Y-m-d H:i' }}">
+            {% elif ligne == "equipe" %}
+                {%if Administrateur or Organisateur or Responsable %}
+                    {# si utilisateur a le droit, on presente les form pour ajouter un planning a l equipe #}
+                    <form id ="form-case-bouton-planning-{{ row_type.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}" class="bouton-cell" method="post">
+                        <input type="hidden" name="case-ligne-init" value="{{ row_type.UUID }}">
+                        <!--input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'d/m/Y H:i' }}"-->
+                        {# format du champs compatible avec SplitDateTimeMultiWidget de la form #}
+                        <input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'Y-m-d H:i' }}">
 
-                    <button class="grid-cell ligne-{{ poste.UUID }}" type="button" id="creneau_ajouter-{{ row_type.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
-                            style="width:100%; height:100%" title="ajouter une planning commençant à {{ dateheure.0 }}"
-                            onClick="planning_pre_modal_info(this.form)"
-                            data-bs-toggle="modal" data-bs-target="#modal-planning_ajouter">
-                    </button>
-
-                </form>
+                        <button class="grid-cell ligne-{{ poste.UUID }}" type="button" id="creneau_ajouter-{{ row_type.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}"
+                                style="width:100%; height:100%" title="ajouter une planning commençant à {{ dateheure.0 }}"
+                                onClick="planning_pre_modal_info(this.form)"
+                                data-bs-toggle="modal" data-bs-target="#modal-planning_ajouter">
+                        </button>
+                    </form>
+                {% endif %}
             {% endif %}
         </div>
 

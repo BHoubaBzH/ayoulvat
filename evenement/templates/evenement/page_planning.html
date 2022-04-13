@@ -1,6 +1,5 @@
 <!-- evenement/page_planning.html -->
 
-
 {# forms benevoles pour prendre ou libérerer en créneau dans evenement/creneau_affiche.html #}
 <form id="benevole_prend_creneau" method="post">
     {% csrf_token %}
@@ -85,9 +84,9 @@
                         title="
                         poste : {{ poste.nom }}<br>
                         {# affiche les infos aux bénévoles sur les raisons de non accès a ce poste #}
-                        {% if not poste.ouvert and not 'evenement.change_poste'  in perms %}
+                        {% if not poste.ouvert and not Administrateur and not Organisateur and not Responsable %}
                             <b>Ce poste n'est pas ouvert.</b><br><br>
-                        {% elif not poste.ouvert_mineur and not 'evenement.change_poste'  in perms %}
+                        {% elif not poste.ouvert_mineur and not Administrateur and not Organisateur and not Responsable %}
                             <b>Ce poste n'est pas ouvert aux mineurs.</b><br><br>
                         {% endif %}
                         {% if poste.description %}

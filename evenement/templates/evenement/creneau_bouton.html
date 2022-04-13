@@ -27,7 +27,7 @@
     {# creneau libre #}
     {%else %}
 
-        {# bénévole mineur et creneau reservé majeur -> toujours disabled pour les simples benevoles #}
+        {# bénévole mineur et creneau reservé majeur -> toujours disabled pour les benevoles mineurs #}
         {% if not Majeur and not creno.poste.ouvert_mineur %}
             <button class="creneau_libre_bloque poste poste-{{ poste.UUID }}"
                 style="grid-row: ligne-{{ creno.poste_id }};

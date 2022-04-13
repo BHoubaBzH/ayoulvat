@@ -22,6 +22,7 @@ groupe_liste = [
     (bene, 'Benevole'),
 ]
 
+"""
 groupe_permission = {
     'Administrateur': (  # asso
         'add_abonnement', 'view_abonnement',
@@ -92,6 +93,7 @@ groupe_permission = {
         'view_creneau',
     ),
 }
+"""
 ##########################################################
 
 
@@ -120,13 +122,16 @@ class Logs(models.Model):
 def init_groups(sender, **kwargs):
     for code_quadri, nom in groupe_liste:
         # on cree les groupes
-        group, created = Group.objects.get_or_create(name=nom)
+        Group.objects.get_or_create(name=nom)
+
+        # on utilise plus les perms django donc on retire ceci
+
         # on nettoye les permissions des groupes
-        group.permissions.clear()
+        #group.permissions.clear()
         # on met à jour les autorisations des groupes
-        for perm in groupe_permission[nom]:
-            #print(' permission : {}'.format(perm))
-            permission = Permission.objects.get(codename=perm)
-            group.permissions.add(permission)
-        if created:
-            logger.info('{0} Group created'.format(nom))
+        #for perm in groupe_permission[nom]:
+        #    #print(' permission : {}'.format(perm))
+        #    permission = Permission.objects.get(codename=perm)
+        #    group.permissions.add(permission)
+        #if created:
+        #    logger.info('{0} Group created'.format(nom))
