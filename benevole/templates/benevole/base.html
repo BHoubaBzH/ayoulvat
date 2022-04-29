@@ -9,14 +9,20 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <style>
       {# internal CSS pour dynamique #}
       {% include 'evenement/evenement.css.html'%}
   </style>
   {# ressources JQUERY #}
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
+  {# sources scripts #}
+  <script src="{% static 'js/loader.js' %}"></script>
+  {#decale affichae des grilles #}
+  <script>
+    $(document).ready(function(){
+      $('.post_display_javascript').show();
+  });
+  </script>
   {# fonts et icons BOOTSTRAP #}
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
   {% load bootstrap5 %}
@@ -27,6 +33,9 @@
 </head>
 <body class="override">
 
+  {#affiche un loader pendant que le client attend un retour du serveur#}
+  <div class="loader" id="loader" style="display:none"></div>
+  
   {% include 'benevole/navbar.html'%}
 
   <div class="container">

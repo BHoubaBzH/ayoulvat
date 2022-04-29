@@ -10,13 +10,15 @@ text_template = {}
 #fr_fr
 flash['fr_fr']= {}
 flash['fr_fr']['inscr_creneau_success']     = _("tu viens de t'inscrire sur un créneau, Merci!")
+flash['fr_fr']['inscr_creneau_error']       = _("attention, une erreur nous a empeché de t'inscrire à l'évènement")
 flash['fr_fr']['free_creneau_success']      = _("le créneau est libéré")
 
 flash['fr_fr']['message_sent_success']      = _("Message envoyé")
 flash['fr_fr']['message_sent_error']        = _("erreur d'envoi du message")
 
 flash['fr_fr']['profile_up_success']        = _("Profil mis à jour")
-flash['fr_fr']['inscr_event_success']       = _("Tu es maintenant inscrit à l'évènement {}")
+flash['fr_fr']['inscr_event_success']       = _("Bravo! Tu es maintenant inscrit à l'évènement {}")
+flash['fr_fr']['inscr_event_error']       = _("attention, une erreur nous a empeché de t'inscrire à l'évènement {}")
 
 flash['fr_fr']['plan_new_success']          = _("nouveau planning ajouté")
 flash['fr_fr']['plan_new_error']            = _("problème de création du planning")
@@ -59,7 +61,7 @@ flash['fr_fr']['asso_new_error']            = _("")
 #######################################################
 #fr_fr
 text_template['fr_fr'] = {}
-#page evenements
+#benevole > page evenements
 text_template['fr_fr']['evenements_welcome']        = _("Bienvenue")
 text_template['fr_fr']['evenements_welcome_2']      = _("Bienvenue sur le site AYOULVAT. Tu vas pouvoir t'inscrire comme bénévole sur des évènements.")
 text_template['fr_fr']['evenements_retour']         = _("Pour revenir sur cette page click sur 'Evenements' dans la barre du haut.")
@@ -73,12 +75,10 @@ text_template['fr_fr']['evenements_assoperso']      = _("sélectionne l'asso que
 text_template['fr_fr']['evenements_tonasso']        = _("ton asso")
 text_template['fr_fr']['evenements_not_yours']      = _("Evenements à venir")
 text_template['fr_fr']['evenements_not_yours_h']    = _("Evenements disponible aux quels tu ne participes pas encore:")
-#page evenement
+#evenement > page evenement
 text_template['fr_fr']['evenement_title'] = _('Evenement : Les équipes et leurs plannings associés')
 text_template['fr_fr']['evenement_title_h'] = _('les planning des différentes équipes pour l\'évènement')
-
-text_template['fr_fr']['evenement_'] = _('')
-text_template['fr_fr']['evenement_'] = _('')
-text_template['fr_fr']['evenement_'] = _('')
-text_template['fr_fr']['evenement_'] = _('')
-text_template['fr_fr']['evenement_'] = _('')
+text_template['fr_fr']['evenement_equipe'] = _('équipe')
+text_template['fr_fr']['evenement_equipe_h'] = _('description')
+text_template['fr_fr']['evenement_no_equipe'] = _('pas encore d\'équipe définie')
+#benevole > navbar

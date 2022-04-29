@@ -21,9 +21,9 @@
 
             {% if user.last_name %} {# si le benevole a déjà renseigné son profile alors il n'est pas obligé de modifier son profile #}
               <button type = "button" class="btn btn-secondary"  onclick="history.back()">Retour</button>
-              <button type="submit" class="btn btn-primary" id="profile">Enregistrer</button>
+              <button type="submit" class="btn btn-primary" id="profile" onclick="loader()">Enregistrer</button>
             {%else%} {# sinon il doit renseigner son profile #}
-              <button type="submit" class="btn btn-primary" id="profile">Valider</button>
+              <button type="submit" class="btn btn-primary" id="profile" onclick="loader()">Valider</button>
             {%endif%}
           
         </div>

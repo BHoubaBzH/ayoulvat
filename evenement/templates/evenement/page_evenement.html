@@ -39,9 +39,9 @@
 
                 data-bs-toggle="tooltip" data-bs-placement="right"  data-bs-html="true"
                 title="
-                equipe : {{ equipe.nom }}<br>
+                {{Text.evenement_equipe}} : {{ equipe.nom }}<br>
                 {% if equipe.description %}
-                    description :
+                    {{Text.evenement_equipe_h}} :
                     {{equipe.description}}
                 {% endif %}
                 ">
@@ -86,7 +86,7 @@
         {% endfor %}
     {% else %}
         <span class="benevole-slot" aria-hidden="true" style="grid-row: heures; grid-column: benevoles-boutons;">
-            <p> pas encore d'équipe défini </p>
+            <p> {{Text.evenement_no_equipe}} </p>
         </span>
     {% endif %}
 </div>

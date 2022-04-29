@@ -41,6 +41,7 @@
 
         'buttonLocales': {
             'en': 'Ok',
+            'fr': 'OUI',
             'oc': 'D\'acòrdi'
         },
 

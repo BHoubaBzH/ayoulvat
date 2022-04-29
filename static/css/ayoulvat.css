@@ -270,7 +270,7 @@ hr {
 /* charge les grilles à la fin du chargement de la page */
 .post_display_javascript  {display:none;}
 
-/* affiche en fade la page: elle apparait doucement */
+/* affiche le loader quand la pages est longue a charger */
 .loader {
   position: fixed;
   left: 0px;

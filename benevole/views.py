@@ -250,7 +250,6 @@ def Home(request):
     # récupère dans la session l'uuid de l'association, si on est passé par l'asso
     try:
         uuid_evenement = request.session['uuid_evenement']
-        print('evenement : {}'.format(uuid_evenement))
         evenement = Evenement.objects.get(UUID=uuid_evenement)
         #data["Evenement"] = evenement
         data["Benevoles"] = ProfileBenevole.objects.filter(BenevolesEvenement=evenement)  # objets benevoles de l'evenement
@@ -260,11 +259,14 @@ def Home(request):
     # pour trier dans le home du benevoles les evenements et le fait qu'il puisse s'y inscrire
     if request.method == 'POST' and ProfileBenevole.objects.filter(personne_id=request.user.UUID).exists(): #post et le user a renseigné son profile
         if 'inscription_event' in request.POST:
-            devenir_benevole(request.user, POST=request.POST)
-            envoi_courriel_orga_inscription(request)
-            messages.success(request, flash[language]['inscr_event_success'].format(Evenement.objects.get(UUID=request.POST.get('inscription_event'))))
-            # redirige vers la page evenement
-            # return HttpResponseRedirect('evenement/{}'.format(insc_ev.UUID))
+            try:
+                devenir_benevole(request.user, POST=request.POST)
+                envoi_courriel_orga_inscription(request)
+                messages.success(request, flash[language]['inscr_event_success'].format(Evenement.objects.get(UUID=request.POST.get('inscription_event'))))
+                # redirige vers la page evenement
+                # return HttpResponseRedirect('evenement/{}'.format(insc_ev.UUID))
+            except:
+                messages.error(request, flash[language]['inscr_event_error'].format(Evenement.objects.get(UUID=request.POST.get('inscription_event'))))
 
         if 'asso_perso_change' in request.POST:
             # modifie l asso partenaire pour la quelle le benevole travail

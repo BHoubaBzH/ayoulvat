@@ -39,7 +39,7 @@
                       <li class="nav-item">
                         <form class="form evenement-form" method="post"> {# action pas selectionné donc meme self page #}
                             <button class="list-group-item evenement-button {% if not equipe_uuid and not planning_perso == 'oui' %}active{% endif %} btn-secondary" 
-                            data-bs-toggle="tooltip" data-bs-placement="right" title="Gestion des équipes">
+                            data-bs-toggle="tooltip" data-bs-placement="right" title="Gestion des équipes" onclick="loader()">
                                 <a>Equipes/Plannings</a>
                                 {% csrf_token %}
                                 <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
@@ -65,7 +65,7 @@
                           <input type="hidden" name="planning_perso" value="oui">
                           <button class="list-group-item evenement-button {% if planning_perso == 'oui' %}active{% endif %} btn-secondary"
                           data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="
-                          Ton planning personnel sur tout l'évènement.">
+                          Ton planning personnel sur tout l'évènement." onclick="loader()">
                           Mon Planning</button>
                         </form>
                       </li>
@@ -81,7 +81,7 @@
                         <input type="hidden" name="devenir_benevole" value="">
                         <button class="list-group-item evenement-button {% if planning_perso == 'oui' %}active{% endif %} btn-warning"
                         data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="
-                        Participer en tant que bénévole">
+                        Participer en tant que bénévole" onclick="loader()">
                         Participer</button>
                       </form>
                     </li>
@@ -154,7 +154,7 @@
                                 {% if plan.UUID|stringformat:'s' == planning_uuid|stringformat:'s' %}active{% endif %}"
                                 {% if plan.description %}
                                   data-bs-toggle="tooltip" data-bs-placement="right" title="{{plan.description}}"
-                                {% endif %}>
+                                {% endif %} onclick="loader()">
                             <a>{{ plan.equipe.nom }} <i class="bi bi-chevron-right"></i> {{ plan.nom }} </a>
                           </button>
                         </form>
@@ -176,7 +176,7 @@
                   {% for event in Evenements %}
                     <li class="nav-item">
                       <form class="form evenement-form" method="get" action="{% url 'evenement' uuid_evenement=event.UUID %}">
-                        <button class="list-group-item evenement-button">
+                        <button class="list-group-item evenement-button" onclick="loader()">
                           <a>{{ event.nom }}</a>
                         </button>
                       </form>

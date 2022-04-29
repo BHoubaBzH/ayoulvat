@@ -135,7 +135,7 @@ def forms_equipe(request):
         Equipe.objects.filter(UUID=request.POST.get('equipe_supprimer')).delete()
     return formequipe
 
-def dic_equipes(uuid_evenement):
+def dic_forms_equipes(uuid_evenement):
     """
         entree:
             l'uid de l'evenement
@@ -193,7 +193,7 @@ def forms_planning(request):
             messages.error(request, flash[language]['plan_sup_error'])
     return formplanning
 
-def dic_plannings(uuid_evenement):
+def dic_forms_plannings(uuid_evenement):
     """
         entree:
             l'uid de l'evenement
@@ -254,7 +254,7 @@ def forms_poste(request):
             messages.error(request, flash[language]['poste_sup_error'])
     return None
 
-def dic_postes(plan_uuid):
+def dic_forms_postes(plan_uuid):
     """
         entree:
             uuid du planning en cours
@@ -329,7 +329,7 @@ def forms_creneau(request):
     return formcreneau
 
 
-def dic_creneaux(request, data):
+def dic_forms_creneaux(request, data):
     """
         entree:
             la requete (contenant les infos POST)
@@ -387,6 +387,21 @@ def liste_evenements(request):
         "Association": association,
         "Evenements": liste_evenements,
     }
+
+    # check des roles de user sur l asso:
+    print('#########################################################')
+    print ('#   utilisateur connecté: ')
+    print ('#        {0} {1} '.format(request.user.first_name, request.user.last_name))
+    print ('#   roles : ')
+    # groupes/roles de l utilisateur sur l asso
+    try:
+        RolesUtilisateur = ListeGroupesUserFiltree(request, "", evenement)
+        for role in RolesUtilisateur:
+            data[role] = "oui" # passe les roles 
+    except:
+        logger.error('erreur dans les RolesUtilisateur')
+    print('#########################################################')    
+
     return render(request, "evenement/base_evenement.html", data)
 
 
@@ -415,7 +430,7 @@ def evenement(request, uuid_evenement):
         "Equipes":  Equipe.objects.filter(evenement_id=evenement).select_related('evenement').order_by('nom'),  # objets equipes de l'evenement
         "Plannings": Planning.objects.filter(evenement_id=evenement).select_related('equipe', 'evenement').order_by('debut'),  # objets planning de l'evenement
         "Postes": Poste.objects.filter(evenement_id=evenement).select_related('planning', 'equipe', 'evenement').order_by('nom'),  # objets postes de l'evenement pour planning perso
-        "Creneaux": Creneau.objects.filter(evenement_id=evenement).select_related('poste', 'planning', 'equipe', 'evenement').order_by('debut'),  # objets creneaux de l'evenement pour planning perso
+        "Creneaux" : Creneau.objects.filter(evenement_id=evenement).select_related('poste', 'planning', 'equipe', 'evenement').order_by('debut'),
         "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=evenement),  # objets benevoles de l'evenement
 
         "dispo_actif": "False", # active ou non la gestion des disponibilités des bénévoles; par défaut désactivé
@@ -431,9 +446,9 @@ def evenement(request, uuid_evenement):
         "creneaux_benevole" : Creneau.objects.filter(Q(benevole_id=request.user.profilebenevole.UUID),Q(evenement_id=evenement)).select_related('poste', 'planning', 'equipe', 'evenement').order_by('debut'), # crenaux du bénévole connecté
         
         "FormEquipe" : EquipeForm(initial={'evenement': evenement}), # form non liée au template pour ajout d une nouvelle equipe
-        "DicEquipes" : dic_equipes(evenement),
+        "DicEquipes" : dic_forms_equipes(evenement),
         "FormPlanning" : "", # form non liée au template pour ajout d un nouveau planning
-        "DicPlannings" : dic_plannings(evenement),
+        "DicPlannings" : dic_forms_plannings(evenement),
         "DicPostes" : "",  # dictionnaire des formes de poste de l'evenement liées aux objets de la db
         "FormPoste" : "",  # form non liée au template pour ajout d un nouveau poste
         "DicCreneaux" : "",  # dictionnaire des formes de creneau de l'evenement liées aux objets de la db
@@ -516,8 +531,8 @@ def evenement(request, uuid_evenement):
 
                 # envoi les forms au template
                 if data["planning_uuid"]:
-                    data["DicPostes"] = dic_postes(data["planning_uuid"])
-                    data["DicCreneaux"] = dic_creneaux(request, data)
+                    data["DicPostes"] = dic_forms_postes(data["planning_uuid"])
+                    data["DicCreneaux"] = dic_forms_creneaux(request, data)
                     data["Postes"] = Poste.objects.filter(planning_id=data["planning_uuid"]).order_by('nom')  # objets postes du planning
                     data["Creneaux"] = Creneau.objects.filter(planning_id=data["planning_uuid"]).order_by('debut')  # objets creneaux du planning
 
@@ -591,7 +606,8 @@ def evenement(request, uuid_evenement):
             data[role] = "oui" # passe les roles 
     except:
         logger.error('erreur dans les RolesUtilisateur')
-    print('#########################################################')                                            
+    print('#########################################################')     
+                                           
     print('*** Fin traitement view : {}'.format(datetime.now()))
     return render(request, "evenement/base_evenement.html", data)
 

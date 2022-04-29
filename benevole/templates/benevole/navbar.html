@@ -18,6 +18,14 @@
       </div>
       
     {% if user.is_authenticated %}
+      {% if Administrateur or Organisateur or Responsable%}
+        <ul class="navbar-nav px-3">
+          <li class="nav-item text-nowrap">
+            <a class="nav-link"> <font color="red">{% if Administrateur %}Administrateur{% elif Organisateur %}Organisateur{% elif Responsable %}Responsable{% endif %}</font>
+            </a>
+          </li>
+        </ul>
+      {% endif %}
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
           <a class="nav-link">Bienvenue {%if request.user.first_name%}{{ request.user.first_name|capfirst }}{%endif%}</a>
@@ -48,7 +56,7 @@
               <button type="submit" id="profile" class="btn btn-sm btn-outline-success"
                 formaction="{% url 'evenement' uuid_evenement=Evenement.UUID %}"
                 data-bs-toggle="tooltip" data-bs-placement="bottom" title="les inscriptions seront closes le {{Evenement.inscription_fin}}">
-                Inscriptions En Cours</button>
+                Inscriptions En Cours, fin le <b>{{Evenement.inscription_fin}}</b></button>
             </div>
           {# si les inscriptions à l evenements sont terminees , on affiche#}
           {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '2'%}
