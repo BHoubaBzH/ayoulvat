@@ -60,7 +60,7 @@
                         <tr style="vertical-align : middle;">
                             <td>{{benevole.personne.last_name|upper}}</td>
                             <td>{{benevole.personne.first_name|capfirst}}</td>
-                            <td>{{benevole.personne.date_de_naissance|timesince}}</td>
+                            <td>{{benevole.personne.date_de_naissance|timesince|upto:'a'}}</td> {# age #}
                             <td>{{benevole.personne.email}}</td><td>{{benevole.personne.portable}}</td>                 
                             <td>
                                 {% for ben, nb in NbCreneauxParBenevole.items %}
@@ -215,7 +215,12 @@
 {# table dynamique : datatables #}
 <script>
     $(document).ready(function() {
-        $('#table_benevoles').DataTable();
+        $('#table_benevoles').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+            },
+            "lengthMenu": [[10, 50, -1], [10, 50, "Tous"]],
+        } );
     } );
 </script>
 
