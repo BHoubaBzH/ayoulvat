@@ -3,6 +3,8 @@
 from django import template
 from django.template.defaultfilters import stringfilter
 
+
+
 register = template.Library()
 
 @register.filter
@@ -20,11 +22,10 @@ def has_group(user, group_name):
     """
     return user.groups.filter(name=group_name).exists() 
 
-@register.filter
+@register.filter(name='annees_split', is_safe=True)
 @stringfilter
-def upto(value, delimiter=None):
+def annees_split(value, delimiter=None):
     """
-        garde la string jusqu'au paramète donné 
+        garde la string jusqu'au paramète donné et transforme en integer le resultat sur 2 digits
     """
-    return value.split(delimiter)[0]
-upto.is_safe = True
+    return f"{int(value.split(delimiter)[0]):02d}"

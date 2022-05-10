@@ -60,7 +60,7 @@
                         <tr style="vertical-align : middle;">
                             <td>{{benevole.personne.last_name|upper}}</td>
                             <td>{{benevole.personne.first_name|capfirst}}</td>
-                            <td>{{benevole.personne.date_de_naissance|timesince|upto:'a'}}</td> {# age #}
+                            <td>{{benevole.personne.date_de_naissance|timesince|annees_split:'a'}}</td> {# age #}
                             <td>{{benevole.personne.email}}</td><td>{{benevole.personne.portable}}</td>                 
                             <td>
                                 {% for ben, nb in NbCreneauxParBenevole.items %}
