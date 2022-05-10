@@ -35,7 +35,7 @@
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
           {# si l evenment est bloqué ou pas ouvert aux inscriptions , on affiche#}
-          {% now "Y-m-d" as aujourdhui %} {{aujourdhui}} / {{Evenement.fin|date:"Y-m-d"}}
+          {% now "Y-m-d" as aujourdhui %}
           {% if Evenement and not Evenement.editable %}
             <div class="btn-group me-2">
               <button type="submit" id="profile" class="btn btn-sm btn-outline-danger"
