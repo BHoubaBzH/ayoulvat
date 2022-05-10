@@ -22,10 +22,10 @@ def has_group(user, group_name):
     """
     return user.groups.filter(name=group_name).exists() 
 
-@register.filter(name='annees_split', is_safe=True)
+@register.filter(name='upto', is_safe=True)
 @stringfilter
-def annees_split(value, delimiter=None):
+def upto(value, delimiter=None):
     """
-        garde la string jusqu'au paramète donné et transforme en integer le resultat sur 2 digits
+        garde la string jusqu'au paramète donné 
     """
-    return f"{int(value.split(delimiter)[0]):02d}"
+    return value.split(delimiter)[0]
