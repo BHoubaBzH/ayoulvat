@@ -47,7 +47,7 @@ class BenevoleForm(ModelForm):
 
     def save(self, personne, commit=True):
         # on lie le benevole à la personne
-        print('personne {}'.format(personne.UUID))
+        # print('personne {}'.format(personne.UUID))
         self.instance.personne = personne
         if commit:
             return super().save()

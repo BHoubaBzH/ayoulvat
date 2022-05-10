@@ -31,12 +31,12 @@ def envoi_courriel_plan_perso(request, evenement):
     """
         envoi le courrier de résumé des creneaux du bénévole
     """
-    sujet = 'voici ta liste de créneau pour l\'évènement {}'.format(evenement)
+    sujet = f'voici ta liste de créneau pour l\'évènement {evenement}'
     message_text = request.POST.get('creneaux_courriel_message_text')
     message_html = request.POST.get('creneaux_courriel_message_html')
     from_courriel = 'no-reply@deusta.bzh'
     to_courriel = [(request.user.email)]
-    logger.info('envoi des crenaux perso à : {0} '.format(request.user.email))
+    logger.info(f'envoi des crenaux perso à : {request.user.email} ')
     if sujet and to_courriel and from_courriel:
         envoi_courriel(sujet, message_text, from_courriel, to_courriel, message_html)
 
@@ -185,7 +185,7 @@ def forms_planning(request):
 
     if request.POST.get('planning_supprimer'):
         plan_supp = Planning.objects.get(UUID=request.POST.get('planning_supprimer'))
-        logger.warn('planning supprimer : {}'.format(plan_supp))
+        logger.warn(f'planning supprimer : {plan_supp}')
         if not plan_supp.creneau_set.all():
             plan_supp.delete()
             messages.success(request, flash[language]['plan_sup_success'])
@@ -245,8 +245,8 @@ def forms_poste(request):
                 messages.error(request, flash[language]['poste_new_error'])
     # suppression du poste
     if request.POST.get('poste_supprimer'):
-        print('poste {} supprimé'.format(Poste.objects.filter(UUID=request.POST.get('poste_supprimer'))))
         poste_supp = Poste.objects.get(UUID=request.POST.get('poste_supprimer'))
+        logger.warn(f'poste {poste_supp} supprimé')
         if not poste_supp.creneau_set.all():
             poste_supp.delete()
             messages.success(request, flash[language]['poste_sup_success'])
@@ -319,7 +319,7 @@ def forms_creneau(request):
 
     if 'creneau_supprimer' in request.POST:
         cren_supp = Creneau.objects.get(UUID=request.POST.get('creneau'))
-        logger.warn('creneau {} supprimé'.format(cren_supp))
+        logger.warn(f'creneau {cren_supp} supprimé')
         try:
             cren_supp.delete()
             messages.success(request, flash[language]['creneau_sup_success'])
@@ -391,7 +391,7 @@ def liste_evenements(request):
     # check des roles de user sur l asso:
     print('#########################################################')
     print ('#   utilisateur connecté: ')
-    print ('#        {0} {1} '.format(request.user.first_name, request.user.last_name))
+    print (f'#        {request.user.first_name} {request.user.last_name} ')
     print ('#   roles : ')
     # groupes/roles de l utilisateur sur l asso
     try:
@@ -413,7 +413,7 @@ def evenement(request, uuid_evenement):
     """
     print('')
     print('*******************************************************')
-    print('*** Debut traitement view : {}'.format(datetime.now()))
+    print(f'*** Debut traitement view : {datetime.now()}')
     # store dans la session le uuid de l'evenement
     # il apparait dans l'url pour pouvoir donner le liens directe aux bénévoles par la suite
     request.session['uuid_evenement'] = uuid_evenement.urn
@@ -466,7 +466,7 @@ def evenement(request, uuid_evenement):
         print('##################### evenement ########################')
         print ('#   données POST passées: ')
         for key, value in request.POST.items():
-            print('#        POST -> {0} : {1}'.format(key, value))
+            print(f'#        POST -> {key} : {value}')
         print('#########################################################')
 
         uuid_evenement = request.POST.get('evenement')
@@ -525,7 +525,7 @@ def evenement(request, uuid_evenement):
                                                         Planning.objects.get(UUID=data["planning_uuid"]).fin,
                                                         Planning.objects.get(UUID=data["planning_uuid"]).pas)
                     except:
-                        logger.info('equipe sans planning: {0} '.format(request.POST.get('equipe')))
+                        logger.info(f'equipe sans planning: {request.POST.get("equipe")} ')
                         data["planning_perso"] = "oui"
                         data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
 
@@ -585,7 +585,7 @@ def evenement(request, uuid_evenement):
     # check des roles de user sur l evenement:
     print('#########################################################')
     print ('#   utilisateur connecté: ')
-    print ('#        {0} {1} '.format(request.user.first_name, request.user.last_name))
+    print (f'#        {request.user.first_name} {request.user.last_name} ')
     print ('#   roles : ')
 
     # groupes/roles de l utilisateur
@@ -608,7 +608,7 @@ def evenement(request, uuid_evenement):
         logger.error('erreur dans les RolesUtilisateur')
     print('#########################################################')     
                                            
-    print('*** Fin traitement view : {}'.format(datetime.now()))
+    print(f'*** Fin traitement view : {datetime.now()}')
     return render(request, "evenement/base_evenement.html", data)
 
 
@@ -623,7 +623,7 @@ def CreneauFetch(request):
     if request.method == "POST":
         print('##################### CreneauFetch ######################')
         for key, value in request.POST.items():
-            print('#        POST -> {0} : {1}'.format(key, value))
+            print(f'#        POST -> {key} : {value}')
         print('#########################################################')
         
         if request.POST.get('creneau_affiche') == 'form' :
@@ -635,15 +635,15 @@ def CreneauFetch(request):
             return HttpResponse(creneau.as_table(), content_type="text/plain")
             # return JsonResponse({'creneau_form' : creneau }, safe=False)
         elif request.POST.get('creneau_affiche') == 'json':
-            creneau = Creneau.objects.filter(UUID = request.POST.get('creneau_uuid')).values()
-            creneau_obj = Creneau.objects.get(UUID = request.POST.get('creneau_uuid'))
-            poste = Poste.objects.get(UUID = creneau_obj.poste_id).nom
-            planning = Planning.objects.get(UUID = creneau_obj.planning_id).nom
-            equipe = Equipe.objects.get(UUID = creneau_obj.equipe_id).nom
+            creneau = Creneau.objects.filter(UUID=request.POST.get('creneau_uuid')).values()
+            creneau_obj = Creneau.objects.get(UUID=request.POST.get('creneau_uuid'))
+            poste = Poste.objects.get(UUID=creneau_obj.poste_id).nom
+            planning = Planning.objects.get(UUID=creneau_obj.planning_id).nom
+            equipe = Equipe.objects.get(UUID=creneau_obj.equipe_id).nom
             try : 
-                benevole_nom = ProfileBenevole.objects.get(UUID = creneau_obj.benevole_id).personne.last_name
-                benevole_pre = ProfileBenevole.objects.get(UUID = creneau_obj.benevole_id).personne.first_name
-                benevole= "{0} {1}".format(benevole_nom.upper(), benevole_pre.title())
+                benevole_nom = ProfileBenevole.objects.get(UUID=creneau_obj.benevole_id).personne.last_name
+                benevole_pre = ProfileBenevole.objects.get(UUID=creneau_obj.benevole_id).personne.first_name
+                benevole= f"{benevole_nom.upper()} {benevole_pre.title()}"
             except:
                 benevole = "Libre"
             context = {
@@ -666,13 +666,13 @@ def PlanningFetch(request):
     if request.method == "POST":
         print('##################### PlanningFetch ######################')
         for key, value in request.POST.items():
-            print('#        POST -> {0} : {1}'.format(key, value))
+            print(f'#        POST -> {key} : {value}')
         print('#########################################################')
         if request.POST.get('planning_affiche') == 'form' :
             planning = PlanningForm(instance=Planning.objects.get(UUID=request.POST.get('planning_uuid')))
             return HttpResponse(planning.as_table(), content_type="text/plain")
         elif request.POST.get('planning_affiche') == 'json':
-            planning = Planning.objects.filter(UUID = request.POST.get('planning_uuid')).values()
+            planning = Planning.objects.filter(UUID=request.POST.get('planning_uuid')).values()
             equipe_nom = Equipe.objects.get(planning__UUID=request.POST.get('planning_uuid')).nom
             print(equipe_nom)
             context = {

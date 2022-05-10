@@ -11,7 +11,7 @@
                         form="benevole_libere_creneau" name="creneau" value="{{ creno.UUID }}"
                         data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"
                         title="Mon Créneau, cliquer pour le libérer" type="submit">
-                    <a><b>{{ creno.benevole }}</b></a>
+                    <a><b>{{ creno.benevole.personne.last_name|upper }} {{ creno.benevole.personne.first_name|capfirst }}</b></a>
                 </button>
 
         {# simplement occupé par un autre bénévole -> toujours disabled pour les simples benevoles #}
@@ -21,7 +21,7 @@
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                 data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
                 title="créneau occupé" disabled>
-                <a><b>{{ creno.benevole }}</b></a>
+                <a><b>{{ creno.benevole.personne.last_name|upper }} {{ creno.benevole.personne.first_name|capfirst }}</b></a>
             </button>
         {% endif %}
     {# creneau libre #}
@@ -78,7 +78,7 @@
                     grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                     data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
                     title="Mon Créneau" disabled>
-                    <a><b>{{ creno.benevole }}</b></a>
+                    <a><b>{{ creno.benevole.personne.last_name|upper }} {{ creno.benevole.personne.first_name|capfirst }}</b></a>
                 </button>
         {# simplement occupé par un autre bénévole #}
         {% else %}
@@ -87,7 +87,7 @@
                 grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                 data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
                 title="créneau occupé" disabled>
-                <a><b>{{ creno.benevole }}</b></a>
+                <a><b>{{ creno.benevole.personne.last_name|upper }} {{ creno.benevole.personne.first_name|capfirst }}</b></a>
             </button>
         {% endif %}
     {# creneau libre #}
@@ -135,7 +135,7 @@
                     data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
                     data-bs-evenementuuid="{{ Evenement.UUID }}"
                     data-bs-creneauuuid="{{ creno.UUID }}">
-                    <a><b>{{ creno.benevole }}</b></a>
+                    <a><b>{{ creno.benevole.personne.last_name|upper }} {{ creno.benevole.personne.first_name|capfirst }}</b></a>
                 </button>
         {# simplement occupé par un autre bénévole #}
         {% else %}
@@ -148,7 +148,7 @@
                 data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
                 data-bs-evenementuuid="{{ Evenement.UUID }}"
                 data-bs-creneauuuid="{{ creno.UUID }}">
-                <a><b>{{ creno.benevole }}</b></a>
+                <a><b>{{ creno.benevole.personne.last_name|upper }} {{ creno.benevole.personne.first_name|capfirst }}</b></a>
             </button>
         {% endif %}
     {# creneau libre #}

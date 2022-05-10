@@ -1,6 +1,7 @@
 .env
 sent_emails
 media/*
+venv
 !media/empty.jpg
 .vscode
 __pycache__/

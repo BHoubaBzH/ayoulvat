@@ -6,6 +6,10 @@ from administration.models import groupe_liste
 from benevole.models import ProfileAdministrateur, Personne, ProfileOrganisateur, ProfileResponsable, \
     ProfileBenevole
 
+# import the logging library
+import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 #    quand on crée un user sur le projet, ce hook vient aussi lui creer une entree dans la table Personne
 #    sender: sender model from which you'll receive signal from
@@ -63,5 +67,8 @@ def create_or_update_profiles(sender, instance, **kwargs):
 def delete_profiles(sender, instance, **kwargs):
     print('delete on {0} hooked'.format(sender.__name__))
     the_group = check_group(sender.__name__)
-    pers = Personne.objects.get(UUID=instance.personne_id)
-    the_group.user_set.remove(pers)
+    try: 
+        pers = Personne.objects.get(UUID=instance.personne_id)
+        the_group.user_set.remove(pers)
+    except:
+        logger.info('suppression de la personne, déjà faite')

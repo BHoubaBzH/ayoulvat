@@ -1,23 +1,33 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
+from django.forms import BaseInlineFormSet
 
 from benevole import models
+from evenement.admin import BenevoleEvenementInLine
 from evenement.models import Creneau
 
 class PersonneInLine(admin.TabularInline):
     model = models.Personne
     can_delete = False
-    verbose_name = 'Bénévoles'
-    # fk_name = 'user'
+    verbose_name = 'Personne'
     extra = 1
 
 class BenevoleInLine(admin.TabularInline):
     model = models.ProfileBenevole
     can_delete = False
     verbose_name = 'Bénévoles'
-    # fk_name = 'user'
+    #fk_name = 'personne'
     extra = 1
+    #fieldsets = (
+    #    (None, {
+    #        'fields': ('message', 'UUID ')
+    #    }),
+    #    ('Advanced options', {
+    #        'classes': ('collapse',),
+    #        'fields': ('message', ),
+    #    }),
+    #)
 
 @admin.register(models.Personne)
 class PersonneDetails(admin.ModelAdmin):
@@ -26,7 +36,7 @@ class PersonneDetails(admin.ModelAdmin):
         for group in user.groups.all():
             groups.append(group.name)
         return ' '.join(groups)
-    # inlines = [BenevoleInLine, ]
+    #inlines = [BenevoleInLine, ]
     group.short_description = 'Groupes'
     list_display = ( "last_name", "first_name", "email", "date_joined", "is_superuser", "group")
     list_filter = ( "profilebenevole__evenement_benevole_assopart__evenement", 
@@ -62,6 +72,7 @@ class BenevoleCustom(admin.ModelAdmin):
             if ordering:
                 qs = qs.order_by(*ordering)
             return qs
+    inlines = (BenevoleEvenementInLine,)
 
 @admin.register(models.ProfileAdministrateur)
 class AdministrateurCustom(admin.ModelAdmin):

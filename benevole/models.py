@@ -43,10 +43,9 @@ class Personne(AbstractUser):
 
     def __str__(self):
         if not self.last_name and not self.first_name:
-            return "{0}".format(self.username)
+            return f"{self.username}"
         else:
-            return "{0} {1}".format(self.last_name.upper(), \
-                                    self.first_name.capitalize())
+            return f"{self.last_name.upper()} {self.first_name.capitalize()}"
 
 # paramètres specifiques administrateurs de l'asso
 class ProfileAdministrateur(models.Model):
@@ -65,7 +64,7 @@ class ProfileAdministrateur(models.Model):
     referent = models.BooleanField(default=False)
 
     def __str__(self):
-        return "{}".format(self.personne)
+        return "{self.personne}"
 
 
 # paramètres specifiques organisateur de l'evenement
@@ -78,7 +77,7 @@ class ProfileOrganisateur(models.Model):
                                     on_delete=models.CASCADE)
 
     def __str__(self):
-        return "{}".format(self.personne)
+        return f"{self.personne}"
 
 
 # paramètres specifiques responsable d'equipe
@@ -91,7 +90,7 @@ class ProfileResponsable(models.Model):
                                     on_delete=models.CASCADE)
 
     def __str__(self):
-        return "{}".format(self.personne)
+        return f"{self.personne}"
 
 
 # paramètres specifiques benevole
@@ -106,4 +105,4 @@ class ProfileBenevole(models.Model):
     couleur = RGBColorField(default="#6610f2") 
 
     def __str__(self):
-        return "{}".format(self.personne)
+           return f"{self.personne} / {self.personne.email}"

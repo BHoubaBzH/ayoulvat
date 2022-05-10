@@ -35,12 +35,21 @@
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
           {# si l evenment est bloqué ou pas ouvert aux inscriptions , on affiche#}
+          {% now "Y-m-d" as aujourdhui %} {{aujourdhui}} / {{Evenement.fin|date:"Y-m-d"}}
           {% if Evenement and not Evenement.editable %}
             <div class="btn-group me-2">
               <button type="submit" id="profile" class="btn btn-sm btn-outline-danger"
                 formaction=""
                 data-bs-toggle="tooltip" data-bs-placement="bottom" title="L'administrateur n'a pas encore ouvert les inscriptions">
                 Evènement bloqué</button>
+            </div>
+          {# si l evenment est terminé , on affiche#}
+          {% elif Evenement and aujourdhui > Evenement.fin|date:"Y-m-d" %}
+            <div class="btn-group me-2">
+              <button type="submit" id="profile" class="btn btn-sm btn-outline-danger"
+                formaction=""
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="L'événement est terminé'">
+                Evènement Terminé</button>
             </div>
           {# si les inscriptions à l evenements n ont pas commencees , on affiche#}
           {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '0'%}
