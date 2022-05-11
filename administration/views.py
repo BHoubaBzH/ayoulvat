@@ -28,22 +28,18 @@ def total_heures_benevoles(creneaux):
             total += c_duree
     return total
 
-def liste_benevoles_et_age(benevoles):
+def liste_benevoles_age_creneaux_assopart(evt, benevoles):
     """ input queryset des benevoles sur l'evenement 
-        out dictionnaire: objet benevole - age """
+        out dictionnaire: objet benevole - (age, nb creneaux, asso partenaire) """
     out={}
     for benevole in benevoles: 
-        out[benevole]=date.today().year - benevole.personne.date_de_naissance.year - \
-                        ((date.today().month, date.today().day) < \
-                        (benevole.personne.date_de_naissance.month, benevole.personne.date_de_naissance.day))
+        out[benevole]=(
+            date.today().year - benevole.personne.date_de_naissance.year - ((date.today().month, date.today().day) < \
+                        (benevole.personne.date_de_naissance.month, benevole.personne.date_de_naissance.day)),
+            benevole.BenevolesCreneau.filter(evenement=evt).count(),
+            evenement_benevole_assopart.objects.select_related('asso_part').get(Q(evenement=evt), Q(profilebenevole=benevole)).asso_part,
+        )
     return out 
-
-def nb_creneaux_par_benevole(evt, benevoles):
-    """ out dictionnaire: objet benevole - nombre de creneaux """
-    out={}
-    for benevole in benevoles: 
-        out[benevole]=benevole.BenevolesCreneau.filter(evenement=evt).count()
-    return out
 
 def nb_benevoles_par_asso(list_assos, evt):
     """ returne un dictionnaire de nombre de bénévole par asso sur l evenement"""
@@ -60,7 +56,7 @@ def plannings_occupation(contenants):
         entree : queryset de contenants
         sortie : dictionnaire key : contenant , value : pourcentage occupation
     """
-    occup = {}
+    occup = {}  
     for c in contenants:
         crens = Creneau.objects.filter(planning_id=c.UUID).count()
         crens_occup = Creneau.objects.filter(planning_id=c.UUID, benevole__isnull=False).count()
@@ -149,7 +145,6 @@ def emails_benevoles_un_creneau(evt):
         if Creneau.objects.filter(Q(benevole=bene),Q(evenement=evt)).count() == 1:
             listout.append(bene.personne.email)
     return set(listout)
-    return set(listout)
 
 def emails_benevoles_par_equipe(evt):
     """
@@ -163,9 +158,6 @@ def emails_benevoles_par_equipe(evt):
             liste_emails.append(email)
             if liste_emails:
                 tabout[equipe] = set(liste_emails)
-    #for k, v in tabout.items():
-    #    print(k)
-    #    print(*v)
     return tabout
 
 def emails_benevoles_par_planning(evt):
@@ -251,8 +243,7 @@ class BenevolesListView(ListView):
             "Equipes" : Equipe.objects.filter(evenement=self.Evt).order_by('nom'),
 
             #"Benevoles": self.ListeBenevoles,
-            "BenevolesetAge": liste_benevoles_et_age(self.ListeBenevoles),
-            "NbCreneauxParBenevole": nb_creneaux_par_benevole(self.Evt, self.ListeBenevoles), 
+            "BenevolesAgeCreneauxAssopart": liste_benevoles_age_creneaux_assopart(self.Evt, self.ListeBenevoles),
             "EvtBeneAssopar": evenement_benevole_assopart.objects.filter(evenement=self.Evt),
             "Administrateurs": ProfileAdministrateur.objects.select_related('personne').filter(association=self.Asso),
             "Organisteurs" : ProfileOrganisateur.objects.select_related('personne').filter(OrganisateurEvenement=self.Evt),
@@ -307,7 +298,7 @@ class BenevolesListView(ListView):
                 cre.save()
         # recharge les liste infos pour mettre à jour suite aux modifs ( creation ou suppression de benevole)
         self.context['Benevoles']=self.queryset.select_related('personne').filter(BenevolesEvenement=self.Evt).order_by('personne__last_name')
-        self.context['NbCreneauxParBenevole']= nb_creneaux_par_benevole(self.Evt, self.context['Benevoles'])
+        self.context['BenevolesAgeCreneauxAssopart']= liste_benevoles_age_creneaux_assopart(self.Evt, self.ListeBenevoles)
             
 
         # editer un benevole
