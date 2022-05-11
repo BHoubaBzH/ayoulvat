@@ -7,7 +7,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, View
 from django.db.models import Q
-import benevole
 
 from benevole.forms import BenevoleForm, PersonneForm
 from evenement.models import Creneau, Equipe, Evenement, Planning, evenement_benevole_assopart
@@ -29,6 +28,16 @@ def total_heures_benevoles(creneaux):
             total += c_duree
     return total
 
+def liste_benevoles_et_age(benevoles):
+    """ input queryset des benevoles sur l'evenement 
+        out dictionnaire: objet benevole - age """
+    out={}
+    for benevole in benevoles: 
+        out[benevole]=date.today().year - benevole.personne.date_de_naissance.year - \
+                        ((date.today().month, date.today().day) < \
+                        (benevole.personne.date_de_naissance.month, benevole.personne.date_de_naissance.day))
+    return out 
+
 def nb_creneaux_par_benevole(evt, benevoles):
     """ out dictionnaire: objet benevole - nombre de creneaux """
     out={}
@@ -41,7 +50,6 @@ def nb_benevoles_par_asso(list_assos, evt):
     dic = {}
     for asso in list_assos:
         dic[asso] = evenement_benevole_assopart.objects.filter(Q(asso_part=asso),Q(evenement=evt)).count()
-        print('toto : ', dic[asso])
     dic['Sans association'] = evenement_benevole_assopart.objects.filter(Q(asso_part=None),Q(evenement=evt)).count()
     dic ={k: v for k, v in sorted(dic.items(), key=lambda x: x[1], reverse=True)}
     return dic
@@ -120,7 +128,6 @@ def emails_benevoles_evenement(evt):
     for bene in evt.benevole.all():
         if Creneau.objects.filter(Q(benevole=bene),Q(evenement=evt)).count() != 0:
             listout.append(bene.personne.email)
-    return set(listout)
     return set(listout)
 
 def emails_benevoles_sans_creneaux(evt):
@@ -243,7 +250,8 @@ class BenevolesListView(ListView):
 
             "Equipes" : Equipe.objects.filter(evenement=self.Evt).order_by('nom'),
 
-            "Benevoles": self.ListeBenevoles,
+            #"Benevoles": self.ListeBenevoles,
+            "BenevolesetAge": liste_benevoles_et_age(self.ListeBenevoles),
             "NbCreneauxParBenevole": nb_creneaux_par_benevole(self.Evt, self.ListeBenevoles), 
             "EvtBeneAssopar": evenement_benevole_assopart.objects.filter(evenement=self.Evt),
             "Administrateurs": ProfileAdministrateur.objects.select_related('personne').filter(association=self.Asso),
@@ -257,6 +265,7 @@ class BenevolesListView(ListView):
             "Emails_benevoles_un_creneau" : emails_benevoles_un_creneau(self.Evt),
             "Emails_responsables" : emails_responsables(self.Evt),
         }
+
         return super().dispatch(request, *args, **kwargs)
 
     # recupere et traite les données post

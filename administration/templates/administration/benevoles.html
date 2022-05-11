@@ -46,7 +46,7 @@
                     </button>
             </div>
 
-            {% if Benevoles %}
+            {% if BenevolesetAge %}
                 {# AFFICHE LES BENEVOLES #}
                 <table class="table table-dark table-striped table-hover"  id="table_benevoles">
                     <thead>
@@ -56,11 +56,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for benevole in Benevoles %}
+                    {% for benevole,age in BenevolesetAge.items %}
                         <tr style="vertical-align : middle;">
                             <td>{{benevole.personne.last_name|upper}}</td>
                             <td>{{benevole.personne.first_name|capfirst}}</td>
-                            <td>{{benevole.personne.date_de_naissance|timesince|upto:','}}</td> {# age #}
+                            <td>{{age}}</td> {# age #}
                             <td>{{benevole.personne.email}}</td><td>{{benevole.personne.portable}}</td>                 
                             <td>
                                 {% for ben, nb in NbCreneauxParBenevole.items %}
