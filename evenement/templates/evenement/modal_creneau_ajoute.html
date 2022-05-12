@@ -16,7 +16,7 @@
         /* alert(clicked_form.id); */
 
         var debut = formData.get('case-debut-init');
-        console.log(' debut : ' + debut);
+        //console.log(' debut : ' + debut);
         /* decompose la date time pour remplir les 2 champs suite au SplitDateTimeMultiWidget */
         var debut_details = debut.split(" ")
         $("input[name=debut_0][id=id_debut_0]").val(debut_details[0]);
@@ -24,12 +24,12 @@
  
         var fin = formData.get('case-debut-init');
         var duree = formData.get('creneau-moyen');
-        console.log('duree : ' + duree);
+        //console.log('duree : ' + duree);
         /* ajoute le temps classique d'un creneau a la fin du créneau par rapport au debut */
         let [y,M,d,h,m] = fin.split(/[- :]/);
         let fin_date =  new Date(y,parseInt(M)-1,d,h,parseInt(m));
         fin_date = new Date(fin_date.getTime() + (duree*60*1000));
-        console.log(' fin : ' + fin_date);
+        //console.log(' fin : ' + fin_date);
         let fin_str = fin_date.getFullYear() + "-" + addZero((fin_date.getMonth() + 1)) + "-" + addZero(fin_date.getDate()) + " " + addZero(fin_date.getHours()) + ":" + addZero(fin_date.getMinutes())
         /* decompose la date time pour remplir les 2 champs suite au SplitDateTimeMultiWidget */
 

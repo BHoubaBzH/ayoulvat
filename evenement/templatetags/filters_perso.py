@@ -22,10 +22,3 @@ def has_group(user, group_name):
     """
     return user.groups.filter(name=group_name).exists() 
 
-@register.filter(name='upto', is_safe=True)
-@stringfilter
-def upto(value, delimiter=None):
-    """
-        garde la string jusqu'au paramète donné 
-    """
-    return value.split(delimiter)[0]

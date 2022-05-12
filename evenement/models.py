@@ -13,7 +13,7 @@ class Evenement(models.Model):
     def upload_dir_vignette(self, filename):
         nom_propre = [character for character in str(self.nom) if character.isalnum()]
         nom_propre = "".join(nom_propre)
-        return '{0}/{1}/{2}'.format(nom_propre, self.debut.year, filename)
+        return f'{nom_propre}/{self.debut.year}/{filename}'
 
     UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # supprime evenement si asso supprimée
@@ -62,7 +62,7 @@ class evenement_benevole_assopart(models.Model):
     asso_part = models.ForeignKey(AssoPartenaire, default='', blank=True, null=True, on_delete=models.SET_NULL) 
 
     def __str__(self):
-        return '{} - {}'.format(self.evenement, self.asso_part)
+        return f'{self.evenement} - {self.asso_part} - {self.profilebenevole}'
 
 class Equipe(models.Model):
     UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
@@ -100,7 +100,7 @@ class Equipe(models.Model):
                                                            " pas encore implémenté")
 
     def __str__(self):
-        return '{0} - {1}'.format(self.evenement, self.nom)
+        return f'{self.evenement} - {self.nom}'
 
 
 class Planning(models.Model):

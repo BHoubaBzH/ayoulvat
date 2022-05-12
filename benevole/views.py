@@ -119,11 +119,11 @@ def ListeGroupesUserFiltree(request, objet="", filtre=""):
             liste: groupes aux quel le user appartient en fonction du filtre
     """
     # groupes du logiciel
-    groupes_liste=Group.objects.all()
+    # groupes_liste=Group.objects.all()
     RolesUtilisateur = []
     for role, entite in RoleUtilisateur(request, objet, filtre).items():
         if entite:
-            print ('#        {:<15} ->    {} '.format(role, entite))
+            logger.info(f'#        {role:<15} ->    {entite} ')
             RolesUtilisateur.append(role)
     return RolesUtilisateur
  
@@ -176,8 +176,8 @@ def envoi_courriel_orga_inscription(request):
     evt_uuid = request.POST.get('inscription_event')
     evt = Evenement.objects.get(UUID=evt_uuid)
     emails_orga = []
-    print ('evt nom : ',evt.nom)
-    print ('ben nom : ',request.user)
+    logger.debug(f'evt nom : {evt.nom}')
+    logger.debug(f'ben nom : {request.user}')
     for orga in evt.organisateur.all():
         emails_orga.append(orga.personne.email)
     if emails_orga:
@@ -188,7 +188,7 @@ def envoi_courriel_orga_inscription(request):
             '.format(request.user, evt)
         from_courriel = 'no-reply@deusta.bzh'
         to_courriel = emails_orga
-        print(to_courriel)
+        logger.debug(to_courriel)
         if sujet and to_courriel and from_courriel:
             envoi_courriel(sujet, message_text, from_courriel, to_courriel, message_html)
 
@@ -208,10 +208,10 @@ def Home(request):
         page profile de login et principale du benevole
     """
     # log les donnees post
-    print('#########################################################')
+    logger.info('#########################################################')
     for key, value in request.POST.items():
-        print('#        POST -> {0} : {1}'.format(key, value))
-    print('#########################################################')
+        logger.info(f'#        POST -> {key} : {value}')
+    logger.info('#########################################################')
     data = {
         "FormPersonne" : PersonneForm(),  # form personne non liée
         "Evenements" : Evenement.objects.all().order_by("debut"),  # liste de tous les evenements
@@ -229,10 +229,10 @@ def Home(request):
     }
     
     # check si on a un administrateur:
-    print('#########################################################')
-    print ('#   utilisateur connecté: ')
-    print ('#        {0} {1} '.format(request.user.first_name, request.user.last_name))
-    print ('#   roles : ')
+    logger.info('#########################################################')
+    logger.info('#   utilisateur connecté: ')
+    logger.info(f'#        {request.user.first_name} {request.user.last_name} ')
+    logger.info('#   roles : ')
 
     RolesUtilisateur = ListeGroupesUserFiltree(request)
     try:
@@ -240,7 +240,7 @@ def Home(request):
             data['Administrateur'] = "oui" # passe les roles 
     except:
         logger.error('erreur dans les RolesUtilisateur')
-    print('#########################################################')  
+    logger.info('#########################################################')  
 
     try:
         data["Ev_ass_par_benevole"] = evenement_benevole_assopart.objects.filter(
@@ -301,10 +301,10 @@ def Profile(request):
         page profile des personnes
     """
     # log les donnees post
-    print('#########################################################')
+    logger.info('#########################################################')
     for key, value in request.POST.items():
-        print('#        POST -> {0} : {1}'.format(key, value))
-    print('#########################################################')
+        logger.info(f'#        POST -> {key} : {value}')
+    logger.info('#########################################################')
 
     # un bénévole accede a son profile
     if request.method == "POST" and request.POST.get('personne'):
@@ -325,7 +325,7 @@ def Profile(request):
         if FormPersonne.is_valid() and FormBenevole.is_valid():
             FormPersonne.save()   
             new_profilebenevole = FormBenevole.save(Personne.objects.get(UUID=request.POST.get('personne')))
-            print ('profile :', new_profilebenevole)
+            logger.debug(f'profile : {new_profilebenevole}')
             messages.success(request, flash[language]['profile_up_success'])
             return redirect("home")
             

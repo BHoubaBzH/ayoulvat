@@ -50,16 +50,16 @@ def planning_range(debut, fin, delta):
         clés  : valeurs
         dates : ( heures, datetimes)
     """
-    # print('*** Debut fonction planning_range : {}'.format(datetime.now()))
-    # print('###### planning : {0} - {1}'.format(debut, fin))
+    # logger.info('*** Debut fonction planning_range : {}'.format(datetime.now()))
+    # logger.info('###### planning : {0} - {1}'.format(debut, fin))
     dates_heures = {}
     while debut <= fin:
-        # print('date : {}'.format(debut))
+        # logger.info('date : {}'.format(debut))
         date = debut.strftime("%Y-%m-%d-%H%M")
         heure = debut.strftime("%H:%M")
         dates_heures[date] = [heure, debut]
         debut += timedelta(minutes=delta)
-    # print('*** Fin fonction planning_range : {}'.format(datetime.now()))
+    # logger.info('*** Fin fonction planning_range : {}'.format(datetime.now()))
     return dates_heures
 
 
@@ -90,7 +90,7 @@ def tous_creneaux_entre_2_heures(debut, fin, uuid_evenement):
             creneaux : liste de creneaux
         donne tous les créneaux d'un evenement entre 2 date pour savor si un benevole est deja occupé
     """
-    # print('*** Debut fonction tous_creneaux_entre_2_heures : {}'.format(datetime.now()))
+    # logger.info('*** Debut fonction tous_creneaux_entre_2_heures : {}'.format(datetime.now()))
     crenos_out = []  # liste
     crenos = Creneau.objects.filter(evenement_id=uuid_evenement) 
     for creno in crenos:
@@ -106,8 +106,8 @@ def tous_creneaux_entre_2_heures(debut, fin, uuid_evenement):
             creno.debut = debut
             creno.fin = fin
             crenos_out.append(creno)
-        # print(' creno : {}'.format(creno.nom))
-    # print('*** Fin fonction tous_creneaux_entre_2_heures : {}'.format(datetime.now()))
+        # logger.info(' creno : {}'.format(creno.nom))
+    # logger.info('*** Fin fonction tous_creneaux_entre_2_heures : {}'.format(datetime.now()))
     return crenos_out
 
 def forms_equipe(request):
@@ -118,7 +118,7 @@ def forms_equipe(request):
             None
         gère la création, modification et suppression des equipes en fonction du contenu de POST
     """
-    # print('*** Debut fonction forms_equipe : {}'.format(datetime.now()))
+    # logger.info('*** Debut fonction forms_equipe : {}'.format(datetime.now()))
     if any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter']):
         if 'equipe_modifier' in request.POST:
             formequipe = EquipeForm(request.POST,
@@ -126,9 +126,9 @@ def forms_equipe(request):
         # nouvel objet en base
         if 'equipe_ajouter' in request.POST:
             formequipe = EquipeForm(request.POST)
-            print(formequipe.errors)
+            logger.info(formequipe.errors)
         if formequipe.is_valid():
-            print('equipe modifié ou ajouté')
+            logger.info('equipe modifié ou ajouté')
             formequipe.save()
 
     if request.POST.get('equipe_supprimer'):
@@ -150,8 +150,8 @@ def dic_forms_equipes(uuid_evenement):
         #formequipe = EquipeForm(instance=Equipe.objects.get(UUID=equipe.UUID)) # trop de queries db
         formequipe = EquipeForm(instance=equipe)
         dic_equipe_init[equipe.UUID] = formequipe  # dictionnaire des forms
-        # print (' equipe UUID : {}'.format(equipe.UUID))
-    # print('*** Fin fonction forms_equipe : {}'.format(datetime.now()))
+        # logger.info(' equipe UUID : {}'.format(equipe.UUID))
+    # logger.info('*** Fin fonction forms_equipe : {}'.format(datetime.now()))
     return dic_equipe_init
 
 def forms_planning(request):
@@ -161,7 +161,7 @@ def forms_planning(request):
         sortie:
             None
     """
-    # print('*** Debut fonction forms_planning : {}'.format(datetime.now()))
+    # logger.info('*** Debut fonction forms_planning : {}'.format(datetime.now()))
     formplanning = ""
     if any(x in request.POST for x in ['planning_modifier', 'planning_ajouter']):
         if 'planning_modifier' in request.POST:
@@ -211,8 +211,8 @@ def dic_forms_plannings(uuid_evenement):
         # formplanning = PlanningForm(instance=Planning.objects.get(UUID=planning.UUID)) # trop de queries db
         formplanning = PlanningForm(instance=planning)
         dic_planning_init[planning.UUID] = formplanning  # dictionnaire des forms
-        # print (' planning UUID : {}'.format(planning.UUID))
-    # print('*** Fin fonction forms_planning : {}'.format(datetime.now()))
+        # logger.info(' planning UUID : {}'.format(planning.UUID))
+    # logger.info('*** Fin fonction forms_planning : {}'.format(datetime.now()))
     return dic_planning_init
 
 def forms_poste(request):
@@ -223,7 +223,7 @@ def forms_poste(request):
             None
         gère la création, modification et suppression de poste en fonction du contenu de POST
     """
-    # print('*** Debut fonction forms_postes : {}'.format(datetime.now()))
+    # logger.info('*** Debut fonction forms_postes : {}'.format(datetime.now()))
     # sauvegarde notre form modifée et crée envoyée en POST
     if any(x in request.POST for x in ['poste_modifier', 'poste_ajouter']):
         # form en lien avec l objet basé sur model et pk UUID poste
@@ -254,7 +254,7 @@ def forms_poste(request):
             messages.error(request, flash[language]['poste_sup_error'])
     return None
 
-def dic_forms_postes(plan_uuid):
+def dic_forms_postes(planning):
     """
         entree:
             uuid du planning en cours
@@ -264,13 +264,13 @@ def dic_forms_postes(plan_uuid):
     # cree dans la page toutes nos from pour les postes du planning
     dic_postes_init = {}  # dictionnaire des forms
     # parcours les postes du planning dans la base
-    postes = Poste.objects.filter(planning_id=plan_uuid)
+    postes = planning.poste_set.all()
     for poste in postes:
         # form en lien avec l objet basé sur model et pk UUID poste
         #formposte = PosteForm(instance=Poste.objects.get(UUID=poste.UUID))  # trop de queries db
         formposte = PosteForm(instance=poste)
         dic_postes_init[poste.UUID] = formposte  # dictionnaire des forms
-        #print (' poste UUID : {1} form : {0}'.format(formposte, poste.UUID))
+        #logger.info(' poste UUID : {1} form : {0}'.format(formposte, poste.UUID))
     return dic_postes_init
 
 def forms_creneau(request):
@@ -283,7 +283,7 @@ def forms_creneau(request):
     """
     pas = planning_retourne_pas(request)
     formcreneau = ""
-    # print('*** Debut fonction forms_creneaux : {}'.format(datetime.now()))
+    # logger.info('*** Debut fonction forms_creneaux : {}'.format(datetime.now()))
     if any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter']) and not request.POST.get('creneau_supprimer'):
         # form en lien avec l objet basé sur model et pk UUID creneau
         if 'creneau_modifier' in request.POST:
@@ -329,11 +329,11 @@ def forms_creneau(request):
     return formcreneau
 
 
-def dic_forms_creneaux(request, data):
+def dic_forms_creneaux(request, planning):
     """
         entree:
             la requete (contenant les infos POST)
-            l'objet data renvoyé au template
+            le planning en cours
         sortie:
             dictionnaire des forms creneaux: key: UUID / val: form
     """
@@ -343,7 +343,7 @@ def dic_forms_creneaux(request, data):
     # key : UUID postes
     # val : form de creneau initialisée objet db lié
     # parcours les creneaux du planning dans la base
-    creneaux = Creneau.objects.filter(planning_id=data["planning_uuid"])
+    creneaux = planning.creneau_set.all()
     for creneau in creneaux:  # liste des creneaux du planning
         # form en lien avec l objet basé sur model et pk UUID creneau
         #formcreneau = CreneauForm(instance=Creneau.objects.get(UUID=creneau.UUID),  # trop de queries db
@@ -356,8 +356,8 @@ def dic_forms_creneaux(request, data):
                                   personne_connectee=request.user,
                                   type=creneau._meta.get_field('type').value_from_object(creneau), )
         dic_creneaux_init[creneau.UUID] = formcreneau  # dictionnaire des forms: key: UUID / val: form
-        # print(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID))
-    # print('*** Fin fonction forms_creneaux : {}'.format(datetime.now()))
+        # logger.info(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID))
+    # logger.info('*** Fin fonction forms_creneaux : {}'.format(datetime.now()))
     return dic_creneaux_init
 
 
@@ -370,7 +370,7 @@ def liste_evenements(request):
     liste les evenements de l'asso
     """
     if request.method == 'GET' and 'uuid_asso' in request.GET :
-        print('get')
+        logger.info('get')
         # récupère dans url uuid de l association
         uuid_asso = request.GET.get('uuid_asso')
     else:
@@ -381,7 +381,7 @@ def liste_evenements(request):
     try: # on filtre les évènements sur ceux de l asso uniquement
         liste_evenements = Evenement.objects.filter(association_id=uuid_asso)
     except:
-        print('Pas encore d\'évènement pour cette asso, voulez-vous en creer un?')
+        logger.info('Pas encore d\'évènement pour cette asso, voulez-vous en creer un?')
 
     data = {
         "Association": association,
@@ -389,10 +389,10 @@ def liste_evenements(request):
     }
 
     # check des roles de user sur l asso:
-    print('#########################################################')
-    print ('#   utilisateur connecté: ')
-    print (f'#        {request.user.first_name} {request.user.last_name} ')
-    print ('#   roles : ')
+    logger.info('#########################################################')
+    logger.info('#   utilisateur connecté: ')
+    logger.info(f'#        {request.user.first_name} {request.user.last_name} ')
+    logger.info('#   roles : ')
     # groupes/roles de l utilisateur sur l asso
     try:
         RolesUtilisateur = ListeGroupesUserFiltree(request, "", evenement)
@@ -400,7 +400,7 @@ def liste_evenements(request):
             data[role] = "oui" # passe les roles 
     except:
         logger.error('erreur dans les RolesUtilisateur')
-    print('#########################################################')    
+    logger.info('#########################################################')    
 
     return render(request, "evenement/base_evenement.html", data)
 
@@ -411,9 +411,9 @@ def evenement(request, uuid_evenement):
     """
         page d'un evenement
     """
-    print('')
-    print('*******************************************************')
-    print(f'*** Debut traitement view : {datetime.now()}')
+    logger.info('')
+    logger.info('*******************************************************')
+    logger.info(f'*** Debut traitement view : {datetime.now()}')
     # store dans la session le uuid de l'evenement
     # il apparait dans l'url pour pouvoir donner le liens directe aux bénévoles par la suite
     request.session['uuid_evenement'] = uuid_evenement.urn
@@ -425,12 +425,12 @@ def evenement(request, uuid_evenement):
     # on stock dans la session
     request.session['uuid_association'] = uuid_asso.urn
     data = {
-        "Association": Association.objects.get(UUID=uuid_asso),
+        "Association": evenement.association,
         "Evenement": evenement,
-        "Equipes":  Equipe.objects.filter(evenement_id=evenement).select_related('evenement').order_by('nom'),  # objets equipes de l'evenement
-        "Plannings": Planning.objects.filter(evenement_id=evenement).select_related('equipe', 'evenement').order_by('debut'),  # objets planning de l'evenement
-        "Postes": Poste.objects.filter(evenement_id=evenement).select_related('planning', 'equipe', 'evenement').order_by('nom'),  # objets postes de l'evenement pour planning perso
-        "Creneaux" : Creneau.objects.filter(evenement_id=evenement).select_related('poste', 'planning', 'equipe', 'evenement').order_by('debut'),
+        "Equipes":  evenement.equipe_set.order_by('nom').select_related('evenement').order_by('nom'),  # objets equipes de l'evenement
+        "Plannings": evenement.planning_set.order_by('debut').select_related('equipe', 'evenement'),  # objets planning de l'evenement
+        "Postes": evenement.poste_set.order_by('nom').select_related('planning', 'equipe', 'evenement'),  # objets postes de l'evenement pour planning perso
+        "Creneaux" : evenement.creneau_set.order_by('debut').select_related('poste', 'planning', 'equipe', 'evenement'),
         "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=evenement),  # objets benevoles de l'evenement
 
         "dispo_actif": "False", # active ou non la gestion des disponibilités des bénévoles; par défaut désactivé
@@ -443,7 +443,7 @@ def evenement(request, uuid_evenement):
         "planning_uuid": "",  # par defaut, pas de planning selectionée
         "PlanningRange": "",  # dictionnaire formaté des dates heures de l'objet selectionné
         "plannings_equipes": Planning.objects.all().values_list('equipe_id', flat=True).distinct(), # liste des équipes ayant au moins un planning créé
-        "creneaux_benevole" : Creneau.objects.filter(Q(benevole_id=request.user.profilebenevole.UUID),Q(evenement_id=evenement)).select_related('poste', 'planning', 'equipe', 'evenement').order_by('debut'), # crenaux du bénévole connecté
+        "creneaux_benevole" : evenement.creneau_set.filter(benevole_id=request.user.profilebenevole.UUID).order_by('debut').select_related('poste', 'planning', 'equipe', 'evenement'), # crenaux du bénévole connecté
         
         "FormEquipe" : EquipeForm(initial={'evenement': evenement}), # form non liée au template pour ajout d une nouvelle equipe
         "DicEquipes" : dic_forms_equipes(evenement),
@@ -457,17 +457,18 @@ def evenement(request, uuid_evenement):
         "EvtOuvertBenevoles" : inscription_ouvert(evenement.inscription_debut, evenement.inscription_fin) , # integer précisant si on est avant/dans/après la période de modification des creneaux
         "Text": text_template[language], # textes traduits 
     }
+
     data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})
     # recupere les uuid en POST, but est de tout gerer dans une seule page
     # et d'afficher les infos en fonction des POST recus :
     if request.method == "POST":
 
         # log les donnees post
-        print('##################### evenement ########################')
-        print ('#   données POST passées: ')
+        logger.info('##################### evenement ########################')
+        logger.info('#   données POST passées: ')
         for key, value in request.POST.items():
-            print(f'#        POST -> {key} : {value}')
-        print('#########################################################')
+            logger.info(f'#        POST -> {key} : {value}')
+        logger.info('#########################################################')
 
         uuid_evenement = request.POST.get('evenement')
         # le bénévole prend ou libère un créneau
@@ -531,10 +532,11 @@ def evenement(request, uuid_evenement):
 
                 # envoi les forms au template
                 if data["planning_uuid"]:
-                    data["DicPostes"] = dic_forms_postes(data["planning_uuid"])
-                    data["DicCreneaux"] = dic_forms_creneaux(request, data)
-                    data["Postes"] = Poste.objects.filter(planning_id=data["planning_uuid"]).order_by('nom')  # objets postes du planning
-                    data["Creneaux"] = Creneau.objects.filter(planning_id=data["planning_uuid"]).order_by('debut')  # objets creneaux du planning
+                    planning = Planning.objects.get(UUID=data["planning_uuid"])
+                    data["DicPostes"] = dic_forms_postes(planning)
+                    data["DicCreneaux"] = dic_forms_creneaux(request, planning)
+                    data["Postes"] = planning.poste_set.order_by('nom')  # objets postes du planning
+                    data["Creneaux"] = planning.creneau_set.order_by('nom')  # objets creneaux du planning
 
             elif not request.POST.get('equipe'):  
                 # selection d'un evenement uniquement
@@ -558,7 +560,7 @@ def evenement(request, uuid_evenement):
                             
             # on envoie la form non liée au template pour ajout d un nouveau creneau
             # si pas de creneau selectionné : type = "", sinon type = "creneau" ou "benevole" 
-            # print('POST TYPE : {}'.format(request.POST.get('type')))
+            # logger.info('POST TYPE : {}'.format(request.POST.get('type')))
             data["FormCreneau"] = CreneauForm(initial={'evenement': evenement,
                                                     'equipe': data["equipe_uuid"],
                                                     'planning': data["planning_uuid"],
@@ -583,10 +585,10 @@ def evenement(request, uuid_evenement):
                                             evenement.fin,
                                             30)
     # check des roles de user sur l evenement:
-    print('#########################################################')
-    print ('#   utilisateur connecté: ')
-    print (f'#        {request.user.first_name} {request.user.last_name} ')
-    print ('#   roles : ')
+    logger.info('#########################################################')
+    logger.info('#   utilisateur connecté: ')
+    logger.info(f'#        {request.user.first_name} {request.user.last_name} ')
+    logger.info('#   roles : ')
 
     # groupes/roles de l utilisateur
     if not request.method == "POST" or (request.POST.get('evenement') and not request.POST.get('equipe') and not request.POST.get('planning'))or request.POST.get('planning') and request.POST.get('planning_supprimer'):
@@ -606,9 +608,9 @@ def evenement(request, uuid_evenement):
             data[role] = "oui" # passe les roles 
     except:
         logger.error('erreur dans les RolesUtilisateur')
-    print('#########################################################')     
+    logger.info('#########################################################')     
                                            
-    print(f'*** Fin traitement view : {datetime.now()}')
+    logger.info(f'*** Fin traitement view : {datetime.now()}')
     return render(request, "evenement/base_evenement.html", data)
 
 
@@ -619,19 +621,18 @@ def CreneauFetch(request):
         retourne un form creneau
         le but est de ne pas avoir a charger un modal spécifique par creneau affiché
     """
-    print(request)
+    logger.info(request)
     if request.method == "POST":
-        print('##################### CreneauFetch ######################')
+        logger.info('##################### CreneauFetch ######################')
         for key, value in request.POST.items():
-            print(f'#        POST -> {key} : {value}')
-        print('#########################################################')
+            logger.info(f'#        POST -> {key} : {value}')
+        logger.info('#########################################################')
         
         if request.POST.get('creneau_affiche') == 'form' :
             creneau = CreneauForm(personne_connectee=request.user, 
                                 type="creneau",
                                 evenement=request.POST.get('evenement_uuid'),
                                 instance=Creneau.objects.get(UUID=request.POST.get('creneau_uuid')))
-            #print(creneau)
             return HttpResponse(creneau.as_table(), content_type="text/plain")
             # return JsonResponse({'creneau_form' : creneau }, safe=False)
         elif request.POST.get('creneau_affiche') == 'json':
@@ -662,19 +663,19 @@ def PlanningFetch(request):
         retourne un form planning
         le but est de ne pas avoir a charger un modal spécifique par planning affiché
     """
-    print(request)
+    logger.info(request)
     if request.method == "POST":
-        print('##################### PlanningFetch ######################')
+        logger.info('##################### PlanningFetch ######################')
         for key, value in request.POST.items():
-            print(f'#        POST -> {key} : {value}')
-        print('#########################################################')
+            logger.info(f'#        POST -> {key} : {value}')
+        logger.info('#########################################################')
         if request.POST.get('planning_affiche') == 'form' :
             planning = PlanningForm(instance=Planning.objects.get(UUID=request.POST.get('planning_uuid')))
             return HttpResponse(planning.as_table(), content_type="text/plain")
         elif request.POST.get('planning_affiche') == 'json':
             planning = Planning.objects.filter(UUID=request.POST.get('planning_uuid')).values()
             equipe_nom = Equipe.objects.get(planning__UUID=request.POST.get('planning_uuid')).nom
-            print(equipe_nom)
+            logger.info(equipe_nom)
             context = {
                 'planning' : list(planning)[0],
                 'equipe_nom' : equipe_nom,

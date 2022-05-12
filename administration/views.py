@@ -15,6 +15,12 @@ from benevole.models import Personne, ProfileAdministrateur, ProfileBenevole, Pr
 from association.models import AssoPartenaire, Association
 
 from django.shortcuts import render
+
+# import the logging library
+import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+
 ################################################
 #            fonctions 
 ################################################
@@ -88,9 +94,9 @@ def repartition_par_assos(creneaux):
     total = total_heures_benevoles(creneaux)
 
     for c in creneaux:
-        #print('ev ', c, c.evenement.UUID)
-        #print('ben', c, c.benevole.UUID)
-        #print(evenement_benevole_assopart.objects.get(Q(evenement=c.evenement),Q(profilebenevole=c.benevole)).asso_part)
+        #logger.info('ev ', c, c.evenement.UUID)
+        #logger.info('ben', c, c.benevole.UUID)
+        #logger.info(evenement_benevole_assopart.objects.get(Q(evenement=c.evenement),Q(profilebenevole=c.benevole)).asso_part)
         try:
             # on a un evenement, un benevole et une asso_prt de liés
             asso_du_creneau=evenement_benevole_assopart.objects.get(Q(evenement=c.evenement),Q(profilebenevole=c.benevole)).asso_part
@@ -99,12 +105,12 @@ def repartition_par_assos(creneaux):
             pass
         if asso_du_creneau:
             c_duree = c.fin - c.debut
-            # print('{} : {}'.format(c.benevole.assopartenaire, c_duree))
+            # logger.info('{} : {}'.format(c.benevole.assopartenaire, c_duree))
             try:
                 repart[asso_du_creneau.nom] += c_duree
             except:
                 repart[asso_du_creneau.nom] = c_duree
-            # print('{} : {}'.format(c.benevole.assopartenaire, repart[c.benevole.assopartenaire]))
+            # logger.info('{} : {}'.format(c.benevole.assopartenaire, repart[c.benevole.assopartenaire]))
         else:
             c_duree = c.fin - c.debut
             try:
@@ -113,7 +119,7 @@ def repartition_par_assos(creneaux):
                 repart["sans association"] = c_duree
     for rep, val in repart.items():
         repart[rep] = round(val / total *100, 1)
-        # print('{} : {}'.format(rep, repart[rep]))
+        # logger.info('{} : {}'.format(rep, repart[rep]))
     return dict(sorted(repart.items(), key=lambda item: item[1],reverse=True))
 
 def emails_benevoles_evenement(evt):
@@ -226,11 +232,12 @@ class BenevolesListView(ListView):
     #paginate_by = 10
 
     def dispatch(self, request, *args, **kwargs):
-        print('{} : dispatch'.format(__class__.__name__))
+        logger.info(f'{__class__.__name__} : dispatch')
         self.Evt = Evenement.objects.get(UUID=self.request.session['uuid_evenement']) # recuper l evenement
-        self.Asso = Association.objects.get(UUID=self.request.session['uuid_association']) # recuper l asso
+        self.Asso = self.Evt.association # recuper l asso
         self.ListeBenevoles = self.queryset.select_related('personne').filter(BenevolesEvenement=self.Evt).order_by('personne__last_name')  # objets benevoles de l'evenement
         # definit les infos a envoyer au tempate
+
         self.context = { 
             # nav bar infos : debut
             "EvtOuvertBenevoles" : inscription_ouvert(self.Evt.inscription_debut, self.Evt.inscription_fin), # integer précisant si on est avant/dans/après la période de modification des creneaux
@@ -242,12 +249,12 @@ class BenevolesListView(ListView):
 
             "Equipes" : Equipe.objects.filter(evenement=self.Evt).order_by('nom'),
 
-            #"Benevoles": self.ListeBenevoles,
             "BenevolesAgeCreneauxAssopart": liste_benevoles_age_creneaux_assopart(self.Evt, self.ListeBenevoles),
-            "EvtBeneAssopar": evenement_benevole_assopart.objects.filter(evenement=self.Evt),
-            "Administrateurs": ProfileAdministrateur.objects.select_related('personne').filter(association=self.Asso),
-            "Organisteurs" : ProfileOrganisateur.objects.select_related('personne').filter(OrganisateurEvenement=self.Evt),
-            "Responsables" : ProfileResponsable.objects.select_related('personne').filter(ResponsableEquipe__in=Equipe.objects.filter(evenement=self.Evt)),
+            "EvtBeneAssopar": self.Evt.evenement_benevole_assopart_set.all(),
+
+            "Administrateur": self.Asso.administrateur,
+            "Organisteurs" : self.Evt.organisateur.all().select_related('personne'),
+            "Responsables" : ProfileResponsable.objects.select_related('personne').filter(ResponsableEquipe__in=self.Evt.equipe_set.all()),
 
             "Emails_benevoles_par_planning" : emails_benevoles_par_planning(self.Evt),
             "Emails_benevoles_par_equipe" : emails_benevoles_par_equipe(self.Evt),
@@ -261,11 +268,11 @@ class BenevolesListView(ListView):
 
     # recupere et traite les données post
     def post(self, request, *args, **kwargs):
-        print('{} : post'.format(__class__.__name__))
-        print('#########################################################')
+        logger.info(f'{__class__.__name__} : post')
+        logger.info('#########################################################')
         for key, value in request.POST.items():
-            print('#        POST -> {0} : {1}'.format(key, value))
-        print('#########################################################')
+            logger.info(f'#        POST -> {key} : {value}')
+        logger.info('#########################################################')
 
         # creer un benevole
         if 'benevole_creer' in request.POST:
@@ -279,8 +286,8 @@ class BenevolesListView(ListView):
                 evenementObj.benevole.add(benevoleObj)
                 #return render(request, self.template_name, self.context )
             else:
-                print('erreur de creation de bénévole : {}'.format(formpersonne.errors))
-                raise Http404('erreur de creation de bénévole : {}'.format(formpersonne.errors))
+                logger.info(f'erreur de creation de bénévole : {formpersonne.errors}')
+                raise Http404(f'erreur de creation de bénévole : {formpersonne.errors}')
             ### ajouter la possibilité de lier à un benevole existant deja
             ###             creer lien evenement-profilebenevole
             ### ajouter la possibilite de lier à une personne dans profilebenevole
@@ -304,13 +311,13 @@ class BenevolesListView(ListView):
         # editer un benevole
         #personnesup = get_object_or_404(Personne, UUID=request.POST.get('BenevoleUUID'))
         #if all(k in request.POST for k in ('benevole_editer', 'BenevoleUUID')):
-        #    print('benevole édité : {0} {1}'.format(personnesup.last_name, personnesup.first_name))
+        #    logger.info('benevole édité : {0} {1}'.format(personnesup.last_name, personnesup.first_name))
  
         return render(request, self.template_name, self.context)
 
     # envoi les datas au template
     def get_context_data(self, **kwargs):
-        print('{} : get_context_data'.format(__class__.__name__))
+        logger.info(f'{__class__.__name__} : get_context_data')
         return self.context
 
 
@@ -320,10 +327,12 @@ class DashboardView(View):
     template_name = "administration/dashboard.html"
  
     def dispatch(self, request, *args, **kwargs):
-        print('{} : dispatch'.format(__class__.__name__))
+        logger.info(f'{__class__.__name__} : dispatch')
+        
         self.Evt = Evenement.objects.get(UUID=self.request.session['uuid_evenement']) # recuper l evenement
         self.Asso = Association.objects.get(UUID=self.request.session['uuid_association']) # recuper l asso
-        self.queryset_c = Creneau.objects.filter(evenement=self.Evt, type="creneau") # les creneau de l evenement
+        self.queryset_c = self.Evt.creneau_set.filter(type="creneau") # les creneau de l evenement
+
         self.context = {
             # nav bar infos : debut
             "EvtOuvertBenevoles" : inscription_ouvert(self.Evt.inscription_debut, self.Evt.inscription_fin), # integer précisant si on est avant/dans/après la période de modification des creneaux
@@ -332,26 +341,28 @@ class DashboardView(View):
             "Association" : self.Asso,
             "Evenement" : self.Evt, 
             "Plannings": Planning.objects.filter(evenement=self.Evt).order_by('debut'),  # objets planning de l'evenement
+
             "Creneaux" : self.queryset_c,
-            "Creneaux_libres" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=True).count,
-            "Creneaux_occupes" : Creneau.objects.filter(evenement=self.Evt, type="creneau", benevole__isnull=False).count,
+            "Creneaux_libres" : self.Evt.creneau_set.filter(type="creneau", benevole__isnull=True).count,
+            "Creneaux_occupes" : self.Evt.creneau_set.filter(type="creneau", benevole__isnull=False).count,
             "Assos_partenaires" : self.Evt.assopartenaire.all(), # partenaire de l evenement
             "Benevoles_par_asso" : nb_benevoles_par_asso(self.Evt.assopartenaire.all(), self.Evt),
-            "Plannings_occupation" : plannings_occupation(Planning.objects.filter(evenement=self.Evt).order_by('equipe__nom','debut')),
-            "Equipes_occupation" : equipes_occupation(Equipe.objects.filter(evenement=self.Evt).order_by('nom')),
+            "Plannings_occupation" : plannings_occupation(self.Evt.planning_set.order_by('equipe__nom','debut')),
+
+            "Equipes_occupation" : equipes_occupation(self.Evt.equipe_set.order_by('nom')),
             "Repartition_par_assos" : repartition_par_assos(self.queryset_c.filter(benevole__isnull=False)),
             "Total_heures_benevoles" : '{}'.format(total_heures_benevoles(self.queryset_c.filter(benevole__isnull=False)).total_seconds()/3600),
 
             "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=self.Evt),  # objets benevoles inscrits à l'evenement
             "Benevoles_c": self.queryset_c.filter(benevole__isnull=False).values('benevole_id').distinct(), # objets benevoles inscrits à l'evenement avec au moins un creneau
-            "Administrateurs": ProfileAdministrateur.objects.filter(association=self.Asso),
-            "Organisteurs" : ProfileOrganisateur.objects.filter(OrganisateurEvenement=self.Evt),
-            "Responsables" : ProfileResponsable.objects.filter(ResponsableEquipe__in=Equipe.objects.filter(evenement=self.Evt)),
+            "Administrateurs": self.Asso.administrateur,
+            "Organisteurs" : self.Evt.organisateur.all().select_related('personne'),
+            "Responsables" : ProfileResponsable.objects.select_related('personne').filter(ResponsableEquipe__in=self.Evt.equipe_set.all()),
         }
         return super().dispatch(request, *args, **kwargs)
 
     #  
     def get(self, request, *args, **kwargs):
-        print('{} : get_context_data'.format(__class__.__name__))
+        logger.info(f'{__class__.__name__} : get_context_data')
         return render(request, self.template_name, self.context)
 

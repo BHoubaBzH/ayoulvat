@@ -50,6 +50,7 @@ class EvenementAdmin(admin.ModelAdmin):
                                 }),
                 )
     #filter_horizontal = ('benevole', 'assopartenaire')
+    list_select_related = ['association']
     inlines = (BenevoleEvenementInLine, )
 
 admin.site.register(models.Equipe)

@@ -64,7 +64,7 @@ class ProfileAdministrateur(models.Model):
     referent = models.BooleanField(default=False)
 
     def __str__(self):
-        return "{self.personne}"
+        return f"{self.personne}"
 
 
 # paramètres specifiques organisateur de l'evenement

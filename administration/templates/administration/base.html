@@ -15,6 +15,8 @@
       {# internal CSS pour dynamique #}
       {% include 'evenement/evenement.css.html'%}
   </style>
+  {# sources scripts #}
+  <script src="{% static 'js/loader.js' %}"></script>
   {# ressources JQUERY #}
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   {# fonts et icons BOOTSTRAP #}
@@ -30,10 +32,9 @@
 
 </head>
 <body class="override">
-
+  {#affiche un loader pendant que le client attend un retour du serveur#}
+  <div class="loader" id="loader" style="display:none"></div>
   {% include 'benevole/navbar.html'%}
-
-
 
 <div class="container-fluid">
   <div class="row"> 
