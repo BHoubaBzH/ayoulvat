@@ -6,6 +6,7 @@
     --planning_hover: #57fd135c;
     --creneau_hover: #52531a; 
     --fond_body: #e4e4e4;
+	--scrollbar_couleur: #0b6dff;
   }
   
 body {
@@ -40,16 +41,20 @@ body {
 	z-index: 1000;
 }
 
-.footer, .sidebar {
-    background-color: #dbd8d8;
-}
-
 .footer {
-    margin-top: 2em;
+    background-color: #dbd8d8;
+	margin-top: 2em;
 }
 
 .footer .right {
     text-align: right;
+}
+
+@media screen and (max-width: 768px) {
+    footer {
+        visibility: hidden;
+        display: none;
+    }
 }
 
 /*************************
@@ -281,6 +286,34 @@ hr {
 	padding: 0px;
 }
 
+/*************************
+ * scrollbar perso
+ *************************/
+ ::-webkit-scrollbar-track
+ {
+	 -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	 background-color: #F5F5F5;
+ }
+ 
+::-webkit-scrollbar
+ {
+	 width: 10px;
+	 background-color: #F5F5F5;
+ }
+ 
+::-webkit-scrollbar-thumb
+ {
+	 background-color: var(--scrollbar_couleur);	
+	 background-image: -webkit-linear-gradient(45deg,
+											   rgba(255, 255, 255, .2) 25%,
+											   transparent 25%,
+											   transparent 50%,
+											   rgba(255, 255, 255, .2) 50%,
+											   rgba(255, 255, 255, .2) 75%,
+											   transparent 75%,
+											   transparent)
+ }
+
 /*################ administration ###################*/
 .table-row-border-top {
 	border-top: double;
@@ -300,3 +333,6 @@ hr {
   z-index: 9999;
   background: url('/static/evenement/page_loader.gif') 50% 50% no-repeat rgb(0 0 0 / 58%);
 } 
+
+
+

@@ -20,7 +20,7 @@
                             data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="
                               tableau de bord de l'évènement et des bénévoles."
                               formaction="{% url 'dashboard' %}" onclick="loader()">
-                              <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Tableau de bord</span>
+                              <i class="fs-1 bi-speedometer2"></i> <span class="ms-1 fs-5 d-none d-sm-inline">Tableau de bord</span>
                           </button>
                         </form>
                       </li>
@@ -30,7 +30,7 @@
                       <form class="form evenement-form" method="post">
                           <button class="nav-link align-middle px-0" 
                             data-bs-toggle="tooltip" data-bs-placement="right" title="Création des équipes et plannings" onclick="loader()">
-                            <i class="fs-4 bi-grid"></i><span class="ms-1 d-none d-sm-inline">Equipes/Plannings</span>
+                            <i class="fs-1 bi-grid"></i><span class="ms-1 fs-5 d-none d-sm-inline">Equipes Plannings</span>
                               {% csrf_token %}
                             <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                           </button>
@@ -48,45 +48,51 @@
                     <input type="hidden" name="planning_global" value="oui">
                     <button class="nav-link align-middle px-0" 
                       data-bs-toggle="tooltip" data-bs-placement="right" title="Planning de l'événement" onclick="loader()">
-                      <i class="fs-4 bi-table"></i><span class="ms-1 fs-5 d-none d-sm-inline">Planning Global</span>
+                      <i class="fs-1 bi-table"></i><span class="ms-1 fs-5 d-none d-sm-inline">Planning</span>
                         {% csrf_token %}
                       <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                     </button>
                   </form>
                 </li>
 
-                <a class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                  <i class="fs-4 bi-people"></i> <span class="ms-1 fs-5 d-none d-sm-inline"> Equipes:</span>
-                </a>
-                {% for team in equipes_avec_planning %}
-                {# liste équipes #}
-                <li class="ms-2">
-                  <a href="#submenu-{{team.UUID}}" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                    <i class="fs-4 bi-person"></i> <span class="ms-1 d-none d-sm-inline" 
-                      {% if team.description %} data-bs-toggle="tooltip" data-bs-placement="right" title="{{team.description}}" {% endif %}>{{ team.nom|capfirst }}</span> </a>
-
-                    <ul class="collapse nav flex-column ms-1" id="submenu-{{team.UUID}}" data-bs-parent="#menu">
-                      {% for planning in  Plannings %}
-                        {% if  planning.equipe == team %}
-                          <li class="ms-3 w-100">
-                            <form class="form evenement-form" method="post">
-                              {% csrf_token %}
-                              <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                              <input  name="equipe" value="{{ planning.equipe_id }}" type="hidden"-->
-                              <input  name="planning" value="{{ planning.UUID }}" type="hidden">
-                              <button class="nav-link align-middle px-0"
-                                      {% if planning.description %}
-                                        data-bs-toggle="tooltip" data-bs-placement="right" title="{{planning.description}}"
-                                      {% endif %} onclick="loader()">
-                                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">{{ planning.nom }}</span>
-                              </button>
-                              </form>
-                          </li>
-                        {% endif %}
+                {# equipes #}
+                <li class="">
+                  <a href="#submenu-equipes" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                  <i class="fs-1 bi-people"></i> <span class="ms-1 fs-5 d-none d-sm-inline">Equipes</span>
+                  </a>
+                    <ul class="collapse nav flex-column ms-1" id="submenu-equipes">
+                      {% for team in equipes_avec_planning %}
+                        <li class="ms-3 w-100"> 
+                          <a href="#submenu-{{team.UUID}}" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                            <i class="fs-3 bi-people"></i> <span class="ms-1 d-none d-sm-inline"
+                              {% if team.description %} data-bs-toggle="tooltip" data-bs-placement="right" title="{{team.description}}" {% endif %}>{{ team.nom|capfirst }}
+                            </span>
+                          </a>
+                          {% for planning in  Plannings %}
+                            {% if  planning.equipe == team %}
+                              <ul class="collapse nav flex-column ms-1" id="submenu-{{team.UUID}}">
+                                <form class="form evenement-form" method="post">
+                                  {% csrf_token %}
+                                  <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                                  <input  name="equipe" value="{{ planning.equipe_id }}" type="hidden">
+                                  <input  name="planning" value="{{ planning.UUID }}" type="hidden">
+                                  <button class="nav-link align-middle px-0"
+                                          {% if planning.description %}
+                                            data-bs-toggle="tooltip" data-bs-placement="right" title="{{planning.description}}"
+                                          {% endif %} onclick="loader()">
+                                    <i class="ms-3 fs-5 bi-table"></i> <span class="ms-1 d-none d-sm-inline">{{ planning.nom }}</span>
+                                </button>
+                                </form>
+                              </ul>
+                            {% endif %}
+                          {% endfor %}
+                        </li>
                       {% endfor %}
-                    </ul>                    
+                    </ul>
+
                 </li>
-                {% endfor %}
+
+
 
                 {% if Planning and Benevole %}
                 {# affiche les infos du planning choisi #}
@@ -127,7 +133,7 @@
             <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu-equipes">
               <li>
                 <a href="#submenu-perso" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                  <i class="fs-4 bi-person-circle"></i> <span class="ms-1 fs-5 d-none d-sm-inline" >
+                  <i class="fs-1 bi-person-circle"></i> <span class="ms-1 fs-5 d-none d-sm-inline" >
                       {%if request.user.first_name%}{{ request.user.first_name|capfirst }}{%else%}Mes Infos{%endif%}</span> </a>
 
                   <ul class="collapse nav flex-column ms-1" id="submenu-perso" data-bs-parent="#menu">
