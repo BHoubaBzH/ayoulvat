@@ -7,6 +7,7 @@
     --creneau_hover: #52531a; 
     --fond_body: #e4e4e4;
 	--scrollbar_couleur: #0b6dff;
+	--footer-height: 120px;
   }
   
 body {
@@ -41,12 +42,13 @@ body {
 	z-index: 1000;
 }
 
-.footer {
+footer {
     background-color: #dbd8d8;
 	margin-top: 2em;
+	height: var(--footer-height);
 }
 
-.footer .right {
+footer .right {
     text-align: right;
 }
 
@@ -61,6 +63,10 @@ body {
  * pages evenements / plannings
  *************************/
  
+.espace-evenement {
+	padding-bottom: var(--footer-height); /* assenceur s affiche si l affichage passe derriere le footer*/
+}
+
 .titre_page {
     padding-top: 1em;
     text-align: center;

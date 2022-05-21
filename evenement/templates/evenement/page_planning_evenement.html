@@ -78,7 +78,7 @@
                             <button class="planning-perso" type="submit" 
                                 id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
                                 data-bs-toggle="modal" data-bs-target="#modal-dispo_creer-{{ planning.UUID }}"
-                                title="aller aux details du planning">
+                                title="aller aux details du planning" onclick="loader()">
                                 <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
                             </button>
 

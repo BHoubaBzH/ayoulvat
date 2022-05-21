@@ -46,15 +46,15 @@
 
 <div class="container-fluid">
     {% include "evenement/sidebar.html" %}
-    <main class="col-lg-10">
+    <main class="col-lg-10 espace-evenement">
       <div class="table-responsive " >
           {% block base_evenement %}
           {% endblock base_evenement %}
       </div>
     </main>
-
-    {% include "benevole/footer.html" %}
 </div>
+    {% include "benevole/footer.html" %}
+
 
 
   {# cookie consent #}
