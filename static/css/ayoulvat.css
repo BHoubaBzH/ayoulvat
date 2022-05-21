@@ -16,6 +16,10 @@ body {
     background-color: var(--fond_body);
 }
 
+.card-default {
+	z-index: 1048;
+}
+
 /*************************
  * page evements
  *************************/
@@ -31,6 +35,10 @@ body {
 /*************************
  * footer
  *************************/
+
+ .pied {
+	z-index: 1000;
+}
 
 .footer, .sidebar {
     background-color: #dbd8d8;
@@ -194,9 +202,9 @@ hr {
 	text-align: left;
 }
 
-.evenement-form {
-	/*margin: inherit;*/
-}
+/*.evenement-form {
+	margin: inherit;
+}*/
 
 /* utilisé si personne affecté au creneau et si pas bloqué : créneau libre */
 .creneau_libre, .creneau_libre_bloque, .creneau_libre_moi_occupe {
@@ -237,8 +245,20 @@ hr {
 }
 
 /*************************
+ * navbar
+ *************************/
+.navbar {
+	z-index: 1050;
+}
+
+/*************************
  * sidebar
  *************************/
+
+ .sidebar {
+	z-index: 1049;
+}
+
 
 .bouton-sidebar {
 	width: 100%;

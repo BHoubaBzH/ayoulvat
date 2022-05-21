@@ -4,7 +4,7 @@
 
 <div class="container-fluid">
   <div class="row flex-nowrap">
-      <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark" style="z-index: 1;">
+      <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark sidebar">
           <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
 
 {# si un evenement, affiche la sidebar evenement #}
@@ -138,7 +138,7 @@
                           <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                           <input  name="equipe" value="{{ team.UUID }}" type="hidden">
                           <input type="hidden" name="planning_perso" value="oui">
-                          <button class="nav-link align-middle px-0 {% if planning_perso == 'oui' %}active{% endif %}"
+                          <button class="nav-link align-middle px-0"
                             data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title=" Ton planning personnel sur tout l'évènement." onclick="loader()">
                             <i class="fs-4 bi-table"></i><span class="ms-1 d-none d-sm-inline">Planning</span>
                           </button>
