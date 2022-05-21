@@ -12,7 +12,7 @@ from ayoulvat.languages import *
 from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
 from benevole.models import ProfileBenevole
-from benevole.views import ListeGroupesUserFiltree, check_benevole, check_majeur, devenir_benevole
+from benevole.views import ListeGroupesUserFiltree, check_majeur, devenir_benevole
 from association.models import Association
 
 from django.http import HttpResponse
@@ -109,6 +109,20 @@ def tous_creneaux_entre_2_heures(debut, fin, uuid_evenement):
         # logger.info(' creno : {}'.format(creno.nom))
     # logger.info('*** Fin fonction tous_creneaux_entre_2_heures : {}'.format(datetime.now()))
     return crenos_out
+
+def postes_creneaux(evenementouplanning):
+    """
+        entrée : evenement ou planning
+        sortie : dictionnaire clés : postes , valeurs : query set des creneaux du poste
+    """
+    postescreneaux={}
+    postes=evenementouplanning.poste_set.order_by('nom')
+    for poste in postes:
+        #logger.info(f'POSTE : {poste}')
+        creneaux= evenementouplanning.creneau_set.order_by('debut').filter(poste=poste).select_related('poste')
+        #logger.info(f'CRENEAUX : {creneaux}')
+        postescreneaux[poste]=creneaux
+    return postescreneaux
 
 def forms_equipe(request):
     """
@@ -335,7 +349,7 @@ def dic_forms_creneaux(request, planning):
             la requete (contenant les infos POST)
             le planning en cours
         sortie:
-            dictionnaire des forms creneaux: key: UUID / val: form
+            dictionnaire des forms creneaux du planning: key: UUID / val: form
     """
     # cree dans la page toutes nos from pour les creneaux de l' evenement
     dic_creneaux_init = {}  # dictionnaire des forms
@@ -379,7 +393,7 @@ def liste_evenements(request):
     association = Association.objects.get(UUID=uuid_asso)
 
     try: # on filtre les évènements sur ceux de l asso uniquement
-        liste_evenements = Evenement.objects.filter(association_id=uuid_asso)
+        liste_evenements = Evenement.objects.filter(association_id=uuid_asso).order_by("debut")
     except:
         logger.info('Pas encore d\'évènement pour cette asso, voulez-vous en creer un?')
 
@@ -424,25 +438,25 @@ def evenement(request, uuid_evenement):
     uuid_asso= evenement.association_id
     # on stock dans la session
     request.session['uuid_association'] = uuid_asso.urn
+
     data = {
         "Association": evenement.association,
         "Evenement": evenement,
-        "Equipes":  evenement.equipe_set.order_by('nom').select_related('evenement').order_by('nom'),  # objets equipes de l'evenement
-        "Plannings": evenement.planning_set.order_by('debut').select_related('equipe', 'evenement'),  # objets planning de l'evenement
-        "Postes": evenement.poste_set.order_by('nom').select_related('planning', 'equipe', 'evenement'),  # objets postes de l'evenement pour planning perso
-        "Creneaux" : evenement.creneau_set.order_by('debut').select_related('poste', 'planning', 'equipe', 'evenement'),
-        "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=evenement),  # objets benevoles de l'evenement
+        "Equipes":  evenement.equipe_set.order_by('nom'),  # objets equipes de l'evenement
+        "Plannings": evenement.planning_set.order_by('debut').select_related('equipe'),  # objets planning de l'evenement
+        #"Postes": evenement.poste_set.order_by('nom').select_related('planning', 'equipe', 'evenement'),  # objets postes de l'evenement pour planning perso
+        #"Creneaux" : evenement.creneau_set.order_by('debut').select_related('poste', 'planning', 'equipe', 'evenement'),
+        #"PostesCreneaux" : postes_creneaux(evenement),
+        #"Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=evenement),  # objets benevoles de l'evenement
 
-        "dispo_actif": "False", # active ou non la gestion des disponibilités des bénévoles; par défaut désactivé
-        "RolesUtilisateur": [], # liste des roles/groupes de utilisateur connecté 
-        "IsBenevole": check_benevole(request.user, evenement), # est ce que le user connecte est enregistré comme benevole sur cet evenement
+        "dispo_actif": "False", # active ou non la gestion des disponibilités par les bénévoles; par défaut désactivé
 
         "Planning": "",  # objet planning selectionné
         "Creneaux_plage": "",  # objets creneaux de l'evenement entre 2 dateheure
         "equipe_uuid": "",  # par defaut, pas d'equipe selectionée
         "planning_uuid": "",  # par defaut, pas de planning selectionée
         "PlanningRange": "",  # dictionnaire formaté des dates heures de l'objet selectionné
-        "plannings_equipes": Planning.objects.all().values_list('equipe_id', flat=True).distinct(), # liste des équipes ayant au moins un planning créé
+        "equipes_avec_planning": evenement.equipe_set.filter(planning__isnull=False).order_by('nom').distinct(), # liste des équipes avec au moins un planning
         "creneaux_benevole" : evenement.creneau_set.filter(benevole_id=request.user.profilebenevole.UUID).order_by('debut').select_related('poste', 'planning', 'equipe', 'evenement'), # crenaux du bénévole connecté
         
         "FormEquipe" : EquipeForm(initial={'evenement': evenement}), # form non liée au template pour ajout d une nouvelle equipe
@@ -457,7 +471,8 @@ def evenement(request, uuid_evenement):
         "EvtOuvertBenevoles" : inscription_ouvert(evenement.inscription_debut, evenement.inscription_fin) , # integer précisant si on est avant/dans/après la période de modification des creneaux
         "Text": text_template[language], # textes traduits 
     }
-
+    print(data["Equipes"])
+    print(data["equipes_avec_planning"])
     data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})
     # recupere les uuid en POST, but est de tout gerer dans une seule page
     # et d'afficher les infos en fonction des POST recus :
@@ -535,8 +550,9 @@ def evenement(request, uuid_evenement):
                     planning = Planning.objects.get(UUID=data["planning_uuid"])
                     data["DicPostes"] = dic_forms_postes(planning)
                     data["DicCreneaux"] = dic_forms_creneaux(request, planning)
-                    data["Postes"] = planning.poste_set.order_by('nom')  # objets postes du planning
-                    data["Creneaux"] = planning.creneau_set.order_by('nom')  # objets creneaux du planning
+                    #data["Postes"] = planning.poste_set.order_by('nom')  # objets postes du planning
+                    #data["Creneaux"] = planning.creneau_set.order_by('nom')  # objets creneaux du planning
+                    data["PostesCreneaux"] = postes_creneaux(planning)
 
             elif not request.POST.get('equipe'):  
                 # selection d'un evenement uniquement
@@ -551,7 +567,6 @@ def evenement(request, uuid_evenement):
                 # un admin/orga veut devenir bénévole sur l evenement
                 if 'devenir_benevole' in request.POST:
                     devenir_benevole(request.user, EVENEMENT=evenement)
-                    data["IsBenevole"]=check_benevole(request.user, evenement)
             
             # on envoie la form non liée au template pour ajout d un nouveau poste
             data["FormPoste"] = PosteForm(initial={'evenement': evenement,
@@ -578,7 +593,9 @@ def evenement(request, uuid_evenement):
                 data["PlanningRange"] = planning_range(evenement.debut,
                                                     evenement.fin,
                                                     30)
-        
+            if request.POST.get('planning_global'):
+                data["planning_global"] = "oui"
+
     # si pas de données post, affiche le planning global de l'evenement
     else:
         data["PlanningRange"] = planning_range(evenement.debut,

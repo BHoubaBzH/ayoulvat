@@ -16,7 +16,7 @@
     <form action="{% url 'evenement' uuid_evenement=EV.UUID %}" method='POST' id="inscrit_{{ EV.UUID }}">
         {% csrf_token %}
         {# par defaut, on arrive sur le planning perso du benevole #}
-        <input type="hidden" name="planning_perso" value="oui"> 
+        <!--input type="hidden" name="planning_perso" value="oui"--> 
     </form>
 {% endfor %}
 

@@ -10,7 +10,7 @@
                              grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                         form="benevole_libere_creneau" name="creneau" value="{{ creno.UUID }}"
                         data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"
-                        title="Mon Créneau, cliquer pour le libérer" type="submit">
+                        title="Mon Créneau, cliquer pour le libérer" type="submit" onclick="loader()">
                     <a><b>{{ creno.benevole.personne.last_name|upper }} {{ creno.benevole.personne.first_name|capfirst }}</b></a>
                 </button>
 
@@ -42,7 +42,7 @@
                             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                     form="benevole_prend_creneau" name="creneau" value="{{ creno.UUID }}"
                     data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
-                    title="Céneau Disponible, Cliquer pour s'y incrire" type="submit">
+                    title="Céneau Disponible, Cliquer pour s'y incrire" type="submit" onclick="loader()">
                 <a><b>Disponible</b></a>
             </button>
         {# le bénévole est dejà pris sur cet horaire -> toujours disabled pour les simples benevoles #}
@@ -60,7 +60,7 @@
                             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                     form="benevole_prend_creneau" name="creneau" value="{{ creno.UUID }}"
                     data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" 
-                    title="Céneau Disponible, Cliquer pour s'y incrire" type="submit">
+                    title="Céneau Disponible, Cliquer pour s'y incrire" type="submit" onclick="loader()">
                 <a><b>Disponible</b></a>
             </button>
         {% endif %}

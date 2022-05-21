@@ -140,20 +140,6 @@ def check_majeur(date_naissance, date_evenement):
     else:
         return True # majeur
 
-def check_benevole(user, evt):
-    '''
-        vérifie si l admin ou responsable est bénévole
-        entree:
-            la requete (contenant les infos POST)
-            l'objet data renvoyé au template
-        sortie: objet evenement_benevole_assopart si existe, sinon None
-    '''
-    try:
-        req = evenement_benevole_assopart.objects.get(Q(profilebenevole=user.profilebenevole),Q(evenement=evt))
-    except:
-        req = None
-    return req
-
 def devenir_benevole(user, **kwargs):
     # on ajoute le bénévole à l evenement
     if 'POST' in kwargs:
@@ -252,7 +238,7 @@ def Home(request):
         uuid_evenement = request.session['uuid_evenement']
         evenement = Evenement.objects.get(UUID=uuid_evenement)
         #data["Evenement"] = evenement
-        data["Benevoles"] = ProfileBenevole.objects.filter(BenevolesEvenement=evenement)  # objets benevoles de l'evenement
+        #data["Benevoles"] = ProfileBenevole.objects.filter(BenevolesEvenement=evenement)  # objets benevoles de l'evenement
     except:
         # pas passé la page evenement
         pass

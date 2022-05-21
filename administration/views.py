@@ -305,7 +305,7 @@ class BenevolesListView(ListView):
                 cre.save()
         # recharge les liste infos pour mettre à jour suite aux modifs ( creation ou suppression de benevole)
         self.context['Benevoles']=self.queryset.select_related('personne').filter(BenevolesEvenement=self.Evt).order_by('personne__last_name')
-        self.context['BenevolesAgeCreneauxAssopart']= liste_benevoles_age_creneaux_assopart(self.Evt, self.ListeBenevoles)
+        self.context['BenevolesAgeCreneauxAssopart']= liste_benevoles_age_creneaux_assopart(self.Evt, self.context['Benevoles'])
             
 
         # editer un benevole

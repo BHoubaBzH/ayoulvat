@@ -234,21 +234,17 @@ class CreneauForm(ModelForm):
         # print(self.instance.UUID)
         # print('benevole : {}'.format(self.personne_connectee))
         if self.instance:
+
+            # nouvelle gestion de groupes user
+            personnegroupes=self.personne_connectee.groups.all().values_list('name', flat=True)
+
             if not self.personne_connectee:
                 pass
             # la personne connectée est un pur bénévole
-            if hasattr(self.personne_connectee, 'profilebenevole') and not self.personne_connectee.has_perm('evenement.change_creneau'):
+            if 'Benevole' in personnegroupes and not any(item in ('Administrateur', 'Organisateur', 'Responsable') for item in personnegroupes):
+            #if hasattr(self.personne_connectee, 'profilebenevole') and not self.personne_connectee.has_perm('evenement.change_creneau'):
                 # par default, la liste de bénévole contient le benevole connecté
                 id_benevole = self.personne_connectee.profilebenevole.UUID
-                
-                # OLD
-                #for Creno in Creneau.objects.filter(Q(type="creneau"), Q(evenement_id=self.evenement), Q(benevole_id=id_benevole)):
-                #    if self.instance.debut and self.instance.fin:
-                #        #  l'instance est sur l'horaire du creneau de la liste
-                #        if Creno.debut <= self.instance.debut < Creno.fin or Creno.debut < self.instance.fin <= Creno.fin \
-                #            or self.instance.debut < Creno.debut < Creno.fin < self.instance.fin:
-                #                # le benevole est pris sur l'intervale
-                #                id_benevole = None
 
                 if self.instance.debut and self.instance.fin:
                     # si on trouve un creneau sur la meme plage horaire ou le benevole est pris, alors on retire le benevole de la liste
@@ -263,8 +259,9 @@ class CreneauForm(ModelForm):
 
                 self.fields['benevole'].queryset = self.querysetbenevoles.filter(UUID=id_benevole)
 
-            # la personne connectée est un responsbale/orga/admin
-            elif self.personne_connectee.has_perm('evenement.change_creneau'): 
+            # la personne connectée est un responsable/orga/admin
+            elif any(item in ('Administrateur', 'Organisateur', 'Responsable') for item in personnegroupes):
+            #elif self.personne_connectee.has_perm('evenement.change_creneau'): 
                 # creneau disponible, on affiche tout la liste des bénévoles
                 self.fields['benevole'].queryset = self.querysetbenevoles
                 liste_benevoles_occupes = []

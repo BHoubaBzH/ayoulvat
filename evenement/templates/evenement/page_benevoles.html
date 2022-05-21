@@ -10,9 +10,9 @@
     {# gestionnaire ou orga : parcours les benevoles de l'evenement #}
         {% if Benevoles %} 
             {% for benevole in Benevoles %}
-                {% for creno in Creneaux %}
+                {% for creno in creneaux_benevole %}
                     {# si on trouve au moins une dispo du bénévole sur le planning  #}
-                    {% if  creno.benevole_id == benevole.UUID and creno.planning_id|stringformat:'s' == planning_uuid|stringformat:'s' and creno.type == "benevole" %}
+                    {% if creno.planning == Planning and creno.type == "benevole" %}
                         {# affiche les entetes des lignes du planning : benevoles #}
                         <div class="benevole-slot"
                             aria-hidden="true"

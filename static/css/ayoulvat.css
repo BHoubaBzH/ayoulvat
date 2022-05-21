@@ -2,8 +2,8 @@
 * general
  *************************/
  :root {
-    --planning_couleur: #ffc31e88;
-    --planning_hover: #52531a;
+    --planning_couleur: #0d6efd5c;
+    --planning_hover: #57fd135c;
     --creneau_hover: #52531a; 
     --fond_body: #e4e4e4;
   }
@@ -184,7 +184,7 @@ body {
 }
 
 hr {
-	margin: 40px 0;
+	/*margin: 40px 0;*/
 }
 
 /* styles evenement */
@@ -195,7 +195,7 @@ hr {
 }
 
 .evenement-form {
-	margin: inherit;
+	/*margin: inherit;*/
 }
 
 /* utilisé si personne affecté au creneau et si pas bloqué : créneau libre */

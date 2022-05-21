@@ -1,20 +1,27 @@
 <!-- benevole/footer.html -->
-<footer class="bg-light text-center text-lg-start">
+<footer class="bg-light text-center text-lg-start fixed-bottom" style="z-index: 0;">
 
             <div class="card-body row ">
-                <div class="col-lg-2 left">
+                <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0"> 
+                    {# espace vide derriere la sidebar#}
+                </div>
+
+                <!--div class="col-lg-4 left"-->
+                <div class="col-auto col-md-3 col-xl-4 px-sm-2 px-0"> 
                     {% if Evenement %} 
                         {% if Evenement.commentaire %}
-                            <p>{{ Evenement.commentaire }}</p>
+                            <p style="margin-bottom: inherit;">{{ Evenement.commentaire }}
                         {% else %}
-                            <p>besoins d'aide? un renseignement?</p>
+                            <p style="margin-bottom: inherit;">besoins d'aide? un renseignement?
                         {% endif %}
-                        <p style="padding-left: 15%;"><a href="mailto:{{ Evenement.courriel_organisateur }}" target="_blank">
+                        <br>
+                        <a href="mailto:{{ Evenement.courriel_organisateur }}" style="padding-left: 15%;" target="_blank">
                         <i class="bi bi-envelope-fill" style="font-size: 2rem; color: cornflowerblue;"></i></p></a>
                     {% endif %}
                 </div>
 
-                <div class="col-lg-8 d-flex align-items-center"> 
+                <!--div class="col-lg-4 d-flex align-items-center"-->
+                <div class="col-auto col-md-3 col-xl-4 px-sm-2 px-0">  
                     <!--div class="row align-items-center">
                     <p><b> site en développement, 
                         en cas de soucis merci d'envoyer un mail: <br>
@@ -23,19 +30,16 @@
                     </div-->
                 </div>
 
-                <div class="col-lg-2 right">
-                    <p>Developpé par: <a href="mailto:bhouba@zohomail.eu" target="_blank">Phil Rioual</a></p>
-                    <p>All Rights Reserved.</p>
-                    <p></p>
-                    <p>Powered by <a href="https://www.djangoproject.com/" target="_blank">Django Framewok</a></p>
+                <!--div class="col-lg-2 right"-->
+                <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 right"> 
+                    <p>Developpé par: <a href="mailto:bhouba@zohomail.eu" target="_blank">Phil Rioual</a><br>
+                    All Rights Reserved.<br>
+                    Powered by <a href="https://www.djangoproject.com/" target="_blank">Django Framewok</a></p>
                 </div>
             </div>
 
-</footer>
-
-<footer class="bg-light text-center text-lg-start">
     <!-- Copyright -->
-    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+    <div class="text-center p-1" style="background-color: rgba(0, 0, 0, 0.2);">
         <p class="m-t">Copyright {% now 'Y' %} &copy <a href="mailto:Gizhm0@protonmail.com" target="_blank">Phil Rioual</a></p>
     </div>
     <!-- Copyright -->

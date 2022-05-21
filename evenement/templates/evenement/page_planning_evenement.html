@@ -1,140 +1,34 @@
-<!-- evenement/page_planningperso.html -->
-{# page du planning du benevole #}
+<!-- evenement/page_planning_evenement.html -->
+{# page du planning global #}
 <div class="table-responsive">
-    {% if user.profilebenevole in Benevoles %}
-        {% if dispo_actif == 'True' %} {# si le bénévole peut ajouter ses disponibilités #}
-            <h5 class="titre_page">Tu peux sélectionner un planning d'équipe pour y inscrire tes disponibilités. En fonction, un responsable viendra vous affecter aux créneaux.</h5>
-            <h5 class="titre_page">Sinon tu peux directement choisir des créneaux dans le menu de gauche.</h6>
-        {% else %}
-            <h5 class="titre_page"> choisis une équipe et un planning pour t'inscrire ou te désinscrire des créneaux. Dans le planning en bas ou dans le menu de gauche</h5>
-        {% endif %}
-
-{########################################################}
-{# planning perso tableau #}
-{% if creneaux_benevole %}
-        {# form du courriel des créneaux #}
-        <form method='post' id="form_courriel_creneaux">
-            {% csrf_token %}
-            <input  name="creneaux_courriel" value="envoi" type="hidden">
-            <input  name="creneaux_courriel_message_text" value='
-            {# AFFICHE LES CRENEAUX DU BENEVOLE #}
-            {% for creno in Creneaux %}{% if creno.benevole_id == user.profilebenevole.UUID %}
-            le {{ creno.debut|date:"D, d F Y" }} de {{ creno.debut|date:"H:i" }} à {{ creno.fin|date:"H:i"  }} | équipe : {{ creno.equipe.nom }} | poste : {{ creno.poste.nom }}
-            {% endif %}{% endfor %}'
-            type="hidden">
-            <input  name="creneaux_courriel_message_html" value='
-                <html>
-                <head>
-                    <style>
-                        #creneaux {
-                            font-family: Arial, Helvetica, sans-serif;
-                            border-collapse: collapse;
-                            width: 100%;
-                            }
-
-                            #creneaux td, #creneaux th {
-                            border: 1px solid #ddd;
-                            padding: 8px;
-                            }
-
-                            #creneaux tr:nth-child(even){background-color: #f2f2f2;}
-
-                            #creneaux tr:hover {background-color: #ddd;}
-
-                            #creneaux th {
-                            padding-top: 12px;
-                            padding-bottom: 12px;
-                            text-align: left;
-                            background-color: #c7252d;
-                            color: white;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <table id="creneaux">
-                        <tr>
-                            <th>équipe</th>
-                            <th>poste</th>
-                            <th>jour</th>
-                            <th>début</th>
-                            <th>fin</th>
-                        </tr>
-                        {% for creno in Creneaux %}{% if creno.benevole_id == user.profilebenevole.UUID %}
-                            <tr>
-                                <td>{{ creno.equipe.nom }}</td>
-                                <td>{{ creno.poste.nom }}</td>
-                                <td>{{ creno.debut|date:"D, d F Y" }}</td>
-                                <td>{{ creno.debut|date:"H:i" }}</td>
-                                <td>{{ creno.fin|date:"H:i"  }}</td>
-                            </tr>
-                        {% endif %}{% endfor %}
-                    </table>
-                </body>
-                </html>'    
-            type="hidden">
-        </form>
 
     <div class="container">
         <div class="row align-items-end">
             <div class="col-md-12">
-                {# tableau des creneaux du bénévole#}
-                <h2 class="d-inline-block align-middle" style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" title="liste de tes créneaux.">Mon planning sur l'évènement</h2> 
+            {% if Benevole %}
+                {% if dispo_actif == 'True' %} {# si le bénévole peut ajouter ses disponibilités #}
+                    <h5 class="titre_page">Tu peux sélectionner un planning d'équipe pour y inscrire tes disponibilités. </h5>
+                    <h5 class="titre_page">Sinon tu peux directement choisir des créneaux dans le menu de gauche.</h6>
+                {% else %}
+                    <h5 class="titre_page">Cliques sur un planning pour y acceder et t'inscrire ou te désinscrire comme bénévole. </h5>
+                {% endif %}
+            {% endif %}
             </div>
-
-
         </div>
-    </div> 
-    <hr class="border-2 border-top border-dark"> {# barre horizontale #}
-
-    <div class="d-grid gap-2">
-        {# bouton envoi courriel #}
-        <button class="btn btn-primary" form="form_courriel_creneaux" title="pour recevoir la liste de tes créneaux par courriel." 
-        data-bs-toggle="modal" data-bs-target="#modal-benevole-supprime">
-            <i style="color: var(--bs-white)" class="bi bi-envelope-fill fs-1"></i>
-        </button>
-    </div>   
-    <br>
-    <table class="table table-dark  table-striped table-hover">
-    <thead>
-        <tr>
-        <!-- th scope="col">#</th -->
-        <th scope="col">équipe</th>
-        <th scope="col">poste</th>
-        <th scope="col">jour</th>
-        <th scope="col">début</th>
-        <th scope="col">fin</th>
-        </tr>
-    </thead>
-    <tbody>
-        {# AFFICHE LES CRENEAUX DU BENEVOLE #}
-        {% for creno in creneaux_benevole %}
-            <tr>
-            <!-- th scope="row">{{ count|add:"1" }}</th -->
-            <td>{{ creno.equipe.nom }}</td>
-            <td>{{ creno.poste.nom }}</td>
-            <td>{{ creno.debut|date:'D, d F Y' }}</td>
-            <td>{{ creno.debut|date:'H:i' }}</td>
-            <td>{{ creno.fin|date:'H:i'  }}</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-    </table>
-{% endif %}
-
+    </div>  
 {########################################################}
-{# planning perso visuel #}
-        <div class="container">
-            <div class="row align-items-end">
-                <div class="col-md-12">
-                    <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
-                        title="les planning des différentes équipes pour l'évènement, avec tes créneaux.">
-                        Planning de l'évènement et mes créneaux
-                    </h2>
-                </div>
+{# planning visuel #}
+    <div class="container">
+        <div class="row align-items-end">
+            <div class="col-md-12">
+                <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
+                    title="les planning des différentes équipes pour l'évènement, avec tes créneaux.">
+                    Planning de l'évènement et mes créneaux
+                </h2>
             </div>
-        </div>    
-        <hr class="border-2 border-top border-dark"> {# barre horizontale #}
-    {% endif %}
+        </div>
+    </div>    
+    <hr class="border-2 border-top border-dark"> {# barre horizontale #}
 </div>
 <div class="overflow-scroll">
     <div class="planning-equipes" aria-labelledby="planning-heading" >
@@ -194,8 +88,8 @@
             {% endfor %}
             {# AFFICHE LES DISPO ET LES CRENEAUX DU BENEVOLE #}
             {# le bénévole peut editer uniquement ses dispos #}
-            {% for creno in Creneaux %}
-                {% if creno.benevole_id == user.profilebenevole.UUID and creno.equipe_id == equipe.UUID %}
+            {% for creno in creneaux_benevole %}
+                {% if creno.equipe_id == equipe.UUID %}
                     <button  class="creneau-planningperso {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe{%endif%} equipe equipe-{{ equipe.UUID }}" 
                             style="grid-row: ligne-{{ equipe.UUID }};
                             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
@@ -297,7 +191,7 @@
     {% endfor %}
 
     {# modal d edition de dispo du benevole #}
-    {% for creno in Creneaux %}
+    {% for creno in creneaux_benevole %}
         <div class="modal fade"
             id="modal-dispo_editer-{{ creno.UUID }}"
             tabindex="-1"

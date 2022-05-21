@@ -11,25 +11,25 @@ $(document).ready(function(){
 
     {% if not planning_perso %}
         {# si planning selectionné, on affiche #}
-        {% if Planning or Poste %}
+        {% if Planning or PostesCreneaux %}
             {% if Administrateur or Organisateur or Responsable %}
-                            {% comment "affichage tab postes et benevole" %}
-                            <nav>
-                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                    <button class="nav-link active" id="nav-creneaux-tab" data-bs-toggle="tab" 
-                                            data-bs-target="#nav-creneaux" type="button" role="tab" 
-                                            aria-controls="nav-creneaux" aria-selected="true">Créneaux</button>
-                                    <button class="nav-link" id="nav-benevoles-tab" data-bs-toggle="tab" 
-                                            data-bs-target="#nav-benevoles" type="button" role="tab" 
-                                            aria-controls="nav-benevoles" aria-selected="false">Bénévoles</button>    
-                                </div>
-                            </nav>
-                            {% endcomment %}
+                {% comment "affichage tab postes et benevole" %}
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active" id="nav-creneaux-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#nav-creneaux" type="button" role="tab" 
+                                    aria-controls="nav-creneaux" aria-selected="true">Créneaux</button>
+                            <button class="nav-link" id="nav-benevoles-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#nav-benevoles" type="button" role="tab" 
+                                    aria-controls="nav-benevoles" aria-selected="false">Bénévoles</button>    
+                        </div>
+                    </nav>
+                {% endcomment %}
                 <div class="tab-content post_display_javascript" id="nav-tabContent">
-                    {# planning on affiche que si un planning ou un poste est selectionné #}
+                    {# postes du planning on affiche que si un planning ou un poste est selectionné #}
                     <div class="tab-pane fade show active post_display_javascript" id="nav-creneaux" 
                         role="tabpanel" aria-labelledby="nav-creneaux-tab">
-                            {% include "evenement/page_planning.html" %}
+                            {% include "evenement/page_postes.html" %}
                     </div>
                     {% comment "affichage tab benevole" %}
                     <div class="tab-pane post_display_javascript" id="nav-benevoles" 
@@ -41,35 +41,45 @@ $(document).ready(function(){
 
             {% else %} {# benevoles #}
                 <div class="tab-content post_display_javascript" id="nav-tabContent">
-                    {% include "evenement/page_planning.html" %}
+                    {% include "evenement/page_postes.html" %}
                 </div>
             {% endif %}
-
+        {# bouton de la sidebar planning global utilisé #}
+        {% elif planning_global %}
+            {% include "evenement/page_planning_evenement.html" %}
         {# une equipe est selectionnée par un benevole, pas de planning ou de poste #}
         {# page par defaut admin: plannings  evenement et equipes #} 
-        {% elif Evenement and not Planning and not Poste and Administrateur or Organisateur or Responsable %} 
+        {% elif Evenement and not Planning and Administrateur or Organisateur or Responsable and not planning_global %} 
             <div class="tab-content post_display_javascript" id="nav-tabContent">
                 <div class="tab-pane fade show active post_display_javascript" id="nav-equipes"  
                     role="tabpanel" aria-labelledby="nav-equipes-tab">
-                        {% include "evenement/page_evenement.html" %}
+                        {% include "evenement/page_equipes.html" %}
                 </div>
             </div>
-        {# a analyser comment on arrive ici , on part sur planning perso #}    
+        {# un admin a cliqué arrive de la page liste evenements #}    
         {% else %}
-            {% include "evenement/page_planningperso.html" %}
+            {% include "evenement/page_planning_evenement.html" %}
         {% endif %}
 
+    {% elif planning_perso %}
+        {# si planning perso choisi #}
+        <div class="tab-content post_display_javascript" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-equipes"
+                role="tabpanel" aria-labelledby="nav-equipes-tab"> 
+                {% if equipe_uuid %} 
+                    {% include "evenement/page_equipes.html" %}
+                {% else %}
+                    {% include "evenement/page_planning_perso.html" %}
+                {% endif %}
+            </div>
+        </div>
     {% else %}
-        {# page par defaut des benevoles de l'evenement: son planning perso #}
-        {% if Evenement and user.profilebenevole in Benevoles %} 
+        {# page par defaut des benevoles de l'evenement: son planning global #}
+        {% if Evenement and Benevole %} 
             <div class="tab-content post_display_javascript" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-equipes"
                     role="tabpanel" aria-labelledby="nav-equipes-tab"> 
-                    {%if equipe_uuid%} 
-                        {% include "evenement/page_evenement.html" %}
-                    {% else %}
-                        {% include "evenement/page_planningperso.html" %}
-                    {% endif %}
+                        {% include "evenement/page_planning_evenement.html" %}
                 </div>
             </div>
         {% endif %}

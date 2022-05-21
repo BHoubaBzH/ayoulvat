@@ -22,8 +22,8 @@
 		{# construction des entetes et des lignes de la grille planning: heures puis postes #}
 		grid-template-rows:
 			[heures] 3em
-			{% for poste in Postes %}
-				{% if poste.planning_id|stringformat:'s' == planning_uuid|stringformat:'s' %}
+			{% for poste in PostesCreneaux %}
+				{% if poste.planning == Planning %}
 					[ligne-{{ poste.UUID }}] auto
 				{% endif %}
 			{% endfor %};
@@ -40,8 +40,8 @@
 
 
 	{# colorise les créneaux en fonction du poste et la couleur dans la table poste#}
-	{% for poste in Postes %}
-		{% if poste.planning_id|stringformat:'s' == planning_uuid|stringformat:'s' %}
+	{% for poste in PostesCreneaux %}
+		{% if poste.planning == Planning %}
 			.poste-{{ poste.UUID }} {
 				background-image: linear-gradient(to bottom, var(--bs-light) 0px, {{ poste.couleur }} 50%);
 				color: #fff;
@@ -49,7 +49,7 @@
 			}
 		{% endif %}
 	{% endfor %}
-
+/*
 	{# PLANNING BENEVOLES #}
 	.planning-benevoles {
 		#overflow-x: scroll;
@@ -82,7 +82,7 @@
 			position: relative;
 		}
 	{% endfor %}
-
+*/
 	{# PLANNING EQUIPES #}
 	.planning-equipes {
 		#overflow-x: scroll;
@@ -120,7 +120,7 @@
 	{% endfor %}
 
 	{# colorise les cellules des grids#}
-	{% for poste in Postes %}
+	{% for poste in PostesCreneaux %}
 		.grid-cell.ligne-{{ poste.UUID }}, .grid-cell-minuit.ligne-{{ poste.UUID }} {
 			border-bottom-color: {{ poste.couleur }};
 			{%if not poste.ouvert %} {# le poste n'est pas ouvert aux bénévols : on edite le fond des cases de la ligne #}

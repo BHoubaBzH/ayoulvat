@@ -19,7 +19,7 @@
     });
     </script>
     {# fonts et icons BOOTSTRAP #}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
     <!-- XDSoft DateTimePicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
@@ -45,18 +45,17 @@
   {% include "benevole/navbar.html" %}
 
 <div class="container-fluid">
-  <div class="row"> 
     {% include "evenement/sidebar.html" %}
     <main class="col-lg-10">
-      <div class="table-responsive ">
-              {% block base_evenement %}
-              {% endblock base_evenement %}
-              <br><br>
+      <div class="table-responsive " >
+          {% block base_evenement %}
+          {% endblock base_evenement %}
       </div>
     </main>
-  </div>
+
+    {% include "benevole/footer.html" %}
 </div>
-   {% include "benevole/footer.html" %}
+
 
   {# cookie consent #}
   <script src="{% static 'js/cookie.notice.js' %}"></script>

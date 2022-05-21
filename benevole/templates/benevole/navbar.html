@@ -2,37 +2,50 @@
 {% load bootstrap5 %}
 <form id="nav_bar" method='GET'>
   {% csrf_token %}
-  <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap shadow">
-      <div class="navbar-brand col-md-3 col-lg-2 me-0 px-3">
-        {% if Evenement %}
-          {% if Evenement.vignette %}<img src="{{ Evenement.vignette.url }}" style="max-width: 40px;max-height: 40px;">{% endif %}
-          {% if Administrateur or Organisateur %}<a  href="{% url 'liste_evenements' %}">{{ Association.nom }}</a>{% endif %}
-          {%if Evenement.nom%}<a> {% if Administrateur or Organisateur%}<i class="bi bi-chevron-right"></i>{% endif %} {{ Evenement.nom }}</a>{%endif%}
-        {% elif Association %}
-          <a  href="{% url 'detail_asso' uuid_asso=Association.UUID %}" 
-            data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="détails de l'association">
-            {{ Association.nom|upper }}</a>
-        {% else %}
-          AYOULVAT
-        {% endif %}
-      </div>
+</form>
+  <nav class="navbar sticky-top navbar-dark sticky-top bg-dark flex-md-nowrap shadow" style="z-index:1050">
+
+      <ul class="navbar-nav px-2">
+        <li class="nav-item text-nowrap">
+          <span class="navbar-brand">
+            {% if Evenement %}
+              {% if Evenement.vignette %}<img src="{{ Evenement.vignette.url }}" style="max-width: 40px;max-height: 40px;">{% endif %}
+              {% if Administrateur or Organisateur %}<a href="{% url 'liste_evenements' %}">{{ Association.nom }}</a>{% endif %}
+                {%if Evenement.nom%}<a> {% if Administrateur or Organisateur%}<i class="bi bi-chevron-right"></i>{% endif %} {{ Evenement.nom }}</a>{%endif%}
+            {% elif Association %}
+              <a  href="{% url 'detail_asso' uuid_asso=Association.UUID %}" 
+                data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="détails de l'association">
+                {{ Association.nom|upper }}</a>
+            {% else %}
+              AYOULVAT
+            {% endif %}
+          </span>
+      </li>
+    </ul>
       
     {% if user.is_authenticated %}
       {% if Administrateur or Organisateur or Responsable%}
-        <ul class="navbar-nav px-3">
+        <ul class="navbar-nav px-2">
           <li class="nav-item text-nowrap">
-            <a class="nav-link"> <font color="red">{% if Administrateur %}Administrateur{% elif Organisateur %}Organisateur{% elif Responsable %}Responsable{% endif %}</font>
+            <a class="nav-link"> 
+            {% if Administrateur %}
+              <font color="Red">Administrateur</font></a>
+            {% elif Organisateur %}
+              <font color="OrangeRed">Organisateur</font></a>
+            {% elif Responsable %}
+              <font color="Orange">Responsable</font>
+            {% endif %}
             </a>
           </li>
         </ul>
       {% endif %}
-      <ul class="navbar-nav px-3">
+      <ul class="navbar-nav px-2">
         <li class="nav-item text-nowrap">
           <a class="nav-link">Bienvenue {%if request.user.first_name%}{{ request.user.first_name|capfirst }}{%endif%}</a>
         </li>
       </ul>
 
-      <ul class="navbar-nav px-3">
+      <ul class="navbar-nav px-2">
         <li class="nav-item text-nowrap">
           {# si l evenment est bloqué ou pas ouvert aux inscriptions , on affiche#}
           {% now "Y-m-d" as aujourdhui %}
@@ -79,7 +92,7 @@
         </li>
       </ul>
 
-      <ul class="navbar-nav px-3">
+      <ul class="navbar-nav px-2">
         {% comment "exemple menu déroulant" %}
           <li class="nav-item dropdown">
               <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
@@ -99,26 +112,28 @@
       </ul>
     {% endif %}
 
-    <ul class="navbar-nav px-3">
+    <ul class="navbar-nav px-2">
       <li class="nav-item text-nowrap">
         {% if user.is_authenticated %}
         <div class="btn-group me-2">
           <button type="submit" id="profile" class="btn btn-sm btn-outline-secondary"
-            formaction="{% url 'home' %}">Evenements</button>
+            formaction="{% url 'home' %}" form="nav_bar">Evenements</button>
         </div>
+        {% comment "passé dans la sidebar" %}
         <div class="btn-group me-2">
           <button type="submit" id="profile" class="btn btn-sm btn-outline-secondary"
-            formaction="{% url 'profile' %}">Mon Profil</button>
+            formaction="{% url 'profile' %}" form="nav_bar">Mon Profil</button>
         </div>
+        {% endcomment %}
         <a class="btn btn-sm btn-outline-secondary" href="{% url 'logout' %}">Déconnexion</a>
         {% else %}
         <a class="btn btn-sm btn-outline-secondary" href="{% url 'login' %}">connexion</a>
         {% endif %}
       </li>
     </ul>
-  </header>                                                 
-</form>
+  </nav>                                                 
 
+{% comment "ne sert plus normalement" %}
 <script>
   /* passage des infos POST liées à l'appui sur les boutons */
   {% if Evenement and user.profilebenevole in Benevoles %}
@@ -129,3 +144,4 @@
     });
   {% endif %}
 </script>
+{% endcomment %}
