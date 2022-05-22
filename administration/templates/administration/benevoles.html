@@ -26,13 +26,14 @@
         <li class="nav-item">
             <button class="nav-link active" id="benevoles-liste-tab" data-bs-toggle="tab" 
                     data-bs-target="#benevoles-liste" type="button" role="tab" 
-                    aria-controls="benevoles-liste" aria-selected="true">Liste</button>
+                    aria-controls="benevoles-liste" aria-selected="true">Liste des inscrits</button>
         </li>
         <li class="nav-item">
             <button class="nav-link" id="benevoles-emails-tab" data-bs-toggle="tab" 
                     data-bs-target="#benevoles-emails" type="button" role="tab" 
                     aria-controls="benevoles-emails" aria-selected="false">Courriels</button>    
         </li>
+
     </ul>
 
     <div class="tab-content" id="benevoles">
@@ -41,8 +42,15 @@
             role="tabpanel" aria-labelledby="benevoles-liste-tab">
 
             {% if BenevolesAgeCreneauxAssopart %}
-                {# AFFICHE LES BENEVOLES #}
-                <table class="table table-dark table-striped table-hover"  id="table_benevoles">
+                {# AFFICHE LES BENEVOLES de l'evenement #}
+
+                <div class="col-md-9 ms-sm-auto col-lg-12 px-md-4 pt-3">
+                    <button style="" class="btn btn-sm" title="ajouter un bénévole sans compte ayoulvat à l'évènement" data-bs-toggle="modal" data-bs-target="#modal-benevole-ajoute">
+                        <h2> Bénévoles inscrits <i style="color: var(--bs-success)" class="bi bi-plus-square fs-2"></i> </h2>    
+                    </button>
+                </div>
+
+                <table class="table table-dark table-striped table-hover"  id="table_benevoles_evenement">
                     <thead>
                         <tr>
                         <th scope="col">nom</th><th scope="col">prenom</th><th scope="col">age</th><th scope="col">email</th><th scope="col">portable</th>
@@ -82,15 +90,56 @@
                     </tbody>
                 </table>
 
-                <div class="col-md-9 ms-sm-auto col-lg-12 px-md-4 pt-3">
-                    <button style="" class="btn btn-sm" title="ajouter un bénévole" data-bs-toggle="modal" data-bs-target="#modal-benevole-ajoute">
-                        <i style="color: var(--bs-success)" class="bi bi-plus-square fs-1"></i>
-                    </button>
-                </div>
-
             {% else %}
                 pas encore de bénévole inscrit
             {% endif %} 
+
+            {# AFFICHE LES BENEVOLES ayoulvat pas inscrits à l'evenement #}
+            <hr>
+            <div class="col-md-9 ms-sm-auto col-lg-12 px-md-4 pt-3">
+                <button style="" class="btn btn-sm" title="ajouter un bénévole sans compte ayoulvat à l'évènement" data-bs-toggle="modal" data-bs-target="#modal-benevole-ajoute">
+                    <h2> Bénévoles non inscrits  </h2>    
+                </button>
+            </div>
+
+            <table class="table table-dark table-striped table-hover"  id="table_benevoles_ayoulvat">
+                <thead>
+                    <tr>
+                    <th scope="col">nom</th><th scope="col">prenom</th><th scope="col">age</th>
+                    <th scope="col">email</th><th scope="col">portable</th><th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for benevole,liste in NotBenevolesAgeCreneauxAssopart.items %}
+                    <tr style="vertical-align : middle;">
+                        <td>{{benevole.personne.last_name|upper}}</td>
+                        <td>{{benevole.personne.first_name|capfirst}}</td>
+                        <td>{{liste.0}}</td> {# age #}
+                        <td>{{benevole.personne.email}}</td>
+                        <td>{{benevole.personne.portable}}</td>                 
+                        <td>
+                            <div style="display: flex;">
+                                {% comment "" %}
+                                <a href="#" class="d-block p-3 link-blue text-decoration-none" title="éditer" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
+                                    <i class="bi-pencil-square fs-3"></i>
+                                </a>
+                                {% endcomment %}
+                                {# bouton pour supprimer le lien evenement - benevole #}
+                                {# si la personne est benevole sur cet evenement#}
+                                <button style="" class="benevole-lie btn btn-sm" title="ajouter le bénévole à l'évènement" 
+                                    data-bs-toggle="modal" data-bs-target="#modal-benevole-lie"
+                                    data-bs-uuid="{{benevole.UUID}}" 
+                                    data-bs-lastname="{{benevole.personne.last_name}}" 
+                                    data-bs-firstname="{{benevole.personne.fisrt_name}}">
+                                    <i style="color: var(--bs-success)" class="bi bi-plus-square fs-6"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
         </div>
 {# fin onglet 1 #}
 
@@ -207,7 +256,15 @@
 {# table dynamique : datatables #}
 <script>
     $(document).ready(function() {
-        $('#table_benevoles').DataTable({
+        $('#table_benevoles_evenement').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+            },
+            "lengthMenu": [[10, 50, -1], [10, 50, "Tous"]],
+        } );
+    } );
+    $(document).ready(function() {
+        $('#table_benevoles_ayoulvat').DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
             },

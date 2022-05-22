@@ -11,8 +11,8 @@ from django.db.models import Q
 from benevole.forms import BenevoleForm, PersonneForm
 from evenement.models import Creneau, Equipe, Evenement, Planning, evenement_benevole_assopart
 #from evenement.views import inscription_ouvert
-from benevole.models import Personne, ProfileAdministrateur, ProfileBenevole, ProfileOrganisateur, ProfileResponsable
-from association.models import AssoPartenaire, Association
+from benevole.models import ProfileBenevole, ProfileResponsable
+from association.models import Association
 
 from django.shortcuts import render
 
@@ -35,15 +35,24 @@ def total_heures_benevoles(creneaux):
     return total
 
 def liste_benevoles_age_creneaux_assopart(evt, benevoles):
-    """ input queryset des benevoles sur l'evenement 
+    """ input queryset des benevoles
         out dictionnaire: objet benevole - (age, nb creneaux, asso partenaire) """
     out={}
     for benevole in benevoles: 
+        age=date.today().year - benevole.personne.date_de_naissance.year - ((date.today().month, date.today().day) < \
+                        (benevole.personne.date_de_naissance.month, benevole.personne.date_de_naissance.day))
+        try:
+            creneaux=benevole.BenevolesCreneau.filter(evenement=evt).count()
+        except:
+            creneaux=0
+        try:
+            asso=evenement_benevole_assopart.objects.select_related('asso_part').get(Q(evenement=evt), Q(profilebenevole=benevole)).asso_part
+        except:
+            asso='None'
         out[benevole]=(
-            date.today().year - benevole.personne.date_de_naissance.year - ((date.today().month, date.today().day) < \
-                        (benevole.personne.date_de_naissance.month, benevole.personne.date_de_naissance.day)),
-            benevole.BenevolesCreneau.filter(evenement=evt).count(),
-            evenement_benevole_assopart.objects.select_related('asso_part').get(Q(evenement=evt), Q(profilebenevole=benevole)).asso_part,
+            age,
+            creneaux,
+            asso,
         )
     return out 
 
@@ -236,6 +245,7 @@ class BenevolesListView(ListView):
         self.Evt = Evenement.objects.get(UUID=self.request.session['uuid_evenement']) # recuper l evenement
         self.Asso = self.Evt.association # recuper l asso
         self.ListeBenevoles = self.queryset.select_related('personne').filter(BenevolesEvenement=self.Evt).order_by('personne__last_name')  # objets benevoles de l'evenement
+        self.ListeNotBenevoles = self.queryset.select_related('personne').filter(~Q(BenevolesEvenement=self.Evt)).order_by('personne__last_name')  # objets personne non inscrites à l'evenement
         # definit les infos a envoyer au tempate
 
         self.context = { 
@@ -250,6 +260,7 @@ class BenevolesListView(ListView):
             "Equipes" : Equipe.objects.filter(evenement=self.Evt).order_by('nom'),
 
             "BenevolesAgeCreneauxAssopart": liste_benevoles_age_creneaux_assopart(self.Evt, self.ListeBenevoles),
+            "NotBenevolesAgeCreneauxAssopart": liste_benevoles_age_creneaux_assopart(self.Evt, self.ListeNotBenevoles),
             "EvtBeneAssopar": self.Evt.evenement_benevole_assopart_set.all(),
 
             "Administrateur": self.Asso.administrateur,
@@ -293,6 +304,12 @@ class BenevolesListView(ListView):
             ### ajouter la possibilite de lier à une personne dans profilebenevole
             ###             creer profilebenevole + line evenement-profilebenevole 
 
+        # lier un benevole à l evenement
+        if 'benevole_lier' in request.POST:
+            benevole = ProfileBenevole.objects.get(UUID=request.POST.get('benevole_lier'))
+            # lie evenement et profilebenevole
+            self.Evt.benevole.add(benevole)
+
         # supprime un benevole de l evenement
         if all(k in request.POST for k in ('benevole_supprimer', 'BenevoleUUID')):   
             # supprime le lien evenement benevole = desinscrit le benevole de l evenement
@@ -303,9 +320,11 @@ class BenevolesListView(ListView):
             for cre in cren:
                 setattr(cre, 'benevole_id', '')
                 cre.save()
-        # recharge les liste infos pour mettre à jour suite aux modifs ( creation ou suppression de benevole)
+        # recharge les listes infos pour mettre à jour suite aux modifs ( creation ou suppression de benevole)
         self.context['Benevoles']=self.queryset.select_related('personne').filter(BenevolesEvenement=self.Evt).order_by('personne__last_name')
         self.context['BenevolesAgeCreneauxAssopart']= liste_benevoles_age_creneaux_assopart(self.Evt, self.context['Benevoles'])
+        self.context['NotBenevoles']=self.queryset.select_related('personne').filter(~Q(BenevolesEvenement=self.Evt)).order_by('personne__last_name')
+        self.context['NotBenevolesAgeCreneauxAssopart']= liste_benevoles_age_creneaux_assopart(self.Evt, self.context['NotBenevoles'])
             
 
         # editer un benevole

@@ -63,7 +63,7 @@ footer .right {
  * pages evenements / plannings
  *************************/
  
-.espace-evenement {
+.espace-evenement, .espace-administration {
 	padding-bottom: var(--footer-height); /* assenceur s affiche si l affichage passe derriere le footer*/
 }
 

@@ -30,3 +30,50 @@
         </div>
     </div>
 </div>
+{# modal lie bénévole à evenement #}
+<div class="modal fade"
+     id="modal-benevole-lie"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="benevole_lie"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">
+                inscrire le bénévole à l'évènement
+                </h5>
+            </div>
+            <form  id="form-lie-benevole" class="form-lie-benevole" method='post'>
+              <div class="modal-body">
+                {% csrf_token %}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="submit" id="benevole_lie"  class="btn btn-primary success">Ajouter</button>
+              </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+  var modalBenevoleLier = document.getElementById('modal-benevole-lie')
+  if (modalBenevoleLier) {
+    modalBenevoleLier.addEventListener('show.bs.modal', function (event) {
+    /* Button that triggered the modal */
+    var button = event.relatedTarget;
+    /* Extract info from data-bs-* attributes */
+    uuid_bs_data = button.getAttribute('data-bs-uuid');
+    // alert(uuid_bs_data);
+    // Create a text input
+    var uuid = document.createElement("input");
+    uuid.setAttribute("type", "hidden");
+    uuid.setAttribute("name", "benevole_lier");
+    uuid.setAttribute("value", uuid_bs_data);
+    var form = document.getElementById("form-lie-benevole");
+    form.appendChild(uuid);
+    });
+  }
+
+</script>
