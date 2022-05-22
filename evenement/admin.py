@@ -1,10 +1,7 @@
-from uuid import UUID
 from django.contrib import admin
 from django.forms.models import BaseInlineFormSet
-from benevole.models import ProfileBenevole, Personne, ProfileOrganisateur
-
 from evenement import models
-from benevole import models as models_benevoles
+
 
 @admin.register(models.Creneau)
 class CreneauAdmin(admin.ModelAdmin):
@@ -51,7 +48,7 @@ class EvenementAdmin(admin.ModelAdmin):
                 )
     #filter_horizontal = ('benevole', 'assopartenaire')
     list_select_related = ['association']
-    inlines = (BenevoleEvenementInLine, )
+    # inlines = (BenevoleEvenementInLine, )
 
 admin.site.register(models.Equipe)
 admin.site.register(models.Planning)

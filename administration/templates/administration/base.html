@@ -9,7 +9,6 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="{% static 'css/ayoulvat.css' %}" type="text/css" />
 
   <style>
       {# internal CSS pour dynamique #}
@@ -29,7 +28,7 @@
   {% bootstrap_css %}
   {% bootstrap_javascript %}
   {% bootstrap_messages %}
-
+  <link rel="stylesheet" href="{% static 'css/ayoulvat.css' %}" type="text/css" />
 </head>
 <body class="override">
   {#affiche un loader pendant que le client attend un retour du serveur#}
@@ -39,7 +38,7 @@
 <div class="container-fluid">
   <div class="row"> 
     {% include "administration/sidebar.html" %}
-    <main class="col-md-9 ms-sm-auto col-lg-11 px-md-4 pt-3 espace-administration">
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-3 espace-administration">
       <div class=" ">
             {% block content %}{% endblock %}
               <br><br>
@@ -48,7 +47,7 @@
   </div>
 </div>
 
-   {% include "benevole/footer.html" %}
+  
 
   {# debut : cookie consent #}
   <script src="{% static 'js/cookie.notice.js' %}"></script>

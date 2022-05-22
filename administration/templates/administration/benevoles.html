@@ -22,7 +22,7 @@
     <hr class="border-2 border-top border-dark"> {# barre horizontale #}
 
 {# barre des onglets #}
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs nav-justified">
         <li class="nav-item">
             <button class="nav-link active" id="benevoles-liste-tab" data-bs-toggle="tab" 
                     data-bs-target="#benevoles-liste" type="button" role="tab" 
@@ -31,9 +31,13 @@
         <li class="nav-item">
             <button class="nav-link" id="benevoles-emails-tab" data-bs-toggle="tab" 
                     data-bs-target="#benevoles-emails" type="button" role="tab" 
-                    aria-controls="benevoles-emails" aria-selected="false">Courriels</button>    
+                    aria-controls="benevoles-emails" aria-selected="false">Courriels des inscrits</button>    
         </li>
-
+        <li class="nav-item">
+            <button class="nav-link" id="non-inscrits-liste-tab" data-bs-toggle="tab" 
+                    data-bs-target="#non-inscrits-liste" type="button" role="tab" 
+                    aria-controls="non-inscrits-liste" aria-selected="false" style="color: crimson;">Non inscrits</button>
+        </li>
     </ul>
 
     <div class="tab-content" id="benevoles">
@@ -45,9 +49,11 @@
                 {# AFFICHE LES BENEVOLES de l'evenement #}
 
                 <div class="col-md-9 ms-sm-auto col-lg-12 px-md-4 pt-3">
-                    <button style="" class="btn btn-sm" title="ajouter un bénévole sans compte ayoulvat à l'évènement" data-bs-toggle="modal" data-bs-target="#modal-benevole-ajoute">
-                        <h2> Bénévoles inscrits <i style="color: var(--bs-success)" class="bi bi-plus-square fs-2"></i> </h2>    
-                    </button>
+                    <h2> Bénévoles inscrits 
+                        <button style="" class="btn btn-sm" title="ajouter un bénévole sans compte ayoulvat à l'évènement" data-bs-toggle="modal" data-bs-target="#modal-benevole-ajoute">
+                            <i style="color: var(--bs-success)" class="bi bi-plus-square fs-2"></i>
+                        </button>
+                    </h2>
                 </div>
 
                 <table class="table table-dark table-striped table-hover"  id="table_benevoles_evenement">
@@ -94,61 +100,14 @@
                 pas encore de bénévole inscrit
             {% endif %} 
 
-            {# AFFICHE LES BENEVOLES ayoulvat pas inscrits à l'evenement #}
-            <hr>
-            <div class="col-md-9 ms-sm-auto col-lg-12 px-md-4 pt-3">
-                <button style="" class="btn btn-sm" title="ajouter un bénévole sans compte ayoulvat à l'évènement" data-bs-toggle="modal" data-bs-target="#modal-benevole-ajoute">
-                    <h2> Bénévoles non inscrits  </h2>    
-                </button>
-            </div>
-
-            <table class="table table-dark table-striped table-hover"  id="table_benevoles_ayoulvat">
-                <thead>
-                    <tr>
-                    <th scope="col">nom</th><th scope="col">prenom</th><th scope="col">age</th>
-                    <th scope="col">email</th><th scope="col">portable</th><th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for benevole,liste in NotBenevolesAgeCreneauxAssopart.items %}
-                    <tr style="vertical-align : middle;">
-                        <td>{{benevole.personne.last_name|upper}}</td>
-                        <td>{{benevole.personne.first_name|capfirst}}</td>
-                        <td>{{liste.0}}</td> {# age #}
-                        <td>{{benevole.personne.email}}</td>
-                        <td>{{benevole.personne.portable}}</td>                 
-                        <td>
-                            <div style="display: flex;">
-                                {% comment "" %}
-                                <a href="#" class="d-block p-3 link-blue text-decoration-none" title="éditer" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
-                                    <i class="bi-pencil-square fs-3"></i>
-                                </a>
-                                {% endcomment %}
-                                {# bouton pour supprimer le lien evenement - benevole #}
-                                {# si la personne est benevole sur cet evenement#}
-                                <button style="" class="benevole-lie btn btn-sm" title="ajouter le bénévole à l'évènement" 
-                                    data-bs-toggle="modal" data-bs-target="#modal-benevole-lie"
-                                    data-bs-uuid="{{benevole.UUID}}" 
-                                    data-bs-lastname="{{benevole.personne.last_name}}" 
-                                    data-bs-firstname="{{benevole.personne.fisrt_name}}">
-                                    <i style="color: var(--bs-success)" class="bi bi-plus-square fs-6"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-
         </div>
 {# fin onglet 1 #}
 
 {# debut onglet 2 #}
         <div class="tab-pane fade show post_display_javascript" id="benevoles-emails" 
             role="tabpanel" aria-labelledby="benevoles-emails-tab">
-
-            <div class="col-md-9 ms-sm-auto col-lg-1 px-md-4 pt-3">
-                <br>
+            <div class="col-md-9 ms-sm-auto col-lg-12 px-md-4 pt-3">
+                <h2> Courriels des bénévoles inscrits  </h2>    
             </div>
 
             <div class="row">
@@ -159,7 +118,7 @@
                         </thead>
                         <tbody>
                             <tr style="vertical-align : middle;">
-                                <td>Bénévoles inscrits avec créneau</td><td></td>
+                                <td>Bénévoles avec créneau</td><td></td>
                                 <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles participant à l'évènement">
                                     <!--a href="mailto:{{ Emails_benevoles_evenement|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->
                                     <button style="" class="liste-courriels btn" title="afficher la liste des courriels" 
@@ -170,7 +129,7 @@
                                 </td>
                             </tr>
                             <tr style="vertical-align : middle;">
-                                <td>Bénévoles inscrits avec un seul créneau</td><td></td>
+                                <td>Bénévoles avec un seul créneau</td><td></td>
                                 <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles participant à l'évènement">
                                     <!--a href="mailto:{{ Emails_benevoles_un_creneau|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->
                                     <button style="" class="liste-courriels btn" title="afficher la liste des courriels" 
@@ -181,7 +140,7 @@
                                 </td>
                             </tr>
                             <tr style="vertical-align : middle;">
-                                <td>Bénévoles inscrits sans créneau</td><td></td>
+                                <td>Bénévoles sans créneau</td><td></td>
                                 <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles inscrits mais sans créneaux">
                                     <!--a href="mailto:{{ Emails_benevoles_sans_creneaux|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->
                                     <button style="" class="liste-courriels btn" title="afficher la liste des courriels" 
@@ -249,6 +208,60 @@
 
         </div>    
 {# fin onglet 2 #}
+
+{# onglet 3 #}
+        <div class="tab-pane fade show post_display_javascript" id="non-inscrits-liste" 
+        role="tabpanel" aria-labelledby="non-inscrits-liste-tab">
+
+            {% if NotBenevolesAgeCreneauxAssopart %}
+                {# AFFICHE LES BENEVOLES ayoulvat pas inscrits à l'evenement #}
+                <div class="col-md-9 ms-sm-auto col-lg-12 px-md-4 pt-3">
+                    <h2> Bénévoles non inscrits  </h2>    
+                </div>
+
+                <table class="table table-dark table-striped table-hover"  id="table_non-inscrits_ayoulvat">
+                    <thead>
+                        <tr>
+                        <th scope="col">nom</th><th scope="col">prenom</th><th scope="col">age</th>
+                        <th scope="col">email</th><th scope="col">portable</th><th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for benevole,liste in NotBenevolesAgeCreneauxAssopart.items %}
+                        <tr style="vertical-align : middle;">
+                            <td>{{benevole.personne.last_name|upper}}</td>
+                            <td>{{benevole.personne.first_name|capfirst}}</td>
+                            <td>{{liste.0}}</td> {# age #}
+                            <td>{{benevole.personne.email}}</td>
+                            <td>{{benevole.personne.portable}}</td>                 
+                            <td>
+                                <div style="display: flex;">
+                                    {% comment "" %}
+                                    <a href="#" class="d-block p-3 link-blue text-decoration-none" title="éditer" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
+                                        <i class="bi-pencil-square fs-3"></i>
+                                    </a>
+                                    {% endcomment %}
+                                    {# bouton pour supprimer le lien evenement - benevole #}
+                                    {# si la personne est benevole sur cet evenement#}
+                                    <button style="" class="benevole-lie btn btn-sm" title="ajouter le bénévole à l'évènement" 
+                                        data-bs-toggle="modal" data-bs-target="#modal-benevole-lie"
+                                        data-bs-uuid="{{benevole.UUID}}" 
+                                        data-bs-lastname="{{benevole.personne.last_name}}" 
+                                        data-bs-firstname="{{benevole.personne.fisrt_name}}">
+                                        <i style="color: var(--bs-success)" class="bi bi-plus-square fs-6"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                tous les bénévoles sont inscrit a cet évènement
+            {% endif %}
+        </div>
+{# fin onglet 3 #}
+
     </div>
 
 </div>
@@ -264,7 +277,7 @@
         } );
     } );
     $(document).ready(function() {
-        $('#table_benevoles_ayoulvat').DataTable({
+        $('#table_non-inscrits_ayoulvat').DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
             },

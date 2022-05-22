@@ -1,11 +1,7 @@
 from django.contrib import admin
-from django.contrib.auth.models import User
-from django.contrib.auth.admin import UserAdmin
-from django.forms import BaseInlineFormSet
-
 from benevole import models
 from evenement.admin import BenevoleEvenementInLine
-from evenement.models import Creneau
+
 
 class PersonneInLine(admin.TabularInline):
     model = models.Personne

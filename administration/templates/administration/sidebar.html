@@ -1,28 +1,29 @@
 <!-- administration/sidebar.html -->
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-auto bg-light sticky-top">
-            <div class="d-flex flex-sm-column flex-row flex-nowrap bg-light align-items-center sticky-top">
-                <a href="{% url 'evenement' uuid_evenement=Evenement.UUID %}" class="d-block p-3 link-dark text-decoration-none" title="retour à l'évènement" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only" onclick="loader()">
-                    <i class="bi-house fs-1"></i>
+    <div class="row flex-nowrap">
+        <div class="col-sm-auto bg-light sticky-top bg-dark sidebar">
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+
+                <a href="{% url 'evenement' uuid_evenement=Evenement.UUID %}" class="nav-link px-0 align-middle" title="retour à l'évènement" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only" onclick="loader()">
+                    <i class="bi-house fs-1"></i><span class="ms-1 fs-5 d-none d-sm-inline">Retour<span>
                 </a>
                 <ul class="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-center align-items-center">
                     <li>
-                        <a href="{% url 'dashboard' %}" class="nav-link py-3 px-2" title="Dashboard" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Dashboard" onclick="loader()">
-                            <i class="bi-speedometer2 fs-1"></i>
+                        <a href="{% url 'dashboard' %}" class="nav-link px-0 align-middle" title="Dashboard" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Dashboard" onclick="loader()">
+                            <i class="bi-speedometer2 fs-1"></i><span class="ms-1 fs-5 d-none d-sm-inline">Dashboard<span>
                         </a>
                     </li>
                     
                     <li>
-                        <a href="{% url 'benevoles_liste' %}" class="nav-link py-3 px-2" title="Bénévoles" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Bénévoles" onclick="loader()">
-                            <i class="bi-people fs-1"></i>
+                        <a href="{% url 'benevoles_liste' %}" class="nav-link px-0 align-middle" title="Bénévoles" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Bénévoles" onclick="loader()">
+                            <i class="bi-people fs-1"></i><span class="ms-1 fs-5 d-none d-sm-inline">Bénévoles<span>
                         </a>
                     <li>
 
                     {% comment "" %}
                     <li class="nav-item">
                         <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
-                            <i class="bi-house fs-1"></i>
+                            <i class="bi-house fs-1"></i><span class="ms-1 fs-5 d-none d-sm-inline">retour<span>
                         </a>
                     </li>
                         <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Orders">
