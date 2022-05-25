@@ -18,7 +18,6 @@
             </table>
             <input type="hidden" name="username" value="{{ user.username }}">
             <input type="hidden" name="personne" value="{{ user.UUID }}">
-
             {% if user.last_name %} {# si le benevole a déjà renseigné son profile alors il n'est pas obligé de modifier son profile #}
               <button type = "button" class="btn btn-secondary"  onclick="history.back()">Retour</button>
               <button type="submit" class="btn btn-primary" id="profile" onclick="loader()">Enregistrer</button>

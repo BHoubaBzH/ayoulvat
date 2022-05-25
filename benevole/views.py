@@ -313,7 +313,11 @@ def Profile(request):
             new_profilebenevole = FormBenevole.save(Personne.objects.get(UUID=request.POST.get('personne')))
             logger.debug(f'profile : {new_profilebenevole}')
             messages.success(request, flash[language]['profile_up_success'])
-            return redirect("home")
+            if request.GET.get('next'):
+                next_url=request.GET.get('next')
+                return redirect(next_url)
+            else:
+                return redirect("home")
             
     try : 
         profile_benevole = BenevoleForm(instance=ProfileBenevole.objects.get(personne_id=request.user.UUID))  # form benevole liée

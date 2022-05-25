@@ -30,7 +30,7 @@
                       <form class="form evenement-form" method="post">
                           <button class="nav-link align-middle px-0" 
                             data-bs-toggle="tooltip" data-bs-placement="right" title="Création des équipes et plannings" onclick="loader()">
-                            <i class="fs-1 bi-grid"></i><span class="ms-1 fs-5 d-none d-sm-inline">Equipes Plannings</span>
+                            <i class="fs-1 bi-calendar2-plus"></i><span class="ms-1 fs-5 d-none d-sm-inline">Equipes Plannings</span>
                               {% csrf_token %}
                             <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                           </button>
@@ -48,7 +48,7 @@
                     <input type="hidden" name="planning_global" value="oui">
                     <button class="nav-link align-middle px-0" 
                       data-bs-toggle="tooltip" data-bs-placement="right" title="Planning de l'événement" onclick="loader()">
-                      <i class="fs-1 bi-table"></i><span class="ms-1 fs-5 d-none d-sm-inline">Planning</span>
+                      <i class="fs-1 bi-calendar2-range"></i><span class="ms-1 fs-5 d-none d-sm-inline">Planning</span>
                         {% csrf_token %}
                       <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                     </button>
@@ -121,7 +121,7 @@
                   <li class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                     <form class="form evenement-form" method="get" action="{% url 'evenement' uuid_evenement=event.UUID %}">
                       <button class="nav-link align-middle px-0" onclick="loader()">
-                        <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">{{ event.nom }}</span>
+                        <i class="fs-4 bi-calendar3-event-fill"></i> <span class="ms-1 d-none d-sm-inline">{{ event.nom }}</span>
                       </button>
                     </form>
                   </li>
@@ -165,7 +165,7 @@
                     {% endif %}
 
                     <li class="ms-3 w-100">
-                      <a href="{% url 'profile' %}" class="nav-link px-0 align-middle">
+                      <a href="{% url 'profile' %}?next={{ request.path|urlencode }}" class="nav-link px-0 align-middle">
                         <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Profile</span></a> 
                     </li>
 

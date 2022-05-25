@@ -233,12 +233,48 @@ def inscription_ouvert(debut, fin):
 
 @method_decorator(login_required(login_url='login'), name='dispatch')
 @method_decorator(user_passes_test(lambda u: u.groups.filter(name__in=['Administrateur','Organisteur','Responsable']).exists()), name='dispatch')
+class CreneauxListView(ListView):
+    #queryset = ProfileBenevole.objects.filter(personne__is_active='1')
+    template_name = "administration/creneaux.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        self.Evt = Evenement.objects.get(UUID=self.request.session['uuid_evenement']) # recuper l evenement
+        self.Asso = self.Evt.association # recuper l asso
+        self.queryset = self.Evt.creneau_set.all().order_by('debut')
+        self.context = { 
+            # nav bar infos : debut
+            "EvtOuvertBenevoles" : inscription_ouvert(self.Evt.inscription_debut, self.Evt.inscription_fin), # integer précisant si on est avant/dans/après la période de modification des creneaux
+            # nav bar infos : fin
+            "Association" : self.Asso,
+            "Evenement" : self.Evt, 
+            "Creneaux" : self.queryset
+        }
+        logger.info(f'{__class__.__name__} : dispatch')
+        return super().dispatch(request, *args, **kwargs)
+
+    # recupere et traite les données post
+    def post(self, request, *args, **kwargs):
+        logger.info(f'{__class__.__name__} : post')
+        logger.info('#########################################################')
+        for key, value in request.POST.items():
+            logger.info(f'#        POST -> {key} : {value}')
+        logger.info('#########################################################')
+
+        return render(request, self.template_name, self.context)
+
+    # envoi les datas au template
+    def get_context_data(self, **kwargs):
+        logger.info(f'{__class__.__name__} : get_context_data')
+        return self.context
+
+
+@method_decorator(login_required(login_url='login'), name='dispatch')
+@method_decorator(user_passes_test(lambda u: u.groups.filter(name__in=['Administrateur','Organisteur','Responsable']).exists()), name='dispatch')
 class BenevolesListView(ListView):
     #model = ProfileBenevole
     # benevoles actif 
     queryset = ProfileBenevole.objects.filter(personne__is_active='1')
     template_name = "administration/benevoles.html"
-    #paginate_by = 10
 
     def dispatch(self, request, *args, **kwargs):
         logger.info(f'{__class__.__name__} : dispatch')
@@ -349,7 +385,7 @@ class DashboardView(View):
         logger.info(f'{__class__.__name__} : dispatch')
         
         self.Evt = Evenement.objects.get(UUID=self.request.session['uuid_evenement']) # recuper l evenement
-        self.Asso = Association.objects.get(UUID=self.request.session['uuid_association']) # recuper l asso
+        self.Asso = self.Evt.association # recuper l asso
         self.queryset_c = self.Evt.creneau_set.filter(type="creneau") # les creneau de l evenement
 
         self.context = {

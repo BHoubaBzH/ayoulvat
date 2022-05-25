@@ -61,7 +61,7 @@ flash['fr_fr']['asso_new_error']            = _("")
 #######################################################
 #fr_fr
 text_template['fr_fr'] = {}
-#benevole > page evenements
+#benevole > evenements
 text_template['fr_fr']['evenements_welcome']        = _("Bienvenue")
 text_template['fr_fr']['evenements_welcome_2']      = _("Bienvenue sur le site AYOULVAT. Tu vas pouvoir t'inscrire comme bénévole sur des évènements.")
 text_template['fr_fr']['evenements_retour']         = _("Pour revenir sur cette page click sur 'Evenements' dans la barre du haut.")
@@ -75,10 +75,20 @@ text_template['fr_fr']['evenements_assoperso']      = _("sélectionne l'asso que
 text_template['fr_fr']['evenements_tonasso']        = _("ton asso")
 text_template['fr_fr']['evenements_not_yours']      = _("Evenements à venir")
 text_template['fr_fr']['evenements_not_yours_h']    = _("Evenements disponible aux quels tu ne participes pas encore:")
+
+#benevole > connexion
+
+#benevole > navbar
+
+#benevole > footer
+
+#benevole > inscription
+
+#benevole > profile
+
 #evenement > page evenement
 text_template['fr_fr']['evenement_title'] = _('Evenement : Les équipes et leurs plannings associés')
 text_template['fr_fr']['evenement_title_h'] = _('les planning des différentes équipes pour l\'évènement')
 text_template['fr_fr']['evenement_equipe'] = _('équipe')
 text_template['fr_fr']['evenement_equipe_h'] = _('description')
 text_template['fr_fr']['evenement_no_equipe'] = _('pas encore d\'équipe définie')
-#benevole > navbar
