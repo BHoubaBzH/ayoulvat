@@ -42,18 +42,19 @@
   {#affiche un loader pendant que le client attend un retour du serveur#}
   <div class="loader" id="loader" style="display:none"></div>
 
+
   {% include "benevole/navbar.html" %}
 
-<div class="">
-    {% include "evenement/sidebar.html" %}
-    <main class="col-lg-10 espace-evenement">
-      <div class="table-responsive " >
-          {% block base_evenement %}
-          {% endblock base_evenement %}
-      </div>
-    </main>
-</div>
-    {% include "benevole/footer.html" %}
+  {% include "evenement/sidebar.html" %}
+  
+  <div class="col-lg-10 espace-evenement">
+    <div class="table-responsive " >
+        {% block base_evenement %}
+        {% endblock base_evenement %}
+    </div>
+      {% include "benevole/footer.html" %}
+  </div>
+
 
 
 

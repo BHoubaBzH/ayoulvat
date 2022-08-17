@@ -25,7 +25,7 @@
             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
             title="{%if le_benevole == 'oui' %}{{ user.last_name|upper }} {{ user.first_name|capfirst }}
                    {%else%}{{ benevole }}{%endif%}
-                   {%if creno.type == 'benevole'%} disponible{%else%} occupé {{ creno.planning_id.nom }}{%endif%}"
+                   {%if creno.type == 'benevole'%} {{Text.free}}{%else%} {{Text.busy}} {{ creno.planning_id.nom }}{%endif%}"
             data-bs-toggle="modal" data-bs-target="#modal-creneau_benevole_editer">
                 <a>{{ creno.equipe.nom }}{%if creno.poste%} <i class="bi bi-chevron-right"></i> {{ creno.poste.nom }}{%endif%}</a>
     </button>

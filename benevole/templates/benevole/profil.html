@@ -1,13 +1,13 @@
-<!-- benevole/profile.html -->
+<!-- benevole/profil.html -->
 {% extends 'benevole/base.html' %}
 {% load bootstrap5 %}
 
-{% block title %}Profile{% endblock %}
+{% block title %}{{Text.profile_block}}{% endblock %}
 
 {% block content %}
 <form  id="form-profile"  method='post'>
   <div class="row card card-default">
-    <div class="card-header">Mon Profile</div>
+    <div class="card-header">{{Text.profile_title}}</div>
     <div class="card-body">
           <div class="modal-body">
             {% csrf_token %}
@@ -19,10 +19,10 @@
             <input type="hidden" name="username" value="{{ user.username }}">
             <input type="hidden" name="personne" value="{{ user.UUID }}">
             {% if user.last_name %} {# si le benevole a déjà renseigné son profile alors il n'est pas obligé de modifier son profile #}
-              <button type = "button" class="btn btn-secondary"  onclick="history.back()">Retour</button>
-              <button type="submit" class="btn btn-primary" id="profile" onclick="loader()">Enregistrer</button>
+              <button type = "button" class="btn btn-secondary"  onclick="history.back()">{{Text.back}}</button>
+              <button type="submit" class="btn btn-primary" id="profile" onclick="loader()">{{Text.record}}</button>
             {%else%} {# sinon il doit renseigner son profile #}
-              <button type="submit" class="btn btn-primary" id="profile" onclick="loader()">Valider</button>
+              <button type="submit" class="btn btn-primary" id="profile" onclick="loader()">{{Text.validate}}</button>
             {%endif%}
           
         </div>

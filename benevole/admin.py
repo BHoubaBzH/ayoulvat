@@ -34,15 +34,16 @@ class PersonneDetails(admin.ModelAdmin):
         return ' '.join(groups)
     #inlines = [BenevoleInLine, ]
     group.short_description = 'Groupes'
-    list_display = ( "last_name", "first_name", "email", "date_joined", "is_superuser", "group")
+    list_display = ( "email", "last_name", "first_name", "date_joined", "is_superuser", "group")
     list_filter = ( "profilebenevole__evenement_benevole_assopart__evenement", 
+                    "profilebenevole__evenement_benevole_assopart__evenement__association",
                     "groups", 
-                    #"profileadministrateur__association",
                     )
 
-@admin.register(models.ProfileBenevole)
-class BenevoleCustom(admin.ModelAdmin):
-    list_display = ( 'get_user_name', 'get_user_fisrtname', 'get_user_email')
+class BenevoleCommun(admin.ModelAdmin):
+    """
+        class héritée pour l'affichage commun des infos du bénévole 
+    """
     def get_user_name(self, obj):
         return obj.personne.last_name
     def get_user_fisrtname(self, obj):
@@ -52,8 +53,11 @@ class BenevoleCustom(admin.ModelAdmin):
     get_user_name.short_description = 'Nom'
     get_user_fisrtname.short_description = 'Prénom'
     get_user_email.short_description = 'Courriel'
-
     get_user_name.admin_order_field = 'personne__last_name'
+
+@admin.register(models.ProfileBenevole)
+class BenevoleCustom(BenevoleCommun):
+    list_display = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
 
     list_filter = ( "evenement_benevole_assopart__evenement",
                 )
@@ -71,49 +75,17 @@ class BenevoleCustom(admin.ModelAdmin):
     inlines = (BenevoleEvenementInLine,)
 
 @admin.register(models.ProfileAdministrateur)
-class AdministrateurCustom(admin.ModelAdmin):
-    list_display  = ( 'get_user_name', 'get_user_fisrtname', 'get_user_email')
-    def get_user_name(self, obj):
-        return obj.personne.last_name
-    def get_user_fisrtname(self, obj):
-        return obj.personne.first_name
-    def get_user_email(self, obj):
-        return obj.personne.email
-    get_user_name.short_description = 'Nom'
-    get_user_fisrtname.short_description = 'Prénom'
-    get_user_email.short_description = 'Courriel'
-
-    get_user_name.admin_order_field = 'personne__last_name'
+class AdministrateurCustom(BenevoleCommun):
+    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
 
 @admin.register(models.ProfileOrganisateur)
-class OrganisateurCustom(admin.ModelAdmin):
-    list_display  = ( 'get_user_name', 'get_user_fisrtname', 'get_user_email')
-    def get_user_name(self, obj):
-        return obj.personne.last_name
-    def get_user_fisrtname(self, obj):
-        return obj.personne.first_name
-    def get_user_email(self, obj):
-        return obj.personne.email
-    get_user_name.short_description = 'Nom'
-    get_user_fisrtname.short_description = 'Prénom'
-    get_user_email.short_description = 'Courriel'
-
-    get_user_name.admin_order_field = 'personne__last_name'
+class OrganisateurCustom(BenevoleCommun):
+    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
 
 @admin.register(models.ProfileResponsable)
-class ResponsableCustom(admin.ModelAdmin):
-    list_display  = ( 'get_user_name', 'get_user_fisrtname', 'get_user_email')
-    def get_user_name(self, obj):
-        return obj.personne.last_name
-    def get_user_fisrtname(self, obj):
-        return obj.personne.first_name
-    def get_user_email(self, obj):
-        return obj.personne.email
-    get_user_name.short_description = 'Nom'
-    get_user_fisrtname.short_description = 'Prénom'
-    get_user_email.short_description = 'Courriel'
+class ResponsableCustom(BenevoleCommun):
+    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
 
-    get_user_name.admin_order_field = 'personne__last_name'
 
 #admin.site.unregister(User)
 #admin.site.register(User, BenevoleDetails)

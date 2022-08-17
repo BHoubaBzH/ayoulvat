@@ -2,12 +2,12 @@
 
 
 <div class="row card card-default">
-    <div class="card-header">{{Text.evenements_welcome}} {% if user.last_name or user.first.name %}{{ user.first_name|capfirst }} {{ user.last_name|upper }}{% else %}{{ user.username }}{% endif %} !</div>
+    <div class="card-header">{{Text.events_welcome}} {% if user.last_name or user.first.name %}{{ user.first_name|capfirst }} {{ user.last_name|upper }}{% else %}{{ user.username }}{% endif %} !</div>
     <div class="card-body">
-        {{Text.evenements_welcome_2}}<br>
-        {{Text.evenements_retour}}<br>
-        {{Text.evenements_profil}}<br><br>
-        {{Text.evenements_liste}}
+        {{Text.events_welcome_2}}<br>
+        {{Text.events_retour}}<br>
+        {{Text.events_profile}}<br><br>
+        {{Text.events_list}}
     </div>
 </div>
 
@@ -27,7 +27,7 @@
             <div class="col-md-12">
                 <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
                     title="les évènements">
-                    {{Text.evenements_yours}}
+                    {{Text.events_yours}}
                 </h2>
             </div>
         </div>
@@ -36,7 +36,7 @@
 
     <div class="container">
         <div class="row align-items-end">
-            <p>{{Text.evenements_yours_h}}</p>
+            <p>{{Text.events_yours_h}}</p>
         </div>
     </div>   
 
@@ -57,8 +57,8 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ EV.nom }}</h5>
                                 <p class="card-text">
-                                    {{Text.evenements_evt_begin}} {{ EV.debut|date:'D, d F Y' }}<br>
-                                    {{Text.evenements_evt_end}} {{ EV.fin|date:'D, d F Y' }}</p>
+                                    {{Text.events_evt_begin}} {{ EV.debut|date:'D, d F Y' }}<br>
+                                    {{Text.events_evt_end}} {{ EV.fin|date:'D, d F Y' }}</p>
                                 <p class="card-text">{{ EV.description }}</p>
                                 {# <button type="button" class="btn btn-danger">Désinscription</button> #}
                             </div>
@@ -70,7 +70,7 @@
                                 {% for a in Ev_ass_par_benevole %} {# a les inscriptions du benevoles aux evenements#}
                                     {#{ a.profilebenevole }} | {{ a.evenement }} | {{ a.asso_part }#}
                                     {% if a.evenement == EV %} {# si notre benevole est inscrit a cet evenement#}
-                                    {{Text.evenements_assoperso}} {{EV.nom}}:{#{ a.asso_part }#}
+                                    {{Text.events_assoperso}} {{EV.nom}}:{#{ a.asso_part }#}
                                         {# prepare la form pour selectionner son asso #}
                                         {# les asso partenaires #}
                                         <form action="#" method='POST' id="select_asso-{{EV.UUID}}">
@@ -79,7 +79,7 @@
                                             <input type="hidden" name="asso_perso_change" value="">
 
                                             <div class="btn-group">
-                                                <button type="button" class="btn btn-warning btn-lg">{{Text.evenements_tonasso}}</button>
+                                                <button type="button" class="btn btn-warning btn-lg">{{Text.events_yourasso}}</button>
                                                 <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                                   <span class="visually-hidden">Toggle Dropdown</span>
                                                 </button>
@@ -129,7 +129,7 @@
             <div class="col-md-12">
                 <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
                     title="les évènements">
-                    {{Text.evenements_not_yours}}
+                    {{Text.events_not_yours}}
                 </h2>
             </div>
         </div>
@@ -138,7 +138,7 @@
 
     <div class="container">
         <div class="row align-items-end">
-            <p>{{Text.evenements_not_yours_h}}</p>
+            <p>{{Text.events_not_yours_h}}</p>
         </div>
     </div>   
 
@@ -159,8 +159,8 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ EV.nom }}</h5>
                                 <p class="card-text">
-                                    {{Text.evenements_evt_begin}} {{ EV.debut|date:'D, d F Y' }}<br>
-                                    {{Text.evenements_evt_end}} {{ EV.fin|date:'D, d F Y' }}</p>
+                                    {{Text.events_evt_begin}} {{ EV.debut|date:'D, d F Y' }}<br>
+                                    {{Text.events_evt_end}} {{ EV.fin|date:'D, d F Y' }}</p>
                                 <p class="card-text">{{ EV.description }}</p>
                             </div>
                         </button>

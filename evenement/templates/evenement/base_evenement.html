@@ -9,6 +9,21 @@ $(document).ready(function(){
 });
 </script>
 
+    {# affiche les infos du planning choisi  sous la navbar #}
+    {% if Planning and Benevole %}
+            <figure class="text-center">
+                <blockquote class="blockquote">
+                {% if  Planning.debut|date:'l j F'|stringformat:"s" ==  Planning.fin|date:'l j F'|stringformat:"s" %}
+                    <p class='h5 titre_page'>{{Planning.equipe.nom|upper}} : {{ Planning.debut|date:'l j F' }} de {{ Planning.debut|date:'H:i' }} à {{ Planning.fin|date:'H:i' }}</p>
+                {% else %}
+                    <p class='h5 titre_page'>{{Planning.equipe.nom|upper}} : {{ Planning.debut|date:'l j F' }} {{ Planning.debut|date:'H:i' }} - {{ Planning.fin|date:'l j F' }} {{ Planning.fin|date:'H:i' }}</p>
+                {% endif %}
+                </blockquote>
+            </figure>
+        <hr>
+    {% endif %}
+
+
     {% if not planning_perso %}
         {# si planning selectionné, on affiche #}
         {% if Planning or PostesCreneaux %}

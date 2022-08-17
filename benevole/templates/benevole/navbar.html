@@ -5,21 +5,21 @@
 </form>
   <nav class="navbar sticky-top navbar-dark sticky-top bg-dark flex-md-nowrap shadow">
 
-      <ul class="navbar-nav px-2">
-        <li class="nav-item text-nowrap">
-          <span class="navbar-brand">
-            {% if Evenement %}
-              {% if Evenement.vignette %}<img src="{{ Evenement.vignette.url }}" style="max-width: 40px;max-height: 40px;">{% endif %}
-              {% if Administrateur or Organisateur %}<a class="ms-1" href="{% url 'liste_evenements' %}">{{ Association.nom }}</a>{% endif %}
-                {%if Evenement.nom%}<a class="ms-1 text-white text-decoration-none"> {% if Administrateur or Organisateur%}<i class="bi bi-chevron-right"></i>{% endif %} {{ Evenement.nom }}</a>{%endif%}
-            {% elif Association %}
-              <a  href="{% url 'detail_asso' uuid_asso=Association.UUID %}" 
-                data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="détails de l'association">
-                {{ Association.nom|upper }}</a>
-            {% else %}
-              AYOULVAT
-            {% endif %}
-          </span>
+    <ul class="navbar-nav px-2">
+      <li class="nav-item text-nowrap">
+        <span class="navbar-brand">
+          {% if Evenement %}
+            {% if Evenement.vignette %}<img src="{{ Evenement.vignette.url }}" style="max-width: 40px;max-height: 40px;">{% endif %}
+            {% if Administrateur or Organisateur %}<a class="ms-1" href="{% url 'liste_evenements' %}">{{ Association.nom }}</a>{% endif %}
+              {%if Evenement.nom%}<a class="ms-1 text-white text-decoration-none"> {% if Administrateur or Organisateur%}<i class="bi bi-chevron-right"></i>{% endif %} {{ Evenement.nom }}</a>{%endif%}
+          {% elif Association %}
+            <a  href="{% url 'detail_asso' uuid_asso=Association.UUID %}" data-bs-original-title="{{Text.nav_asso_details}}" 
+              data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom">
+              {{ Association.nom|upper }}</a>
+          {% else %}
+            AYOULVAT
+          {% endif %}
+        </span>
       </li>
     </ul>
       
@@ -29,11 +29,11 @@
           <li class="nav-item text-nowrap">
             <a class="nav-link"> 
             {% if Administrateur %}
-              <font color="Red">Administrateur</font></a>
+              <font color="Red">{{Text.administrator}}</font></a>
             {% elif Organisateur %}
-              <font color="OrangeRed">Organisateur</font></a>
+              <font color="OrangeRed">{{Text.organiser}}</font></a>
             {% elif Responsable %}
-              <font color="Orange">Responsable</font>
+              <font color="Orange">{{Text.responsible}}</font>
             {% endif %}
             </a>
           </li>
@@ -41,7 +41,7 @@
       {% endif %}
       <ul class="navbar-nav px-2">
         <li class="nav-item text-nowrap">
-          <a class="nav-link">Bienvenue {%if request.user.first_name%}{{ request.user.first_name|capfirst }}{%endif%}</a>
+          <a class="nav-link">{{Text.welcome}} {%if request.user.first_name%}{{ request.user.first_name|capfirst }}{%endif%}</a>
         </li>
       </ul>
 
@@ -53,40 +53,40 @@
             <div class="btn-group me-2">
               <button type="submit" id="profile" class="btn btn-sm btn-outline-danger"
                 formaction=""
-                data-bs-toggle="tooltip" data-bs-placement="bottom" title="L'administrateur n'a pas encore ouvert les inscriptions">
-                Evènement bloqué</button>
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{Text.evt_blocked_h}}">
+                {{Text.evt_blocked}}</button>
             </div>
           {# si l evenment est terminé , on affiche#}
           {% elif Evenement and aujourdhui > Evenement.fin|date:"Y-m-d" %}
             <div class="btn-group me-2">
               <button type="submit" id="profile" class="btn btn-sm btn-outline-danger"
                 formaction=""
-                data-bs-toggle="tooltip" data-bs-placement="bottom" title="L'événement est terminé'">
-                Evènement Terminé</button>
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{Text.evt_ended_h}}">
+                {{Text.evt_ended}}</button>
             </div>
           {# si les inscriptions à l evenements n ont pas commencees , on affiche#}
           {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '0'%}
             <div class="btn-group me-2">
               <button type="submit" id="profile" class="btn btn-sm btn-outline-warning"
                 formaction="{% url 'evenement' uuid_evenement=Evenement.UUID %}"
-                data-bs-toggle="tooltip" data-bs-placement="bottom" title="les inscriptions ouvrirons le {{Evenement.inscription_debut}}">
-                Inscriptions à Venir</button>
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{Text.enrolments_tocome_h}} {{Evenement.inscription_debut}}">
+                {{Text.enrolments_tocome}}</button>
             </div>
           {# si les inscriptions à l evenements sont en cours , on affiche#}
           {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '1'%}
             <div class="btn-group me-2">
               <button type="submit" id="profile" class="btn btn-sm btn-outline-success"
                 formaction="{% url 'evenement' uuid_evenement=Evenement.UUID %}"
-                data-bs-toggle="tooltip" data-bs-placement="bottom" title="les inscriptions seront closes le {{Evenement.inscription_fin}}">
-                Inscriptions En Cours, fin le <b>{{Evenement.inscription_fin}}</b></button>
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{Text.enrolments_ongoing_h}} {{Evenement.inscription_fin}}">
+                {{Text.enrolments_ongoing}} <b>{{Evenement.inscription_fin}}</b></button>
             </div>
           {# si les inscriptions à l evenements sont terminees , on affiche#}
           {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '2'%}
             <div class="btn-group me-2">
               <button type="submit" id="profile" class="btn btn-sm btn-outline-danger"
                 formaction="{% url 'evenement' uuid_evenement=Evenement.UUID %}"
-                data-bs-toggle="tooltip" data-bs-placement="bottom" title="les inscriptions sont closes depuis le {{Evenement.inscription_fin}}">
-                Inscriptions Closes</button>
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{Text.enrolments_ended_h}} {{Evenement.inscription_fin}}">
+                {{Text.enrolments_ended}}</button>
             </div>
           {% endif %}
         </li>
@@ -99,12 +99,12 @@
                 Administration
               </button>
               <ul class="dropdown-menu dropdown-menu-dark position-absolute" aria-labelledby="dropdownMenu">
-                <li><a class="dropdown-item" href="{% url 'benevoles_liste' %}">Liste des bénévoles</a></li>
-                <li><a class="dropdown-item" href="{% url 'benevole_ajoute' %}">Ajouter un bénévole</a></li>
-                <li><a class="dropdown-item" href="{% url 'benevole_edite' %}">Editer un bénévole</a></li>
-                <li><a class="dropdown-item" href="{% url 'benevole_supprime' %}">supprimer un bénévole</a></li>
+                <li><a class="dropdown-item" href="{% url 'benevoles_liste' %}">{{Text.volunteer_list}}</a></li>
+                <li><a class="dropdown-item" href="{% url 'benevole_ajoute' %}">{{Text.volunteer_add}}</a></li>
+                <li><a class="dropdown-item" href="{% url 'benevole_edite' %}">{{Text.volunteer_mod}}</a></li>
+                <li><a class="dropdown-item" href="{% url 'benevole_supprime' %}">{{Text.volunteer_sup}}</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">{{Text.nav_action}}</a></li>
               </ul>
           </li>
         {% endif %}
@@ -115,33 +115,23 @@
     <ul class="navbar-nav px-2">
       <li class="nav-item text-nowrap">
         {% if user.is_authenticated %}
-        <div class="btn-group me-2">
-          <button type="submit" id="profile" class="btn btn-sm btn-outline-secondary"
-            formaction="{% url 'home' %}" form="nav_bar">Evenements</button>
-        </div>
-        {% comment "passé dans la sidebar" %}
-        <div class="btn-group me-2">
-          <button type="submit" id="profile" class="btn btn-sm btn-outline-secondary"
-            formaction="{% url 'profile' %}" form="nav_bar">Mon Profil</button>
-        </div>
-        {% endcomment %}
-        <a class="btn btn-sm btn-outline-secondary" href="{% url 'logout' %}">Déconnexion</a>
+          {% if user.is_staff %}
+            {# admin django #}
+            <div class="btn-group me-2">
+              <a class="btn btn-sm btn-outline-danger" href="/admin_ayoulvat/" target="_blank"
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="" >
+                {{Text.nav_django_admin}}</a>
+            </div>
+          {% endif %}
+
+          <div class="btn-group me-2">
+            <button type="submit" id="profile" class="btn btn-sm btn-outline-secondary"
+              formaction="{% url 'home' %}" form="nav_bar">{{Text.nav_events}}</button>
+          </div>
+          <!--a class="btn btn-sm btn-outline-secondary" href="{% url 'logout' %}">{{Text.nav_disconnect}}</a-->
         {% else %}
-        <a class="btn btn-sm btn-outline-secondary" href="{% url 'login' %}">connexion</a>
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'login' %}">{{Text.nav_connect}}</a>
         {% endif %}
       </li>
     </ul>
   </nav>                                                 
-
-{% comment "ne sert plus normalement" %}
-<script>
-  /* passage des infos POST liées à l'appui sur les boutons */
-  {% if Evenement and user.profilebenevole in Benevoles %}
-    $('#boutons_navbar').on('click', '#planning_perso', function(e){
-      /* alert('planning perso'); */
-      $('#nav_bar').append('<input type="hidden" name="planning_perso" value="oui">');
-      /*e.preventDefault(); */
-    });
-  {% endif %}
-</script>
-{% endcomment %}

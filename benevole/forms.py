@@ -9,8 +9,7 @@ from django import forms
 from django.forms import ModelForm
 from django.forms.fields import DateField, DateTimeField
 from benevole.models import ProfileBenevole, Personne
-import uuid
-import hashlib
+
 
 # pour date picker
 class DateInput(forms.DateInput):

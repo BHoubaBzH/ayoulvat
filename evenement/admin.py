@@ -14,7 +14,7 @@ class BenevoleEvenementFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
         super(BenevoleEvenementFormSet, self).__init__(*args, **kwargs)
         self.queryset = self.queryset.select_related('profilebenevole__personne', 'evenement', 'profilebenevole', 'asso_part')
-        print(self.queryset.query)
+        #print(self.queryset.query)
 
 class BenevoleEvenementInLine(admin.TabularInline):
     # table evenement_benevole_assopart
@@ -22,6 +22,7 @@ class BenevoleEvenementInLine(admin.TabularInline):
     model = models.Evenement.benevole.through 
     formset = BenevoleEvenementFormSet
     extra = 0
+    raw_id_fields = ('profilebenevole', 'asso_part') # pas de selection directe dans la liste = divise le nombre de requete a la db par 8
 
 @admin.register(models.Evenement)
 class EvenementAdmin(admin.ModelAdmin):
@@ -48,7 +49,7 @@ class EvenementAdmin(admin.ModelAdmin):
                 )
     #filter_horizontal = ('benevole', 'assopartenaire')
     list_select_related = ['association']
-    # inlines = (BenevoleEvenementInLine, )
+    inlines = (BenevoleEvenementInLine, )
 
 admin.site.register(models.Equipe)
 admin.site.register(models.Planning)

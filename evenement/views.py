@@ -370,7 +370,6 @@ def dic_forms_creneaux(request, planning):
                                   personne_connectee=request.user,
                                   type=creneau._meta.get_field('type').value_from_object(creneau), )
         dic_creneaux_init[creneau.UUID] = formcreneau  # dictionnaire des forms: key: UUID / val: form
-        # logger.info(' creneau UUID : {1} form : {0}'.format(formcreneau, creneau.UUID))
     # logger.info('*** Fin fonction forms_creneaux : {}'.format(datetime.now()))
     return dic_creneaux_init
 
@@ -400,6 +399,7 @@ def liste_evenements(request):
     data = {
         "Association": association,
         "Evenements": liste_evenements,
+        "Text": text_template[language], # textes traduits 
     }
 
     # check des roles de user sur l asso:

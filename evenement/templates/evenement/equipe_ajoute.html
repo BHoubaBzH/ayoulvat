@@ -5,7 +5,7 @@
             {% csrf_token %}
             <button style=""
                     class="btn btn-sm"
-                    title="ajouter une équipe"
+                    title="{{Text.team_add_t}}"
                     id="bouton-equipe_ajouter"
                     type="submit"
                     data-bs-toggle="modal"
@@ -29,7 +29,7 @@
     <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Ajout d'une équipe</h5>
+                <h5 class="modal-title" id="ModalLabel">{{Text.team_add_t}}</h5>
             </div>
             <form  id="form-equipe" method='post'>
                 <div class="modal-body">
@@ -44,8 +44,8 @@
                     <input name="equipe" value="{{ Planning.equipe_id }}" type="hidden">
 
                     <input name="equipe_ajouter" value="" type="hidden">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" id="equipe_ajouter" class="btn btn-primary success">Ajouter</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{Text.button_null}}</button>
+                    <button type="submit" id="equipe_ajouter" class="btn btn-primary success">{{Text.button_add}}</button>
                 </div>
             </form>
         </div>

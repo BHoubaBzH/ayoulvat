@@ -1,5 +1,5 @@
 <!-- benevole/footer.html -->
-<footer class="bg-light text-center text-lg-start fixed-bottom pied ">
+<div class="bg-light text-center text-lg-start fixed-bottom pied ">
 
             <div class="row ">
                 <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0"> 
@@ -10,9 +10,9 @@
                 <div class="col-auto col-md-3 col-xl-4 px-sm-2 px-0"> 
                     {% if Evenement %} 
                         {% if Evenement.commentaire %}
-                            <p style="margin-bottom: inherit;">{{ Evenement.commentaire }}
+                            <p style="margin-bottom: inherit;">{{Evenement.commentaire}}
                         {% else %}
-                            <p style="margin-bottom: inherit;">besoins d'aide? un renseignement?
+                            <p style="margin-bottom: inherit;">{{Text.foot_help}}
                         {% endif %}
                         <br>
                         <a href="mailto:{{ Evenement.courriel_organisateur }}" style="padding-left: 15%;" target="_blank">
@@ -43,4 +43,4 @@
         <p class="m-t">Copyright {% now 'Y' %} &copy <a href="mailto:Gizhm0@protonmail.com" target="_blank">Phil Rioual</a></p>
     </div>
     <!-- Copyright -->
-</footer>
+</div>

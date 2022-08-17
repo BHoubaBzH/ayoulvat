@@ -123,8 +123,10 @@ def ListeGroupesUserFiltree(request, objet="", filtre=""):
     RolesUtilisateur = []
     for role, entite in RoleUtilisateur(request, objet, filtre).items():
         if entite:
-            logger.info(f'#        {role:<15} ->    {entite} ')
-            RolesUtilisateur.append(role)
+            logger.info(f'#        {role:<15} ->')
+            for obj in entite:
+                logger.info(f'#                               {obj.nom:<25}   {obj.UUID}')
+                RolesUtilisateur.append(role)
     return RolesUtilisateur
  
 def check_majeur(date_naissance, date_evenement):
@@ -184,9 +186,21 @@ def envoi_courriel_orga_inscription(request):
 
 # nouvelle class d'enregistrement 
 class InscriptionView(generic.CreateView):
-    form_class = RegisterForm               # on utilise notre form custom
+    #form_class = RegisterForm               # on utilise notre form custom
     success_url = reverse_lazy('login')
     template_name = 'benevole/inscription.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        logger.info(f'{__class__.__name__} : dispatch') 
+        self.context = {
+            "Text": text_template[language], # textes traduits 
+            "form": RegisterForm,
+        }
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get(self, request, *args, **kwargs):
+        logger.info(f'{__class__.__name__} : get_context_data')
+        return render(request, self.template_name, self.context)
 
 @login_required(login_url='login')
 def Home(request):
@@ -330,6 +344,7 @@ def Profile(request):
         "FormPersonne" : PersonneForm(instance=Personne.objects.get(UUID=request.user.UUID)),  # form personne liée
         "FormBenevole" : profile_benevole, # form benevole liée
         "Evenements" : "",  # liste de tous les evenements
+        "Text": text_template[language], # textes traduits 
         "Action" : "modifier",
     }
-    return render(request, "benevole/profile.html", data)
+    return render(request, "benevole/profil.html", data)

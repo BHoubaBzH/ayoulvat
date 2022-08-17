@@ -40,6 +40,7 @@ body {
 
  .pied {
 	z-index: 1000;
+	font-size: small;
 }
 
 footer {
@@ -69,6 +70,7 @@ footer .right {
 
 .titre_page {
     padding-top: 1em;
+	padding-bottom: 1em;
     text-align: center;
 }
 
@@ -263,8 +265,7 @@ footer .right {
  *************************/
 
  .sidebar {
-	z-index: 1049;
-}
+	z-index: 1049;}
 
 
 .bouton-sidebar {

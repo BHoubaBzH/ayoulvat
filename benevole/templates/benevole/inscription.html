@@ -3,17 +3,17 @@
 {% extends 'benevole/base.html' %}
 {% load bootstrap5 %}
 
-{% block title %}Inscription{% endblock %}
+{% block title %}{{Text.subscription}}{% endblock %}
 
 {% block content %}
 <form method="post" action="#">
   <div class="row card card-default">
-    <div class="card-header">Inscription</div>
+    <div class="card-header">{{Text.subscription|upper}}</div>
     <div class="card-body">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
-          <button type="submit" class="btn btn-primary btn-lg">Inscription</button>
+          <button type="submit" class="btn btn-primary btn-lg">{{Text.subscription}}</button>
         {% endbuttons %}
     </div>
   </div>

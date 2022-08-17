@@ -1,3 +1,4 @@
+from curses.ascii import CR
 from datetime import datetime
 from django.db import connection
 
@@ -151,6 +152,9 @@ class PosteForm(ModelForm):
 
 ################################################################################################
 class CreneauForm(ModelForm):
+    """ 
+        form creneau générique
+    """
     debut = DateTimeField(widget=SplitDateTimeMultiWidget())
     fin = DateTimeField(widget=SplitDateTimeMultiWidget())
     benevole = ModelChoiceField(queryset=None,
@@ -233,14 +237,14 @@ class CreneauForm(ModelForm):
         #instance = getattr(self, 'instance', None)
         # print(self.instance.UUID)
         # print('benevole : {}'.format(self.personne_connectee))
+
         if self.instance:
 
             # nouvelle gestion de groupes user
             personnegroupes=self.personne_connectee.groups.all().values_list('name', flat=True)
-
             if not self.personne_connectee:
                 pass
-            # la personne connectée est un pur bénévole
+            # la personne connectée est uniquement bénévole
             if 'Benevole' in personnegroupes and not any(item in ('Administrateur', 'Organisateur', 'Responsable') for item in personnegroupes):
             #if hasattr(self.personne_connectee, 'profilebenevole') and not self.personne_connectee.has_perm('evenement.change_creneau'):
                 # par default, la liste de bénévole contient le benevole connecté
@@ -279,7 +283,7 @@ class CreneauForm(ModelForm):
                         if Creno.UUID != self.instance.UUID:
                             liste_benevoles_occupes.append(Creno.benevole_id)
                 self.fields['benevole'].queryset = self.querysetbenevoles.select_related('personne').exclude(UUID__in=liste_benevoles_occupes)
- 
+
     ################ methode controle_coherence_creneaux
     def controle_coherence_creneaux(self, Creno, debut, fin):
         # print(' ======== ')
