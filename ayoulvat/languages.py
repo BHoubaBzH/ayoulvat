@@ -119,8 +119,8 @@ text_template['fr_fr']['nav_connect']           = _("Connexion")
 text_template['fr_fr']['nav_profile']           = _("Profil")
 text_template['fr_fr']['nav_planning']          = _("Planning")
 text_template['fr_fr']['nav_planning_h']        = _("Ton planning personnel sur tout l'évènement")
-text_template['fr_fr']['nav_participate']          = _("Participer")
-text_template['fr_fr']['nav_participate_h']        = _("Participer à l'évènement en tant que bénévole")
+text_template['fr_fr']['nav_participate']       = _("Participer")
+text_template['fr_fr']['nav_participate_h']     = _("Participer à l'évènement en tant que bénévole")
 text_template['fr_fr']['nav_asso_details']      = _("détails de l'association")
 
 #benevole > footer
@@ -156,29 +156,29 @@ text_template['fr_fr']['volunteer_email_t']     = _('email :')
 text_template['fr_fr']['volunteer_phone_t']     = _('tel :')
 
 #evenement > equipe ajoute
-text_template['fr_fr']['team_add_t']           = _("Ajout d'une équipe")
+text_template['fr_fr']['team_add_t']            = _("Ajout d'une équipe")
 
 #evenement > equipe edite
-text_template['fr_fr']['team_mod_t']           = _('éditer cette equipe')
-text_template['fr_fr']['team_mod']           = _("édition équipe: ")
+text_template['fr_fr']['team_mod_t']            = _('éditer cette equipe')
+text_template['fr_fr']['team_mod']              = _("édition équipe: ")
 
 #evenement > equipe explique
-text_template['fr_fr']['team']           = _('Equipe')
-text_template['fr_fr']['team_help']           = _("Choisis un planning dans le menu de gauche pour t'insrire sur un créneau")
+text_template['fr_fr']['team']                  = _('Equipe')
+text_template['fr_fr']['team_help']             = _("Choisis un planning dans le menu de gauche pour t'insrire sur un créneau")
 
 #evenement > error message
-text_template['fr_fr']['error_msg_warning']           = _('Attention :')
+text_template['fr_fr']['error_msg_warning']     = _('Attention :')
 
 #evenement > grid cellules
 #on est ici
 #text_template['fr_fr']['']           = _('')
 
 #evenement > page evenement
-text_template['fr_fr']['evenement_title']           = _('Evenement : Les équipes et leurs plannings associés')
-text_template['fr_fr']['evenement_title_h']         = _('les planning des différentes équipes pour l\'évènement')
-text_template['fr_fr']['evenement_equipe']          = _('équipe')
-text_template['fr_fr']['evenement_equipe_h']        = _('description')
-text_template['fr_fr']['evenement_no_equipe']       = _('pas encore d\'équipe définie')
+text_template['fr_fr']['evenement_title']       = _('Evenement : Les équipes et leurs plannings associés')
+text_template['fr_fr']['evenement_title_h']     = _('les planning des différentes équipes pour l\'évènement')
+text_template['fr_fr']['evenement_equipe']      = _('équipe')
+text_template['fr_fr']['evenement_equipe_h']    = _('description')
+text_template['fr_fr']['evenement_no_equipe']   = _('pas encore d\'équipe définie')
 
 #association
 

@@ -241,7 +241,7 @@ class CreneauForm(ModelForm):
         if self.instance:
 
             # nouvelle gestion de groupes user
-            personnegroupes=self.personne_connectee.groups.all().values_list('name', flat=True)
+            personnegroupes = self.personne_connectee.groups.all().values_list('name', flat=True)
             if not self.personne_connectee:
                 pass
             # la personne connectée est uniquement bénévole
