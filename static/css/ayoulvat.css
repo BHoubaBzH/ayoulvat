@@ -5,7 +5,7 @@
     --planning_couleur: #0d6efd5c;
     --planning_hover: #57fd135c;
     --creneau_hover: #52531a; 
-    --fond_body: #e4e4e4;
+    --fond_body: #d1d1d1;
 	--scrollbar_couleur: #0b6dff;
 	--footer-height: 120px;
   }
@@ -228,8 +228,8 @@ footer .right {
 //	#background-color: var(--bs-secondary);
 //}
 {# créneau occupé dans la vue planning benevole(s) */
-.creneau_occupe {
-	/*background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-dark) 70%);*/
+.creneau_occupe_planning {
+	background-image: linear-gradient(to bottom, var(--bs-light) 0px, var(--bs-dark) 70%);
 	z-index: 50;
 }
 
