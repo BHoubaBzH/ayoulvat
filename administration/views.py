@@ -12,7 +12,7 @@ from benevole.forms import BenevoleForm, PersonneForm
 from evenement.models import Creneau, Equipe, Evenement, Planning, evenement_benevole_assopart
 #from evenement.views import inscription_ouvert
 from benevole.models import ProfileBenevole, ProfileResponsable
-from association.models import Association
+from ayoulvat.languages import *
 
 from django.shortcuts import render
 
@@ -247,7 +247,8 @@ class CreneauxListView(ListView):
             # nav bar infos : fin
             "Association" : self.Asso,
             "Evenement" : self.Evt, 
-            "Creneaux" : self.queryset
+            "Creneaux" : self.queryset,
+            "Text": text_template[language], # textes traduits 
         }
         logger.info(f'{__class__.__name__} : dispatch')
         return super().dispatch(request, *args, **kwargs)
@@ -309,6 +310,7 @@ class BenevolesListView(ListView):
             "Emails_benevoles_sans_creneaux" : emails_benevoles_sans_creneaux(self.Evt),
             "Emails_benevoles_un_creneau" : emails_benevoles_un_creneau(self.Evt),
             "Emails_responsables" : emails_responsables(self.Evt),
+            "Text": text_template[language], # textes traduits 
         }
 
         return super().dispatch(request, *args, **kwargs)
@@ -413,6 +415,7 @@ class DashboardView(View):
             "Administrateurs": self.Asso.administrateur,
             "Organisteurs" : self.Evt.organisateur.all().select_related('personne'),
             "Responsables" : ProfileResponsable.objects.select_related('personne').filter(ResponsableEquipe__in=self.Evt.equipe_set.all()),
+            "Text": text_template[language], # textes traduits
         }
         return super().dispatch(request, *args, **kwargs)
 

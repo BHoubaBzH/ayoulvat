@@ -148,7 +148,7 @@
                     </form>
                   </li>
                 {% else %}
-                  <li><a class="dropdown-item" href="#">Participer</a>
+                  <li>
                     <form class="form evenement-form" method="post">
                       {% csrf_token %}
                       <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
