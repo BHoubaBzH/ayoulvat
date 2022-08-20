@@ -287,7 +287,7 @@ def dic_forms_postes(planning):
         #logger.info(' poste UUID : {1} form : {0}'.format(formposte, poste.UUID))
     return dic_postes_init
 
-def forms_creneau(request):
+def forms_creneau(request, RolesUtilisateur):
     """
         entree:
             la requete (contenant les infos POST)
@@ -309,6 +309,7 @@ def forms_creneau(request):
                                       poste_uuid=request.POST.get('poste'),
                                       benevole_uuid=request.POST.get('benevole'),
                                       personne_connectee=request.user,
+                                      personne_connectee_groupes=RolesUtilisateur,
                                       type=request.POST.get('type'), )
             if formcreneau.is_valid():
                 messages.success(request, flash[language]['creneau_mod_success'])
@@ -324,6 +325,7 @@ def forms_creneau(request):
                                       poste_uuid=request.POST.get('poste'),
                                       benevole_uuid=request.POST.get('benevole'),
                                       personne_connectee=request.user,
+                                      personne_connectee_groupes=RolesUtilisateur,
                                       type=request.POST.get('type'), )
             if formcreneau.is_valid():
                 messages.success(request, flash[language]['creneau_new_success'])
@@ -343,7 +345,7 @@ def forms_creneau(request):
     return formcreneau
 
 
-def dic_forms_creneaux(request, planning):
+def dic_forms_creneaux(request, planning, RolesUtilisateur):
     """
         entree:
             la requete (contenant les infos POST)
@@ -368,6 +370,7 @@ def dic_forms_creneaux(request, planning):
                                   poste_uuid=request.POST.get('poste'),
                                   benevole_uuid=request.POST.get('benevole'),
                                   personne_connectee=request.user,
+                                  personne_connectee_groupes=RolesUtilisateur,
                                   type=creneau._meta.get_field('type').value_from_object(creneau), )
         dic_creneaux_init[creneau.UUID] = formcreneau  # dictionnaire des forms: key: UUID / val: form
     # logger.info('*** Fin fonction forms_creneaux : {}'.format(datetime.now()))
@@ -474,6 +477,33 @@ def evenement(request, uuid_evenement):
     #print(data["Equipes"])
     #print(data["equipes_avec_planning"])
     data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})
+
+    # check des roles de user sur l evenement:
+    logger.info('#########################################################')
+    logger.info('#   utilisateur connecté: ')
+    logger.info(f'#        {request.user.first_name} {request.user.last_name} ')
+    logger.info('#   roles : ')
+
+    # groupes/roles de l utilisateur
+    if not request.method == "POST" or (request.POST.get('evenement') and not request.POST.get('equipe') and not request.POST.get('planning'))or request.POST.get('planning') and request.POST.get('planning_supprimer'):
+        # pas de POST ou page evenement ou le planning vient d 'etre supprimé 
+        RolesUtilisateur = ListeGroupesUserFiltree(request, "ev", evenement)
+    elif request.POST.get('equipe') and not request.POST.get('planning'):
+        # equipe et pas de planning
+        RolesUtilisateur = ListeGroupesUserFiltree(request, "eq", Equipe.objects.get(UUID=request.POST.get('equipe')))
+    elif request.POST.get('planning') and not request.POST.get('planning_supprimer'):
+        # planning et pas supprimé
+        RolesUtilisateur = ListeGroupesUserFiltree(request, "plan", Planning.objects.get(UUID=request.POST.get('planning')))
+    else:
+        # le benevole arrive sur la page de l evenement
+        RolesUtilisateur = ListeGroupesUserFiltree(request, "ev", evenement)
+    try:
+        for role in RolesUtilisateur:
+            data[role] = "oui" # passe les roles 
+    except:
+        logger.error('erreur dans les RolesUtilisateur')
+    logger.info('#########################################################') 
+
     # recupere les uuid en POST, but est de tout gerer dans une seule page
     # et d'afficher les infos en fonction des POST recus :
     if request.method == "POST":
@@ -501,7 +531,7 @@ def evenement(request, uuid_evenement):
 
         # admin change un objet de l'evenement : retour en post de la l info modifier / ajouter / supprimer
         if  any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter', 'creneau_supprimer']):
-            data["Form"]=forms_creneau(request)
+            data["Form"]=forms_creneau(request, RolesUtilisateur)
         if any(x in request.POST for x in ['poste_modifier', 'poste_ajouter','poste_supprimer']):
             data["Form"]=forms_poste(request)
         if any(x in request.POST for x in ['planning_modifier', 'planning_ajouter', 'planning_supprimer']):
@@ -536,7 +566,7 @@ def evenement(request, uuid_evenement):
                 if data["planning_uuid"]:
                     planning = Planning.objects.get(UUID=data["planning_uuid"])
                     data["DicPostes"] = dic_forms_postes(planning)
-                    data["DicCreneaux"] = dic_forms_creneaux(request, planning)
+                    data["DicCreneaux"] = dic_forms_creneaux(request, planning, RolesUtilisateur)
                     data["PostesCreneaux"] = postes_creneaux(planning)
 
             elif not request.POST.get('equipe'):  
@@ -570,6 +600,7 @@ def evenement(request, uuid_evenement):
                                             poste_uuid=request.POST.get('poste'),
                                             benevole_uuid=request.POST.get('benevole'),
                                             personne_connectee=request.user,
+                                            personne_connectee_groupes=RolesUtilisateur,
                                             evenement=uuid_evenement,
                                             type=request.POST.get('type'), )
             # si le benevole appuie sur le bouton "mon planning"
@@ -586,31 +617,6 @@ def evenement(request, uuid_evenement):
         data["PlanningRange"] = planning_range(evenement.debut,
                                             evenement.fin,
                                             30)
-    # check des roles de user sur l evenement:
-    logger.info('#########################################################')
-    logger.info('#   utilisateur connecté: ')
-    logger.info(f'#        {request.user.first_name} {request.user.last_name} ')
-    logger.info('#   roles : ')
-
-    # groupes/roles de l utilisateur
-    if not request.method == "POST" or (request.POST.get('evenement') and not request.POST.get('equipe') and not request.POST.get('planning'))or request.POST.get('planning') and request.POST.get('planning_supprimer'):
-        # pas de POST ou page evenement ou le planning vient d 'etre supprimé 
-        RolesUtilisateur = ListeGroupesUserFiltree(request, "ev", evenement)
-    elif request.POST.get('equipe') and not request.POST.get('planning'):
-        # equipe et pas de planning
-        RolesUtilisateur = ListeGroupesUserFiltree(request, "eq", Equipe.objects.get(UUID=request.POST.get('equipe')))
-    elif request.POST.get('planning') and not request.POST.get('planning_supprimer'):
-        # planning et pas supprimé
-        RolesUtilisateur = ListeGroupesUserFiltree(request, "plan", Planning.objects.get(UUID=request.POST.get('planning')))
-    else:
-        # le benevole arrive sur la page de l evenement
-        RolesUtilisateur = ListeGroupesUserFiltree(request, "ev", evenement)
-    try:
-        for role in RolesUtilisateur:
-            data[role] = "oui" # passe les roles 
-    except:
-        logger.error('erreur dans les RolesUtilisateur')
-    logger.info('#########################################################')     
                                            
     logger.info(f'*** Fin traitement view : {datetime.now()}')
     return render(request, "evenement/base_evenement.html", data)

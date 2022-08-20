@@ -204,10 +204,13 @@ class CreneauForm(ModelForm):
         except:
             pass
         try:
+            self.personne_connectee_groupes = kwargs.pop('personne_connectee_groupes')
+        except:
+            pass
+        try:
             self.evenement = kwargs.pop('evenement')
         except:
             pass
-
         super().__init__(*args, **kwargs)
 
         # les bénévoles actif et inscrit sur l evenement
@@ -240,12 +243,10 @@ class CreneauForm(ModelForm):
 
         if self.instance:
 
-            # nouvelle gestion de groupes user
-            personnegroupes = self.personne_connectee.groups.all().values_list('name', flat=True)
             if not self.personne_connectee:
                 pass
             # la personne connectée est uniquement bénévole
-            if 'Benevole' in personnegroupes and not any(item in ('Administrateur', 'Organisateur', 'Responsable') for item in personnegroupes):
+            if 'Benevole' in self.personne_connectee_groupes and not any(item in ('Administrateur', 'Organisateur', 'Responsable') for item in self.personne_connectee_groupes):
             #if hasattr(self.personne_connectee, 'profilebenevole') and not self.personne_connectee.has_perm('evenement.change_creneau'):
                 # par default, la liste de bénévole contient le benevole connecté
                 id_benevole = self.personne_connectee.profilebenevole.UUID
@@ -264,7 +265,7 @@ class CreneauForm(ModelForm):
                 self.fields['benevole'].queryset = self.querysetbenevoles.filter(UUID=id_benevole)
 
             # la personne connectée est un responsable/orga/admin
-            elif any(item in ('Administrateur', 'Organisateur', 'Responsable') for item in personnegroupes):
+            elif any(item in ('Administrateur', 'Organisateur', 'Responsable') for item in self.personne_connectee_groupes):
             #elif self.personne_connectee.has_perm('evenement.change_creneau'): 
                 # creneau disponible, on affiche tout la liste des bénévoles
                 self.fields['benevole'].queryset = self.querysetbenevoles
