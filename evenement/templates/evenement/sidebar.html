@@ -61,8 +61,8 @@
                     <form class="form evenement-form" method="post">
                       <input type="hidden" name="planning_global" value="oui">
                       <button class="nav-link align-middle px-0" 
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Planning de l'événement" onclick="loader()">
-                        <i class="fs-1 bi-calendar2-range"></i><span class="ms-1 d-none d-sm-inline">Planning</span>
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="{{ Text.nav_plannings_h }}" onclick="loader()">
+                        <i class="fs-1 bi-calendar2-range"></i><span class="ms-1 d-none d-sm-inline">{{ Text.nav_plannings }}</span>
                           {% csrf_token %}
                         <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                       </button>
@@ -71,8 +71,9 @@
 
                   {# equipes #}
                   <li class="nav-item">
-                    <a href="#submenu-equipes" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                    <i class="fs-1 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Equipes</span>
+                    <a href="#submenu-equipes" data-bs-toggle="collapse" class="nav-link px-0 align-middle"
+                    data-bs-toggle="tooltip" data-bs-placement="right" title="{{ Text.nav_teams_h }}" >
+                    <i class="fs-1 bi-people"></i> <span class="ms-1 d-none d-sm-inline">{{ Text.nav_teams }}</span>
                     </a>
                       <ul class="collapse nav flex-column ms-1" id="submenu-equipes">
                         {% for team in equipes_avec_planning %}
@@ -143,8 +144,8 @@
                       <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                       <input  name="equipe" value="{{ team.UUID }}" type="hidden">
                       <input type="hidden" name="planning_perso" value="oui">
-                      <input type="submit" class="dropdown-item" value="{{Text.nav_planning}}"
-                      data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="{{Text.nav_planning_h}}" onclick="loader()">
+                      <input type="submit" class="dropdown-item" value="{{Text.nav_planning_perso}}"
+                      data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="{{Text.nav_planning_perso_h}}" onclick="loader()">
                     </form>
                   </li>
                 {% else %}

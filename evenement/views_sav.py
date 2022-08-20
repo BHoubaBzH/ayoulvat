@@ -517,20 +517,37 @@ def evenement(request, uuid_evenement):
             if request.POST.get('equipe'):  # selection d'une équipe
                 data["equipe_uuid"] = request.POST.get('equipe')  
                 # UUID equipe selectionnée
-
-                # selection d'un planning
-                data["planning_uuid"] = request.POST.get('planning')
-                data["Planning"] = Planning.objects.get(UUID=data["planning_uuid"])  # planning selectionnée
-                # instances de form poste & creneau liées : modifs & suppression & liste des postes
-                data["PlanningRange"] = planning_range(data["Planning"].debut,
-                                                    data["Planning"].fin,
-                                                    data["Planning"].pas)
-                # retourne les creneaux d'un evenement sur une plage et sur tous les plannings 
-                # permet de savoir si le user est occupe sur la plage 
-                data["Creneaux_plage"] = \
-                    tous_creneaux_entre_2_heures(data["Planning"].debut,
-                                                    data["Planning"].fin,
-                                                    uuid_evenement)
+                if request.POST.get('planning') and not request.POST.get('planning_supprimer'):  
+                    # selection d'un planning
+                    data["planning_uuid"] = request.POST.get('planning')
+                    data["Planning"] = Planning.objects.get(UUID=data["planning_uuid"])  # planning selectionnée
+                    # instances de form poste & creneau liées : modifs & suppression & liste des postes
+                    data["PlanningRange"] = planning_range(data["Planning"].debut,
+                                                        data["Planning"].fin,
+                                                        data["Planning"].pas)
+                    # retourne les creneaux d'un evenement sur une plage et sur tous les plannings 
+                    # permet de savoir si le user est occupe sur la plage 
+                    data["Creneaux_plage"] = \
+                        tous_creneaux_entre_2_heures(data["Planning"].debut,
+                                                        data["Planning"].fin,
+                                                        uuid_evenement)
+                else:
+                    # selection d'une equipe uniquement, pas de planning, on affiche le premier planning en date
+                    # plus possible normalement
+                    pass
+                    '''
+                    try:
+                        data["Planning"] = Planning.objects.filter(equipe_id=request.POST.get('equipe')).order_by('debut').first()
+                        data["planning_uuid"] = data["Planning"].UUID
+                        # recupère les heures du planning
+                        data["PlanningRange"] = planning_range(Planning.objects.get(UUID=data["planning_uuid"]).debut,
+                                                        Planning.objects.get(UUID=data["planning_uuid"]).fin,
+                                                        Planning.objects.get(UUID=data["planning_uuid"]).pas)
+                    except:
+                        logger.info(f'equipe sans planning: {request.POST.get("equipe")} ')
+                        data["planning_perso"] = "oui"
+                        data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
+                    '''
 
                 # envoi les forms au template
                 if data["planning_uuid"]:

@@ -68,7 +68,7 @@ $(document).ready(function(){
             <div class="tab-content post_display_javascript" id="nav-tabContent">
                 <div class="tab-pane fade show active post_display_javascript" id="nav-equipes"  
                     role="tabpanel" aria-labelledby="nav-equipes-tab">
-                        {% include "evenement/page_equipes.html" %}
+                        {% include "evenement/page_admin_equipes.html" %}
                 </div>
             </div>
         {# un admin a cliqué arrive de la page liste evenements #}    
@@ -82,7 +82,7 @@ $(document).ready(function(){
             <div class="tab-pane fade show active" id="nav-equipes"
                 role="tabpanel" aria-labelledby="nav-equipes-tab"> 
                 {% if equipe_uuid %} 
-                    {% include "evenement/page_equipes.html" %}
+                    {% include "evenement/page_admin_equipes.html" %}
                 {% else %}
                     {% include "evenement/page_planning_perso.html" %}
                 {% endif %}

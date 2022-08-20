@@ -109,18 +109,13 @@ def repartition_par_assos(creneaux):
         try:
             # on a un evenement, un benevole et une asso_prt de liés
             asso_du_creneau=evenement_benevole_assopart.objects.get(Q(evenement=c.evenement),Q(profilebenevole=c.benevole)).asso_part
-        except:
-            # on a pas de lien
-            pass
-        if asso_du_creneau:
             c_duree = c.fin - c.debut
-            # logger.info('{} : {}'.format(c.benevole.assopartenaire, c_duree))
             try:
                 repart[asso_du_creneau.nom] += c_duree
             except:
                 repart[asso_du_creneau.nom] = c_duree
-            # logger.info('{} : {}'.format(c.benevole.assopartenaire, repart[c.benevole.assopartenaire]))
-        else:
+        except:
+            # on a pas de lien
             c_duree = c.fin - c.debut
             try:
                 repart["sans association"] += c_duree

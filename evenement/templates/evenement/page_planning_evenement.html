@@ -94,6 +94,7 @@
                             style="grid-row: ligne-{{ equipe.UUID }};
                             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                             title="{%if creno.type == 'benevole'%}éditer la disponible{%else%}
+    TON CRENEAU : 
     {{ creno.equipe.nom }} - {{ creno.poste.nom }} : {{ creno.debut|date:'d/m/Y' }}
     {{ creno.debut|date:'H:i' }} > {{ creno.fin|date:'H:i' }}
     {%endif%}"
