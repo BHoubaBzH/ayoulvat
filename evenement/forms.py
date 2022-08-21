@@ -204,9 +204,9 @@ class CreneauForm(ModelForm):
         except:
             pass
         try:
-            self.personne_connectee_groupes = kwargs.pop('personne_connectee_groupes')
+            self.personne_connectee_roles = kwargs.pop('personne_connectee_roles')
         except:
-            pass
+            self.personne_connectee_roles = ""
         try:
             self.evenement = kwargs.pop('evenement')
         except:
@@ -246,7 +246,7 @@ class CreneauForm(ModelForm):
             if not self.personne_connectee:
                 pass
             # la personne connectée est uniquement bénévole
-            if 'Benevole' in self.personne_connectee_groupes and not any(item in ('Administrateur', 'Organisateur', 'Responsable') for item in self.personne_connectee_groupes):
+            if 'Benevole' in self.personne_connectee_roles and not any(item in ('Administrateur', 'Organisateur', 'Responsable') for item in self.personne_connectee_roles):
             #if hasattr(self.personne_connectee, 'profilebenevole') and not self.personne_connectee.has_perm('evenement.change_creneau'):
                 # par default, la liste de bénévole contient le benevole connecté
                 id_benevole = self.personne_connectee.profilebenevole.UUID
@@ -265,7 +265,7 @@ class CreneauForm(ModelForm):
                 self.fields['benevole'].queryset = self.querysetbenevoles.filter(UUID=id_benevole)
 
             # la personne connectée est un responsable/orga/admin
-            elif any(item in ('Administrateur', 'Organisateur', 'Responsable') for item in self.personne_connectee_groupes):
+            elif any(item in ('Administrateur', 'Organisateur', 'Responsable') for item in self.personne_connectee_roles):
             #elif self.personne_connectee.has_perm('evenement.change_creneau'): 
                 # creneau disponible, on affiche tout la liste des bénévoles
                 self.fields['benevole'].queryset = self.querysetbenevoles
