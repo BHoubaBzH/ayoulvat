@@ -485,7 +485,7 @@ def evenement(request, uuid_evenement):
         "planning_uuid": "",  # par defaut, pas de planning selectionée
         "PlanningRange": "",  # dictionnaire formaté des dates heures de l'objet selectionné
         "equipes_avec_planning": evenement.equipe_set.filter(planning__isnull=False).order_by('nom').distinct().select_related('evenement'), # liste des équipes avec au moins un planning
-        "creneaux_benevole" : evenement.creneau_set.filter(benevole_id=request.user.profilebenevole.UUID).order_by('debut').select_related('poste', 'planning', 'equipe', 'evenement').select_related('evenement', 'equipe', 'planning'), # crenaux du bénévole connecté
+        "creneaux_benevole" : evenement.creneau_set.filter(benevole_id=request.user.profilebenevole.UUID).order_by('debut').select_related('poste', 'planning', 'equipe', 'benevole', 'evenement'), # crenaux du bénévole connecté
         
         "FormEquipe" : EquipeForm(initial={'evenement': evenement}), # form non liée au template pour ajout d une nouvelle equipe
         "DicEquipes" : dic_forms_equipes(evenement),

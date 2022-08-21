@@ -214,7 +214,7 @@ class CreneauForm(ModelForm):
         super().__init__(*args, **kwargs)
 
         # les bénévoles actif et inscrit sur l evenement
-        self.querysetbenevoles = ProfileBenevole.objects.filter(personne__is_active='1', BenevolesEvenement=self.evenement).order_by('personne__last_name', 'personne__first_name') 
+        self.querysetbenevoles = ProfileBenevole.objects.filter(personne__is_active='1', BenevolesEvenement=self.evenement).order_by('personne__last_name', 'personne__first_name').select_related('personne')
 
         # cache certains champs
         self.fields['poste'].widget = HiddenInput()
