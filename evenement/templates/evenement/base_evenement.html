@@ -9,21 +9,6 @@ $(document).ready(function(){
 });
 </script>
 
-    {# affiche les infos du planning choisi  sous la navbar #}
-    {% if Planning and Benevole %}
-            <figure class="text-center">
-                <blockquote class="blockquote">
-                {% if  Planning.debut|date:'l j F'|stringformat:"s" ==  Planning.fin|date:'l j F'|stringformat:"s" %}
-                    <p class='h5 titre_page'>{{Planning.equipe.nom|upper}} : {{ Planning.debut|date:'l j F' }} de {{ Planning.debut|date:'H:i' }} à {{ Planning.fin|date:'H:i' }}</p>
-                {% else %}
-                    <p class='h5 titre_page'>{{Planning.equipe.nom|upper}} : {{ Planning.debut|date:'l j F' }} {{ Planning.debut|date:'H:i' }} - {{ Planning.fin|date:'l j F' }} {{ Planning.fin|date:'H:i' }}</p>
-                {% endif %}
-                </blockquote>
-            </figure>
-        <hr>
-    {% endif %}
-
-
     {% if not planning_perso %}
         {# si planning selectionné, on affiche #}
         {% if Planning or PostesCreneaux %}
@@ -61,19 +46,19 @@ $(document).ready(function(){
             {% endif %}
         {# bouton de la sidebar planning global utilisé #}
         {% elif planning_global %}
-            {% include "evenement/page_planning_evenement.html" %}
+            {% include "evenement/page_planning.html" %}
         {# une equipe est selectionnée par un benevole, pas de planning ou de poste #}
         {# page par defaut admin: plannings  evenement et equipes #} 
         {% elif Evenement and not Planning and Administrateur or Organisateur or Responsable and not planning_global %} 
             <div class="tab-content post_display_javascript" id="nav-tabContent">
                 <div class="tab-pane fade show active post_display_javascript" id="nav-equipes"  
                     role="tabpanel" aria-labelledby="nav-equipes-tab">
-                        {% include "evenement/page_admin_equipes.html" %}
+                        {% include "evenement/admin_page_equipes.html" %}
                 </div>
             </div>
         {# un admin a cliqué arrive de la page liste evenements #}    
         {% else %}
-            {% include "evenement/page_planning_evenement.html" %}
+            {% include "evenement/page_planning.html" %}
         {% endif %}
 
     {% elif planning_perso %}
@@ -82,7 +67,7 @@ $(document).ready(function(){
             <div class="tab-pane fade show active" id="nav-equipes"
                 role="tabpanel" aria-labelledby="nav-equipes-tab"> 
                 {% if equipe_uuid %} 
-                    {% include "evenement/page_admin_equipes.html" %}
+                    {% include "evenement/admin_page_equipes.html" %}
                 {% else %}
                     {% include "evenement/page_planning_perso.html" %}
                 {% endif %}
@@ -94,7 +79,7 @@ $(document).ready(function(){
             <div class="tab-content post_display_javascript" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-equipes"
                     role="tabpanel" aria-labelledby="nav-equipes-tab"> 
-                        {% include "evenement/page_planning_evenement.html" %}
+                        {% include "evenement/page_planning.html" %}
                 </div>
             </div>
         {% endif %}

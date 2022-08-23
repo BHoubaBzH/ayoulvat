@@ -1,30 +1,25 @@
 <!-- evenement/planning_bouton.html -->
 
-{# orga : permet d'afficher la form d'edition dans le modal #}
-{% if Administrateur or Organisateur or Responsable %}
-    {# pour le placement dans la grille planning garder le filtre sur planning.debut et planning.fin comme la fonction planning_range de views.py : #}
-    <button  class="planning equipe-{{ equipe.UUID }}" 
-            style="grid-row: ligne-{{ equipe.UUID }};
-            grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|date:'Y-m-d-Hi' }};"
-            title='{{ equipe.nom|upper }} > {{ planning.nom }}'
-            data-bs-toggle="modal" data-bs-target="#modal-planning_editer"
-            data-bs-evenementuuid="{{ Evenement.UUID }}"
-            data-bs-planninguuid="{{ planning.UUID }}">
-            <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
-    </button>
-
-{# pour les benevole permet d'acceder au planning simplement#}
-{% else %}
-    <form class="form_grid_button" style="grid-row: ligne-{{ equipe.UUID }}; 
-        grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|date:'Y-m-d-Hi' }};" method="post">
+<form class="form_grid_button_planningperso" style="grid-row: ligne-{{ equipe.UUID }}; 
+grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|date:'Y-m-d-Hi' }};" method="post">
         {% csrf_token %}
         <input  name="evenement" value="{{ equipe.evenement.UUID }}" type="hidden">
         <input  name="equipe" value="{{ equipe.UUID }}" type="hidden">
         <input  name="planning" value="{{ planning.UUID }}" type="hidden">
-        <button  class="planning equipe-{{ equipe.UUID }}" 
-        title="{{ equipe.nom|upper }} > {{ planning.nom }}"
-        type="submit">
-        <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
+        {% if dispo_actif == "True" %}
+        {# possible de donner ses disponibilités sur le planning #}
+        <button class="planning-perso equipe-{{ equipe.UUID }}" type="button" 
+                id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
+                data-bs-toggle="modal" data-bs-target="#modal-dispo_creer-{{ planning.UUID }}"
+                title="me déclarer disponible">
+                <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
         </button>
-    </form>
-{% endif %}
+        {% else %}
+        <button class="planning-perso equipe-{{ equipe.UUID }}" type="submit" 
+                id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
+                data-bs-toggle="modal" data-bs-target="#modal-dispo_creer-{{ planning.UUID }}"
+                title="aller aux créneaux du planning" onclick="loader()">
+                <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
+        </button>
+        {% endif %}
+</form>

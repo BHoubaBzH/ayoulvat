@@ -5,13 +5,13 @@
 <div class="container-fluid">
   <div class="row flex-nowrap">
       <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark sidebar">
-          <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark vh-100">
+          <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark vh-100"
+          style="padding-bottom: 2rem!important;padding-top: 4rem!important;">
 
             <ul class="nav nav-pills flex-column mb-auto">
 
               {# si un evenement, affiche la sidebar evenement #}
               {% if Evenement.UUID %}
-                <br><br>
                 {# top menu #}
                 {% if Administrateur or Organisateur %} 
                   <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
@@ -25,10 +25,9 @@
                           <form class="form evenement-form" method="get">
                             {% csrf_token %}
                             <button class="nav-link align-middle px-0"
-                              data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="
-                                tableau de bord de l'évènement et des bénévoles."
-                                formaction="{% url 'dashboard' %}" onclick="loader()">
-                                <i class="fs-1 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Tableau de bord</span>
+                              data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" 
+                              title="{{Text.nav_admin_dashboard_h}}" formaction="{% url 'dashboard' %}" onclick="loader()">
+                                <i class="fs-1 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">{{Text.nav_admin_dashboard}}</span>
                             </button>
                           </form>
                         </li>
@@ -37,8 +36,8 @@
                       <li class="nav-item">
                         <form class="form evenement-form" method="post">
                             <button class="nav-link align-middle px-0" 
-                              data-bs-toggle="tooltip" data-bs-placement="right" title="Création des équipes et plannings" onclick="loader()">
-                              <i class="fs-1 bi-calendar2-plus"></i><span class="ms-1 d-none d-sm-inline">Equipes/Plannings</span>
+                              data-bs-toggle="tooltip" data-bs-placement="right" title="{{Text.nav_admin_teams_h}}" onclick="loader()">
+                              <i class="fs-1 bi-calendar2-plus"></i><span class="ms-1 d-none d-sm-inline">{{Text.nav_admin_teams}}</span>
                                 {% csrf_token %}
                               <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                             </button>
@@ -166,8 +165,6 @@
                   <li><a class="dropdown-item" href="{% url 'logout' %}">{{Text.nav_disconnect}}</a></li>
               </ul>
             </div>
-            
-            <br><br>
           </div>
       </div>
 

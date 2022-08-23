@@ -1,35 +1,12 @@
-<!-- evenement/page_planning_evenement.html -->
+<!-- evenement/page_planning.html -->
 {# page du planning global #}
-<div class="table-responsive">
 
-    <div class="container">
-        <div class="row align-items-end">
-            <div class="col-md-12">
-            {% if Benevole %}
-                {% if dispo_actif == 'True' %} {# si le bénévole peut ajouter ses disponibilités #}
-                    <h5 class="titre_page">Tu peux sélectionner un planning d'équipe pour y inscrire tes disponibilités. </h5>
-                    <h5 class="titre_page">Sinon tu peux directement choisir des créneaux dans le menu de gauche.</h6>
-                {% else %}
-                    <h5 class="titre_page">Cliques sur un planning pour y acceder et t'inscrire ou te désinscrire comme bénévole. </h5>
-                {% endif %}
-            {% endif %}
-            </div>
-        </div>
-    </div>  
-{########################################################}
-{# planning visuel #}
-    <div class="container">
-        <div class="row align-items-end">
-            <div class="col-md-12">
-                <h2 style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
-                    title="les planning des différentes équipes pour l'évènement, avec tes créneaux.">
-                    Planning de l'évènement et mes créneaux
-                </h2>
-            </div>
-        </div>
-    </div>    
-    <hr class="border-2 border-top border-dark"> {# barre horizontale #}
-</div>
+{# bandeau message d erreur si besoins #}
+{% include "evenement/error_message.html" %}
+
+{# titre de la page #}
+{% include "evenement/titre_page.html" %}
+
 <div class="overflow-scroll">
     <div class="planning-equipes" aria-labelledby="planning-heading" >
         {# affiche les entetes des colonnes du planning : les heures #}
@@ -60,30 +37,7 @@
             {% for planning in Plannings %}
                 {% if planning.equipe_id == equipe.UUID %}
                 {# AFFICHE LES PLANNINGS DES EQUIPES DANS LA GRID CSS #}
-                    <form class="form_grid_button_planningperso" style="grid-row: ligne-{{ equipe.UUID }}; 
-                        grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|date:'Y-m-d-Hi' }};" method="post">
-                        {% csrf_token %}
-                        <input  name="evenement" value="{{ equipe.evenement.UUID }}" type="hidden">
-                        <input  name="equipe" value="{{ equipe.UUID }}" type="hidden">
-                        <input  name="planning" value="{{ planning.UUID }}" type="hidden">
-                        {% if dispo_actif == "True" %}
-                            {# possible de donner ses disponibilités sur le planning #}
-                            <button class="planning-perso equipe-{{ equipe.UUID }}" type="button" 
-                                id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
-                                data-bs-toggle="modal" data-bs-target="#modal-dispo_creer-{{ planning.UUID }}"
-                                title="me déclarer disponible">
-                                <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
-                            </button>
-                        {% else %}
-                            <button class="planning-perso equipe-{{ equipe.UUID }}" type="submit" 
-                                id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
-                                data-bs-toggle="modal" data-bs-target="#modal-dispo_creer-{{ planning.UUID }}"
-                                title="aller aux details du planning" onclick="loader()">
-                                <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
-                            </button>
-
-                        {% endif %}
-                    </form>
+                    {% include "evenement/planning_bouton.html" %}
                 {% endif %}
             {% endfor %}
             {# AFFICHE LES DISPO ET LES CRENEAUX DU BENEVOLE #}

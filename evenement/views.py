@@ -144,10 +144,10 @@ def forms_equipe(request):
         if formequipe.is_valid():
             logger.info('equipe modifié ou ajouté')
             formequipe.save()
+        return formequipe
 
     if request.POST.get('equipe_supprimer'):
         Equipe.objects.filter(UUID=request.POST.get('equipe_supprimer')).delete()
-    return formequipe
 
 def dic_forms_equipes(uuid_evenement):
     """
@@ -552,7 +552,9 @@ def evenement(request, uuid_evenement):
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
         else:
             # dans equipe
-            if request.POST.get('equipe'):  # selection d'une équipe
+            if request.POST.get('equipe') and not any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter', 'equipe_supprimer']):  
+                # selection d'une équipe
+
                 data["equipe_uuid"] = request.POST.get('equipe')  
                 # UUID equipe selectionnée
 
@@ -577,7 +579,7 @@ def evenement(request, uuid_evenement):
                     data["DicCreneaux"] = dic_forms_creneaux(request, planning, RolesUtilisateur)
                     data["PostesCreneaux"] = postes_creneaux(planning)
 
-            elif not request.POST.get('equipe'):  
+            elif not request.POST.get('equipe') or any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter', 'equipe_supprimer']):  
                 # selection d'un evenement uniquement
                 data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
                 # si la personne a cliqué sur le bouton pour recevoir ses créneaux par email

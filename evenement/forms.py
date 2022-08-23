@@ -1,3 +1,4 @@
+from ast import Eq
 from curses.ascii import CR
 from datetime import datetime
 from django.db import connection
@@ -42,6 +43,7 @@ class EquipeForm(ModelForm):
         self.fields['seuil1'].widget.attrs['max'] = '100'
         self.fields['seuil2'].widget.attrs['min'] = '0'
         self.fields['seuil2'].widget.attrs['max'] = '100'
+
 
 ################################################################################################
 class PlanningForm(ModelForm):

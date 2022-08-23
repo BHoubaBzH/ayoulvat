@@ -91,7 +91,7 @@ text_template['fr_fr']['disconnected']          = _("tu es déconnecté")
 text_template['fr_fr']['connection']            = _("Connexion")
 text_template['fr_fr']['subscription']          = _("Inscription")
 
-#benevole > navbar
+#benevole > navbar et sidebar
 text_template['fr_fr']['administrator']         = _("Administrateur")
 text_template['fr_fr']['organiser']             = _("Organisateur")
 text_template['fr_fr']['responsible']           = _("Responsable")
@@ -117,10 +117,14 @@ text_template['fr_fr']['nav_event']             = _("Evenement")
 text_template['fr_fr']['nav_disconnect']        = _("Déconnexion")
 text_template['fr_fr']['nav_connect']           = _("Connexion")
 text_template['fr_fr']['nav_profile']           = _("Profil")
-text_template['fr_fr']['nav_plannings']          = _("Plannings")
-text_template['fr_fr']['nav_plannings_h']        = _("Plannings des équipes et tes créneaux")
-text_template['fr_fr']['nav_teams']              = _("Equipes")
-text_template['fr_fr']['nav_teams_h']            = _("Equipes et planning de l'évènement")
+text_template['fr_fr']['nav_admin_dashboard']   = _("Tableau de bord")
+text_template['fr_fr']['nav_admin_dashboard_h'] = _("Tableau de bord et gestion des bénévoles")
+text_template['fr_fr']['nav_admin_teams']       = _("Equipes et Plannings")
+text_template['fr_fr']['nav_admin_teams_h']     = _("Création des Equipe et des Plannings associés")
+text_template['fr_fr']['nav_plannings']         = _("Plannings")
+text_template['fr_fr']['nav_plannings_h']       = _("Plannings des équipes et tes créneaux")
+text_template['fr_fr']['nav_teams']             = _("Equipes")
+text_template['fr_fr']['nav_teams_h']           = _("Equipes et planning de l'évènement")
 text_template['fr_fr']['nav_planning_perso']    = _("Planning")
 text_template['fr_fr']['nav_planning_perso_h']  = _("Ton planning personnel sur l'évènement")
 text_template['fr_fr']['nav_participate']       = _("Participer")
@@ -172,6 +176,9 @@ text_template['fr_fr']['team_help']             = _("Choisis un planning dans le
 
 #evenement > error message
 text_template['fr_fr']['error_msg_warning']     = _('Attention :')
+
+#evenement > planning bouton
+text_template['fr_fr']['event_planning_t']    = _('editer le planning')
 
 #evenement > grid cellules
 #on est ici
