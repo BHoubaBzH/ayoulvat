@@ -9,7 +9,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="ModalLabel">Edition du planning</h5>
+                    <h5 class="modal-title" id="ModalLabel">{{ Text.planning_edit }}</h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -32,10 +32,10 @@
                         <button class="btn btn-danger" title="supprimer ce planning" name="planning_supprimer"
                                 id="planning_supprimer" value="supprimer" type="button"
                                 data-bs-toggle="modal" data-bs-target="#modal-confirme-planning-supprime">
-                                Supprimer
+                                {{ Text.button_del }}
                         </button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <button type="submit" id="planning_modifier" name="planning_modifier"  class="btn btn-primary success">Modifier</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
+                        <button type="submit" id="planning_modifier" name="planning_modifier"  class="btn btn-primary success">{{ Text.button_mod }}</button>
                     </div>
                     <input type="hidden" name="reste_sur_plannings_page"/>
                 </form>
@@ -54,25 +54,25 @@
         <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="ModalLabel">Confirmer la suppression du planning :</h5>
+                    <h5 class="modal-title" id="ModalLabel">{{ Text.planning_del_confirm }}</h5>
                 </div>
                 <div class="modal-body modal-body-planning-supprime">
                     <table class="table">
                         <tbody id="fetch_json">
                             <tr>
-                                <th>Nom :</th>
+                                <th>{{ Text.name }} :</th>
                                 <td><input class="form-control-plaintext" id="planning_table_nom" name="planning" type="text" readonly></td>
                             </tr>
                             <tr>
-                                <th>Equipe :</th>
+                                <th>{{ Text.team }} :</th>
                                 <td><input class="form-control-plaintext" id="planning_table_equipe" name="equipe" type="text" readonly></td>
                             </tr>        
                             <tr>
-                                <th>Debut :</th>
+                                <th>{{ Text.start }} :</th>
                                 <td><input class="form-control-plaintext" id="planning_table_debut" name="debut" type="datetime" readonly></td>
                             </tr>
                             <tr>
-                                <th>Fin :</th>
+                                <th>{{ Text.end }} :</th>
                                 <td><input class="form-control-plaintext" id="planning_table_fin" name="fin" type="datetime" readonly></td>
                             </tr>                    
                         </tbody>
@@ -81,8 +81,8 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Non</button>
-                    <button type="submit" id="planning_supprimer_confirme" class="btn btn-danger success">Oui</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">{{ Text.no }}</button>
+                    <button type="submit" id="planning_supprimer_confirme" class="btn btn-danger success">{{ Text.yes }}</button>
                 </div>
             </div>
         </div>

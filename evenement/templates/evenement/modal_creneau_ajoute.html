@@ -68,8 +68,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalLabel">
-                {% if type == "poste" %}Ajout d'un creneau
-                {% elif type == "benevole" %}Ajout d'une disponibilité{% endif %}
+                {% if type == "poste" %}{{ Text.slot_add}}
+                {% elif type == "benevole" %}{{ Text.availability_add }}{% endif %}
                 </h5>
             </div>
             <form  id="form-creneau-ajoute" class="form-creneau-ajoute" method='post'>
@@ -87,9 +87,9 @@
                     <input type="hidden" name="equipe" value="{{ Planning.equipe_id }}">
                     
                     <input type="hidden" name="creneau_ajouter" value="">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
                     <button type="submit" id="bouton-modal-creneau_ajouter" class="btn btn-primary success">
-                        Ajouter
+                        {{ Text.button_add }}
                     </button>
                 </div>
             </form>

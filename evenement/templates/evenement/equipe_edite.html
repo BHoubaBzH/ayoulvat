@@ -78,12 +78,12 @@
     <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Confirmer La suppression de l'équipe</h5>
+                <h5 class="modal-title" id="ModalLabel">{{ Text.team_del_confirm }}</h5>
             </div>
             <div class="modal-body">
-                Etes-vous sur?
+                {{ Text.you_sure }}
                 <table class="table">
-                    <tr><th>Equipe</th><td id="equipe">{{ Equipe.nom }}</td></tr>
+                    <tr><th>{{ Text.team }}</th><td id="equipe">{{ Equipe.nom }}</td></tr>
                 </table>
             </div>
 

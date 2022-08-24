@@ -64,7 +64,7 @@
     <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Ajout d'un planning</h5>
+                <h5 class="modal-title" id="ModalLabel">{{ Text.planning_add }}</h5>
             </div>
             <form  id="form-planning-ajouter" method='post'>
                 <div class="modal-body">
@@ -77,8 +77,8 @@
                 <div class="modal-footer">
                     <input name="planning_ajouter" value="" type="hidden">
                     <input type="hidden" name="reste_sur_plannings_page"/>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" id="poste_ajouter" class="btn btn-primary success">Ajouter</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
+                    <button type="submit" id="poste_ajouter" class="btn btn-primary success">{{ Text.button_add }}</button>
                 </div>
             </form>
         </div>

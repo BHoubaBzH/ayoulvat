@@ -242,16 +242,16 @@
                         <h5 class="modal-title" id="ModalLabel">Confirmer La suppression de la disponibilité</h5>
                     </div>
                     <div class="modal-body">
-                        Etes-vous sur?
+                        {{ Text.you_sure }}
                         <table class="table">
-                            <tr><th>Disponibilité</th><td id="creneau">{{ creno.equipe.nom }} : {{ creno.debut|date:'d/m/Y' }}
+                            <tr><th>{{ Text.availability }}</th><td id="creneau">{{ creno.equipe.nom }} : {{ creno.debut|date:'d/m/Y' }}
 {{ creno.debut|date:'H:i' }} > {{ creno.fin|date:'H:i' }}</td></tr>
                         </table>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Non</button>
-                        <button type="submit" id="creneau_supprimer_confirme" class="btn btn-danger success">Oui</button>
+                        <button type="button" class="btn btn-success" data-bs-dismiss="modal">{{ Text.no }}</button>
+                        <button type="submit" id="creneau_supprimer_confirme" class="btn btn-danger success">{{ Text.yes }}</button>
                     </div>
                 </div>
             </div>

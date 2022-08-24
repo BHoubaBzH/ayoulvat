@@ -64,12 +64,27 @@ flash['fr_fr']['asso_new_error']            = _("")
 text_template['fr_fr'] = {}
 
 # boutons générique
-text_template['fr_fr']['button_add']           = _('Ajouter')
-text_template['fr_fr']['button_mod']           = _('Modifier')
-text_template['fr_fr']['button_del']           = _('Supprimer')
+text_template['fr_fr']['button_add']            = _('Ajouter')
+text_template['fr_fr']['button_mod']            = _('Modifier')
+text_template['fr_fr']['button_del']            = _('Supprimer')
 text_template['fr_fr']['button_null']           = _('Annuler')
-text_template['fr_fr']['button_yes']           = _('Oui')
-text_template['fr_fr']['button_no']           = _('Non')
+text_template['fr_fr']['button_yes']            = _('Oui')
+text_template['fr_fr']['button_no']             = _('Non')
+# chaines génériques
+text_template['fr_fr']['association']           = _('Association')
+text_template['fr_fr']['event']                 = _('Evenement')
+text_template['fr_fr']['team']                  = _('Equipe')
+text_template['fr_fr']['planning']              = _('Planning')
+text_template['fr_fr']['poste']                 = _('poste')
+text_template['fr_fr']['volunteer']             = _('Bénévole')
+text_template['fr_fr']['yes']                   = _('Oui')
+text_template['fr_fr']['no']                    = _('Non')
+text_template['fr_fr']['name']                  = _('Nom')
+text_template['fr_fr']['start']                 = _('Début')
+text_template['fr_fr']['end']                   = _('Fin')
+text_template['fr_fr']['day']                   = _('Jour')
+text_template['fr_fr']['you_sure']              = _("Etes-vous sur?")
+text_template['fr_fr']['availability']          = _('Disponibilité')
 
 #benevole > evenements
 text_template['fr_fr']['events_welcome']        = _("Bienvenue")
@@ -77,7 +92,7 @@ text_template['fr_fr']['events_welcome_2']      = _("Bienvenue sur le site AYOUL
 text_template['fr_fr']['events_retour']         = _("Pour revenir sur cette page click sur 'Evenements' dans la barre du haut.")
 text_template['fr_fr']['events_profile']        = _("Pour éditer tes informations, click sur 'mon profil' dans la barre du haut.")
 text_template['fr_fr']['events_list']           = _("Voici la liste des evenements")
-text_template['fr_fr']['events_yours']          = _("Tes évènements")
+text_template['fr_fr']['events_yours']          = _("Mes évènements")
 text_template['fr_fr']['events_yours_h']        = _("Choisis un association que tu veux représenter, et cliques sur la photo de l'évènement pour y choisir des créneaux:")
 text_template['fr_fr']['events_evt_begin']      = _("du :")
 text_template['fr_fr']['events_evt_end']        = _("au :")
@@ -114,6 +129,7 @@ text_template['fr_fr']['nav_action']            = _("Action")
 text_template['fr_fr']['nav_django_admin']      = _("django admin")
 text_template['fr_fr']['nav_events']            = _("Evenements")
 text_template['fr_fr']['nav_event']             = _("Evenement")
+text_template['fr_fr']['nav_admin']             = _("Administration")
 text_template['fr_fr']['nav_disconnect']        = _("Déconnexion")
 text_template['fr_fr']['nav_connect']           = _("Connexion")
 text_template['fr_fr']['nav_profile']           = _("Profil")
@@ -126,7 +142,7 @@ text_template['fr_fr']['nav_plannings_h']       = _("Plannings des équipes et t
 text_template['fr_fr']['nav_teams']             = _("Equipes")
 text_template['fr_fr']['nav_teams_h']           = _("Equipes et planning de l'évènement")
 text_template['fr_fr']['nav_planning_perso']    = _("Planning")
-text_template['fr_fr']['nav_planning_perso_h']  = _("Ton planning personnel sur l'évènement")
+text_template['fr_fr']['nav_planning_perso_h']  = _("Mon planning personnel sur l'évènement")
 text_template['fr_fr']['nav_participate']       = _("Participer")
 text_template['fr_fr']['nav_participate_h']     = _("Participer à l'évènement en tant que bénévole")
 text_template['fr_fr']['nav_asso_details']      = _("détails de l'association")
@@ -169,9 +185,10 @@ text_template['fr_fr']['team_add_t']            = _("Ajout d'une équipe")
 #evenement > equipe edite
 text_template['fr_fr']['team_mod_t']            = _('éditer cette equipe')
 text_template['fr_fr']['team_mod']              = _("édition équipe: ")
+text_template['fr_fr']['team_del_confirm']      = _("Confirmer La suppression de l'équipe")
 
 #evenement > equipe explique
-text_template['fr_fr']['team']                  = _('Equipe')
+# text_template['fr_fr']['team']                  = _('Equipe')
 text_template['fr_fr']['team_help']             = _("Choisis un planning dans le menu de gauche pour t'insrire sur un créneau")
 
 #evenement > error message
@@ -205,10 +222,49 @@ text_template['fr_fr']['available_del_h']       = _('supprimer cette disponibili
 text_template['fr_fr']['grid_slot_add_h']       = _('ajouter un créneau commençant à')
 text_template['fr_fr']['grid_poste_h']          = _('poste')
 text_template['fr_fr']['grid_iam_available_h']  = _('me déclarer disponible à partir de')
-text_template['fr_fr']['grid_planning_add_h']  = _('ajouter une planning commençant à')
+text_template['fr_fr']['grid_planning_add_h']   = _('ajouter une planning commençant à')
+
+#evenement > base evenement
+text_template['fr_fr']['event_base_slots']      = _('Créneaux')
+text_template['fr_fr']['event_base_volunteers'] = _('Bénévoles')
+
+#evenement > base 
+text_template['fr_fr']['base_event']            = _('Evenement')
+
+#evenement > modal creneau x
+text_template['fr_fr']['slot_add']              = _('Ajout d\'un creneau')
+text_template['fr_fr']['availability_add']      = _('Ajout d\'une disponibilité')
+text_template['fr_fr']['planning_add']          = _('Ajout d\'un planning')
+text_template['fr_fr']['poste_add']             = _('Ajout d\'un poste')
+#text_template['fr_fr']['slot_edit']            = _('Editer le créneau') 
+text_template['fr_fr']['planning_edit']         = _('Editer le planning') 
+#text_template['fr_fr']['slot_start']           = _('Debut')
+#text_template['fr_fr']['slot_end']             = _('Fin')
+text_template['fr_fr']['slot_del_confirm']      = _('Confirmer la suppression du créneau :') 
+text_template['fr_fr']['planning_del_confirm']  = _('Confirmer la suppression du planning :') 
+
+#evenement > page benevoles
+text_template['fr_fr']['volunteer_not_yet']     = _('pas encore de benevole défini')
+
+#evenement > page planning perso
+text_template['fr_fr']['volunteer_planning_h']  = _('liste de mes créneaux')
+text_template['fr_fr']['volunteer_planning']    = _('Mon planning sur l\'évènement')
+text_template['fr_fr']['volunteer_plan_email_h']= _('pour recevoir la liste de mes créneaux par courriel')
+
+#evenement > page postes
+text_template['fr_fr']['poste_not_open']        = _('Ce poste n\'est pas ouvert.')
+text_template['fr_fr']['poste_not_minor']       = _('Ce poste n\'est pas ouvert aux mineurs.')
+text_template['fr_fr']['poste_not_yet']         = _('Pas encore de poste créé')
+
+#evenement > planning bouton
+text_template['fr_fr']['iam_available']         = _('me déclarer disponible')
+text_template['fr_fr']['go_to_slots']           = _('aller aux créneaux du planning')
+
+#evenement > poste edite
+text_template['fr_fr']['poste_edit']            = _('editer ce poste')
+text_template['fr_fr']['poste_del_confirm']     = _('Confirmer la suppression du poste :') 
 
 #on est ici
-#text_template['fr_fr']['']           = _('')
 
 #association
 

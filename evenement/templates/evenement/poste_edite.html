@@ -8,7 +8,7 @@
         <input name="poste_modifier" value="{{ poste.UUID }}" type="hidden">
         <button style=""
                 class="bouton_edite_poste btn btn-sm"
-                title="editer ce poste"
+                title="{{ Text.poste_edit }}"
                 id="bouton-poste-change-{{ poste.UUID }}"
                 type="button"
                 data-bs-toggle="modal" 
@@ -59,11 +59,11 @@
                         <button class="btn btn-danger" title="supprimer ce poste" name="poste_supprimer"
                                 id="poste_supprimer" value="supprimer" type="button"
                                 data-bs-toggle="modal" data-bs-target="#modal-confirme-poste-supprime-{{ poste.UUID }}">
-                                Supprimer
+                                {{ Text.button_del }}
                         </button>
                     {% endif %}
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" id="poste_modifier" name="poste_modifier" value="modifier" class="btn btn-primary success">Modifier</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
+                    <button type="submit" id="poste_modifier" name="poste_modifier" value="modifier" class="btn btn-primary success">{{ Text.button_mod }}</button>
                 </div>
             </form>
         </div>
@@ -81,20 +81,20 @@
     <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Confirmer La suppression du poste</h5>
+                <h5 class="modal-title" id="ModalLabel">{{ Text.poste_del_confirm }}</h5>
             </div>
             <div class="modal-body">
-                Etes-vous sur?
+                {{ Text.you_sure }}
                 <table class="table">
-                    <tr><th>Equipe</th><td id="equipe">{{ Equipe.nom }}</td></tr>
-                    <tr><th>Planning</th><td id="equipe">{{ Planning.nom }}</td></tr>
-                    <tr><th>Poste</th><td id="poste_supprimer">{{ poste.nom }}</td></tr>
+                    <tr><th>{{ Text.team }}</th><td id="equipe">{{ Equipe.nom }}</td></tr>
+                    <tr><th>{{ Text.planning }}</th><td id="equipe">{{ Planning.nom }}</td></tr>
+                    <tr><th>{{ Text.poste }}</th><td id="poste_supprimer">{{ poste.nom }}</td></tr>
                 </table>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Non</button>
-                <button type="submit" id="poste_supprimer_confirme" class="btn btn-danger success">Oui</button>
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">{{ Text.no }}</button>
+                <button type="submit" id="poste_supprimer_confirme" class="btn btn-danger success">{{ Text.yes }}</button>
             </div>
         </div>
     </div>

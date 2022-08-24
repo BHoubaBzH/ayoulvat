@@ -10,7 +10,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="ModalLabel">Edition du créneau</h5>
+                    <h5 class="modal-title" id="ModalLabel">{{ Text.slot_edit }}</h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -33,10 +33,10 @@
                         <button class="btn btn-danger" title="supprimer ce créneau" name="creneau_supprimer"
                                 id="creneau_supprimer" value="supprimer" type="button"
                                 data-bs-toggle="modal" data-bs-target="#modal-confirme-creneau-supprime">
-                                Supprimer
+                                {{ Text.button_del }}
                         </button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <button type="submit" id="creneau_modifier" name="creneau_modifier"  class="btn btn-primary success">Modifier</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
+                        <button type="submit" id="creneau_modifier" name="creneau_modifier"  class="btn btn-primary success">{{ Text.button_mod }}</button>
                     </div>
                 </form>
 
@@ -54,33 +54,33 @@
         <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="ModalLabel">Confirmer la suppression du créneau :</h5>
+                    <h5 class="modal-title" id="ModalLabel">{{ Text.slot_del_confirm }}</h5>
                 </div>
                 <div class="modal-body modal-body-supprime">
                     <table class="table">
                         <tbody id="fetch_json">
                             <tr>
-                                <th>Debut :</th>
+                                <th>{{ Text.slot_start }} :</th>
                                 <td><input class="form-control-plaintext" id="creneau_table_debut" name="debut" type="datetime" readonly></td>
                             </tr>
                             <tr>
-                                <th>Fin :</th>
+                                <th>{{ Text.slot_end }} :</th>
                                 <td><input class="form-control-plaintext" id="creneau_table_fin" name="fin" type="datetime" readonly></td>
                             </tr>
                             <tr>
-                                <th>Poste :</th>
+                                <th>{{ Text.poste }} :</th>
                                 <td><input class="form-control-plaintext" id="creneau_table_poste" name="poste" type="text" readonly></td>
                             </tr>    
                             <tr>
-                                <th>Equipe :</th>
+                                <th>{{ Text.team }} :</th>
                                 <td><input class="form-control-plaintext" id="creneau_table_equipe" name="equipe" type="text" readonly></td>
                             </tr>          
                             <tr>
-                                <th>Planning :</th>
+                                <th>{{ Text.planning }} :</th>
                                 <td><input class="form-control-plaintext" id="creneau_table_planning" name="planning" type="text" readonly></td>
                             </tr>
                             <tr>
-                                <th>Bénévole :</th>
+                                <th>{{ Text.volunteer }} :</th>
                                 <td><input class="form-control-plaintext" id="creneau_table_benevole_id" name="benevole" type="text" readonly></td>
                             </tr>                            
                         </tbody>
@@ -89,8 +89,8 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Non</button>
-                    <button type="submit" id="creneau_supprimer_confirme" class="btn btn-danger success">Oui</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">{{ Text.no }}</button>
+                    <button type="submit" id="creneau_supprimer_confirme" class="btn btn-danger success">{{ Text.yes }}</button>
                 </div>
             </div>
         </div>

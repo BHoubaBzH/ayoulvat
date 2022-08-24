@@ -71,7 +71,10 @@
         <div class="row align-items-end">
             <div class="col-md-12">
                 {# tableau des creneaux du bénévole#}
-                <h2 class="d-inline-block align-middle" style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" title="liste de tes créneaux.">Mon planning sur l'évènement</h2> 
+                <h2 class="d-inline-block align-middle" style="margin-top: 2em;" data-bs-toggle="tooltip" data-bs-placement="top" 
+                title="{{ Text.volunteer_planning_h }}">
+                    {{ Text.volunteer_planning }}
+                </h2> 
             </div>
 
 
@@ -81,7 +84,7 @@
 
     <div class="d-grid gap-2">
         {# bouton envoi courriel #}
-        <button class="btn btn-primary" form="form_courriel_creneaux" title="pour recevoir la liste de tes créneaux par courriel." 
+        <button class="btn btn-primary" form="form_courriel_creneaux" title="{{ Text.volunteer_plan_email_h }}" 
         data-bs-toggle="modal" data-bs-target="#modal-benevole-supprime">
             <i style="color: var(--bs-white)" class="bi bi-envelope-fill fs-1"></i>
         </button>
@@ -91,11 +94,11 @@
     <thead>
         <tr>
         <!-- th scope="col">#</th -->
-        <th scope="col">équipe</th>
-        <th scope="col">poste</th>
-        <th scope="col">jour</th>
-        <th scope="col">début</th>
-        <th scope="col">fin</th>
+        <th scope="col">{{ Text.team }}</th>
+        <th scope="col">{{ Text.poste }}</th>
+        <th scope="col">{{ Text.day }}</th>
+        <th scope="col">{{ Text.start }}</th>
+        <th scope="col">{{ Text.end }}</th>
         </tr>
     </thead>
     <tbody>

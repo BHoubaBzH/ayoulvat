@@ -49,12 +49,12 @@
                     style="grid-row: ligne-{{ poste.UUID }}; grid-column: postes;"
                     data-bs-toggle="tooltip" data-bs-placement="right"  data-bs-html="true"
                     title="
-                    poste : {{ poste.nom }}<br>
+                    {{ Text.poste}} : {{ poste.nom }}<br>
                     {# affiche les infos aux bénévoles sur les raisons de non accès a ce poste #}
                     {% if not poste.ouvert and not Administrateur and not Organisateur and not Responsable %}
-                        <b>Ce poste n'est pas ouvert.</b><br><br>
+                        <b>{{ Text.poste_not_open }}</b><br><br>
                     {% elif not poste.ouvert_mineur and not Administrateur and not Organisateur and not Responsable %}
-                        <b>Ce poste n'est pas ouvert aux mineurs.</b><br><br>
+                        <b>{{ Text.poste_not_minor }}</b><br><br>
                     {% endif %}
                     {% if poste.description %}
                         description :
@@ -88,7 +88,7 @@
 {% endif %}
 
 {% else %}
-        <p> Pas encore de poste créé </p>
+        <p> {{ Text.poste_not_yet }} </p>
         {# bouton pour pouvoir ajouter des postes #}
         {% if Administrateur or Organisateur or Responsable %}
             <button style="" class="btn btn-sm" title="ajouter un poste" id="bouton-poste_ajouter"
