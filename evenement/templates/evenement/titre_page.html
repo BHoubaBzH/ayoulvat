@@ -1,27 +1,28 @@
 <!-- evenement/titre_page.html -->
 
-{# page du planning avec les postes et les creneaux #}
-{% if Planning %}
-    <figure class="text-center">
-        <blockquote class="blockquote">
+<figure class="text-center">
+    <blockquote class="blockquote">
+    {# page du planning avec les postes et les creneaux #}
+    {% if page == 'planning' %}
         {% if  Planning.debut|date:'l j F'|stringformat:"s" ==  Planning.fin|date:'l j F'|stringformat:"s" %}
             <p class='h5 titre_page'>{{Planning.equipe.nom|upper}} : {{ Planning.debut|date:'l j F' }} de {{ Planning.debut|date:'H:i' }} à {{ Planning.fin|date:'H:i' }}</p>
         {% else %}
             <p class='h5 titre_page'>{{Planning.equipe.nom|upper}} : {{ Planning.debut|date:'l j F' }} {{ Planning.debut|date:'H:i' }} - {{ Planning.fin|date:'l j F' }} {{ Planning.fin|date:'H:i' }}</p>
-        {% endif %}
-        </blockquote>
-    </figure>
-{# page du planning global de l evenement#}
-{% elif not Planning %}
-    <figure class="text-center">
-        <blockquote class="blockquote">
-            <p class='h5 titre_page'>
-                Planning de l'évènement et créneaux perso
-            </p>
+        {% endif %}    
+    {# page de l evenement contenant les plannings des equipes #}
+    {% elif page == 'evenement' %}
+        <p class='h5 titre_page'>
+            {{ Text.title_planning_event }}
+        </p>
+    {# page d'admin de l'evenement #}
+    {% elif page == 'admin evenement' %}
+        <p class='h5 titre_page'>
+            {{ Text.title_equipes_event }}
+        </p>
+    {% endif %}   
+    </blockquote>
+</figure>
 
-        </blockquote>
-    </figure>
-{% endif %}
 
 {# barre horizontale #}
 <hr class="border-2 border-top border-dark"> 

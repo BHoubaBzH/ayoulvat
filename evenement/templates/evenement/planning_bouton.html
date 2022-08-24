@@ -18,7 +18,9 @@ grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|da
         <button class="planning-perso equipe-{{ equipe.UUID }}" type="submit" 
                 id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
                 data-bs-toggle="modal" data-bs-target="#modal-dispo_creer-{{ planning.UUID }}"
-                title="aller aux créneaux du planning" onclick="loader()">
+                title="aller aux créneaux du planning: {{ equipe.nom|upper }}
+                {{ planning.debut|date:'l j F' }} {{ planning.debut|date:'H:i' }} - {{ planning.fin|date:'l j F' }} {{ planning.fin|date:'H:i' }}
+                " onclick="loader()">
                 <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
         </button>
         {% endif %}

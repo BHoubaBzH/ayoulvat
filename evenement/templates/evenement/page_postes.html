@@ -30,7 +30,7 @@
 {% include "evenement/error_message.html" %}
 
 {# titre de la page #}
-{% include "evenement/titre_page.html" %}
+{% include "evenement/titre_page.html" with page='planning'%}
 
 {% if  PostesCreneaux %}
     <div class="overflow-scroll">

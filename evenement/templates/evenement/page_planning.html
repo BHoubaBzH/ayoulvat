@@ -1,11 +1,11 @@
 <!-- evenement/page_planning.html -->
-{# page du planning global #}
+{# page de toutle planning de l'evenement #}
 
 {# bandeau message d erreur si besoins #}
 {% include "evenement/error_message.html" %}
 
 {# titre de la page #}
-{% include "evenement/titre_page.html" %}
+{% include "evenement/titre_page.html" with page='evenement' %}
 
 <div class="overflow-scroll">
     <div class="planning-equipes" aria-labelledby="planning-heading" >
@@ -48,7 +48,7 @@
                             style="grid-row: ligne-{{ equipe.UUID }};
                             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
                             title="{%if creno.type == 'benevole'%}éditer la disponible{%else%}
-    TON CRENEAU : 
+    {{ Text.slot_mine_part }} : 
     {{ creno.equipe.nom }} - {{ creno.poste.nom }} : {{ creno.debut|date:'d/m/Y' }}
     {{ creno.debut|date:'H:i' }} > {{ creno.fin|date:'H:i' }}
     {%endif%}"
@@ -83,7 +83,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="ModalLabel">
-                            Se déclarer disponible
+                            {{ Text.eclare_iam_available }}
                         </h5>
                     </div>
                     <form  id="form-creneau" class="form-creneau" method='post'>
@@ -93,7 +93,7 @@
                                 {# {{ FormCreneau.as_table }} #} 
                                 <tr>
                                     <th>
-                                        <label for="id_debut_0">Debut :</label>
+                                        <label for="id_debut_0">{{ Text.slot_start}} :</label>
                                     </th>
                                     <td>
                                         <input type="date" id="id_debut_0" name="debut_0" value="{{ planning.debut|date:'Y-m-d' }}" required="">
@@ -102,7 +102,7 @@
                                 </tr>
                                 <tr>
                                     <th>
-                                        <label for="id_fin_0">Fin :</label>
+                                        <label for="id_fin_0">{{ Text.slot_end}} :</label>
                                     </th>
                                     <td>
                                         <input type="date" id="id_fin_0" name="fin_0" value="{{ planning.fin|date:'Y-m-d' }}" required=""> 
@@ -111,7 +111,7 @@
                                 </tr>
                                 <tr>
                                     <th>
-                                        <label for="id_description">Description :</label>
+                                        <label for="id_description">{{ Text.slot_description}} :</label>
                                     </th>
                                     <td>
                                         <input id="id_description" type="text" name="description" maxlength="500">
@@ -134,9 +134,9 @@
                             <input type="hidden" name="poste" value="" >
                             <input type="hidden" name="creneau_ajouter" value="" >
 
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
                             <button type="submit" id="bouton-modal-creneau_ajouter" class="btn btn-primary success">
-                                Ajouter
+                                {{ Text.button_add }}
                             </button>
                         </div>
                     </form>
@@ -158,9 +158,9 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="ModalLabel">
                             {% if creno.type == 'benevole'%}
-                                Editer la disponiblité
+                                {{ Text.available_edit }}
                             {% else %}
-                                Editer le créneau
+                            {{ Text.slot_edit }}
                             {% endif %}
                         </h5>
                     </div>
@@ -171,7 +171,7 @@
                                 {# {{ FormCreneau.as_table }} #} 
                                 <tr>
                                     <th>
-                                        <label for="id_debut_0">Debut :</label>
+                                        <label for="id_debut_0">{{ Text.slot_start }} :</label>
                                     </th>
                                     <td>
                                         <input type="date" id="id_debut_0" name="debut_0" value="{{ creno.debut|date:'Y-m-d' }}" required="">
@@ -180,7 +180,7 @@
                                 </tr>
                                 <tr>
                                     <th>
-                                        <label for="id_fin_0">Fin :</label>
+                                        <label for="id_fin_0">{{ Text.slot_end }} :</label>
                                     </th>
                                     <td>
                                         <input type="date" id="id_fin_0" name="fin_0" value="{{ creno.fin|date:'Y-m-d' }}" required=""> 
@@ -189,7 +189,7 @@
                                 </tr>
                                 <tr>
                                     <th>
-                                        <label for="id_description">Description :</label>
+                                        <label for="id_description">{{ Text.slot_description }} :</label>
                                     </th>
                                     <td>
                                         <input id="id_description" type="text" name="description" maxlength="500" value="{{ creno.description }}">
@@ -214,14 +214,14 @@
                             {# si c'est une dispo soit un benevole_id, alors le poste est a NULL , sinon son UUID #}
                             <input type="hidden" name="creneau_modifier" value="{% if creno.benevole_id %}NULL{% else %}{{creno.poste_id}}{% endif %}" >
 
-                            <button class="btn btn-danger" title="supprimer cette disponibilité" name="creneau_supprimer"
+                            <button class="btn btn-danger" title="{{ Text.available_del_h }}" name="creneau_supprimer"
                                     id="creneau_supprimer" value="supprimer" type="button"
                                     data-bs-toggle="modal" data-bs-target="#modal-confirme-creneau-supprime-{{ creno.UUID }}">
-                                    Supprimer
+                                    {{ Text.button_del }}
                             </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
                             <button type="submit" id="bouton-modal-creneau_ajouter" class="btn btn-primary success">
-                                Modifier
+                                {{ Text.button_mod }}
                             </button>
                         </div>
                     </form>

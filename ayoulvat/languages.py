@@ -177,19 +177,38 @@ text_template['fr_fr']['team_help']             = _("Choisis un planning dans le
 #evenement > error message
 text_template['fr_fr']['error_msg_warning']     = _('Attention :')
 
-#evenement > planning bouton
-text_template['fr_fr']['event_planning_t']    = _('editer le planning')
+#evenement > admin_planning bouton
+text_template['fr_fr']['event_planning_t']      = _('editer le planning')
+
+#evenement > admin_page_equipe
+text_template['fr_fr']['admin_event_title']     = _('gestion des équipes et des plannings')
+text_template['fr_fr']['evenement_title_h']     = _('les planning des différentes équipes pour l\'évènement')
+text_template['fr_fr']['admin_event_equipe']    = _('équipe')
+text_template['fr_fr']['admin_event_equipe_h']  = _('description')
+text_template['fr_fr']['admin_event_no_equipe'] = _('pas encore d\'équipe définie')
+
+#evenement > titre_page
+text_template['fr_fr']['title_planning_event']  = _('Planning de l\'évènement et créneaux perso')
+text_template['fr_fr']['title_equipes_event']   = _('gestion des équipes et des plannings')
+
+#evenement > page_planning (evenement)
+text_template['fr_fr']['slot_mine_part']        = _('MON CRENEAU')
+text_template['fr_fr']['declare_iam_available'] = _('Se déclarer disponible')
+text_template['fr_fr']['slot_start']            = _('Debut')
+text_template['fr_fr']['slot_end']              = _('Fin')
+text_template['fr_fr']['slot_description']      = _('Description')
+text_template['fr_fr']['available_edit']        = _('Editer la disponiblité')
+text_template['fr_fr']['slot_edit']             = _('Editer le créneau')
+text_template['fr_fr']['available_del_h']       = _('supprimer cette disponibilité')
 
 #evenement > grid cellules
+text_template['fr_fr']['grid_slot_add_h']       = _('ajouter un créneau commençant à')
+text_template['fr_fr']['grid_poste_h']          = _('poste')
+text_template['fr_fr']['grid_iam_available_h']  = _('me déclarer disponible à partir de')
+text_template['fr_fr']['grid_planning_add_h']  = _('ajouter une planning commençant à')
+
 #on est ici
 #text_template['fr_fr']['']           = _('')
-
-#evenement > page evenement
-text_template['fr_fr']['evenement_title']       = _('Evenement : Les équipes et leurs plannings associés')
-text_template['fr_fr']['evenement_title_h']     = _('les planning des différentes équipes pour l\'évènement')
-text_template['fr_fr']['evenement_equipe']      = _('équipe')
-text_template['fr_fr']['evenement_equipe_h']    = _('description')
-text_template['fr_fr']['evenement_no_equipe']   = _('pas encore d\'équipe définie')
 
 #association
 
