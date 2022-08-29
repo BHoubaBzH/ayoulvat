@@ -224,7 +224,7 @@ text_template['fr_fr']['hour_short']            = _('H')
 text_template['fr_fr']['grid_slot_add_h']       = _('ajouter un créneau commençant à')
 text_template['fr_fr']['grid_poste_h']          = _('poste')
 text_template['fr_fr']['grid_iam_available_h']  = _('me déclarer disponible à partir de')
-text_template['fr_fr']['grid_planning_add_h']   = _('ajouter une planning commençant à')
+text_template['fr_fr']['grid_planning_add_h']   = _('ajouter un planning commençant à')
 
 #evenement > base evenement
 text_template['fr_fr']['event_base_slots']      = _('Créneaux')
