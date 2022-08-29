@@ -146,6 +146,7 @@ text_template['fr_fr']['nav_planning_perso_h']  = _("Mon planning personnel sur 
 text_template['fr_fr']['nav_participate']       = _("Participer")
 text_template['fr_fr']['nav_participate_h']     = _("Participer à l'évènement en tant que bénévole")
 text_template['fr_fr']['nav_asso_details']      = _("détails de l'association")
+text_template['fr_fr']['nav_nb_free_slots']     = _("Nb créneaux libres")
 
 #benevole > footer
 text_template['fr_fr']['foot_help']      = _("besoins d'aide? un renseignement?")

@@ -47,7 +47,7 @@
                     <button  class="creneau-planningperso {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe_planning{%endif%} equipe equipe-{{ equipe.UUID }}" 
                             style="grid-row: ligne-{{ equipe.UUID }};
                             grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                            title="{%if creno.type == 'benevole'%}éditer la disponible{%else%}
+                            title="{%if creno.type == 'benevole'%}{{ Text.available_edit }}{%else%}
     {{ Text.slot_mine_part }} : 
     {{ creno.equipe.nom }} - {{ creno.poste.nom }} : {{ creno.debut|date:'d/m/Y' }}
     {{ creno.debut|date:'H:i' }} > {{ creno.fin|date:'H:i' }}

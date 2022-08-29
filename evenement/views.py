@@ -214,7 +214,7 @@ def dic_forms_plannings(uuid_evenement):
         sortie:
             dictionnaire des forms planning: key: UUID / val: form
     """
-    # cree dans la page toutes nos from pour les postes du planning
+    # cree dans la page toutes nos form pour le planning
     dic_planning_init = {}  # dictionnaire des forms
     # key : UUID postes
     # val : form de poste initialisée objet db lié
@@ -228,6 +228,22 @@ def dic_forms_plannings(uuid_evenement):
         # logger.info(' planning UUID : {}'.format(planning.UUID))
     # logger.info('*** Fin fonction forms_planning : {}'.format(datetime.now()))
     return dic_planning_init
+
+def PlanningCreneauxDispo(plans):
+    """
+        entree : 
+            queryset de plannings 
+        sortie :
+            dictionnaire : UUID planning, nb creneau dispo dans le planning
+    """
+    dic_out = {}
+    for plan in plans:
+        logger.info(' planning UUID : {}'.format(plan.UUID))
+        nb_dispo = Creneau.objects.filter(Q(planning_id=plan.UUID), Q(benevole_id__isnull=True)).count()
+        #nb_dispo = Creneau.objects.filter(planning_id=plan.UUID)
+        logger.info('                      : {}'.format(nb_dispo))
+        dic_out[plan.UUID] = nb_dispo
+    return dic_out
 
 def forms_poste(request):
     """
@@ -453,6 +469,7 @@ def evenement(request, uuid_evenement):
     """
         page d'un evenement
     """
+
     logger.info('')
     logger.info('*******************************************************')
     logger.info(f'*** Debut traitement view : {datetime.now()}')
@@ -490,7 +507,7 @@ def evenement(request, uuid_evenement):
         "FormEquipe" : EquipeForm(initial={'evenement': evenement}), # form non liée au template pour ajout d une nouvelle equipe
         "DicEquipes" : dic_forms_equipes(evenement),
         "FormPlanning" : "", # form non liée au template pour ajout d un nouveau planning
-        "DicPlannings" : dic_forms_plannings(evenement),
+        #"DicPlannings" : dic_forms_plannings(evenement),
         "DicPostes" : "",  # dictionnaire des formes de poste de l'evenement liées aux objets de la db
         "FormPoste" : "",  # form non liée au template pour ajout d un nouveau poste
         "DicCreneaux" : "",  # dictionnaire des formes de creneau de l'evenement liées aux objets de la db
@@ -502,7 +519,7 @@ def evenement(request, uuid_evenement):
     #print(data["Equipes"])
     #print(data["equipes_avec_planning"])
     data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})
-
+    data["PlanningCreneauxDispo"] = PlanningCreneauxDispo(data["Plannings"]) # dic UUID planning , nb creneaux dispo 
 
     RolesUtilisateur = liste_roles_utilisateur(request, evenement)
     try:

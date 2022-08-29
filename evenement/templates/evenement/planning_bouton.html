@@ -1,4 +1,5 @@
 <!-- evenement/planning_bouton.html -->
+{% load filters_perso %}
 
 <form class="form_grid_button_planningperso" style="grid-row: ligne-{{ equipe.UUID }}; 
 grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|date:'Y-m-d-Hi' }};" method="post">
@@ -17,11 +18,18 @@ grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|da
         {% else %}
         <button class="planning-perso equipe-{{ equipe.UUID }}" type="submit" 
                 id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
-                data-bs-toggle="modal" data-bs-target="#modal-dispo_creer-{{ planning.UUID }}"
-                title="{{ Text.go_to_slots }}: {{ equipe.nom|upper }}
-                {{ planning.debut|date:'l j F' }} {{ planning.debut|date:'H:i' }} - {{ planning.fin|date:'l j F' }} {{ planning.fin|date:'H:i' }}
-                " onclick="loader()">
+                data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" 
+                {% if  planning.UUID in PlanningCreneauxDispo %}
+                        title="{{ Text.nav_nb_free_slots }}: <br> <h3>{{ PlanningCreneauxDispo|get_item:planning.UUID }}</h3>
+                        {{ Text.go_to_slots }}"
+                {% else %}
+                        title="{{ Text.go_to_slots }}: {{ equipe.nom|upper }}
+                        {{ planning.debut|date:'l j F' }} {{ planning.debut|date:'H:i' }} - {{ planning.fin|date:'l j F' }} {{ planning.fin|date:'H:i' }}"
+                {% endif %}
+                onclick="loader()">
+                <span data-toggle="modal" data-target="#modal-dispo_creer-{{ planning.UUID }}">
                 <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
+                </span>
         </button>
         {% endif %}
 </form>

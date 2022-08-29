@@ -74,38 +74,40 @@
                     data-bs-toggle="tooltip" data-bs-placement="right" title="{{ Text.nav_teams_h }}" >
                     <i class="fs-1 bi-people"></i> <span class="ms-1 d-none d-sm-inline">{{ Text.nav_teams }}</span>
                     </a>
-                      <ul class="collapse nav flex-column ms-1" id="submenu-equipes">
-                        {% for team in equipes_avec_planning %}
-                          <li class="ms-3 w-100"> 
-                            <a href="#submenu-{{team.UUID}}" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                              <i class="bi-people"></i> <span class="ms-1 d-none d-sm-inline"
-                                {% if team.description %} data-bs-toggle="tooltip" data-bs-placement="right" title="{{team.description}}" {% endif %}>{{ team.nom|capfirst }}
-                              </span>
-                            </a>
-                            {% for planning in  Plannings %}
-                              {% if  planning.equipe == team %}
-                                <ul class="collapse nav flex-column ms-1" id="submenu-{{team.UUID}}">
-                                  <form class="form evenement-form" method="post">
-                                    {% csrf_token %}
-                                    <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                                    <input  name="equipe" value="{{ planning.equipe_id }}" type="hidden">
-                                    <input  name="planning" value="{{ planning.UUID }}" type="hidden">
-                                    <button class="nav-link align-middle px-0"
-                                            {% if planning.description %}
-                                              data-bs-toggle="tooltip" data-bs-placement="right" title="{{planning.description}}"
-                                            {% endif %} onclick="loader()">
-                                      <i class="ms-3 bi-table"></i> <span class="ms-1 d-none d-sm-inline">{{ planning.nom }}</span>
+                    <ul class="collapse nav flex-column ms-1" id="submenu-equipes">
+                      {% for team in equipes_avec_planning %}
+                        <li class="ms-3 w-100"> 
+                          <a href="#submenu-{{team.UUID}}" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                            <i class="bi-people"></i> <span class="ms-1 d-none d-sm-inline"
+                              {% if team.description %} data-bs-toggle="tooltip" data-bs-placement="right" title="{{team.description}}" {% endif %}>{{ team.nom|capfirst }}
+                            </span>
+                          </a>
+                          {% for planning in  Plannings %}
+                            {% if  planning.equipe == team %}
+                              <ul class="collapse nav flex-column ms-1" id="submenu-{{team.UUID}}">
+                                <form class="form evenement-form" method="post">
+                                  {% csrf_token %}
+                                  <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                                  <input  name="equipe" value="{{ planning.equipe_id }}" type="hidden">
+                                  <input  name="planning" value="{{ planning.UUID }}" type="hidden">
+                                  <button class="nav-link align-middle px-0"
+                                          {% if  planning.UUID in PlanningCreneauxDispo %}
+                                            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" 
+                                            title="{{ Text.nav_nb_free_slots }}: <br>
+                                            <h3>{{ PlanningCreneauxDispo|get_item:planning.UUID }}</h3>"
+                                          {% elif planning.description %}
+                                            data-bs-toggle="tooltip" data-bs-placement="right" title="{{planning.description}}"
+                                          {% endif %} onclick="loader()" >
+                                    <i class="ms-3 bi-table"></i> <span class="ms-1 d-none d-sm-inline">{{ planning.nom }}</span>
                                   </button>
-                                  </form>
-                                </ul>
-                              {% endif %}
-                            {% endfor %}
-                          </li>
-                        {% endfor %}
-                      </ul>
-
+                                </form>
+                              </ul>
+                            {% endif %}
+                          {% endfor %}
+                        </li>
+                      {% endfor %}
+                    </ul>
                   </li>
-
                 </ul>
 
               {# sinon si on a plusieurs evenement, on affiche les evenements dans la sidebar#}
