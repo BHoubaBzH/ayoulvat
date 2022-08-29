@@ -20,10 +20,10 @@ grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|da
                 id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
                 data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" 
                 {% if  planning.UUID in PlanningCreneauxDispo %}
-                        title="{{ Text.nav_nb_free_slots }}: <br> <h3>{{ PlanningCreneauxDispo|get_item:planning.UUID }}</h3>
-                        {{ Text.go_to_slots }}"
+                        title="{{ Text.go_to_slots }}<hr>{{ Text.nav_nb_free_slots }}:<br> 
+                        <h3>{{ PlanningCreneauxDispo|get_item:planning.UUID }}</h3>"
                 {% else %}
-                        title="{{ Text.go_to_slots }}: {{ equipe.nom|upper }}
+                        title="{{ Text.go_to_slots }}: {{ equipe.nom|upper }}<hr>
                         {{ planning.debut|date:'l j F' }} {{ planning.debut|date:'H:i' }} - {{ planning.fin|date:'l j F' }} {{ planning.fin|date:'H:i' }}"
                 {% endif %}
                 onclick="loader()">

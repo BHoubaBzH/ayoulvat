@@ -240,7 +240,6 @@ def PlanningCreneauxDispo(plans):
     for plan in plans:
         logger.info(' planning UUID : {}'.format(plan.UUID))
         nb_dispo = Creneau.objects.filter(Q(planning_id=plan.UUID), Q(benevole_id__isnull=True)).count()
-        #nb_dispo = Creneau.objects.filter(planning_id=plan.UUID)
         logger.info('                      : {}'.format(nb_dispo))
         dic_out[plan.UUID] = nb_dispo
     return dic_out
@@ -520,6 +519,7 @@ def evenement(request, uuid_evenement):
     #print(data["equipes_avec_planning"])
     data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})
     data["PlanningCreneauxDispo"] = PlanningCreneauxDispo(data["Plannings"]) # dic UUID planning , nb creneaux dispo 
+    data["EvenementCreneauxDispo"] = Creneau.objects.filter(Q(evenement_id=evenement.UUID), Q(benevole_id__isnull=True)).count() # nb creneaux dispo sur l evenement
 
     RolesUtilisateur = liste_roles_utilisateur(request, evenement)
     try:

@@ -60,7 +60,12 @@
                     <form class="form evenement-form" method="post">
                       <input type="hidden" name="planning_global" value="oui">
                       <button class="nav-link align-middle px-0" 
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="{{ Text.nav_plannings_h }}" onclick="loader()">
+                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"  
+                        title="{{ Text.nav_plannings_h }}<br>
+                        <hr>
+                        {{ Text.nav_nb_free_slots }}: <br>
+                        <h3>{{ EvenementCreneauxDispo }}</h3>" 
+                        onclick="loader()">
                         <i class="fs-1 bi-calendar2-range"></i><span class="ms-1 d-none d-sm-inline">{{ Text.nav_plannings }}</span>
                           {% csrf_token %}
                         <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
