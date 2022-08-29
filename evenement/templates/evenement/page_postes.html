@@ -51,14 +51,23 @@
                     title="
                     {{ Text.poste}} : {{ poste.nom }}<br>
                     {# affiche les infos aux bénévoles sur les raisons de non accès a ce poste #}
-                    {% if not poste.ouvert and not Administrateur and not Organisateur and not Responsable %}
-                        <b>{{ Text.poste_not_open }}</b><br><br>
-                    {% elif not poste.ouvert_mineur and not Administrateur and not Organisateur and not Responsable %}
-                        <b>{{ Text.poste_not_minor }}</b><br><br>
-                    {% endif %}
-                    {% if poste.description %}
-                        description :
-                        {{poste.description}}
+                    {% if not Administrateur and not Organisateur and not Responsable %} {# bénévole pur#}
+                        {% if not poste.ouvert %}
+                            <b>{{ Text.poste_not_open }}</b><br><br>
+                        {% elif not poste.ouvert_mineur %}
+                            <b>{{ Text.poste_not_minor }}</b><br><br>
+                        {% endif %}
+                        {% if poste.description %}
+                            description :
+                            {{poste.description}}
+                        {% endif %}
+                    {% else %} {# orga festival #}
+                        {% if not poste.ouvert %}
+                        <b>{{ Text.adm_poste_not_open }}</b><br>
+                        {% endif %}
+                        {% if not poste.ouvert_mineur %}
+                        <b>{{ Text.adm_poste_not_minor }}</b><br>
+                        {% endif %}
                     {% endif %}
                     ">
                         {{ poste.nom }}

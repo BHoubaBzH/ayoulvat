@@ -1,21 +1,26 @@
  <!-- evenement/equipe_edite.html -->
 
-<div id="boutons des equipes" class="equipe-bouton-slot" aria-hidden="true"
-    style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes-boutons;">
-        {# affiche le bouton d edition de equipe #}
+ <div class="equipe-slot"
+ aria-hidden="true" style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;"
+
+ data-bs-toggle="tooltip" data-bs-placement="right"  data-bs-html="true"
+ title="
+ {{Text.admin_event_equipe}} : {{ equipe.nom }}<br>
+ {% if equipe.description %}
+     {{Text.admin_event_equipe_h}} :
+     {{equipe.description}}
+ {% endif %} ">
     <form  id="form-equipe-change-{{ equipe.UUID }}" method='post'>
         {% csrf_token %}
         <input name="equipe_modifier-{{ equipe.UUID }}" value="{{ equipe.UUID }}" type="hidden">
         <button style=""
-                class="bouton_edite_equipe btn btn-sm"
+                class="equipe-{{ equipe.UUID }} btn btn-sm btn-info"
                 title="{{Text.team_mod_t}}"
                 id="bouton-equipe-change-{{ equipe.UUID }}"
                 type="button"
                 data-bs-toggle="modal" 
                 data-bs-target="#modal-equipe-change-{{ equipe.UUID }}">
-            <div>
-                <i class="bi bi-chevron-down"></i>
-            </div>
+            <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
         </button>
     </form>
 </div>

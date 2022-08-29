@@ -218,6 +218,7 @@ text_template['fr_fr']['slot_description']      = _('Description')
 text_template['fr_fr']['available_edit']        = _('Editer la disponiblité')
 text_template['fr_fr']['slot_edit']             = _('Editer le créneau')
 text_template['fr_fr']['available_del_h']       = _('supprimer cette disponibilité')
+text_template['fr_fr']['hour_short']            = _('H')
 
 #evenement > grid cellules
 text_template['fr_fr']['grid_slot_add_h']       = _('ajouter un créneau commençant à')
@@ -253,8 +254,10 @@ text_template['fr_fr']['volunteer_planning']    = _('Mon planning sur l\'évène
 text_template['fr_fr']['volunteer_plan_email_h']= _('pour recevoir la liste de mes créneaux par courriel')
 
 #evenement > page postes
-text_template['fr_fr']['poste_not_open']        = _('Ce poste n\'est pas ouvert.')
-text_template['fr_fr']['poste_not_minor']       = _('Ce poste n\'est pas ouvert aux mineurs.')
+text_template['fr_fr']['poste_not_open']        = _('Poste non ouvert')
+text_template['fr_fr']['poste_not_minor']       = _('Poste réservé aux adultes')
+text_template['fr_fr']['adm_poste_not_open']    = _('réservé orga')
+text_template['fr_fr']['adm_poste_not_minor']   = _('réservé adultes')
 text_template['fr_fr']['poste_not_yet']         = _('Pas encore de poste créé')
 
 #evenement > planning bouton

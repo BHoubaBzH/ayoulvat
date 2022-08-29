@@ -14,8 +14,8 @@
             <div class="planning-head-planningperso" style="grid-column: time-{{ dates }}; grid-row: heures">
                 <h6 class="time-slot">
                     {% if heures.0|stringformat:'s' != "00:00" and heures.1|date:'i' == '00'%}{# affiche les heures pleines #}
-                        {% if heures.0|stringformat:'s' == "12:00" %}{# affiche seulement midi  #}
-                            {{ heures.0 }}
+                        {% if heures.0|stringformat:'s' in "02:00,04:00,06:00,08:00,10:00,12:00,14:00,16:00,18:00,20:00,22:00" %}{# affiche seulement midi  #}
+                            {{ heures.1|date:'H' }}{{ Text.hours_short }}
                         {% endif %} 
                     {% elif heures.0|stringformat:'s' == "00:00" %} {# affiche le jour a minuit #}
                         <b>{{ heures.1|date:'d/m/y' }}<br>

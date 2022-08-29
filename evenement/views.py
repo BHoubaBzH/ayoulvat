@@ -598,6 +598,7 @@ def evenement(request, uuid_evenement):
 
             elif not request.POST.get('equipe') or any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter', 'equipe_supprimer']):  
                 # selection d'un evenement uniquement
+                # pas de 30 minutes par défaut a voir pour variabiliser
                 data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
                 # si la personne a cliqué sur le bouton pour recevoir ses créneaux par email
                 if 'creneaux_courriel' in request.POST:
