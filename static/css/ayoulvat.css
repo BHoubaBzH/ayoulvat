@@ -157,7 +157,6 @@ footer .right {
 	width: 100%;
 }
 
-
 .poste-slot,
 .equipe-slot,
 .benevole-slot, 
@@ -188,7 +187,6 @@ footer .right {
 	width: 0.3em;
 }
 
-
 .text {
 	max-width: 750px;
 	font-size: 18px;
@@ -209,6 +207,11 @@ footer .right {
 	/* width: -webkit-fill-available; */
 	width: 100%;
 	text-align: left;
+}
+
+/* boutons de choix de son asso dans la page evenements */
+.assos-button {
+	position: absolute;
 }
 
 /*.evenement-form {

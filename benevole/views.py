@@ -186,7 +186,7 @@ def envoi_courriel_orga_inscription(request):
 
 # nouvelle class d'enregistrement 
 class InscriptionView(generic.CreateView):
-    #form_class = RegisterForm               # on utilise notre form custom
+    form_class = RegisterForm               # on utilise notre form custom
     success_url = reverse_lazy('login')
     template_name = 'benevole/inscription.html'
 
@@ -214,7 +214,7 @@ def Home(request):
     logger.info('#########################################################')
     data = {
         "FormPersonne" : PersonneForm(),  # form personne non liée
-        "Evenements" : Evenement.objects.all().order_by("debut"),  # liste de tous les evenements
+        #"Evenements" : Evenement.objects.all().order_by("debut"),  # liste de tous les evenements
         # evenements a venir ou le benevole est deja inscrit 
         "Evenements_inscrit" : Evenement.objects.filter(
                                         Q(debut__gt=date.today()),
@@ -222,8 +222,8 @@ def Home(request):
         "Evenements_disponible" : Evenement.objects.filter(
                                         Q(debut__gt=date.today()),
                                         ~Q(benevole__personne_id=request.user.UUID),
-                                        Q(inscription_debut__lte=date.today()), 
-                                        Q(inscription_fin__gt=date.today())).order_by("debut"),# evenements à venir , benevole pas inscrit , inscription ouvertes
+                                        #Q(inscription_debut__lte=date.today()), 
+                                        Q(inscription_fin__gt=date.today())).order_by("debut"),# evenements à venir , benevole pas inscrit , inscription encore ouvertes
         "Assos": Association.objects.all(), # liste toutes les assosciations pour admin, a filtrer par assos affectées a administrateur
         "Text": text_template[language], # textes traduits 
     }

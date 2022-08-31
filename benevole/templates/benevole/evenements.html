@@ -45,7 +45,7 @@
         <div class="container overflow-hidden">
             <div class="row gy-5 gx-5" style="margin-top: 0px;">
                 {% for EV in Evenements_inscrit %}
-                    {# affiche dans la liste que les evenements à venir ou en cours #}
+                    {# affiche dans la liste des evenements à venir ou en cours #}
                     <div class="col-sm-4">
                         <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="inscrit_{{ EV.UUID }}" title="aller vers {{ EV }}" onclick="loader()">
                             <div class="card h-100 card-inscrit">
@@ -70,7 +70,7 @@
                                 {% for a in Ev_ass_par_benevole %} {# a les inscriptions du benevoles aux evenements#}
                                     {#{ a.profilebenevole }} | {{ a.evenement }} | {{ a.asso_part }#}
                                     {% if a.evenement == EV %} {# si notre benevole est inscrit a cet evenement#}
-                                    {{Text.events_assoperso}} {{EV.nom}}:{#{ a.asso_part }#}
+                                    {{Text.events_assoperso}} <b>{{EV.nom}}</b>:{#{ a.asso_part }#}
                                         {# prepare la form pour selectionner son asso #}
                                         {# les asso partenaires #}
                                         <form action="#" method='POST' id="select_asso-{{EV.UUID}}">
@@ -78,10 +78,9 @@
                                             <input type="hidden" name="evenement" value="{{EV.UUID}}">
                                             <input type="hidden" name="asso_perso_change" value="">
 
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-warning btn-lg">{{Text.events_yourasso}}</button>
-                                                <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                                  <span class="visually-hidden">Toggle Dropdown</span>
+                                            <div class="btn-group assos-button" >
+                                                <button type="button" class="btn btn-warning btn-lg dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    {{Text.events_yourasso}}
                                                 </button>
                                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" >
                                                     {# les asso partenaires de l evenement#}
