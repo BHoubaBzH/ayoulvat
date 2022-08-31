@@ -67,6 +67,7 @@ text_template['fr_fr'] = {}
 text_template['fr_fr']['button_add']            = _('Ajouter')
 text_template['fr_fr']['button_mod']            = _('Modifier')
 text_template['fr_fr']['button_del']            = _('Supprimer')
+text_template['fr_fr']['button_edit']           = _('Editer')
 text_template['fr_fr']['button_null']           = _('Annuler')
 text_template['fr_fr']['button_yes']            = _('Oui')
 text_template['fr_fr']['button_no']             = _('Non')
@@ -139,7 +140,7 @@ text_template['fr_fr']['nav_profile']           = _("Profil")
 text_template['fr_fr']['nav_admin_dashboard']   = _("Tableau de bord")
 text_template['fr_fr']['nav_admin_dashboard_h'] = _("Tableau de bord et gestion des bénévoles")
 text_template['fr_fr']['nav_admin_teams']       = _("Ressources")
-text_template['fr_fr']['nav_admin_teams_h']     = _("Création des Equipe et des Plannings associés")
+text_template['fr_fr']['nav_admin_teams_h']     = _("Gestion des Equipes, Plannings, Postes et Créneaux")
 text_template['fr_fr']['nav_plannings']         = _("Plannings")
 text_template['fr_fr']['nav_plannings_h']       = _("Plannings des équipes et tes créneaux")
 text_template['fr_fr']['nav_teams']             = _("Equipes")
@@ -201,6 +202,10 @@ text_template['fr_fr']['error_msg_warning']     = _('Attention :')
 
 #evenement > admin_planning bouton
 text_template['fr_fr']['event_planning_t']      = _('editer le planning')
+text_template['fr_fr']['event_planning_del_t']  = _('supprimer le planning')
+text_template['fr_fr']['event_planning_edit_t'] = _('aller aux postes et creneaux du planning')
+text_template['fr_fr']['event_planning_mod_t']  = _('modifier les paramètres du planning')
+
 
 #evenement > admin_page_equipe
 text_template['fr_fr']['admin_event_title']     = _('gestion des équipes et des plannings')

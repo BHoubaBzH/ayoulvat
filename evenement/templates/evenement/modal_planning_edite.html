@@ -26,16 +26,29 @@
                         </table>
                     </div>
 
-
                     <div class="modal-footer">
 
-                        <button class="btn btn-danger" title="supprimer ce planning" name="planning_supprimer"
-                                id="planning_supprimer" value="supprimer" type="button"
-                                data-bs-toggle="modal" data-bs-target="#modal-confirme-planning-supprime">
-                                {{ Text.button_del }}
-                        </button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
-                        <button type="submit" id="planning_modifier" name="planning_modifier"  class="btn btn-primary success">{{ Text.button_mod }}</button>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm text-start">
+                                    <button type="submit" class="btn btn-success" data-bs-dismiss="modal" 
+                                        id="planning_editer" name="planning_editer" title="{{ Text.event_planning_edit_t }}">
+                                        {{ Text.button_edit }}
+                                    </button>
+                                </div>
+                                <div class="col-sm text-end">
+                                    <button class="btn btn-danger" title="{{ Text.event_planning_del_t }}" name="planning_supprimer"
+                                            id="planning_supprimer" value="supprimer" type="button"
+                                            data-bs-toggle="modal" data-bs-target="#modal-confirme-planning-supprime">
+                                            {{ Text.button_del }}
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
+                                    <button type="submit" id="planning_modifier" name="planning_modifier"  class="btn btn-primary success" title="{{ Text.event_planning_mod_t }}">
+                                        {{ Text.button_mod }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <input type="hidden" name="reste_sur_plannings_page"/>
                 </form>
@@ -93,16 +106,17 @@
 {# scripts de remplissage des forms par api fetch #}
 <script>
     var planning_bs_data;
-
     /* script de popul du modal editer : utilise api fetch javascript et recupere la form du planning */
     var modalPlanningPlanningEditer = document.getElementById('modal-planning_editer')
     if (modalPlanningPlanningEditer) {
         modalPlanningPlanningEditer.addEventListener('show.bs.modal', function (event) {
             /* Button that triggered the modal */
-            var button = event.relatedTarget;
-            /* Extract info from data-bs-* attributes */
-            planning_bs_data = button.getAttribute('data-bs-planninguuid');
-            evenement_bs_data = button.getAttribute('data-bs-evenementuuid');
+            if (planning_bs_data == undefined) {
+                var button = event.relatedTarget;
+                /* Extract info from data-bs-* attributes */
+                planning_bs_data = button.getAttribute('data-bs-planninguuid');
+                evenement_bs_data = button.getAttribute('data-bs-evenementuuid');
+            }
             // fetch process pour récuperer les infos de notre planning
             let form = new FormData();
             form.append("planning_uuid", planning_bs_data);

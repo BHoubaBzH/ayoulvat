@@ -1,8 +1,7 @@
 <!-- evenement/creneau_bouton.html -->
 {##################################################################}
 {# la personne est uniquement benevole et les objets contenant le creneau sont ouverts : poste ouvert, evenement ouvert ...#}
-{# ou alors c'est a organisateur qui est sur sa page de bénévolat #}
-{% if not Administrateur and not Organisateur and not Responsable and Benevole and ouvert == 'oui' or Administrateur and not PlanningEditer or Organisateur and not PlanningEditer or Responsable and not PlanningEditer %}
+{% if not Administrateur and not Organisateur and not Responsable and Benevole and ouvert == 'oui' %}
     {# le creneau est occupé #}
     {% if creno.benevole %}
         {# par moi #}

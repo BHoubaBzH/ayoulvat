@@ -76,7 +76,7 @@ footer .right {
 
 /* styles des plannings*/
 
-.planning-perso {
+.planning-ayoulvat {
 	/*box-shadow: 3px 2px #888;*/
 	background-color: var(--planning_couleur);
 	/*border-width: 1px;*/
@@ -91,9 +91,9 @@ footer .right {
 
 }
 
-.planning-perso:hover {background-color: var(--planning_hover)}
+.planning-ayoulvat:hover {background-color: var(--planning_hover)}
 
-.planning-perso:active {
+.planning-ayoulvat:active {
     background-color: var(--planning_couleur);
     /*box-shadow: 0 5px #666;*/
     transform: translateY(4px);
@@ -137,8 +137,8 @@ footer .right {
 }
 
 .grid-cell, .grid-cell-minuit {
-	border-left: inherit; 
-	border-bottom: inherit; 
+	border-left: 1px solid #ffffff; 
+	border-bottom: 1px solid #ffffff; 
 	border-color: lightgray;
 	background-color: transparent;
 	border-top: transparent;

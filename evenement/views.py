@@ -238,9 +238,9 @@ def PlanningCreneauxDispo(plans):
     """
     dic_out = {}
     for plan in plans:
-        logger.info(' planning UUID : {}'.format(plan.UUID))
+        #logger.info(' planning UUID : {}'.format(plan.UUID))
         nb_dispo = Creneau.objects.filter(Q(planning_id=plan.UUID), Q(benevole_id__isnull=True)).count()
-        logger.info('                      : {}'.format(nb_dispo))
+        #logger.info('                      : {}'.format(nb_dispo))
         dic_out[plan.UUID] = nb_dispo
     return dic_out
 
@@ -564,7 +564,7 @@ def evenement(request, uuid_evenement):
         if any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter', 'equipe_supprimer']):
             data["Form"]=forms_equipe(request)
 
-        if 'reste_sur_plannings_page' in request.POST:
+        if 'planning_modifier' in request.POST or 'planning_ajouter' in request.POST:
             # admin dans gestion des equipes planning, il y reste
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
         else:
@@ -575,26 +575,39 @@ def evenement(request, uuid_evenement):
                 data["equipe_uuid"] = request.POST.get('equipe')  
                 # UUID equipe selectionnée
 
-                # selection d'un planning
-                data["planning_uuid"] = request.POST.get('planning')
-                data["Planning"] = Planning.objects.get(UUID=data["planning_uuid"])  # planning selectionnée
-                # instances de form poste & creneau liées : modifs & suppression & liste des postes
-                data["PlanningRange"] = planning_range(data["Planning"].debut,
-                                                    data["Planning"].fin,
-                                                    data["Planning"].pas)
-                # retourne les creneaux d'un evenement sur une plage et sur tous les plannings 
-                # permet de savoir si le user est occupe sur la plage 
-                data["Creneaux_plage"] = \
-                    tous_creneaux_entre_2_heures(data["Planning"].debut,
-                                                    data["Planning"].fin,
-                                                    uuid_evenement)
+                if not request.POST.get('planning_supprimer'):
+                    data["planning_uuid"] = request.POST.get('planning')
+                    data["Planning"] = Planning.objects.get(UUID=data["planning_uuid"])  # planning selectionnée
+                    # instances de form poste & creneau liées : modifs & suppression & liste des postes
+                    data["PlanningRange"] = planning_range(data["Planning"].debut,
+                                                        data["Planning"].fin,
+                                                        data["Planning"].pas)
+                    # retourne les creneaux d'un evenement sur une plage et sur tous les plannings 
+                    # permet de savoir si le user est occupe sur la plage 
+                    data["Creneaux_plage"] = \
+                        tous_creneaux_entre_2_heures(data["Planning"].debut,
+                                                        data["Planning"].fin,
+                                                        uuid_evenement)
 
-                # envoi les forms au template
-                if data["planning_uuid"]:
-                    planning = Planning.objects.get(UUID=data["planning_uuid"])
-                    data["DicPostes"] = dic_forms_postes(planning)
-                    data["DicCreneaux"] = dic_forms_creneaux(request, planning, RolesUtilisateur)
-                    data["PostesCreneaux"] = postes_creneaux(planning)
+                    # envoi les forms au template
+                    if data["planning_uuid"]:
+                        planning = Planning.objects.get(UUID=data["planning_uuid"])
+                        data["DicPostes"] = dic_forms_postes(planning)
+                        data["DicCreneaux"] = dic_forms_creneaux(request, planning, RolesUtilisateur)
+                        data["PostesCreneaux"] = postes_creneaux(planning)
+                    # un admin a cliqué sur le bouton d edition du planning : editer les postes et les creneaux
+                    if 'planning_editer' in request.POST \
+                        or 'poste_ajouter' in request.POST \
+                        or 'poste_modifier' in request.POST \
+                        or 'poste_supprimer' in request.POST \
+                        or 'creneau_ajouter' in request.POST \
+                        or 'creneau_modifier' in request.POST \
+                        or 'creneau_supprimer' in request.POST :
+                        print('editer ')
+                        data["PlanningEditer"] = "oui"
+                # selection d'un planning
+                else:
+                    data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
 
             elif not request.POST.get('equipe') or any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter', 'equipe_supprimer']):  
                 # selection d'un evenement uniquement
@@ -645,7 +658,10 @@ def evenement(request, uuid_evenement):
         data["PlanningRange"] = planning_range(evenement.debut,
                                             evenement.fin,
                                             30)
-                                           
+
+    # recalcule la liste des plannings avant le render
+    data["Plannings"] = evenement.planning_set.order_by('debut').select_related('equipe', 'evenement')
+
     logger.info(f'*** Fin traitement view : {datetime.now()}')
     return render(request, "evenement/base_evenement.html", data)
 

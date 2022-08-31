@@ -9,14 +9,14 @@ grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|da
         <input  name="planning" value="{{ planning.UUID }}" type="hidden">
         {% if dispo_actif == "True" %}
         {# possible de donner ses disponibilités sur le planning #}
-        <button class="planning-perso equipe-{{ equipe.UUID }}" type="button" 
+        <button class="planning-ayoulvat equipe-{{ equipe.UUID }}" type="button" 
                 id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
                 data-bs-toggle="modal" data-bs-target="#modal-dispo_creer-{{ planning.UUID }}"
                 title="{{ Text.iam_available }}">
                 <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
         </button>
         {% else %}
-        <button class="planning-perso equipe-{{ equipe.UUID }}" type="submit" 
+        <button class="planning-ayoulvat equipe-{{ equipe.UUID }}" type="submit" 
                 id="creneau_ajouter-{{ user.profilebenevole.UUID}}"
                 data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" 
                 {% if  planning.UUID in PlanningCreneauxDispo %}

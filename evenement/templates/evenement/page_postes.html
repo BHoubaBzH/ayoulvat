@@ -51,7 +51,7 @@
                     title="
                     {{ Text.poste}} : {{ poste.nom }}<br>
                     {# affiche les infos aux bénévoles sur les raisons de non accès a ce poste #}
-                    {% if not Administrateur and not Organisateur and not Responsable %} {# bénévole pur#}
+                    {% if not PlanningEditer %} {# page bénévole#}
                         {% if not poste.ouvert %}
                             <b>{{ Text.poste_not_open }}</b><br><br>
                         {% elif not poste.ouvert_mineur %}
@@ -61,7 +61,7 @@
                             description :
                             {{poste.description}}
                         {% endif %}
-                    {% else %} {# orga festival #}
+                    {% else %} {# orga festival arrivé en edition #}
                         {% if not poste.ouvert %}
                         <b>{{ Text.adm_poste_not_open }}</b><br>
                         {% endif %}
@@ -72,7 +72,7 @@
                     ">
                         {{ poste.nom }}
                 </div>
-                {% if Administrateur or Organisateur or Responsable %} 
+                {% if PlanningEditer %} 
                     {% include "evenement/poste_edite.html" %} {# bouton d'édition du poste#}
                 {% endif %}
                 {% for creno in creneaux%}
@@ -82,7 +82,7 @@
             {% endfor%}
 
             {# ajoute une ligne vide pour pouvoir ajouter des postes #}
-            {% if Administrateur or Organisateur or Responsable %}
+            {% if PlanningEditer %}
             <span class="poste-ajoute" aria-hidden="true" style="grid-row: poste-add; grid-column: postes;">
                 <button style="" class="btn btn-sm" title="ajouter un poste" id="bouton-poste_ajouter"
                         type="submit" data-bs-toggle="modal" data-bs-target="#modal-poste_ajouter" form="form-poste_ajouter">
@@ -99,7 +99,7 @@
 {% else %}
         <p> {{ Text.poste_not_yet }} </p>
         {# bouton pour pouvoir ajouter des postes #}
-        {% if Administrateur or Organisateur or Responsable %}
+        {% if PlanningEditer %}
             <button style="" class="btn btn-sm" title="ajouter un poste" id="bouton-poste_ajouter"
                     type="submit" data-bs-toggle="modal" data-bs-target="#modal-poste_ajouter" form="form-poste_ajouter">
                 <div>
@@ -111,7 +111,7 @@
 
 {# modal d ajout et de modif des creneaux type=creneau #}
 {% comment "" %}{% endcomment %}
-{% if Administrateur or Organisateur or Responsable %}
+{% if PlanningEditer %}
     {% include "evenement/modal_creneau_ajoute.html" with type='poste' %}
     {% include "evenement/modal_creneau_edite.html" with type='poste' source_type="creneau" %}
 {% endif %} 
