@@ -216,7 +216,7 @@ text_template['fr_fr']['admin_event_no_equipe'] = _('pas encore d\'équipe défi
 
 #evenement > titre_page
 text_template['fr_fr']['title_planning_event']  = _('Planning de l\'évènement et créneaux perso')
-text_template['fr_fr']['title_equipes_event']   = _('gestion des équipes et des plannings')
+text_template['fr_fr']['title_equipes_event']   = _('gestion des ressources de l\'évènement : équipes, plannings, postes et créneaux')
 
 #evenement > page_planning (evenement)
 text_template['fr_fr']['slot_mine_part']        = _('MON CRENEAU')
