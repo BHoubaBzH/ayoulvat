@@ -40,6 +40,7 @@
                               <i class="fs-1 bi-calendar2-plus"></i><span class="ms-1 d-none d-sm-inline">{{Text.nav_admin_teams}}</span>
                                 {% csrf_token %}
                               <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                              <input  name="page_type" value="admin" type="hidden"> <!-- lien vers une page d'admin -->
                             </button>
                         </form>
                       </li>

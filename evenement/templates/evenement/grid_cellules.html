@@ -53,7 +53,7 @@
                 {% endif %}
 
             {% elif ligne == "equipe" %}
-                {%if Administrateur or Organisateur or Responsable %}
+                {%if PageType == "admin" %}
                     {# si utilisateur a le droit, on presente les form pour ajouter un planning a l equipe #}
                     <form id ="form-case-bouton-planning-{{ row_type.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}" class="bouton-cell" method="post">
                         <input type="hidden" name="case-ligne-init" value="{{ row_type.UUID }}">
