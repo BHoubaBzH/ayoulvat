@@ -1,9 +1,6 @@
 # Titre du projet
 AYOULVAT
 
-[![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](http://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
-
 logiciel de gestion d'évènement : plannings bénévoles responsables
 
 # Pour commencer
@@ -86,11 +83,10 @@ https://www.djangoproject.com/start/
 
 # Fabriqué avec
 
-* [Python](https://www.python.org/) - Programming language
-* [Django](https://www.djangoproject.com/) - Python framework
-* [Bootstrap](https://getbootstrap.com/) - frontend toolkit
-* [javascript](https://developer.mozilla.org/fr/docs/Web/JavaScript) - script language
-
+* [![django](https://badgen.net/badge/made_with/django/20AA76)](https://www.djangoproject.com/)
+* [![python](https://badgen.net/badge/made_with/python/3776ab)](https://www.python.org/)
+* [![bootstrap](https://badgen.net/badge/made_with/bootsrap/795da3)](https://getbootstrap.com/)
+* [![javascript](https://badgen.net/badge/made_with/javascript/f7e018)](https://developer.mozilla.org/fr/docs/Web/JavaScript)
 
 ## Contributing
 
@@ -99,7 +95,7 @@ send me a message ;)
 ## Versions
 
 ## Auteurs
-Listez le(s) auteur(s) du projet ici !
+
 * **Phil RIOUAL** _alias_ [@BhoubaBZH](http://phil.rioual.free.fr)
 
 ## License
