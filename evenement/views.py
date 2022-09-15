@@ -659,7 +659,7 @@ def evenement(request, uuid_evenement):
                                             evenement.fin,
                                             30)
 
-    data["PageType"] = request.POST.get('page_type') # on check si le lien vers une page admin ou autre
+    data["PageType"] = request.POST.get('page_type') # on recupere l info si le lien vers une page admin ou autre
 
     # recalcule la liste des plannings avant le render
     data["Plannings"] = evenement.planning_set.order_by('debut').select_related('equipe', 'evenement')
