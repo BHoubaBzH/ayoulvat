@@ -10,3 +10,4 @@ ayoulvat_db
 *.pot
 *.pyc
 ayoulvat/settings.py
+.gitignore
