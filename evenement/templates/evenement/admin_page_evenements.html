@@ -1,10 +1,10 @@
-<!-- evenement/admin_page_equipes.html -->
+<!-- evenement/admin_page_evenements.html -->
 
 {# bandeau message d erreur si besoins #}
 {% include "evenement/error_message.html" %}
 
 {# titre de la page #}
-{% include "evenement/titre_page.html" with page='admin evenement' %}
+{% include "evenement/titre_page.html" with page='admin evenements' %}
 
 <div class="planning-equipes" aria-labelledby="planning-heading">
     {# affiche les entetes des colonnes du planning : les heures #}
@@ -61,7 +61,7 @@
         {% endfor %}
     {% else %}
         <span class="benevole-slot" aria-hidden="true" style="grid-row: heures; grid-column: benevoles-boutons;">
-            <p> {{Text.admin_event_no_equipe}} </p>
+            <p> {{ Text.admin_list_events }} </p>
         </span>
     {% endif %}
 </div>

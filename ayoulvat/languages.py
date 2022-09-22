@@ -93,14 +93,14 @@ text_template['fr_fr']['events_welcome_2']      = _("Bienvenue sur le site AYOUL
 text_template['fr_fr']['events_retour']         = _("Pour revenir sur cette page click sur 'Evenements' dans la barre du haut.")
 text_template['fr_fr']['events_profile']        = _("Pour éditer tes informations, click sur \"ton nom > profile\" en bas dans le menu de gauche.")
 text_template['fr_fr']['events_list']           = _("Voici la liste des evenements")
-text_template['fr_fr']['events_yours']          = _("Mes évènements")
-text_template['fr_fr']['events_yours_h']        = _("Choisis un association que tu veux représenter, et cliques sur un évènement pour y choisir des créneaux:")
+text_template['fr_fr']['events_yours']          = _("j'y suis inscrit comme bénévole")
+text_template['fr_fr']['events_yours_h']        = _("choisir un évènement pour y gérer ta présence. Selectionne un association que tu veux représenter")
 text_template['fr_fr']['events_evt_begin']      = _("du :")
 text_template['fr_fr']['events_evt_end']        = _("au :")
 text_template['fr_fr']['events_assoperso']      = _("sélectionne l'asso que tu représenteras à")
 text_template['fr_fr']['events_yourasso']       = _("ton asso")
 text_template['fr_fr']['events_not_yours']      = _("Evenements à venir")
-text_template['fr_fr']['events_not_yours_h']    = _("Evenements disponible aux quels tu ne participes pas encore:")
+text_template['fr_fr']['events_not_yours_h']    = _("Evenements disponible aux quels tu ne participes pas encore Cliques dessus pour t'y inscrire")
 
 #benevole > connexion
 text_template['fr_fr']['disconnected']          = _("tu es déconnecté")
@@ -212,11 +212,11 @@ text_template['fr_fr']['admin_event_title']     = _('gestion des équipes et des
 text_template['fr_fr']['evenement_title_h']     = _('les planning des différentes équipes pour l\'évènement')
 text_template['fr_fr']['admin_event_equipe']    = _('équipe')
 text_template['fr_fr']['admin_event_equipe_h']  = _('description')
-text_template['fr_fr']['admin_event_no_equipe'] = _('pas encore d\'équipe définie')
+text_template['fr_fr']['admin_list_events'] = _('choisis ton evenement dans la barre de gauche')
 
 #evenement > titre_page
 text_template['fr_fr']['title_planning_event']  = _('Planning de l\'évènement et créneaux perso')
-text_template['fr_fr']['title_equipes_event']   = _('gestion des ressources de l\'évènement : équipes, plannings, postes et créneaux')
+text_template['fr_fr']['title_admin_events']   = _('liste des évenements de l\'asso')
 
 #evenement > page_planning (evenement)
 text_template['fr_fr']['slot_mine_part']        = _('MON CRENEAU')
@@ -280,5 +280,6 @@ text_template['fr_fr']['poste_del_confirm']     = _('Confirmer la suppression du
 #on est ici
 
 #association
+text_template['fr_fr']['assos_events_admin']            = _('les assosiations et les evenement que je gère')
 
 #administration

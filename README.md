@@ -1,7 +1,11 @@
 # Titre du projet
-AYOULVAT
+**AYOULVAT**
 
-logiciel de gestion d'évènement : plannings bénévoles responsables
+signifie "de bonne volonté" en breton
+
+logiciel de gestion d'évènement associatif: plannings bénévoles responsables
+
+
 
 # Pour commencer
 
@@ -11,6 +15,7 @@ il reste comme fonctionnalités à développer:
 - création d'évènement par les utilisateurs ( utilisation de django-admin pour l'instant)
 - module de paiement ( a ajouter en totalité )
 
+
 # Pré-requis
 
 - Python 3.10
@@ -18,6 +23,7 @@ il reste comme fonctionnalités à développer:
 - Bootstrap 5
 
 un hébergement web offrant la possibilité d'applications python
+
 
 # Installation
 
@@ -81,6 +87,7 @@ Voir le lien suivant pour plus de détail sur django:
 
 https://www.djangoproject.com/start/
 
+
 # Fabriqué avec
 
 * [![django](https://badgen.net/badge/made_with/django/20AA76)](https://www.djangoproject.com/)
@@ -88,11 +95,13 @@ https://www.djangoproject.com/start/
 * [![bootstrap](https://badgen.net/badge/made_with/bootsrap/795da3)](https://getbootstrap.com/)
 * [![javascript](https://badgen.net/badge/made_with/javascript/f7e018)](https://developer.mozilla.org/fr/docs/Web/JavaScript)
 
+
 ## Contributing
 
 send me a message ;)
 
 ## Versions
+
 
 ## Auteurs
 
