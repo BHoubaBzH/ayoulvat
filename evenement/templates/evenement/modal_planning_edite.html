@@ -111,12 +111,11 @@
     if (modalPlanningPlanningEditer) {
         modalPlanningPlanningEditer.addEventListener('show.bs.modal', function (event) {
             /* Button that triggered the modal */
-            if (planning_bs_data == undefined) {
-                var button = event.relatedTarget;
-                /* Extract info from data-bs-* attributes */
-                planning_bs_data = button.getAttribute('data-bs-planninguuid');
-                evenement_bs_data = button.getAttribute('data-bs-evenementuuid');
-            }
+            /* console.log(planning_bs_data); */
+            var button = event.relatedTarget;
+            /* Extract info from data-bs-* button attributes */
+            planning_bs_data = button.getAttribute('data-bs-planninguuid');
+            evenement_bs_data = button.getAttribute('data-bs-evenementuuid');
             // fetch process pour récuperer les infos de notre planning
             let form = new FormData();
             form.append("planning_uuid", planning_bs_data);

@@ -93,7 +93,7 @@ text_template['fr_fr']['events_welcome_2']      = _("Bienvenue sur le site AYOUL
 text_template['fr_fr']['events_retour']         = _("Pour revenir sur cette page click sur 'Evenements' dans la barre du haut.")
 text_template['fr_fr']['events_profile']        = _("Pour éditer tes informations, click sur \"ton nom > profile\" en bas dans le menu de gauche.")
 text_template['fr_fr']['events_list']           = _("Voici la liste des evenements")
-text_template['fr_fr']['events_yours']          = _("j'y suis inscrit comme bénévole")
+text_template['fr_fr']['events_yours']          = _("tu y es inscrit comme bénévole")
 text_template['fr_fr']['events_yours_h']        = _("choisir un évènement pour y gérer ta présence. Selectionne un association que tu veux représenter")
 text_template['fr_fr']['events_evt_begin']      = _("du :")
 text_template['fr_fr']['events_evt_end']        = _("au :")
@@ -280,6 +280,6 @@ text_template['fr_fr']['poste_del_confirm']     = _('Confirmer la suppression du
 #on est ici
 
 #association
-text_template['fr_fr']['assos_events_admin']            = _('les assosiations et les evenement que je gère')
+text_template['fr_fr']['assos_events_admin']            = _('les assosiations et les evenement que tu gère')
 
 #administration

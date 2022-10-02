@@ -32,7 +32,7 @@ Mettre à jour les appli et modules suivant le requirements.txt
 
 `pip install -r requirements.txt`
 
-Créer le fichier .env à la racine de l'application python, et compléter les infos:
+Créer le fichier .env à la racine du projet python, et compléter les infos:
 
 ```
 # SECURITY WARNING: keep the secret key used in production secret!`

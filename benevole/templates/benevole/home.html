@@ -16,9 +16,9 @@
       {% if Administrateur %}
         {# admin connecté arrive sur sa liste d assos #}
         {% include 'association/associations_liste.html' %}
+      {% endif %}
         {# benevole connecté arrive sur la liste de evenements #}
         {% include 'benevole/evenements.html'%}
-      {% endif %}
     {% else %}{# pas authentifié #}
       {% include 'benevole/connexion.html'%}
     {% endif %}
