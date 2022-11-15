@@ -29,78 +29,80 @@
         </div>
     </div>   
 
-    {# on va creer une carte par evenement à venir ou le benevole est enregistré #}
-    <div class="evts_inscrit">
-        <div class="container overflow-hidden">
-            <div class="row gy-5 gx-5" style="margin-top: 0px;">
-                {% for EV in Evenements_inscrit %}
-                    {# affiche dans la liste des evenements à venir ou en cours #}
-                    <div class="col-sm-4">
-                        <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="inscrit_{{ EV.UUID }}" title="aller vers {{ EV }}" onclick="loader()">
-                            <div class="card h-100 card-inscrit">
-                            {% if EV.vignette %}
-                                <img src="{{ EV.vignette.url }}" class="card-img-top" alt="aller vers {{ EV }}">
-                            {% else %}
-                                <img src="media/empty.jpg" class="card-img-top" alt="aller vers {{ EV }}">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title">{{ EV.nom }}</h5>
-                                <p class="card-text">
-                                    {{Text.events_evt_begin}} {{ EV.debut|date:'D, d F Y' }}<br>
-                                    {{Text.events_evt_end}} {{ EV.fin|date:'D, d F Y' }}</p>
-                                <p class="card-text">{{ EV.description }}</p>
-                                {# <button type="button" class="btn btn-danger">Désinscription</button> #}
-                            </div>
-                        </button>
+    {# on va creer une carte par evenement à venir ou en cours où le benevole est enregistré #}
 
-                        <div class="card-footer">
+    <div class="container mx-auto mt-4">
+        <div class="row">            
+            {% for EV in Evenements_inscrit %}
+                <div class="col-md-4">
+                    <div class="card card-inscrit" style="">
+                        <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="inscrit_{{ EV.UUID }}" title="aller vers {{ EV }}" onclick="loader()">
+                            {% if EV.vignette %}
+                            <img src="{{ EV.vignette.url }}" class="card-img-top">
+                            {% else %}
+                            <img src="media/empty.jpg" class="card-img-top">
+                            {% endif %}
+                        </button>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ EV.nom }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">association: {{ EV.association }}</h6>
                             <p class="card-text">
-                                {#{ EV.benevole.all }} {{ user.profilebenevole }} {{ Ev_ass_par_benevole }#}
+                                {{Text.events_evt_begin}} {{ EV.debut|date:'D, d F Y' }}<br>
+                                {{Text.events_evt_end}} {{ EV.fin|date:'D, d F Y' }}</p>
+                            <p class="card-text">{{ EV.description }}</p>
+                        </div>
+                        <div class="card-footer">
+                            <form action="#" method='POST' id="select_asso-{{EV.UUID}}">
+
+                                <button type="submit" class="btn card-btn-evt mr-2 " name="evenement-{{ EV }}" form="inscrit_{{ EV.UUID }}" 
+                                    style="float: left;" title="aller vers {{ EV }}" onclick="loader()">
+                                    evenement
+                                </button>
+
+                                {# construit nos forms #}
                                 {% for a in Ev_ass_par_benevole %} {# a les inscriptions du benevoles aux evenements#}
-                                    {#{ a.profilebenevole }} | {{ a.evenement }} | {{ a.asso_part }#}
+                                {#{ a.profilebenevole }} | {{ a.evenement }} | {{ a.asso_part }#}
                                     {% if a.evenement == EV %} {# si notre benevole est inscrit a cet evenement#}
-                                    {{Text.events_assoperso}} <b>{{EV.nom}}</b>:{#{ a.asso_part }#}
                                         {# prepare la form pour selectionner son asso #}
                                         {# les asso partenaires #}
-                                        <form action="#" method='POST' id="select_asso-{{EV.UUID}}">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="evenement" value="{{EV.UUID}}">
-                                            <input type="hidden" name="asso_perso_change" value="">
 
-                                            <div class="btn-group assos-button" >
-                                                <button type="button" class="btn btn-warning btn-lg dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    {{Text.events_yourasso}}
-                                                </button>
-                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" >
-                                                    {# les asso partenaires de l evenement#}
-                                                    {% for assopart in EV.assopartenaire.all %}
-                                                        {#{ assopart.nom }} {{ assopart.UUID }} : {{ a.asso_part.nom }} {{ a.asso_part.UUID }#}
-                                                        {% if assopart == a.asso_part %}
-                                                            <button class="dropdown-item active" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="{{assopart.UUID}}">{{assopart}}</button>
-                                                        {% else %}
-                                                            <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="{{assopart.UUID}}">{{assopart}}</button>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                        {% if a.asso_part == None %}
-                                                            <button class="dropdown-item active" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">aucune</button>
-                                                        {% else %}
-                                                            <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">aucune</button>
-                                                        {% endif %}
-                                                </ul>
-                                            </div>
 
-                                        </form>
-                                        {% endif %}
+                                        {% csrf_token %}
+                                        <input type="hidden" name="evenement" value="{{EV.UUID}}">
+                                        <input type="hidden" name="asso_perso_change" value="">
+                                        <button type="button" class="btn card-btn-evt dropdown-toggle dropdown-toggle-split" form="select_asso-{{EV.UUID}}"
+                                            style="float: right;" title="{{Text.events_assoperso}} {{EV.nom}}" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {{Text.events_yourasso}}
+                                        </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" >
+                                                {# les asso partenaires de l evenement#}
+                                                {% for assopart in EV.assopartenaire.all|dictsort:"nom" %}
+                                                    {#{ assopart.nom }} {{ assopart.UUID }} : {{ a.asso_part.nom }} {{ a.asso_part.UUID }#}
+                                                    {% if assopart == a.asso_part %}
+                                                        <button class="dropdown-item active" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="{{assopart.UUID}}">{{assopart|capfirst}}</button>
+                                                    {% else %}
+                                                        <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="{{assopart.UUID}}">{{assopart|capfirst}}</button>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                    {% if a.asso_part == None %}
+                                                        <button class="dropdown-item active" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">aucune</button>
+                                                    {% else %}
+                                                        <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">aucune</button>
+                                                    {% endif %}
+                                            </ul>
+
+                                    {% endif %}
                                 {% endfor %}
-
-                            </p>
-
+                            </form>
                         </div>
                     </div>
+                </div>
                 {% endfor %}
-            </div>
+
         </div>
     </div>
+
+
 {% endif %}
 
 {# prepare les forms pour s inscrire aux evenements#}
@@ -131,30 +133,42 @@
     </div>   
 
     {# on va creer une carte par evenement à venir ou le benevole n est pas inscrit  #}
-    <div class="evts_dispo">
-        <div class="container overflow-hidden">
-            <div class="row gy-5 gx-5" style="margin-top: 0px;">
-                {% for EV in Evenements_disponible %}
-                    {# affiche dans la liste que les evenements à venir ou en cours #}
-                    <div class="col-sm-4">
-                        <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="dispo_{{ EV.UUID }}" title="devenir bénévole à {{ EV }} et accéder à l'evenement" onclick="loader()">
-                            <div class="card h-100 card-dispo">
+    <div class="container mx-auto mt-4">
+        <div class="row">            
+            {% for EV in Evenements_disponible %}
+                <div class="col-md-4">
+                    <div class="card card-dispo" style="">
+                        <button type="submit" class="bouton-evenement" name="evenement-{{ EV }}" form="dispo_{{ EV.UUID }}" 
+                            title="devenir bénévole à {{ EV }} et accéder à l'evenement" onclick="loader()">
                             {% if EV.vignette %}
                                 <img src="{{ EV.vignette.url }}" class="card-img-top" alt="devenir bénévole à {{ EV }} et accéder à l'evenement">
                             {% else %}
                                 <img src="media/empty.jpg" class="card-img-top" alt="devenir bénévole à {{ EV }} et accéder à l'evenement">
                             {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title">{{ EV.nom }}</h5>
-                                <p class="card-text">
-                                    {{Text.events_evt_begin}} {{ EV.debut|date:'D, d F Y' }}<br>
-                                    {{Text.events_evt_end}} {{ EV.fin|date:'D, d F Y' }}</p>
-                                <p class="card-text">{{ EV.description }}</p>
-                            </div>
                         </button>
+
+                        <div class="card-body">
+                            <h5 class="card-title">{{ EV.nom }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">association: {{ EV.association }}</h6>
+                            <p class="card-text">
+                                {{Text.events_evt_begin}} {{ EV.debut|date:'D, d F Y' }}<br>
+                                {{Text.events_evt_end}} {{ EV.fin|date:'D, d F Y' }}</p>
+                            <p class="card-text">{{ EV.description }}</p>
+                        </div>
+
+                        <div class="card-footer">
+
+                            <button type="submit" class="btn card-btn-evt mr-2 " name="evenement-{{ EV }}" form="dispo_{{ EV.UUID }}" 
+                                    title="devenir bénévole à {{ EV }} et accéder à l'evenement"
+                                    style="float: left;" onclick="loader()">
+                                    s'inscrire
+                            </button>
+                        </div>
+
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
+
 {% endif %}

@@ -215,19 +215,17 @@ def Home(request):
     data = {
         "FormPersonne" : PersonneForm(),  # form personne non liée
         #"Evenements" : Evenement.objects.all().order_by("debut"),  # liste de tous les evenements
-        # evenements a venir ou le benevole est deja inscrit 
+        # evenements a venir ou en cours où le benevole est deja inscrit 
         "Evenements_inscrit" : Evenement.objects.filter(
-                                        Q(debut__gt=date.today()),
+                                        Q(fin__gt=date.today()),
                                         Q(benevole__personne_id=request.user.UUID)).order_by("debut"), 
         "Evenements_disponible" : Evenement.objects.filter(
-                                        Q(debut__gt=date.today()),
-                                        ~Q(benevole__personne_id=request.user.UUID),
-                                        #Q(inscription_debut__lte=date.today()), 
-                                        Q(inscription_fin__gt=date.today())).order_by("debut"),# evenements à venir , benevole pas inscrit , inscription encore ouvertes
+                                        Q(fin__gt=date.today()),
+                                        ~Q(benevole__personne_id=request.user.UUID)).order_by("debut"),# evenements à venir , ou en cours benevole pas inscrit 
         "Assos": Association.objects.all(), # liste toutes les assosciations pour admin, a filtrer par assos affectées a administrateur
-        "Text": text_template[language], # textes traduits 
+        "Text": text_template[language], # textes traduits
     }
-    
+
     # check si on a un administrateur:
     logger.info('#########################################################')
     logger.info('#   utilisateur connecté: ')

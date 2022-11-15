@@ -248,7 +248,7 @@ class Creneau(models.Model):
     description = models.TextField(max_length=500, blank=True, default='')
     editable = models.BooleanField(default=True, help_text="si editable, le créneau n'est pas bloqué."
                                                             " pas encore implémenté")
-    valide_present = models.BooleanField(blank=True, default=False, help_text="à valider si le bénévole s'est bien présenté")
+    valide_present = models.BooleanField(blank=True, default=False, help_text="cocher si le bénévole ne s'est pas présenté")
     type = models.CharField(choices=Type.choices,
                             max_length=50,
                             blank=False,

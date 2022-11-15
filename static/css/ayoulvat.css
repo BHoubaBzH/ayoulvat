@@ -8,6 +8,7 @@
     --fond_body: #c1c1c1;
 	--scrollbar_couleur: #0b6dff;
 	--footer-height: 120px;
+	--gradient: linear-gradient(to left top, #ddc124 10%, #FF512F 90%) !important; /*boutons des cards evenements */ 
   }
   
 body {
@@ -33,6 +34,40 @@ body {
 .card-dispo {
     opacity: .4;
 }
+
+.card {
+	background: #1a1a1a;
+	/*border: 1px solid #dd2476;*/
+	color: rgba(250, 250, 250, 0.8);
+	margin-bottom: 2rem;
+  }
+  
+.card-img-top {
+	height: -webkit-fill-available;
+	max-width: 26em;
+	max-height: 20em;
+}
+
+.card-btn-evt {
+	border: 5px solid;
+	border-image-slice: 1;
+	background: var(--gradient) !important;
+	-webkit-background-clip: text !important;
+	-webkit-text-fill-color: transparent !important;
+	border-image-source:  var(--gradient) !important; 
+	text-decoration: none;
+	transition: all .4s ease;
+}
+
+.card-btn-evt:hover, .card-btn-evt:focus {
+	background: var(--gradient) !important;
+	-webkit-background-clip: none !important;
+	-webkit-text-fill-color: #fff !important;
+	border: 5px solid #fff !important; 
+	box-shadow: #222 1px 0 10px;
+	text-decoration: underline;
+}
+
 
 /*************************
  * footer
@@ -184,7 +219,7 @@ footer .right {
 }
 
 .planning-head-planningperso {
-	width: 0.3em;
+	width: 0.8em;
 }
 
 .text {

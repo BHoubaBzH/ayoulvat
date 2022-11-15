@@ -138,8 +138,20 @@
     $(document).ready(function() {
         $('#table_benevoles').DataTable({ dom:'' });
         $('#table_creneaux').DataTable({ dom:'' });
-        $('#table_assospart1').DataTable({ dom:'' });
-        $('#table_assospart2').DataTable({ dom:'' });
+        $('#table_assospart1').DataTable({ 
+            dom:'lr', 
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+            },
+            "lengthMenu": [[10, -1], [10, "Tous"]],
+        });
+        $('#table_assospart2').DataTable({
+            dom:'lr', 
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+            },
+            "lengthMenu": [[10, -1], [10, "Tous"]],
+        });
         $('#table_planning1').DataTable({ 
             dom:'lp',
             "language": {

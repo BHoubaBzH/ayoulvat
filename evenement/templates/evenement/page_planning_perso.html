@@ -6,7 +6,7 @@
 {# planning perso tableau #}
 {% if creneaux_benevole %}
         {# form du courriel des créneaux #}
-        <form method='post' id="form_courriel_creneaux">
+        <form method='POST' id="form_courriel_creneaux">
             {% csrf_token %}
             <input  name="creneaux_courriel" value="envoi" type="hidden">
             <input  name="creneaux_courriel_message_text" value='
