@@ -139,18 +139,19 @@
         $('#table_benevoles').DataTable({ dom:'' });
         $('#table_creneaux').DataTable({ dom:'' });
         $('#table_assospart1').DataTable({ 
-            dom:'lr', 
+            dom:'lri', 
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
             },
             "lengthMenu": [[10, -1], [10, "Tous"]],
         });
         $('#table_assospart2').DataTable({
-            dom:'lr', 
+            dom:'lrtiB', 
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
             },
             "lengthMenu": [[10, -1], [10, "Tous"]],
+            buttons: [ 'copy', 'excel']
         });
         $('#table_planning1').DataTable({ 
             dom:'lp',

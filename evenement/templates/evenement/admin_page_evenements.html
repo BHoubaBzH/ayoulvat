@@ -8,17 +8,7 @@
 
 <div class="planning-equipes" aria-labelledby="planning-heading">
     {# affiche les entetes des colonnes du planning : les heures #}
-    {% for dates, heures in PlanningRange.items %}
-        <div class="planning-head-equipes" style="grid-column: time-{{ dates }}; grid-row: heures">
-            <h6 class="time-slot">
-                {% if heures.0|stringformat:'s' != "00:00" and heures.1|date:'i' == '00'%}
-                    {{ heures.0 }} {# affiche les heures pleines #}
-                {% elif heures.0|stringformat:'s' == "00:00" %} {# affiche le jour a minuit #}
-                    <b>{{ heures.1|date:'d/m/y' }}</b>
-                {% endif %}
-            </h6>
-        </div>
-    {% endfor %}
+    {% include 'evenement/grid_entete_heures.html' with ligne="heures" role="admin" %}    
 
     {% if Evenement and not equipe_uuid or equipe_uuid %}
         {# affiche toutes les equipes #}
@@ -31,7 +21,6 @@
                         {% include "evenement/admin_planning_bouton.html" %}
                 {% endif %}
             {% endfor %}
-            
             {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" %}
         {% endfor %}
         {# ajoute une ligne vide pour pouvoir ajouter des equipes au besoins et le modal de modif des plannings #}
@@ -64,4 +53,6 @@
             <p> {{ Text.admin_list_events }} </p>
         </span>
     {% endif %}
+    {# affiche les entetes des colonnes du planning en bas: les heures #}
+    {% include 'evenement/grid_entete_heures.html' with ligne="bas" role="admin" %}
 </div>

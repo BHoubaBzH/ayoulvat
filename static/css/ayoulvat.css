@@ -198,16 +198,31 @@ footer .right {
 .time-slot {
 	display: flex;
 	/*align-items: center;
-	justify-content: center;
-	font-size:.75em;*/
+	justify-content: center; */
+	font-size: 1vw;
     font-weight: bold;
 	overflow : hidden;
 }
 
 .time-slot {
 	overflow : visible;
-}	
+}
 
+/*
+.day-slot-bottom {
+	color: red;    
+	padding-top: 50px;
+    padding-left: 22vw;
+    transform: rotate(0deg);
+}
+
+.day-slot-top {
+	color: red;    
+	padding-bottom: 50px;
+    padding-left: 22vw;
+    transform: rotate(0deg);
+}
+*/
 .planning-head, .planning-head-equipes {
 	display: inline-grid;
 	/*width: 1.5em;*/
@@ -221,6 +236,17 @@ footer .right {
 .planning-head-planningperso {
 	width: 0.8em;
 }
+
+/* case header avec heure, ajoute un petit border */ 
+.planning-head-top:after{
+	content: "";
+	border-left: 1px solid white;
+}
+.planning-head-bottom:before{
+	content: "";
+	border-left: 1px solid white;
+}
+
 
 .text {
 	max-width: 750px;
