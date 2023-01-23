@@ -2,6 +2,7 @@
 {% if planning_perso%}
     {# a completer #}
 {% endif %}
+
 {# decoration css: on parcour toutes les cellule de la grid css pour y appliquer un div #}
 {% for dates, dateheure in PlanningRange.items %}
     {% if not forloop.last %} {# pas de bouton pour la derniere colonne vu qu'elle apparait apres l heure de fin du planning #}

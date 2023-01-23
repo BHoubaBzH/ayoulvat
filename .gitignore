@@ -10,3 +10,8 @@ ayoulvat_db
 *.pot
 *.pyc
 ayoulvat/settings.py
+# env python
+lib
+lib64
+bin
+pyvenv.cfg

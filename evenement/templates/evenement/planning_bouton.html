@@ -28,7 +28,7 @@ grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|da
                 {% endif %}
                 onclick="loader()">
                 <span data-toggle="modal" data-target="#modal-dispo_creer-{{ planning.UUID }}">
-                <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
+                <a class="text-planning">{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
                 </span>
         </button>
         {% endif %}

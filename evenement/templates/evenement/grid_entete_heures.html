@@ -1,22 +1,42 @@
 <!-- evenement/grid_entete_heures.html -->
-{# ligne d'entete de la grille des plannings en haut de la grid ccss ou en bas en fonction de "ligne" #}
+
+<!-- préparation d affichage des jours plus propre-->
+
 
 {% for dates, heures in PlanningRange.items %}
-    {% if heures.0|stringformat:'s' != "00:00" and heures.1|date:'i' == '00'%}{# affiche les heures pleines #}
+    <div class="planning-head-planningperso" style="grid-column: time-{{ dates }}; grid-row: jours"></div>
+{% endfor %}    
+
+    
+{% for dates, heures in PlanningRange.items %}
+    {% if heures.0|stringformat:'s' == "00:00" %}
+        <div class="planning-head-day" 
+            style="height: 4em; grid-column: time-{{ dates }} / time-{{ heures.1|date:'Y-m-d' }}-2330; grid-row: jours">
+            {{ heures.1|date:'l d/m'|upper }}
+        </div>
+    {% endif %}
+{% endfor %}
+
+    
+{# ligne d'entete de la grille des plannings en haut de la grid ccss ou en bas en fonction de "ligne" #}
+{% for dates, heures in PlanningRange.items %}
+    {% if heures.1|date:'i' == '00'%}{# affiche les heures pleines #}
         {% if role == "benevole" %}
-            {% if heures.0|stringformat:'s' in "02:00,04:00,06:00,08:00,10:00,12:00,14:00,16:00,18:00,20:00,22:00" %}{# affiche seulement les heures paires  #}
-                <div class='planning-head-planningperso {%if ligne == "bas"%} planning-head-bottom {%else%} planning-head-top {%endif%}' style='grid-column: time-{{ dates }}; grid-row: {{ligne}}'>
+            {% if heures.0|stringformat:'s' in "00:00 02:00,04:00,06:00,08:00,10:00,12:00,14:00,16:00,18:00,20:00,22:00" %}{# affiche seulement les heures paires  #}
+                <div class='planning-head-planningperso {%if ligne == "bas"%} planning-head-bottom {%else%} planning-head-top {%endif%}' 
+                    style='grid-column: time-{{ dates }}; grid-row: {{ligne}}'>
                     <p class="time-slot" style='{%if ligne == "bas"%} padding-top:10px {%endif%}'>
                         {{ heures.1|date:'H' }}{{ Text.hour_short }}
                     </p>
                 </div>
             {% else%}
-                <div class="planning-head-planningperso">
+            <div class="planning-head-planningperso" style="grid-column: time-{{ dates }}; grid-row: {{ligne}}">
                 </div> 
             {% endif %} 
         {% elif role == "admin" %}
             {% if heures.1|date:'i' == '00' %}{# affiche toutes les heures aux admins  #}
-                <div class='planning-head-planningperso {%if ligne == "bas"%} planning-head-bottom {%else%} planning-head-top {%endif%}' style='grid-column: time-{{ dates }}; grid-row: {{ligne}}'>
+                <div class='planning-head-planningperso {%if ligne == "bas"%} planning-head-bottom {%else%} planning-head-top {%endif%}' 
+                    style='grid-column: time-{{ dates }}; grid-row: {{ligne}}'>
                     <p class="time-slot" style='{%if ligne == "bas"%} padding-top:10px {%endif%}'>
                         {{ heures.1|date:'H' }}{{ Text.hour_short }}
                     </p>
@@ -26,13 +46,6 @@
                 </div> 
             {% endif %} 
         {% endif %}
-    {% elif heures.0|stringformat:'s' == "00:00" %} {# affiche le jour a minuit #}
-        <div class='planning-head-planningperso {%if ligne == "bas"%} planning-head-bottom {%else%} planning-head-top {%endif%}' style="grid-column: time-{{ dates }}; grid-row: {{ligne}}">
-            <p class='time-slot {%if ligne == "bas"%} day-slot-bottom {%else%} day-slot-top {%endif%}'>
-                <b>{{ heures.1|date:'d/m/y' }} {{ heures.1|date:'D' }}</b>
-
-            </p>
-        </div>
     {% else%}
         <div class="planning-head-planningperso" style="grid-column: time-{{ dates }}; grid-row: {{ligne}}">
         </div> 

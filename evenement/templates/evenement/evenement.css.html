@@ -8,168 +8,163 @@
  * 
  *************************/
 
-@media screen and (min-width:700px) {
-	{# PLANNING CRENEAUX #}
-	.planning-creneaux {
-		#overflow-x: scroll;
-		inline-size: fit-content;
-		display: grid;
-		gap: 0.2em;
-		padding: inherit;
-		padding-top: 2em;
-		padding-bottom: 2em;
-		{# construction des entetes et des lignes de la grille planning: heures puis postes #}
-		grid-template-rows:
-			[heures] 3em
-			{% for poste in PostesCreneaux %}
-				{% if poste.planning == Planning %}
-					[ligne-{{ poste.UUID }}] auto
-				{% endif %}
-			{% endfor %};
-		{# construction des entete et des colonnes de la grille planning: postes puis heures puis boutons #}
-		grid-template-columns:
-			[postes] auto
-			[postes-boutons] auto
-			{% for dates, heures in PlanningRange.items %}
-			[time-{{ dates }}] auto
-			{% endfor %}
-			;
-	}
+{# PLANNING CRENEAUX : grid ou on peut prendre ou liberer des creneaux 
 
+					postes		postes-boutons	time-date-heure	time-date-heure+30m time-date-heure+60m ...
+	jours				.				. 				. 				. 					.
+	heures				.				. 				. 				. 					.
+	ligne-poste.1		.				. 				. 				. 					.
+	ligne-poste.2		.				. 				. 				. 					.
+	ligne-poste.3		.				. 				. 				. 					.
+	ligne-poste.4		.				. 				. 				. 					.
+	...
+#}
 
-
-	{# colorise les créneaux en fonction du poste et la couleur dans la table poste#}
-	{% for poste in PostesCreneaux %}
-		{% if poste.planning == Planning %}
-			.poste-{{ poste.UUID }} {
-				background-image: linear-gradient(to bottom, var(--bs-light) 0px, {{ poste.couleur }} 50%);
-				color: #fff;
-				position: relative;
-			}
-		{% endif %}
-	{% endfor %}
-/*
-	{# PLANNING BENEVOLES #}
-	.planning-benevoles {
-		#overflow-x: scroll;
-		inline-size: fit-content;
-		display: grid;
-		gap: 0.2em;
-		padding: inherit;
-		{# construction des entetes et des lignes de la grille planning: heures puis benevoles #}
-		grid-template-rows:
-			[heures] 3em
-			{% for benevole in Benevoles %}
-			[ligne-{{ benevole.UUID }}] auto
-			{% endfor %};
-		{# construction des entete et des colonnes de la grille planning: benevoles puis heures puis boutons #}
-		grid-template-columns:
-			[benevoles] auto
-			[benevoles-boutons] auto
-			{% for dates, heures in PlanningRange.items %}
-			[time-{{ dates }}] auto
-			{% endfor %}
-			;
-	}
-
-	{# colorise les créneaux #}
-	{% for benevole in Benevoles %}
-		.benevole-{{ benevole.UUID }} {
-			background-image: linear-gradient(to bottom, var(--bs-light) 0px, {{ benevole.couleur }} 50%);
-			color: #fff;
-			position: relative;
-		}
-	{% endfor %}
-*/
-	{# PLANNING EQUIPES #}
-	.planning-equipes {
-		#overflow-x: scroll;
-		inline-size: fit-content;
-		display: grid;
-		gap: 0.2em;
-		/*border: 1px solid #ffffff;*/
-		padding-top: 3em;
-		padding-bottom: 2em;
-		padding-left: 2em;
-		padding-right: 2em;
-		{# construction des entetes et des lignes de la grille planning: heures puis equipes #}
-		grid-template-rows:
-			[heures] 3em
-			{% for equipe in Equipes %}
-			[ligne-{{ equipe.UUID }}] auto
-			{% endfor %};
-		{# construction des entete et des colonnes de la grille planning: equipes puis heures puis boutons #}
-		grid-template-columns:
-			[equipes] auto
-			[equipes-boutons] auto
-			{% for dates, heures in PlanningRange.items %}
-			[time-{{ dates }}] auto
-			{% endfor %}
-			;
-	}
-
-	{# colorise les plannings#}
-	{% for equipe in Equipes %}
-		.equipe-{{ equipe.UUID }} {
-			background-image: linear-gradient(to bottom, var(--bs-light) 0px, {{ equipe.couleur }} 50%);
-			color: #fff;
-			position: relative;
-		}
-	{% endfor %}
-
-	{# colorise les cellules des grids#}
-	{% for poste in PostesCreneaux %}
-		.grid-cell.ligne-{{ poste.UUID }}, .grid-cell-minuit.ligne-{{ poste.UUID }} {
-			border-bottom-color: {{ poste.couleur }};
-			{%if not poste.ouvert %} {# le poste n'est pas ouvert aux bénévols : on edite le fond des cases de la ligne #}
-				background-color: #6c757d30;
-			{%endif%}
-		}
-		.poste-slot.ligne-{{ poste.UUID }} {
-			border-bottom: 1px solid #ffffff;
-			border-bottom-color: {{ poste.couleur }};
-			{%if not poste.ouvert %} {# le poste n'est pas ouvert aux bénévols : on edite le fond des cases de la ligne #}
-				background-color: #6c757d30;
-			{%endif%}
-		}
-	{% endfor %}
-
-	{# PLANNING PARTIE COMMUNE #}
-
-	.time-slot {
-		grid-row: heures;
-		transform: rotate(-50deg);
-	}
-
-	.poste-slot, .poste-bouton-slot, .equipe-slot {
-		# display: none; /* hidden on small screens and browsers without grid support */
-		text-align: left;
-		width: 8vw;
-		height: 40px;
-	}
-
-	.poste-bouton-slot, .benevole-bouton-slot  {
-		min-width: 10px;
-		width: 20px;
-	}
-
-	.poste-slot, .benevole-slot, .equipe-slot, .poste-bouton-slot, .benevole-bouton-slot   {
-		display: block;
-		padding: 10px 5px 5px;
-		position: sticky;
-		height: 2em;
-		top: 0;
-		z-index: 20;
-		#background-color: rgb(255, 255, 255);
-	}
-
-	.bouton_edite_poste  {
-		padding: 1;
-		margin-left: -5px;
-		margin-top: 5px;
-	}
-
+.planning-creneaux {
+	#overflow-x: scroll;
+	inline-size: fit-content;
+	display: grid;
+	gap: 0.2em;
+	padding: inherit;
+	padding-top: 2em;
+	padding-bottom: 2em;
+	{# construction des entetes et des lignes de la grille planning: heures puis postes #}
+	grid-template-rows:
+		[jours] auto {# ligne 1#}
+		[heures] auto {# ligne 2#}
+		{% for poste in PostesCreneaux %}
+			{% if poste.planning == Planning %}
+				[ligne-{{ poste.UUID }}] auto {# lignes suivantes #}
+			{% endif %}
+		{% endfor %}
+		;
+	{# construction des entete et des colonnes de la grille planning: postes puis heures puis boutons #}
+	grid-template-columns:
+		[postes] auto {# colonne 1 #}
+		[postes-boutons] auto {# colonne 2 #}
+		{% for dates, heures in PlanningRange.items %}
+		[time-{{ dates }}] auto  {# colonnes suivantes #}
+		{% endfor %}
+		;
 }
+
+{# colorise les créneaux en fonction du poste et la couleur dans la table poste#}
+{% for poste in PostesCreneaux %}
+	{% if poste.planning == Planning %}
+		.poste-{{ poste.UUID }} {
+			background-image: linear-gradient(to bottom, var(--bs-light) 0px, {{ poste.couleur }} 50%);
+			color: #fff;
+			position: relative;
+		}
+	{% endif %}
+{% endfor %}
+{# FIN Planning CRENEAUX #}
+
+{# PLANNING EQUIPES : grid des plannings 
+
+						equipes		equipes-boutons	time-date-heure	time-date-heure+30m time-date-heure+60m ...
+	jours					.				. 				. 				. 					.
+	heures					.				. 				. 				. 					.
+	ligne-equipe.1			.				. 				. 				. 					.
+	ligne-equipe.2			.				. 				. 				. 					.
+	ligne-equipe.3			.				. 				. 				. 					.
+	ligne-equipe.4			.				. 				. 				. 					.
+	...
+#}
+
+.planning-equipes {
+	#overflow-x: scroll;
+	inline-size: fit-content;
+	display: grid;
+	gap: 0.2em;
+	/*border: 1px solid #ffffff;*/
+	padding-top: 3em;
+	padding-bottom: 2em;
+	padding-left: 2em;
+	padding-right: 2em;
+	{# construction des entetes et des lignes de la grille planning: heures puis equipes #}
+	grid-template-rows:
+		[jours]  auto {# ligne 1#}
+		[heures] auto {# ligne 2#}
+		{% for equipe in Equipes %}
+		[ligne-{{ equipe.UUID }}] auto {# lignes suivantes #}
+		{% endfor %}
+		;
+	{# construction des entete et des colonnes de la grille planning: equipes puis heures puis boutons #}
+	grid-template-columns:
+		[equipes] auto {# colonne 1 #}
+		[equipes-boutons] auto {# colonne 2 #}
+		{% for dates, heures in PlanningRange.items %}
+		[time-{{ dates }}] auto {# colonnes suivantes #}
+		{% endfor %}
+		;
+}
+
+{# colorise les plannings#}
+{% for equipe in Equipes %}
+	.equipe-{{ equipe.UUID }} {
+		background-image: linear-gradient(to bottom, var(--bs-light) 0px, {{ equipe.couleur }} 50%);
+		color: #fff;
+		position: relative;
+	}
+{% endfor %}
+{# FIN Planning EQUIPES #}
+
+{# colorise les cellules des grids#}
+{% for poste in PostesCreneaux %}
+	.grid-cell.ligne-{{ poste.UUID }}, .grid-cell-minuit.ligne-{{ poste.UUID }} {
+		border-bottom-color: {{ poste.couleur }};
+		{%if not poste.ouvert %} {# le poste n'est pas ouvert aux bénévols : on edite le fond des cases de la ligne #}
+			background-color: #6c757d30;
+		{%endif%}
+	}
+	.poste-slot.ligne-{{ poste.UUID }} {
+		border-bottom: 1px solid #ffffff;
+		border-bottom-color: {{ poste.couleur }};
+		{%if not poste.ouvert %} {# le poste n'est pas ouvert aux bénévols : on edite le fond des cases de la ligne #}
+			background-color: #6c757d30;
+		{%endif%}
+	}
+{% endfor %}	
+
+/*************************
+* PLANNING PARTIE COMMUNE
+* 
+*************************/
+
+.time-slot {
+	grid-row: heures;
+	transform: rotate(-50deg);
+}
+
+.poste-slot, .poste-bouton-slot, .equipe-slot {
+	# display: none; /* hidden on small screens and browsers without grid support */
+	text-align: left;
+	width: 8vw;
+	height: 40px;
+}
+
+.poste-bouton-slot, .benevole-bouton-slot  {
+	min-width: 10px;
+	width: 20px;
+}
+
+.poste-slot, .benevole-slot, .equipe-slot, .poste-bouton-slot, .benevole-bouton-slot   {
+	display: block;
+	padding: 10px 5px 5px;
+	position: sticky;
+	height: 2em;
+	top: 0;
+	z-index: 20;
+	#background-color: rgb(255, 255, 255);
+}
+
+.bouton_edite_poste  {
+	padding: 1;
+	margin-left: -5px;
+	margin-top: 5px;
+}
+
 
 @media screen and (max-width:400px) {
 	{# PLANNING CRENEAUX #}

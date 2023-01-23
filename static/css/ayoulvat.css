@@ -9,6 +9,7 @@
 	--scrollbar_couleur: #0b6dff;
 	--footer-height: 120px;
 	--gradient: linear-gradient(to left top, #ddc124 10%, #FF512F 90%) !important; /*boutons des cards evenements */ 
+	--maxheight_grid : 3em;
   }
   
 body {
@@ -119,11 +120,12 @@ footer .right {
 	padding: 0 .75em;
 	/*line-height: 2em;*/
 	/*margin-bottom: 1px;*/
-	/*border-radius: 10px;*/
+	border-radius: 10px;
 	width:100%;
 	height:100%;
+	max-height: var(--maxheight_grid);
 	opacity:80%;
-
+	overflow: hidden;
 }
 
 .planning-ayoulvat:hover {background-color: var(--planning_hover)}
@@ -151,6 +153,7 @@ footer .right {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	margin-bottom: 1px;
+	max-height: var(--maxheight_grid);
 	/*border-radius: 10px;*/
 }
 
@@ -196,33 +199,18 @@ footer .right {
 .equipe-slot,
 .benevole-slot, 
 .time-slot {
-	display: flex;
-	/*align-items: center;
-	justify-content: center; */
-	font-size: 1vw;
+	/*display: flex;*/
+	/*font-size: 1vw;*/
     font-weight: bold;
-	overflow : hidden;
+	/*overflow : hidden;*/
 }
 
 .time-slot {
 	overflow : visible;
 }
 
-/*
-.day-slot-bottom {
-	color: red;    
-	padding-top: 50px;
-    padding-left: 22vw;
-    transform: rotate(0deg);
-}
+/* headers grid specificites */
 
-.day-slot-top {
-	color: red;    
-	padding-bottom: 50px;
-    padding-left: 22vw;
-    transform: rotate(0deg);
-}
-*/
 .planning-head, .planning-head-equipes {
 	display: inline-grid;
 	/*width: 1.5em;*/
@@ -231,10 +219,18 @@ footer .right {
 
 .planning-head-equipes {
 	width: 1em;
+	max-height: var(--maxheight_grid);
+}
+
+.planning-head-day {
+	text-align: center;
+	border-left : 2px solid white;
+	font-weight: bold;
 }
 
 .planning-head-planningperso {
 	width: 0.8em;
+	max-height: var(--maxheight_grid);
 }
 
 /* case header avec heure, ajoute un petit border */ 
@@ -308,7 +304,7 @@ footer .right {
 }
 
 .equipe-slot-planningperso {
-	height: 3em;
+	height: var(--maxheight_grid);
 	width: 6em;
 }
 
@@ -316,6 +312,15 @@ footer .right {
 	background-image: linear-gradient(to bottom, #dff0d82b 0px, #bce5d636 100%);
 	position: relative;
 }
+/* text bouton planning */
+.text-planning {
+	font-family: 'georgia';
+	font-weight: bold;
+	color: white;
+	text-decoration: auto;
+}
+
+
 
 /*************************
  * navbar
