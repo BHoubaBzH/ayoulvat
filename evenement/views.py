@@ -515,8 +515,8 @@ def evenement(request, uuid_evenement):
         "EvtOuvertBenevoles" : inscription_ouvert(evenement.inscription_debut, evenement.inscription_fin) , # integer précisant si on est avant/dans/après la période de modification des creneaux
         "Text": text_template[language], # textes traduits 
     }
-    #print(data["Equipes"])
-    #print(data["equipes_avec_planning"])
+    #logger.debug(data["Equipes"])
+    #logger.debug(data["equipes_avec_planning"])
     data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})
     data["PlanningCreneauxDispo"] = PlanningCreneauxDispo(data["Plannings"]) # dic UUID planning , nb creneaux dispo 
     data["EvenementCreneauxDispo"] = Creneau.objects.filter(Q(evenement_id=evenement.UUID), Q(benevole_id__isnull=True)).count() # nb creneaux dispo sur l evenement

@@ -1,5 +1,5 @@
 """
-fichier ded déclaration des fonctions génériques du ^rojet
+fichier ded déclaration des fonctions génériques du projet
 """
 from django.core.mail import BadHeaderError, send_mail
 from django.http import HttpResponse, HttpResponseRedirect
@@ -8,7 +8,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
-
 
 
 def envoi_courriel(sujet, message_text, from_courriel, to_courriel, message_html):
