@@ -57,7 +57,7 @@
                     {# données pour garder le planning affiché apres submission POST#}
                     <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
                     <input  name="equipe" value="{{ equipe.UUID }}" type="hidden">
-                    
+                    <input type="hidden" name="PageType" value="admin"/> {# indique qu'on doit revenir sur la page d'admin #}
                     {% if Administrateur or Organisateur %}
                         {# peut supprimer une équipe #}
                         <button class="btn btn-danger" title="supprimer cette equipe" name="equipe_supprimer"

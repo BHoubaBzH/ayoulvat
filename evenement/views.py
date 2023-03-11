@@ -418,7 +418,7 @@ def liste_roles_utilisateur(request, evenement):
     return RolesUtilisateur
 
 ################################################
-#            views 
+#            view liste_evenements
 ################################################
 @login_required(login_url='login')
 def liste_evenements(request):
@@ -461,6 +461,9 @@ def liste_evenements(request):
 
     return render(request, "evenement/base_evenement.html", data)
 
+################################################
+#            view evenement
+################################################
 
 @login_required(login_url='login')
 @permission_required('evenement.view_evenement', login_url='login')
@@ -659,7 +662,9 @@ def evenement(request, uuid_evenement):
                                             evenement.fin,
                                             30)
 
-    data["PageType"] = request.POST.get('page_type') # on recupere l info si le lien vers une page admin ou autre
+    # recupere l info si le lien vers une page admin ou autre
+    # important pour garder l'affichage de la grid avec les boutons entre autre
+    data["PageType"] = request.POST.get('PageType') 
 
     # recalcule la liste des plannings avant le render
     data["Plannings"] = evenement.planning_set.order_by('debut').select_related('equipe', 'evenement')

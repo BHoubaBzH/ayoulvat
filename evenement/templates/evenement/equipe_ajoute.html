@@ -14,6 +14,7 @@
                     <i class="bi bi-plus-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i>
                 </div>
             </button>
+            <input type="hidden" name="PageType" value="admin"/>
         </form>
     </button>
 </span>
@@ -44,6 +45,7 @@
                     <input name="equipe" value="{{ Planning.equipe_id }}" type="hidden">
 
                     <input name="equipe_ajouter" value="" type="hidden">
+                    <input type="hidden" name="PageType" value="admin"/> {# indique qu'on doit revenir sur la page d'admin #}
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{Text.button_null}}</button>
                     <button type="submit" id="equipe_ajouter" class="btn btn-primary success">{{Text.button_add}}</button>
                 </div>
