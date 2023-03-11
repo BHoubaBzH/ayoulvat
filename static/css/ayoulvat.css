@@ -9,7 +9,8 @@
 	--scrollbar_couleur: #0b6dff;
 	--footer-height: 120px;
 	--gradient: linear-gradient(to left top, #ddc124 10%, #FF512F 90%) !important; /*boutons des cards evenements */ 
-	--maxheight_grid : 3em;
+	--maxheight_grid : 3em;/* hauteur des carrés de grids */
+	--cell_width : 0.8em; /* largeur des carrés de grids */
   }
   
 body {
@@ -207,6 +208,8 @@ footer .right {
 
 .time-slot {
 	overflow : visible;
+	transform: rotate(-50deg);
+	translate: calc(var(--cell_width) * -1) 0px 0px;
 }
 
 /* headers grid specificites */
@@ -229,7 +232,7 @@ footer .right {
 }
 
 .planning-head-planningperso {
-	width: 0.8em;
+	width: var(--cell_width);
 	max-height: var(--maxheight_grid);
 }
 
