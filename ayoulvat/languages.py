@@ -212,11 +212,12 @@ text_template['fr_fr']['admin_event_title']     = _('gestion des équipes et des
 text_template['fr_fr']['evenement_title_h']     = _('les planning des différentes équipes pour l\'évènement')
 text_template['fr_fr']['admin_event_equipe']    = _('équipe')
 text_template['fr_fr']['admin_event_equipe_h']  = _('description')
-text_template['fr_fr']['admin_list_events'] = _('choisis ton evenement dans la barre de gauche')
+text_template['fr_fr']['admin_list_events']     = _('choisis ton evenement dans la barre de gauche')
 
 #evenement > titre_page
 text_template['fr_fr']['title_planning_event']  = _('Planning de l\'évènement et créneaux perso')
-text_template['fr_fr']['title_admin_events']   = _('liste des évenements de l\'asso')
+text_template['fr_fr']['title_admin_event']     = _('Gestion des équipes et plannings de l\'évènement')
+text_template['fr_fr']['title_admin_events']    = _('liste des évenements de l\'asso')
 
 #evenement > page_planning (evenement)
 text_template['fr_fr']['slot_mine_part']        = _('MON CRENEAU')

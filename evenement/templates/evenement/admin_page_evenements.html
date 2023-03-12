@@ -4,7 +4,11 @@
 {% include "evenement/error_message.html" %}
 
 {# titre de la page #}
-{% include "evenement/titre_page.html" with page='admin evenements' %}
+{% if Evenement %}
+    {% include "evenement/titre_page.html" with page='admin evenement' %}
+{% else %}
+    {% include "evenement/titre_page.html" with page='admin evenements' %}
+{% endif %}
 
 <div class="planning-equipes" aria-labelledby="planning-heading">
     {# affiche les entetes des colonnes du planning : les heures #}
