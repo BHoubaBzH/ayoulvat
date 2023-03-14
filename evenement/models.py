@@ -25,7 +25,7 @@ class Evenement(models.Model):
                                     primary_key=False,
                                     blank=True,
                                     default='',
-                                    help_text='associations partenaires de \'évèmenement ')
+                                    help_text='Si les bénévoles doivent choisir une association à représenter, sélectionner les choix possibles .')
     organisateur = models.ManyToManyField(ProfileOrganisateur,
                                     related_name='OrganisateurEvenement',
                                     blank=True,

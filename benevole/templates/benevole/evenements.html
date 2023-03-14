@@ -70,10 +70,12 @@
                                         {% csrf_token %}
                                         <input type="hidden" name="evenement" value="{{EV.UUID}}">
                                         <input type="hidden" name="asso_perso_change" value="">
-                                        <button type="button" class="btn card-btn-evt dropdown-toggle dropdown-toggle-split" form="select_asso-{{EV.UUID}}"
-                                            style="float: right;" title="{{Text.events_assoperso}} {{EV.nom}}" data-bs-toggle="dropdown" aria-expanded="false">
-                                        {{Text.events_yourasso}}
-                                        </button>
+                                        {% if EV.assopartenaire.all %}
+                                            {# affiche le bouton de selection d'asso que si admin en selectionne des assos parteniares#}
+                                            <button type="button" class="btn card-btn-evt dropdown-toggle dropdown-toggle-split" form="select_asso-{{EV.UUID}}"
+                                                style="float: right;" title="{{Text.events_assoperso}} {{EV.nom}}" data-bs-toggle="dropdown" aria-expanded="false">
+                                            {% if a.asso_part %} {{a.asso_part.nom}} {% else %} {{ Text.events_select_asso }} {% endif %}
+                                            </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" >
                                                 {# les asso partenaires de l evenement#}
                                                 {% for assopart in EV.assopartenaire.all|dictsort:"nom" %}
@@ -84,12 +86,9 @@
                                                         <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="{{assopart.UUID}}">{{assopart|capfirst}}</button>
                                                     {% endif %}
                                                 {% endfor %}
-                                                    {% if a.asso_part == None %}
-                                                        <button class="dropdown-item active" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">aucune</button>
-                                                    {% else %}
-                                                        <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">aucune</button>
-                                                    {% endif %}
+                                                <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">sans association</button>
                                             </ul>
+                                        {% endif %}
 
                                     {% endif %}
                                 {% endfor %}

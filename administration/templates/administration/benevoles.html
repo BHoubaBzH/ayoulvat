@@ -4,7 +4,7 @@
 {% load filters_perso %}
 {% load bootstrap5 %}
 
-{% block title %}liste des bénévoles{% endblock %}
+{% block title %}{{ Text.volunteers_list }}{% endblock %}
 
 {% block content %}
 
@@ -14,7 +14,7 @@
         <div class="row align-items-end">
             <div class="col-md-12">
                 <h2 style="margin-top: 2em;" title="">
-                    Bénévoles
+                    {{ Text.volunteer }}
                 </h2>
             </div>
         </div>
@@ -26,18 +26,20 @@
         <li class="nav-item">
             <button class="nav-link active" id="benevoles-liste-tab" data-bs-toggle="tab" 
                     data-bs-target="#benevoles-liste" type="button" role="tab" 
-                    aria-controls="benevoles-liste" aria-selected="true">Liste des inscrits</button>
+                    aria-controls="benevoles-liste" aria-selected="true">{{ Text.registered_list }}</button>
         </li>
         <li class="nav-item">
             <button class="nav-link" id="benevoles-emails-tab" data-bs-toggle="tab" 
                     data-bs-target="#benevoles-emails" type="button" role="tab" 
-                    aria-controls="benevoles-emails" aria-selected="false">Courriels des inscrits</button>    
+                    aria-controls="benevoles-emails" aria-selected="false">{{ Text.registered_emails }}</button>    
         </li>
+        <!-- infos a ne pas diffuser a tout le monde, vior comment filtrer juste aux admins de la plateforme
         <li class="nav-item">
             <button class="nav-link" id="non-inscrits-liste-tab" data-bs-toggle="tab" 
                     data-bs-target="#non-inscrits-liste" type="button" role="tab" 
                     aria-controls="non-inscrits-liste" aria-selected="false" style="color: crimson;">Non inscrits</button>
         </li>
+        -->
     </ul>
 
     <div class="tab-content" id="benevoles">
@@ -49,7 +51,7 @@
                 {# AFFICHE LES BENEVOLES de l'evenement #}
 
                 <div class="col-md-9 ms-sm-auto col-lg-12 px-md-4 pt-3">
-                    <h2> Bénévoles inscrits 
+                    <h2> 
                         <button style="" class="btn btn-sm" title="ajouter un bénévole sans compte ayoulvat à l'évènement" data-bs-toggle="modal" data-bs-target="#modal-benevole-ajoute">
                             <i style="color: var(--bs-success)" class="bi bi-plus-square fs-2"></i>
                         </button>
@@ -59,8 +61,8 @@
                 <table class="table table-dark table-striped table-hover responsive"  id="table_benevoles_evenement">
                     <thead>
                         <tr>
-                        <th scope="col">nom</th><th scope="col">prenom</th><th scope="col">age</th><th scope="col">email</th><th scope="col">portable</th>
-                        <th scope="col">nb créneaux</th><th scope="col">Asso Partenaire</th><th scope="col">Action</th>
+                        <th scope="col">{{ Text.name }}</th><th scope="col">{{ Text.firstname }}</th><th scope="col">{{ Text.age }}</th><th scope="col">{{ Text.email }}</th><th scope="col">{{ Text.mobile }}</th>
+                        <th scope="col">{{ Text.nb_slots }}</th><th scope="col">{{ Text.partner_asso }}</th><th scope="col">{{ Text.action }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -97,7 +99,7 @@
                 </table>
 
             {% else %}
-                pas encore de bénévole inscrit
+                {{ Text.no_volunteer_yet}}
             {% endif %} 
 
         </div>
@@ -106,19 +108,21 @@
 {# debut onglet 2 #}
         <div class="tab-pane fade show post_display_javascript" id="benevoles-emails" 
             role="tabpanel" aria-labelledby="benevoles-emails-tab">
+
             <div class="col-md-9 ms-sm-auto col-lg-12 px-md-4 pt-3">
-                <h2> Courriels des bénévoles inscrits  </h2>    
+                <h2> 
+                </h2>
             </div>
 
             <div class="row">
                 <div class="col col-lg-12">
                     <table class="table table-dark table-striped table-hover responsive"  id="table_planning">
                         <thead>
-                            <tr><th scope="col" class="col col-lg-5">liste</th><th scope="col" class="col col-lg-5"></th><th scope="col" class="col col-lg-2">courriels</th></tr>
+                            <tr><th scope="col" class="col col-lg-5">{{ Text.list}}</th><th scope="col" class="col col-lg-5"></th><th scope="col" class="col col-lg-2">courriels</th></tr>
                         </thead>
                         <tbody>
                             <tr style="vertical-align : middle;">
-                                <td>Bénévoles avec créneau</td><td></td>
+                                <td>{{ Text.volunteer_with_slots }}</td><td></td>
                                 <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles participant à l'évènement">
                                     <!--a href="mailto:{{ Emails_benevoles_evenement|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->
                                     <button style="" class="liste-courriels btn" title="afficher la liste des courriels" 
@@ -129,7 +133,7 @@
                                 </td>
                             </tr>
                             <tr style="vertical-align : middle;">
-                                <td>Bénévoles avec un seul créneau</td><td></td>
+                                <td>{{ Text.volunteer_one_slot }}</td><td></td>
                                 <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles participant à l'évènement">
                                     <!--a href="mailto:{{ Emails_benevoles_un_creneau|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->
                                     <button style="" class="liste-courriels btn" title="afficher la liste des courriels" 
@@ -140,7 +144,7 @@
                                 </td>
                             </tr>
                             <tr style="vertical-align : middle;">
-                                <td>Bénévoles sans créneau</td><td></td>
+                                <td>{{ Text.volunteer_no_slots }}</td><td></td>
                                 <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles inscrits mais sans créneaux">
                                     <!--a href="mailto:{{ Emails_benevoles_sans_creneaux|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->
                                     <button style="" class="liste-courriels btn" title="afficher la liste des courriels" 
@@ -151,7 +155,7 @@
                                 </td>
                             </tr>
                             <tr style="vertical-align : middle;">
-                                <td>Responsables de l'évènement</td><td></td>
+                                <td>{{ Text.event_responsible }}</td><td></td>
                                 <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des responsables de l'évènement">
                                     <!--a href="mailto:{{ Emails_responsables|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->
                                     <button style="" class="liste-courriels btn" title="afficher la liste des courriels" 
@@ -170,12 +174,12 @@
                 <div class="col col-lg-12">
                     <table class="table table-dark table-striped table-hover responsive"  id="table_planning">
                         <thead>
-                            <tr><th scope="col" class="col col-lg-5">equipe</th><th scope="col" class="col col-lg-5">planning</th><th scope="col" class="col col-lg-2">courriels</th></tr>
+                            <tr><th scope="col" class="col col-lg-5">{{ Text.team }}</th><th scope="col" class="col col-lg-5">{{ Text.planning }}</th><th scope="col" class="col col-lg-2">{{ Text.emails }}</th></tr>
                         </thead>
                         <tbody>
                         {% for equipe, emails in Emails_benevoles_par_equipe.items %}
                             <tr class="table-row-border-top">
-                                <td>{{ equipe.nom }}</td><td>tous</td>
+                                <td>{{ equipe.nom }}</td><td>{{ Text.all }}</td>
                                 <td data-bs-toggle="tooltip" data-bs-placement="bottom" title="courriels des bénévoles de l'équipe {{equipe.nom}}">
                                     <!--a href="mailto:{{ emails|cut:'{'|cut:'}'|cut:'\'' }}"><i class="bi-envelope fs-3"></i></a-->
                                     <button style="" class="liste-courriels btn" title="afficher la liste des courriels" 
@@ -209,6 +213,7 @@
         </div>    
 {# fin onglet 2 #}
 
+<!-- infos a ne pas diffuser a tout le monde, vior comment filtrer juste aux admins de la plateforme
 {# onglet 3 #}
         <div class="tab-pane fade show post_display_javascript" id="non-inscrits-liste" 
         role="tabpanel" aria-labelledby="non-inscrits-liste-tab">
@@ -261,7 +266,7 @@
             {% endif %}
         </div>
 {# fin onglet 3 #}
-
+-->
     </div>
 
 </div>
