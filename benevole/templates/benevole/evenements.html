@@ -86,7 +86,7 @@
                                                         <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="{{assopart.UUID}}">{{assopart|capfirst}}</button>
                                                     {% endif %}
                                                 {% endfor %}
-                                                <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">sans association</button>
+                                                <button class="dropdown-item" type="submit" form="select_asso-{{EV.UUID}}" name="asso_perso" value="">{{ Text.events_no_asso }}</button>
                                             </ul>
                                         {% endif %}
 

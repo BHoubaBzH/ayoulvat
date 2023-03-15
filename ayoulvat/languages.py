@@ -107,6 +107,7 @@ text_template['fr_fr']['events_evt_begin']      = _("du :")
 text_template['fr_fr']['events_evt_end']        = _("au :")
 text_template['fr_fr']['events_assoperso']      = _("Association que tu représenteras à")
 text_template['fr_fr']['events_select_asso']    = _("ton asso?")
+text_template['fr_fr']['events_no_asso']        = _("sans association")
 text_template['fr_fr']['events_not_yours']      = _("Evenements à venir")
 text_template['fr_fr']['events_not_yours_h']    = _("Evenements disponible aux quels tu ne participes pas encore Cliques dessus pour t'y inscrire")
 
