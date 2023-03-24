@@ -6,6 +6,7 @@
     --planning_hover: #57fd135c;
     --creneau_hover: #52531a; 
     --fond_body: #c1c1c1;
+	--cells_admin: #ff110020; /* couleur de fond de la grid admin */ 
 	--scrollbar_couleur: #0b6dff;
 	--footer-height: 120px;
 	--gradient: linear-gradient(to left top, #ddc124 10%, #FF512F 90%) !important; /*boutons des cards evenements */ 
@@ -194,6 +195,7 @@ footer .right {
 .bouton-cell {
 	display: flex;
 	width: 100%;
+	background-color: var(--cells_admin);
 }
 
 .poste-slot,
