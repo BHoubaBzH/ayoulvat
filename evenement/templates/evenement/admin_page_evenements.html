@@ -14,7 +14,7 @@
     {# affiche les entetes des colonnes du planning : les heures #}
     {% include 'evenement/grid_entete_heures.html' with ligne="heures" role="admin" %}    
 
-    {% if Evenement and not equipe_uuid or equipe_uuid %}
+    {% if Evenement and not equipe_uuid  %}
         {# affiche toutes les equipes #}
         {% for equipe in Equipes %}
             {# affiche les entetes des lignes du planning : equipes #}
@@ -25,7 +25,7 @@
                         {% include "evenement/admin_planning_bouton.html" %}
                 {% endif %}
             {% endfor %}
-            {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" %}
+            {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" PageType="admin" %}
         {% endfor %}
         {# ajoute une ligne vide pour pouvoir ajouter des equipes au besoins et le modal de modif des plannings #}
         {% if Administrateur or Organisateur or Responsable %}

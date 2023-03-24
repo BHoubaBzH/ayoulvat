@@ -656,18 +656,19 @@ def evenement(request, uuid_evenement):
             if request.POST.get('planning_global'):
                 data["planning_global"] = "oui"
 
-    # si pas de données post, affiche le planning global de l'evenement
+
+        # recupere l info si le lien vers une page admin ou autre
+        # important pour garder l'affichage de la grid avec les boutons entre autre
+        data["PageType"] = request.POST.get('PageType') 
+
+        # recalcule la liste des plannings avant le render
+        data["Plannings"] = evenement.planning_set.order_by('debut').select_related('equipe', 'evenement')
+
+    # pas de données post, on arrive de la page des evenements, affiche le planning global de l'evenement
     else:
         data["PlanningRange"] = planning_range(evenement.debut,
                                             evenement.fin,
                                             30)
-
-    # recupere l info si le lien vers une page admin ou autre
-    # important pour garder l'affichage de la grid avec les boutons entre autre
-    data["PageType"] = request.POST.get('PageType') 
-
-    # recalcule la liste des plannings avant le render
-    data["Plannings"] = evenement.planning_set.order_by('debut').select_related('equipe', 'evenement')
 
     logger.info(f'*** Fin traitement view : {datetime.now()}')
     return render(request, "evenement/base_evenement.html", data)
