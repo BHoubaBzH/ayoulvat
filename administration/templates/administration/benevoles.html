@@ -61,8 +61,15 @@
                 <table class="table table-dark table-striped table-hover responsive"  id="table_benevoles_evenement">
                     <thead>
                         <tr>
-                        <th scope="col">{{ Text.name }}</th><th scope="col">{{ Text.firstname }}</th><th scope="col">{{ Text.age }}</th><th scope="col">{{ Text.email }}</th><th scope="col">{{ Text.mobile }}</th>
-                        <th scope="col">{{ Text.nb_slots }}</th><th scope="col">{{ Text.partner_asso }}</th><th scope="col">{{ Text.action }}</th>
+                            <th scope="col">{{ Text.name }}</th>
+                            <th scope="col">{{ Text.firstname }}</th>
+                            <th scope="col">{{ Text.age }}</th>
+                            <th scope="col">{{ Text.email }}</th>
+                            <th scope="col">{{ Text.mobile }}</th>
+                            <th scope="col">{{ Text.nb_slots }}</th>
+                            <th scope="col">{{ Text.nb_hours }}</th>
+                            <th scope="col">{{ Text.partner_asso }}</th>
+                            <th scope="col">{{ Text.action }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -74,7 +81,8 @@
                             <td>{{benevole.personne.email}}</td>
                             <td>{{benevole.personne.portable}}</td>                 
                             <td>{{liste.1}}</td> {# nb creneaux #}
-                            <td>{{liste.2}}</td> {# association partenaire #}
+                            <td>{{liste.2}}</td> {# nb heures #}
+                            <td>{{liste.3}}</td> {# association partenaire #}
                             <td>
                                 <div style="display: flex;">
                                     {% comment "" %}

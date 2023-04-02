@@ -46,14 +46,20 @@ class Personne(AbstractUser):
         else:
             return f"{self.last_name.upper()} {self.first_name.capitalize()}"
 
-# paramètres specifiques administrateurs de l'asso
-class ProfileAdministrateur(models.Model):
+# class abstraite utilisée par les profiles admin/orga/responsable/benevole...
+class ProfileAbstract(models.Model):
     UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     # supprime l administrateur si l'entree personne est supprimee
     personne = models.OneToOneField(Personne,
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
+    
+    class Meta:
+        abstract = True
+
+# paramètres specifiques administrateurs de l'asso
+class ProfileAdministrateur(ProfileAbstract):
     # supprime l administrateur si l'asso est supprimée, le benevole reste
     association = models.ForeignKey(Association,
                                     default='',
@@ -65,41 +71,19 @@ class ProfileAdministrateur(models.Model):
     def __str__(self):
         return f"{self.personne}"
 
-
 # paramètres specifiques organisateur de l'evenement
-class ProfileOrganisateur(models.Model):
-    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    # supprime l'organisateur si l'entree personne est supprimee
-    personne = models.OneToOneField(Personne,
-                                    default='',
-                                    null=True,
-                                    on_delete=models.CASCADE)
-
+class ProfileOrganisateur(ProfileAbstract):
     def __str__(self):
         return f"{self.personne}"
 
 
 # paramètres specifiques responsable d'equipe
-class ProfileResponsable(models.Model):
-    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    # supprime le responsable si l'entree personne est supprimee
-    personne = models.OneToOneField(Personne,
-                                    default='',
-                                    null=True,
-                                    on_delete=models.CASCADE)
-
+class ProfileResponsable(ProfileAbstract):
     def __str__(self):
         return f"{self.personne}"
 
-
 # paramètres specifiques benevole
-class ProfileBenevole(models.Model):
-    UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    # supprime le benevole si l'entree personne est supprimee
-    personne = models.OneToOneField(Personne,
-                                    default='',
-                                    null=True,
-                                    on_delete=models.CASCADE)
+class ProfileBenevole(ProfileAbstract):
     message = models.TextField(max_length=1000, blank=True, default='')
     couleur = RGBColorField(default="#6610f2") 
 

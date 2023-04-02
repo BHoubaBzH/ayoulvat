@@ -42,16 +42,23 @@ def liste_benevoles_age_creneaux_assopart(evt, benevoles):
         age=date.today().year - benevole.personne.date_de_naissance.year - ((date.today().month, date.today().day) < \
                         (benevole.personne.date_de_naissance.month, benevole.personne.date_de_naissance.day))
         try:
-            creneaux=benevole.BenevolesCreneau.filter(evenement=evt).count()
+            creneaux=benevole.BenevolesCreneau.filter(evenement=evt)
+            nbcreneaux=creneaux.count()
         except:
-            creneaux=0
+            nbcreneaux=0
+        # calcul du nb heures par benevole
+        nbheures = 0
+        for creneau in creneaux:
+            td_h = (creneau.fin - creneau.debut).total_seconds() / 3600
+            nbheures = nbheures + td_h
         try:
             asso=evenement_benevole_assopart.objects.select_related('asso_part').get(Q(evenement=evt), Q(profilebenevole=benevole)).asso_part
         except:
             asso='None'
         out[benevole]=(
             age,
-            creneaux,
+            nbcreneaux,
+            nbheures,
             asso,
         )
     return out 
