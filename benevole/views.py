@@ -222,10 +222,11 @@ def Home(request):
         "Evenements_disponible" : Evenement.objects.filter(
                                         Q(fin__gt=date.today()),
                                         ~Q(benevole__personne_id=request.user.UUID)).order_by("debut"),# evenements à venir , ou en cours benevole pas inscrit 
-        "Assos": Association.objects.all(), # liste toutes les assosciations pour admin, a filtrer par assos affectées a administrateur
+        #"Assos": Association.objects.all(),
+        # attention ok car on ne peut estre admin que d un evenement
+        "Assos" : [request.user.profileadministrateur.association],
         "Text": text_template[language], # textes traduits
     }
-
     # check si on a un administrateur:
     logger.info('#########################################################')
     logger.info('#   utilisateur connecté: ')

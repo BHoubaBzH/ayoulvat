@@ -49,7 +49,7 @@ class Personne(AbstractUser):
 # class abstraite utilisée par les profiles admin/orga/responsable/benevole...
 class ProfileAbstract(models.Model):
     UUID = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    # supprime l administrateur si l'entree personne est supprimee
+    # supprime l objet si l'entree personne est supprimee
     personne = models.OneToOneField(Personne,
                                     default='',
                                     null=True,

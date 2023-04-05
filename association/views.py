@@ -1,8 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-# test phil premiere page
+# import the logging library
+import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+
 from association.models import Association
+from benevole.models import ProfileAdministrateur
 
 @login_required(login_url='login')
 def liste_assos(request):
@@ -10,7 +15,9 @@ def liste_assos(request):
     liste toutes les assosciations,a filtrer par assos affectées a administrateur
     """
     data = {
-        "Assos": Association.objects.all(),
+        #"Assos": Association.objects.all(),
+        # attention ok car on ne peut estre admin que d un evenement
+        "Assos" : [request.user.profileadministrateur.association],
     }
     return render(request, "association/associations_liste.html", data)
 

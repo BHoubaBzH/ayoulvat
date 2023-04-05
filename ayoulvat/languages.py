@@ -290,7 +290,7 @@ text_template['fr_fr']['poste_del_confirm']     = _('Confirmer la suppression du
 #on est ici
 
 #association
-text_template['fr_fr']['assos_events_admin']    = _('les assosiations et les evenement que tu gère')
+text_template['fr_fr']['assos_events_admin']    = _('les associations et évènements que tu gère')
 
 #administration/benevoles
 text_template['fr_fr']['volunteers_list']       = _('Liste des bénévoles')
