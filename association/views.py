@@ -14,11 +14,12 @@ def liste_assos(request):
     """
     liste toutes les assosciations,a filtrer par assos affectées a administrateur
     """
-    data = {
-        #"Assos": Association.objects.all(),
+    try :
+        # a un profile administrateur d asso
         # attention ok car on ne peut estre admin que d un evenement
-        "Assos" : [request.user.profileadministrateur.association],
-    }
+        data['Assos'] = [request.user.profileadministrateur.association]
+    except:
+        data['Assos'] = Association.objects.all()
     return render(request, "association/associations_liste.html", data)
 
 

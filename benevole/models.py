@@ -66,18 +66,20 @@ class ProfileAdministrateur(ProfileAbstract):
                                     blank=True,
                                     null=True,
                                     on_delete=models.CASCADE)
-    referent = models.BooleanField(default=False)
+    referent = models.BooleanField(default=False, help_text='a voir si utile...')
 
     def __str__(self):
         return f"{self.personne}"
 
 # paramètres specifiques organisateur de l'evenement
+# a coder
 class ProfileOrganisateur(ProfileAbstract):
     def __str__(self):
         return f"{self.personne}"
 
 
 # paramètres specifiques responsable d'equipe
+# a coder
 class ProfileResponsable(ProfileAbstract):
     def __str__(self):
         return f"{self.personne}"

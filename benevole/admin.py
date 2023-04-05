@@ -57,6 +57,8 @@ class BenevoleCommun(admin.ModelAdmin):
 
 @admin.register(models.ProfileBenevole)
 class BenevoleCustom(BenevoleCommun):
+    #def evenements(self, obj):
+    #    return obj.evenement_benevole_assopart
     list_display = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
 
     list_filter = ( "evenement_benevole_assopart__evenement",
@@ -76,7 +78,9 @@ class BenevoleCustom(BenevoleCommun):
 
 @admin.register(models.ProfileAdministrateur)
 class AdministrateurCustom(BenevoleCommun):
-    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
+    def assos(self, obj):
+        return obj.association
+    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname', 'assos')
 
 @admin.register(models.ProfileOrganisateur)
 class OrganisateurCustom(BenevoleCommun):

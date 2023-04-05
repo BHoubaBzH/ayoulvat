@@ -20,13 +20,14 @@ class Association(models.Model):
                                 unique=False)  # unique=False car une personne peu etre contact pour plusieures assos
     site_web = models.URLField(blank=False, default='')
     description = models.CharField(max_length=500, blank=True, default='')
-    administrateur = models.ForeignKey('benevole.ProfileAdministrateur',
+    referent = models.ForeignKey('benevole.ProfileAdministrateur',
                                        null=True,
                                        default='',
                                        related_name='admin',
-                                       on_delete=models.SET_NULL)
+                                       on_delete=models.SET_NULL,
+                                       help_text='administrateur référent de l\'asso',)
     est_actif = models.BooleanField(default=False, help_text="permet de geler une asso : "
-                                                             " - qui n'a pas payée"
+                                                             " - qui n'a pas payé"
                                                              " - supprimée, pour garder l'historique")
     date_creation = models.DateField(default=now, blank=False)
     # fait le lien avec les Administrateurs
