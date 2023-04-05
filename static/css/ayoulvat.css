@@ -79,6 +79,12 @@ body {
  .pied {
 	z-index: 1000;
 	font-size: small;
+	height:22px !important; /* hauteur du footer caché */
+	transition: height 1s; /* temps animation affichage du footer */ 
+}
+
+ .pied:hover {
+    height: var(--footer-height) !important; /* hauteur footer mouse hover */
 }
 
 footer {
@@ -337,6 +343,20 @@ footer .right {
 /*************************
  * sidebar
  *************************/
+
+ /* cache la side bar sur petit ecran */
+ /* @media screen and (max-width: 799px) {
+	.sidebar {
+		display:none!important;
+		width:22px !important; 
+		transition: height 1s; 
+	}
+
+	.sidebar:hover {
+		width: 100% !important; 
+	}
+
+ }*/
 
  .sidebar {
 	z-index: 1049;}

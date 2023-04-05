@@ -50,7 +50,7 @@ def RoleUtilisateur(request, objet="", filtre=""): # remplace GroupeUtilisateur 
         equipe = Equipe.objects.get(UUID=planning.equipe_id)
         evenement = Evenement.objects.get(UUID=planning.evenement_id)
         association = Association.objects.get(UUID=evenement.association_id)
-        filtre_asso = 'Q(administrateur=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
+        filtre_asso = 'Q(referent=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
         filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, evenement.UUID)
         filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, equipe.UUID)
         #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(planning_id="{}")'.format(request.user.UUID, planning.UUID)
@@ -59,7 +59,7 @@ def RoleUtilisateur(request, objet="", filtre=""): # remplace GroupeUtilisateur 
         equipe = filtre
         evenement = Evenement.objects.get(UUID=equipe.evenement_id)
         association = Association.objects.get(UUID=evenement.association_id)
-        filtre_asso = 'Q(administrateur=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
+        filtre_asso = 'Q(referent=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
         filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, evenement.UUID)
         filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, equipe.UUID)
         #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(equipe_id="{}")'.format(request.user.UUID, equipe.UUID)
@@ -67,21 +67,21 @@ def RoleUtilisateur(request, objet="", filtre=""): # remplace GroupeUtilisateur 
         # roles de la personne dans l evenement
         evenement = filtre
         association = Association.objects.get(UUID=evenement.association_id)
-        filtre_asso='Q(administrateur=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
+        filtre_asso='Q(referent=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
         filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, evenement.UUID)
         filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(evenement_id="{}")'.format(request.user.UUID, evenement.UUID)
         #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(evenement_id="{}")'.format(request.user.UUID, evenement.UUID)
     if objet=='ass':
         # roles de la personne dans l asso
         association = filtre
-        filtre_asso = 'Q(administrateur=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
+        filtre_asso = 'Q(referent=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
         filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(association_id="{}")'.format(request.user.UUID, association.UUID)
         filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(evenement__association_id="{}")'.format(request.user.UUID, association.UUID)
         #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(evenement__association_id="{}")'.format(request.user.UUID, association.UUID)
         filtre_ben = 'Q(benevole="{}"), Q(evenement__association_id="{}")'.format(request.user.profilebenevole, association.UUID)
     if not planning and not equipe and not evenement and not association:
         # roles de la personne sur tout le logiciel
-        filtre_asso = 'Q(administrateur=ProfileAdministrateur.objects.get(personne_id="{}"))'.format(request.user.UUID)
+        filtre_asso = 'Q(referent=ProfileAdministrateur.objects.get(personne_id="{}"))'.format(request.user.UUID)
         filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}"))'.format(request.user.UUID)
         filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}"))'.format(request.user.UUID)
         #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}"))'.format(request.user.UUID)
