@@ -87,10 +87,10 @@ def RoleUtilisateur(request, objet="", filtre=""): # remplace GroupeUtilisateur 
         #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}"))'.format(request.user.UUID)
 
     # test !
-    logger.info(f'admin test : {ProfileAdministrateur.objects.get(personne_id=request.user.UUID).association}')
-    logger.info(f'orga test : {ProfileOrganisateur.objects.get(personne_id=request.user.UUID).OrganisateurEvenement.all()}')
-    logger.info(f'resp test : {ProfileResponsable.objects.get(personne_id=request.user.UUID).ResponsableEquipe.all()}')
-    logger.info(f'bene test : {ProfileBenevole.objects.get(personne_id=request.user.UUID).BenevolesEvenement.all()}')
+    #logger.info(f'admin test : {ProfileAdministrateur.objects.get(personne_id=request.user.UUID).association}')
+    #logger.info(f'orga test : {ProfileOrganisateur.objects.get(personne_id=request.user.UUID).OrganisateurEvenement.all()}')
+    #logger.info(f'resp test : {ProfileResponsable.objects.get(personne_id=request.user.UUID).ResponsableEquipe.all()}')
+    #logger.info(f'bene test : {ProfileBenevole.objects.get(personne_id=request.user.UUID).BenevolesEvenement.all()}')
     #logger.info(f'orga test : {ProfileOrganisateur.objects.get(personne_id=request.user.UUID).OrganisateurEvenement.filter(UUID=evenement.UUID)}')
 
     try:
