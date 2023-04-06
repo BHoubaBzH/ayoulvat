@@ -201,8 +201,8 @@ def emails_responsables(evt):
     """
     listout = []
     try:
-        # admin de l asso
-        listout.append(evt.association.administrateur.personne.email)
+        # referent de l asso
+        listout.append(evt.association.referent.personne.email)
     except:
         pass
     for org in evt.organisateur.all():
@@ -302,7 +302,7 @@ class BenevolesListView(ListView):
             "NotBenevolesAgeCreneauxAssopart": liste_benevoles_age_creneaux_assopart(self.Evt, self.ListeNotBenevoles),
             "EvtBeneAssopar": self.Evt.evenement_benevole_assopart_set.all(),
 
-            "Administrateur": self.Asso.administrateur,
+            "Administrateur": self.Asso.referent,
             "Organisteurs" : self.Evt.organisateur.all().select_related('personne'),
             "Responsables" : ProfileResponsable.objects.select_related('personne').filter(ResponsableEquipe__in=self.Evt.equipe_set.all()),
 
@@ -414,7 +414,7 @@ class DashboardView(View):
 
             "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=self.Evt),  # objets benevoles inscrits à l'evenement
             "Benevoles_c": self.queryset_c.filter(benevole__isnull=False).values('benevole_id').distinct(), # objets benevoles inscrits à l'evenement avec au moins un creneau
-            "Administrateurs": self.Asso.administrateur,
+            "Administrateurs": self.Asso.referent,
             "Organisteurs" : self.Evt.organisateur.all().select_related('personne'),
             "Responsables" : ProfileResponsable.objects.select_related('personne').filter(ResponsableEquipe__in=self.Evt.equipe_set.all()),
             "Text": text_template[language], # textes traduits
