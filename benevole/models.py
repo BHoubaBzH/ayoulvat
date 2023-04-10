@@ -54,20 +54,11 @@ class ProfileAbstract(models.Model):
                                     default='',
                                     null=True,
                                     on_delete=models.CASCADE)
-    
     class Meta:
         abstract = True
 
 # paramètres specifiques administrateurs de l'asso
 class ProfileAdministrateur(ProfileAbstract):
-    # supprime l administrateur si l'asso est supprimée, le benevole reste
-    association = models.ForeignKey(Association,
-                                    default='',
-                                    blank=True,
-                                    null=True,
-                                    on_delete=models.CASCADE)
-    referent = models.BooleanField(default=False, help_text='a voir si utile...')
-
     def __str__(self):
         return f"{self.personne}"
 
@@ -90,4 +81,4 @@ class ProfileBenevole(ProfileAbstract):
     couleur = RGBColorField(default="#6610f2") 
 
     def __str__(self):
-           return f"{self.personne} / {self.personne.email}"
+        return f"{self.personne} / {self.personne.email}"

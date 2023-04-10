@@ -393,7 +393,7 @@ def dic_forms_creneaux(request, planning, RolesUtilisateur):
 
 def liste_roles_utilisateur(request, evenement):
     '''
-        retourne la liste des roles de l'utilisateur par rapport à l'bjet consulté
+        retourne la liste des roles de l'utilisateur par rapport à l objet consulté
     '''
     # check des roles de user sur l evenement:
     logger.info('#########################################################')
@@ -451,12 +451,13 @@ def liste_evenements(request):
     logger.info(f'#        {request.user.first_name} {request.user.last_name} ')
     logger.info('#   roles : ')
     # groupes/roles de l utilisateur sur l asso
-    try:
-        RolesUtilisateur = ListeGroupesUserFiltree(request, "", evenement)
-        for role in RolesUtilisateur:
-            data[role] = "oui" # passe les roles 
-    except:
-        logger.error('erreur dans les RolesUtilisateur')
+    #try:
+    print('plop')
+    RolesUtilisateur = ListeGroupesUserFiltree(request, "ass", association)
+    for role in RolesUtilisateur:
+        data[role] = "oui" # passe les roles 
+    #except:
+    #    logger.error('erreur dans les RolesUtilisateur')
     logger.info('#########################################################')    
 
     return render(request, "evenement/base_evenement.html", data)
@@ -471,7 +472,6 @@ def evenement(request, uuid_evenement):
     """
         page d'un evenement
     """
-
     logger.info('')
     logger.info('*******************************************************')
     logger.info(f'*** Debut traitement view : {datetime.now()}')
@@ -485,7 +485,6 @@ def evenement(request, uuid_evenement):
     uuid_asso= evenement.association_id
     # on stock dans la session
     request.session['uuid_association'] = uuid_asso.urn
-
     data = {
         "Association": evenement.association,
         "Evenement": evenement,
@@ -526,11 +525,12 @@ def evenement(request, uuid_evenement):
 
     RolesUtilisateur = liste_roles_utilisateur(request, evenement)
     try:
-        for role in RolesUtilisateur:
-            data[role] = "oui" # passe les roles 
+        for role, value in RolesUtilisateur.items():
+            #if value:
+            #    data[role] = "oui" # passe les roles 
+            if value: data[role] = value 
     except:
         logger.error('erreur dans les RolesUtilisateur')
-
 
     # recupere les uuid en POST, but est de tout gerer dans une seule page
     # et d'afficher les infos en fonction des POST recus :

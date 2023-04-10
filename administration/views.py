@@ -302,7 +302,7 @@ class BenevolesListView(ListView):
             "NotBenevolesAgeCreneauxAssopart": liste_benevoles_age_creneaux_assopart(self.Evt, self.ListeNotBenevoles),
             "EvtBeneAssopar": self.Evt.evenement_benevole_assopart_set.all(),
 
-            "Administrateur": self.Asso.referent,
+            "Administrateurs": self.Asso.administrateur.all(),
             "Organisteurs" : self.Evt.organisateur.all().select_related('personne'),
             "Responsables" : ProfileResponsable.objects.select_related('personne').filter(ResponsableEquipe__in=self.Evt.equipe_set.all()),
 
@@ -391,7 +391,6 @@ class DashboardView(View):
         self.Evt = Evenement.objects.get(UUID=self.request.session['uuid_evenement']) # recuper l evenement
         self.Asso = self.Evt.association # recuper l asso
         self.queryset_c = self.Evt.creneau_set.filter(type="creneau") # les creneau de l evenement
-
         self.context = {
             # nav bar infos : debut
             "EvtOuvertBenevoles" : inscription_ouvert(self.Evt.inscription_debut, self.Evt.inscription_fin), # integer précisant si on est avant/dans/après la période de modification des creneaux
@@ -414,7 +413,7 @@ class DashboardView(View):
 
             "Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=self.Evt),  # objets benevoles inscrits à l'evenement
             "Benevoles_c": self.queryset_c.filter(benevole__isnull=False).values('benevole_id').distinct(), # objets benevoles inscrits à l'evenement avec au moins un creneau
-            "Administrateurs": self.Asso.referent,
+            "Administrateurs": self.Asso.administrateur.all(),
             "Organisteurs" : self.Evt.organisateur.all().select_related('personne'),
             "Responsables" : ProfileResponsable.objects.select_related('personne').filter(ResponsableEquipe__in=self.Evt.equipe_set.all()),
             "Text": text_template[language], # textes traduits

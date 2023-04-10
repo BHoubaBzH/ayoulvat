@@ -43,72 +43,65 @@ def RoleUtilisateur(request, objet="", filtre=""): # remplace GroupeUtilisateur 
             dictionnaire: groupe, queryset
     """
     association, evenement, equipe, planning = "", "" , "", ""
-    out={}
+    #logger.info(f'objet : {objet}')
+    # test !
     if objet=='plan':
         # roles de la personne dans le planning
         planning = filtre
-        equipe = Equipe.objects.get(UUID=planning.equipe_id)
-        evenement = Evenement.objects.get(UUID=planning.evenement_id)
-        association = Association.objects.get(UUID=evenement.association_id)
-        filtre_asso = 'Q(referent=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
-        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, evenement.UUID)
-        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, equipe.UUID)
-        #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(planning_id="{}")'.format(request.user.UUID, planning.UUID)
+        administrateur = f'ProfileAdministrateur.objects.get(personne=request.user).AdministrateurAssociation.filter(UUID=planning.evenement.association_id)'
+        organisateur = f'ProfileOrganisateur.objects.get(personne=request.user).OrganisateurEvenement.filter(UUID=planning.evenement_id)'
+        responsable = f'ProfileResponsable.objects.get(personne=request.user).ResponsableEquipe.filter(UUID=planning.equipe_id)'
+        benevole = f'ProfileBenevole.objects.get(personne=request.user).BenevolesEvenement.filter(UUID=planning.evenement_id)' # benevole inscrit a l evenement
+        #benevole = f'ProfileBenevole.objects.get(personne=request.user).BenevolesCreneau.filter(planning=planning)'
     if objet=='eq':
         # roles de la personne dans l equipe
         equipe = filtre
-        evenement = Evenement.objects.get(UUID=equipe.evenement_id)
-        association = Association.objects.get(UUID=evenement.association_id)
-        filtre_asso = 'Q(referent=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
-        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, evenement.UUID)
-        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, equipe.UUID)
-        #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(equipe_id="{}")'.format(request.user.UUID, equipe.UUID)
+        administrateur = f'ProfileAdministrateur.objects.get(personne=request.user).AdministrateurAssociation.filter(UUID=equipe.evenement.association_id)'
+        organisateur = f'ProfileOrganisateur.objects.get(personne=request.user).OrganisateurEvenement.filter(UUID=equipe.evenement_id)'
+        responsable = f'ProfileResponsable.objects.get(personne=request.user).ResponsableEquipe.filter(UUID=equipe_id)'
+        benevole = f'ProfileBenevole.objects.get(personne=request.user).BenevolesEvenement.filter(UUID=equipe.evenement_id)' # benevole inscrit a l evenement
+        #benevole = f'ProfileBenevole.objects.get(personne=request.user).BenevolesCreneau.filter(equipe=equipe)'
+
     if objet=='ev':
         # roles de la personne dans l evenement
         evenement = filtre
-        association = Association.objects.get(UUID=evenement.association_id)
-        filtre_asso='Q(referent=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
-        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, evenement.UUID)
-        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(evenement_id="{}")'.format(request.user.UUID, evenement.UUID)
-        #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(evenement_id="{}")'.format(request.user.UUID, evenement.UUID)
+        administrateur = f'ProfileAdministrateur.objects.get(personne=request.user).AdministrateurAssociation.filter(UUID=evenement.association_id)'
+        organisateur = f'ProfileOrganisateur.objects.get(personne=request.user).OrganisateurEvenement.filter(UUID=evenement.UUID)'
+        responsable = f'ProfileResponsable.objects.get(personne=request.user).ResponsableEquipe.filter(evenement=evenement)'
+        benevole = f'ProfileBenevole.objects.get(personne=request.user).BenevolesEvenement.filter(UUID=evenement.UUID)' # benevole inscrit a l evenement
+        #benevole = f'ProfileBenevole.objects.get(personne=request.user).BenevolesCreneau.filter(evenement=evenement)'
     if objet=='ass':
         # roles de la personne dans l asso
         association = filtre
-        filtre_asso = 'Q(referent=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
-        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(association_id="{}")'.format(request.user.UUID, association.UUID)
-        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(evenement__association_id="{}")'.format(request.user.UUID, association.UUID)
-        #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(evenement__association_id="{}")'.format(request.user.UUID, association.UUID)
-        filtre_ben = 'Q(benevole="{}"), Q(evenement__association_id="{}")'.format(request.user.profilebenevole, association.UUID)
+        administrateur = f'ProfileAdministrateur.objects.get(personne=request.user).AdministrateurAssociation.filter(UUID=association.UUID)'
+        organisateur = f'ProfileOrganisateur.objects.get(personne=request.user).OrganisateurEvenement.filter(association=association)'
+        responsable = f'ProfileResponsable.objects.get(personne=request.user).ResponsableEquipe.filter(evenement__association=association)'
+        benevole = f'ProfileBenevole.objects.get(personne=request.user).BenevolesEvenement.filter(association=association)' # benevole inscrit a un des evenement de l asso
+        #benevole = f'ProfileBenevole.objects.get(personne=request.user).BenevolesCreneau.filter(evenement__association=association)'
     if not planning and not equipe and not evenement and not association:
         # roles de la personne sur tout le logiciel
-        filtre_asso = 'Q(referent=ProfileAdministrateur.objects.get(personne_id="{}"))'.format(request.user.UUID)
-        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}"))'.format(request.user.UUID)
-        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}"))'.format(request.user.UUID)
-        #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}"))'.format(request.user.UUID)
-
-    # test !
-    #logger.info(f'admin test : {ProfileAdministrateur.objects.get(personne_id=request.user.UUID).association}')
-    #logger.info(f'orga test : {ProfileOrganisateur.objects.get(personne_id=request.user.UUID).OrganisateurEvenement.all()}')
-    #logger.info(f'resp test : {ProfileResponsable.objects.get(personne_id=request.user.UUID).ResponsableEquipe.all()}')
-    #logger.info(f'bene test : {ProfileBenevole.objects.get(personne_id=request.user.UUID).BenevolesEvenement.all()}')
-    #logger.info(f'orga test : {ProfileOrganisateur.objects.get(personne_id=request.user.UUID).OrganisateurEvenement.filter(UUID=evenement.UUID)}')
-
+        administrateur = f'ProfileAdministrateur.objects.get(personne=request.user).AdministrateurAssociation.all()'
+        organisateur = f'ProfileOrganisateur.objects.get(personne=request.user).OrganisateurEvenement.all()'
+        responsable = f'ProfileResponsable.objects.get(personne=request.user).ResponsableEquipe.all()'
+        benevole = f'ProfileBenevole.objects.get(personne=request.user).BenevolesEvenement.all()'  # benevole inscrit a un evenement
+        #benevole = f'ProfileBenevole.objects.get(personne=request.user).BenevolesCreneau.all()'
+    out={}
     try:
-        out['Administrateur'] = eval('Association.objects.filter({})'.format(filtre_asso))
+        out['Administrateur'] = eval(f'{administrateur}')
     except:
-        out['Administrateur'] = ""
+        out['Administrateur'] = "" # la personne n est pas administrateur de asso
     try:
-        out['Organisateur'] = eval('Evenement.objects.filter({})'.format(filtre_ev))
+        out['Organisateur'] = eval(f'{organisateur}')
     except:
-        out['Organisateur'] = ""
+        out['Organisateur'] = "" # la personne n est pas organisateur d evenement
     try:
-        out['Responsable'] = eval('Equipe.objects.filter({})'.format(filtre_eq))
+        out['Responsable'] = eval(f'{responsable}')
     except:
-        out['Responsable'] = ""
+        out['Responsable'] = "" # la personne n est pas responsable d equipe
     try:
-        out['Benevole'] = Evenement.objects.filter(Q(benevole=request.user.profilebenevole), Q(UUID=evenement.UUID))
+        out['Benevole'] = eval(f'{benevole}')
     except:
-        out['Benevole'] = ""
+        out['Benevole'] = "" # la personne n est pas benevole
     return out
 
 def ListeGroupesUserFiltree(request, objet="", filtre=""):
@@ -127,14 +120,16 @@ def ListeGroupesUserFiltree(request, objet="", filtre=""):
     """
     # groupes du logiciel
     # groupes_liste=Group.objects.all()
-    RolesUtilisateur = []
-    for role, entite in RoleUtilisateur(request, objet, filtre).items():
-        if entite:
-            logger.info(f'#        {role:<15} ->')
-            for obj in entite:
-                logger.info(f'#                               {obj.nom:<25}   {obj.UUID}')
-                RolesUtilisateur.append(role)
-    return RolesUtilisateur
+    #RolesUtilisateur = []
+    #for role, entite in RoleUtilisateur(request, objet, filtre).items():
+    #    if entite:
+    #        logger.info(f'#        {role:<15} ->')
+    #        for obj in entite:
+    #            logger.info(f'#                               {obj.nom:<25}')
+    #            RolesUtilisateur.append(role)
+
+    RolesUtilisateur2 = RoleUtilisateur(request, objet, filtre)
+    return RolesUtilisateur2
  
 def check_majeur(date_naissance, date_evenement):
     '''
@@ -231,12 +226,6 @@ def Home(request):
                                         ~Q(benevole__personne_id=request.user.UUID)).order_by("debut"),# evenements à venir , ou en cours benevole pas inscrit 
         "Text": text_template[language], # textes traduits
     }
-    try :
-        # a un profile administrateur d asso
-        # attention ok car on ne peut estre admin que d un evenement
-        data['Assos'] = [request.user.profileadministrateur.association]
-    except:
-        data['Assos'] = Association.objects.all()
 
     # check si on a un administrateur:
     logger.info('#########################################################')
@@ -245,11 +234,9 @@ def Home(request):
     logger.info('#   roles : ')
 
     RolesUtilisateur = ListeGroupesUserFiltree(request)
-    try:
-        if 'Administrateur' in RolesUtilisateur:
-            data['Administrateur'] = "oui" # passe les roles 
-    except:
-        logger.error('erreur dans les RolesUtilisateur')
+    # passe les assos de l administrateur
+    if RolesUtilisateur['Administrateur']: data['Administrateur'] = RolesUtilisateur['Administrateur']  
+
     logger.info('#########################################################')  
 
     try:
