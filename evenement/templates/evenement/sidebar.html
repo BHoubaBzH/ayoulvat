@@ -11,7 +11,8 @@
             <ul class="nav nav-pills flex-column mb-auto">
 
               {# si un evenement, affiche la sidebar evenement #}
-              {% if Evenement.UUID %}
+              {% if Evenement %}
+                {% include 'evenement/evenement_status.html' %}
                 {# top menu #}
                 {% if Administrateur or Organisateur %} 
                   <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
@@ -20,7 +21,7 @@
                   </a>
                   <hr>{# saut de section#}
                   <ul class="nav nav-pills flex-column mb-auto" id="top-menu">
-                    {% if Evenement.UUID %}
+                    {% if Evenement %}
                         <li class="nav-item">     
                           <form class="form evenement-form" method="get">
                             {% csrf_token %}
@@ -46,8 +47,8 @@
                       </li>
 
                   </ul>     
-                  <hr>{# saut de section#}
                   <br><br>
+                  <hr>{# saut de section#}
                   <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
                   data-bs-toggle="tooltip" data-bs-placement="right" title="détails de l'évènement">
                     <span class="fs-4">{{Text.nav_event}}</span>

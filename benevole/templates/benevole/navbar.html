@@ -46,53 +46,6 @@
       </ul>
 
       <ul class="navbar-nav px-2">
-        <li class="nav-item text-nowrap">
-          {# si l evenment est bloqué ou pas ouvert aux inscriptions , on affiche#}
-          {% now "Y-m-d" as aujourdhui %}
-          {% if Evenement and not Evenement.editable %}
-            <div class="btn-group me-2">
-              <button type="submit" id="profile" class="btn btn-sm btn-outline-danger"
-                formaction=""
-                data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{Text.evt_blocked_h}}">
-                {{Text.evt_blocked}}</button>
-            </div>
-          {# si l evenment est terminé , on affiche#}
-          {% elif Evenement and aujourdhui > Evenement.fin|date:"Y-m-d" %}
-            <div class="btn-group me-2">
-              <button type="submit" id="profile" class="btn btn-sm btn-outline-danger"
-                formaction=""
-                data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{Text.evt_ended_h}}">
-                {{Text.evt_ended}}</button>
-            </div>
-          {# si les inscriptions à l evenements n ont pas commencees , on affiche#}
-          {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '0'%}
-            <div class="btn-group me-2">
-              <button type="submit" id="profile" class="btn btn-sm btn-outline-warning"
-                formaction="{% url 'evenement' uuid_evenement=Evenement.UUID %}"
-                data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{Text.enrolments_tocome_h}} {{Evenement.inscription_debut}}">
-                {{Text.enrolments_tocome}}</button>
-            </div>
-          {# si les inscriptions à l evenements sont en cours , on affiche#}
-          {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '1'%}
-            <div class="btn-group me-2">
-              <button type="submit" id="profile" class="btn btn-sm btn-outline-success"
-                formaction="{% url 'evenement' uuid_evenement=Evenement.UUID %}"
-                data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{Text.enrolments_ongoing_h}} {{Evenement.inscription_fin}}">
-                {{Text.enrolments_ongoing}} <b>{{Evenement.inscription_fin}}</b></button>
-            </div>
-          {# si les inscriptions à l evenements sont terminees , on affiche#}
-          {% elif Evenement and EvtOuvertBenevoles|stringformat:"s" == '2'%}
-            <div class="btn-group me-2">
-              <button type="submit" id="profile" class="btn btn-sm btn-outline-danger"
-                formaction="{% url 'evenement' uuid_evenement=Evenement.UUID %}"
-                data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{Text.enrolments_ended_h}} {{Evenement.inscription_fin}}">
-                {{Text.enrolments_ended}}</button>
-            </div>
-          {% endif %}
-        </li>
-      </ul>
-
-      <ul class="navbar-nav px-2">
         {% comment "exemple menu déroulant" %}
           <li class="nav-item dropdown">
               <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">

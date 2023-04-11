@@ -404,16 +404,21 @@ def liste_roles_utilisateur(request, evenement):
     # groupes/roles de l utilisateur
     if not request.method == "POST" or (request.POST.get('evenement') and not request.POST.get('equipe') and not request.POST.get('planning'))or request.POST.get('planning') and request.POST.get('planning_supprimer'):
         # pas de POST ou page evenement ou le planning vient d 'etre supprimé 
-        RolesUtilisateur = ListeGroupesUserFiltree(request, "ev", evenement)
+        objet = "ev"
+        filtre = evenement
     elif request.POST.get('equipe') and not request.POST.get('planning'):
         # equipe et pas de planning
-        RolesUtilisateur = ListeGroupesUserFiltree(request, "eq", Equipe.objects.get(UUID=request.POST.get('equipe')))
+        objet = "eq"
+        filtre = Equipe.objects.get(UUID=request.POST.get('equipe'))
     elif request.POST.get('planning') and not request.POST.get('planning_supprimer'):
         # planning et pas supprimé
-        RolesUtilisateur = ListeGroupesUserFiltree(request, "plan", Planning.objects.get(UUID=request.POST.get('planning')))
+        objet = "plan"
+        filtre = Planning.objects.get(UUID=request.POST.get('planning'))
     else:
         # le benevole arrive sur la page de l evenement
-        RolesUtilisateur = ListeGroupesUserFiltree(request, "ev", evenement)
+        objet = "ev"
+        filtre = evenement
+    RolesUtilisateur = ListeGroupesUserFiltree(request, objet, filtre)
     logger.info('#########################################################') 
     return RolesUtilisateur
 

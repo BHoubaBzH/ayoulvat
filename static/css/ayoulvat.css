@@ -270,13 +270,6 @@ footer .right {
 	color: #555;
 }
 
-/* styles evenement */
-.evenement-button {
-	/* width: -webkit-fill-available; */
-	width: 100%;
-	text-align: left;
-}
-
 /* boutons de choix de son asso dans la page evenements */
 .assos-button {
 	position: absolute;
@@ -358,29 +351,22 @@ footer .right {
 
  }*/
 
- .sidebar {
-	z-index: 1049;}
-
+.sidebar {
+	z-index: 1049;
+}
 
 .bouton-sidebar {
 	width: 100%;
-}
-
-.evenement-button.active {
-	background-color: darkmagenta;
-	border-color: black;
-}
-
-.evenement-button.active:hover, .evenement-button:hover {
-	background-color: black;
-	border-color: black;
-	color: white; /* text */
 }
 
 /* boutons lien vers evenement */
 .bouton-evenement {
 	border: 0px;
 	padding: 0px;
+}
+
+.status-evenement {
+	text-align: center;
 }
 
 /*************************

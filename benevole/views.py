@@ -129,6 +129,11 @@ def ListeGroupesUserFiltree(request, objet="", filtre=""):
     #            RolesUtilisateur.append(role)
 
     RolesUtilisateur2 = RoleUtilisateur(request, objet, filtre)
+    for role, entite in RolesUtilisateur2.items():
+        if entite:
+            logger.info(f'#        {role:<15} ->')
+            for obj in entite:
+                logger.info(f'#                               {obj.nom:<25}')    
     return RolesUtilisateur2
  
 def check_majeur(date_naissance, date_evenement):
