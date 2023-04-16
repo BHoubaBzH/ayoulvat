@@ -1,12 +1,9 @@
 <!-- evenement/sidebar.html -->
 {% load filters_perso %}
 
+<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark vh-100 sidebar">
 
-<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark vh-100"
-      style="padding-bottom: 4rem!important;padding-top: 4rem!important;">
-
-    <ul class="nav nav-pills flex-column mb-auto">
-
+    <ul class="nav nav-pills flex-column mb-5">
       {# si un evenement, affiche la sidebar evenement #}
       {% if Evenement %}
         {% include 'evenement/evenement_status.html' %}

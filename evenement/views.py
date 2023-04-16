@@ -580,10 +580,9 @@ def evenement(request, uuid_evenement):
             if request.POST.get('equipe') and not any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter', 'equipe_supprimer']):  
                 # selection d'une équipe
 
-                data["equipe_uuid"] = request.POST.get('equipe')  
-                # UUID equipe selectionnée
-
                 if not request.POST.get('planning_supprimer'):
+                    # UUID equipe selectionnée
+                    data["equipe_uuid"] = request.POST.get('equipe')  
                     data["planning_uuid"] = request.POST.get('planning')
                     data["Planning"] = Planning.objects.get(UUID=data["planning_uuid"])  # planning selectionnée
                     # instances de form poste & creneau liées : modifs & suppression & liste des postes

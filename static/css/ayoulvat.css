@@ -34,6 +34,11 @@ body {
  * page evements
  *************************/
 
+.evenements-home{
+	overflow: auto;
+	height: 60vh;
+}
+
 .card-inscrit{
     opacity: 1;
 }
@@ -241,6 +246,7 @@ footer .right {
 .planning-head-planningperso {
 	width: var(--cell_width);
 	max-height: var(--maxheight_grid);
+	text-align: initial;
 }
 
 /* case header avec heure, ajoute un petit border */ 
@@ -309,6 +315,7 @@ footer .right {
 .equipe-slot-planningperso {
 	height: var(--maxheight_grid);
 	width: 6em;
+	text-align: initial;
 }
 
 .form_grid_button_planningperso .planningperso { 
@@ -370,6 +377,8 @@ footer .right {
 .sidebar {
 	z-index: 99;
 	overflow-y: auto;
+	/* padding-top: 4rem!important; */
+	padding-bottom: 8rem!important;
 }
 
 .bouton-sidebar {
