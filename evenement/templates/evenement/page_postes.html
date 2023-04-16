@@ -34,7 +34,7 @@
 
 {% if  PostesCreneaux %}
     <div class="overflow-scroll">
-        <div class="planning-creneaux" aria-labelledby="planning-heading" id="planning-creneaux">
+        <div class="grid-planning-creneaux" id="planning-creneaux">
             {# affiche les entetes des colonnes du planning : les heures #}
             {% for dates, heures in PlanningRange.items %}
                 <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">

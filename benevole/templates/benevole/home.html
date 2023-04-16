@@ -3,25 +3,27 @@
 
 {% block content %}
 
-    {% if user.is_authenticated %}{# deja connecté #}
-      <div class="row card card-default">
-        <div class="card-header">{{Text.events_welcome}} {% if user.last_name or user.first.name %}{{ user.first_name|capfirst }} {{ user.last_name|upper }}{% else %}{{ user.username }}{% endif %} !</div>
-        <div class="card-body">
-          {{Text.events_welcome_2}}<br>
-          {{Text.events_retour}}<br>
-          {{Text.events_profile}}<br><br>
-          {{Text.events_list}}
-        </div>
+  {% if user.is_authenticated %}{# deja connecté #}
+    <div class="row card card-default">
+      <div class="card-header">{{Text.events_welcome}} {% if user.last_name or user.first.name %}{{ user.first_name|capfirst }} {{ user.last_name|upper }}{% else %}{{ user.username }}{% endif %} !</div>
+      <div class="card-body">
+        {{Text.events_welcome_2}}<br>
+        {{Text.events_retour}}<br>
+        {{Text.events_profile}}<br><br>
+        {{Text.events_list}}
       </div>
+    </div>
+    <div class="evenements_home" style="overflow: auto;">
       {% if Administrateur %}
         {# administrateur d assos connecté arrive sur sa liste d assos #}
         {% include 'association/associations_liste.html' %}
       {% endif %}
         {# benevole connecté arrive sur la liste de evenements #}
         {% include 'benevole/evenements.html'%}
-    {% else %}{# pas authentifié #}
-      {% include 'benevole/connexion.html'%}
-    {% endif %}
-    <br>
-    <br>
+    </div>
+  {% else %}{# pas authentifié #}
+    {% include 'benevole/connexion.html'%}
+  {% endif %}
+  <br>
+  <br>
 {% endblock %}

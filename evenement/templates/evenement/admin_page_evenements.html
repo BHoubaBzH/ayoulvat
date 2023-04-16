@@ -10,7 +10,7 @@
     {% include "evenement/titre_page.html" with page='admin evenements' %}
 {% endif %}
 
-<div class="planning-equipes" aria-labelledby="planning-heading">
+<div class="grid-planning-equipes" >
     {# affiche les entetes des colonnes du planning : les heures #}
     {% include 'evenement/grid_entete_heures.html' with ligne="heures" role="admin" %}    
 

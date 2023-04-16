@@ -350,3 +350,16 @@ def Profile(request):
         "Action" : "modifier",
     }
     return render(request, "benevole/profil.html", data)
+
+# boostrap template test
+def Test(request):
+    X = 50
+    Y = 50
+    data = {}
+    data['X'] = []
+    data['Y'] = []
+    for i in range(1, X+1):
+        data['X'].append(i)
+    for i in range(1, Y+1):
+        data['Y'].append(i)
+    return render(request, "benevole/test_bootstrap.html", data)

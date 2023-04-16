@@ -1,0 +1,44 @@
+<!-- evenement/menu_perso.html -->
+{# menu perso  avec drop down menu#}
+{% if user.is_authenticated %}
+<li class="nav-item dropdown list-unstyled" 
+    data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" data-bs-original-title="{{Text.nav_profile_h}}">     
+    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle " 
+        id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fs-1 bi-person-circle"></i>
+        <span class="ms-1 d-none d-sm-inline" >
+        <strong>{%if request.user.first_name%}{{ request.user.first_name|capfirst }}{%else%}{{Text.nav_my_infos}}{%endif%}</span> </a></strong>
+        </span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-dark position-absolute" aria-labelledby="dropdownMenu">
+      {% if Benevole and creneaux_benevole %} {# si benevole sur l evenement et des creneaux choisis, lien vers son planning#}
+        <li>
+          <form class="form evenement-form" method="post">
+            {% csrf_token %}
+            <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+            <input  name="equipe" value="{{ team.UUID }}" type="hidden">
+            <input type="hidden" name="planning_perso" value="oui">
+            <input type="submit" class="dropdown-item" value="{{Text.nav_planning_perso}}"
+            data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" title="{{Text.nav_planning_perso_h}}" onclick="loader()">
+          </form>
+        </li>
+      {% elif not Benevole and Evenement %} {# si dans un evenement mais pas benevole , propose de le devenir (cas des organisateurs) #}
+        <li>
+          <form class="form evenement-form" method="post">
+            {% csrf_token %}
+            <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+            <input type="hidden" name="devenir_benevole" value="">
+            <input type="submit" class="dropdown-item" value="{{Text.nav_participate}}"
+            data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" title="{{Text.nav_participate_h}}" onclick="loader()">
+          </form>
+        </li>
+      {% endif %}
+        <li>
+          <a href="{% url 'profile' %}?next={{ request.path|urlencode }}" class="dropdown-item">{{Text.nav_profile}}</a> 
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="{% url 'logout' %}">{{Text.nav_disconnect}}</a></li>
+    </ul>
+</li>
+{% endif %}
+

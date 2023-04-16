@@ -20,10 +20,14 @@ body {
 	margin: 0 auto;
 	line-height: 1.5;*/
     background-color: var(--fond_body);
+	overflow: hidden;
 }
 
+#disposition {
+	position:fixed; /* navbar & side bar a 100% */
+}
 .card-default {
-	z-index: 1048;
+	z-index: 90;
 }
 
 /*************************
@@ -77,8 +81,7 @@ body {
  *************************/
 
  .pied {
-	z-index: 1000;
-	font-size: small;
+	z-index: 110;
 	height:22px !important; /* hauteur du footer caché */
 	transition: height 1s; /* temps animation affichage du footer */ 
 }
@@ -208,10 +211,7 @@ footer .right {
 .equipe-slot,
 .benevole-slot, 
 .time-slot {
-	/*display: flex;*/
-	/*font-size: 1vw;*/
     font-weight: bold;
-	/*overflow : hidden;*/
 }
 
 .time-slot {
@@ -221,7 +221,6 @@ footer .right {
 }
 
 /* headers grid specificites */
-
 .planning-head, .planning-head-equipes {
 	display: inline-grid;
 	/*width: 1.5em;*/
@@ -330,15 +329,32 @@ footer .right {
  * navbar
  *************************/
 .navbar {
-	z-index: 1050;
+	z-index: 100;
 }
 
+.customNav {
+	border-left: 1px solid var(--fond_body);
+	padding: 14px 18px;
+}
+
+@media screen and (max-width: 991px) {
+	.customNav {
+		display: block!important;
+		border: none;
+		background: rgba(0,0,0,.2);
+		text-align: center;
+		margin-top: 4px;
+		margin-bottom: 4px;
+		margin-left: -5px;
+		margin-right: -5px;
+	}
+}
 /*************************
  * sidebar
  *************************/
 
  /* cache la side bar sur petit ecran */
- /* @media screen and (max-width: 799px) {
+ /* @media screen and (max-width: 796px) {
 	.sidebar {
 		display:none!important;
 		width:22px !important; 
@@ -352,11 +368,16 @@ footer .right {
  }*/
 
 .sidebar {
-	z-index: 1049;
+	z-index: 99;
+	overflow-y: auto;
 }
 
 .bouton-sidebar {
 	width: 100%;
+}
+
+.customSideItem {
+	text-align: left;
 }
 
 /* boutons lien vers evenement */
