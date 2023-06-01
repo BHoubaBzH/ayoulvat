@@ -29,9 +29,9 @@
 
     {% load bootstrap5 %}
     {% bootstrap_css %}
-    {# internal CSS calculé dynamiquement #}
     <style>
-      {% include 'evenement/evenement.css.html'%}
+      {# internal CSS calculé dynamiquement #}
+      {% include 'evenement/partials/evenement.css.html' %}
     </style>
     {% bootstrap_messages %}
     {% bootstrap_javascript %}
@@ -48,7 +48,7 @@
   </form>
   <nav class="navbar navbar-dark sticky-top bg-dark navbar-expand-lg shadow">
     <div class="container-fluid">
-      {% include 'benevole/navbar.html'%}
+      {% include 'benevole/partials/navbar.html'%}
     </div>
   </nav>
 
@@ -57,7 +57,7 @@
     <div class="row content">
       <div class="col-auto col-lg-2 bg-dark sidebar">
         <!-- sidebar -->
-        {% include "evenement/sidebar.html" %}
+        {% include "evenement/partials/sidebar.html" %}
       </div>
       <!-- page -->
       <div class="col-lg-10 espace-evenement">
@@ -70,23 +70,13 @@
   <!-- footer -->
   <footer class="container-fluid text-center ">
     <div class=" bg-light text-center text-lg-start fixed-bottom pied ">
-      {% include "benevole/footer.html" %}
+      {% include "benevole/partials/footer.html" %}
     </div>
   </footer>
-
-  <div class="modalPlanningAjout">
-    {# modal d'ajout d'un planning pour les organisateurs #}
-    {% if Administrateur or Organisateur %} 
-      {% include "evenement/modal_planning_ajoute.html" %}
-    {% endif %} 
-  </div>
 
   {# cookie consent #}
   <script src="{% static 'js/cookie.notice.js' %}"></script>
   {# timeout flash message #}
   <script src="{% static 'js/timeout.flashmessage.js' %}"></script>
-
 </body>
 </html>
-
-

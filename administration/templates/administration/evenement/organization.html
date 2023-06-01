@@ -1,0 +1,21 @@
+<!-- administration/evenement/planning.html -->
+
+{% extends 'administration/partials/base.html' %}
+{% load filters_perso %}
+{% load bootstrap5 %}
+
+{% block content %}
+
+    {# bandeau message d erreur si besoins #}
+    {% include "evenement/partials/error_message.html" %}
+
+    {% if not PlanningEditer %}
+    {% include 'administration/partials/titre_page.html' with page="plannings" %}
+        {% include 'administration/evenement/organization/plannings.html' %}
+    {% else %}
+        {% include 'administration/partials/titre_page.html' with page="planning" %}
+        {% include 'administration/evenement/organization/planning.html' %}
+    {% endif %}
+    
+
+{% endblock %}

@@ -1,0 +1,12 @@
+<!-- administration/evenement/organization/planning_bouton.html -->
+
+{# pour le placement dans la grille planning garder le filtre sur planning.debut et planning.fin comme la fonction planning_range de views.py : #}
+<button  class="planning equipe-{{ equipe.UUID }}" 
+        style="grid-row: ligne-{{ equipe.UUID }};
+        grid-column: time-{{ planning.debut|date:'Y-m-d-Hi' }} / time-{{ planning.fin|date:'Y-m-d-Hi' }};"
+        title='{{Text.event_planning_t}}'
+        data-bs-toggle="modal" data-bs-target="#modal-planning_editer"
+        data-bs-evenementuuid="{{ Evenement.UUID }}"
+        data-bs-planninguuid="{{ planning.UUID }}">
+        <a>{{ equipe.nom|upper }} <i class="bi bi-chevron-right"></i> {{ planning.nom }}</a>
+</button>

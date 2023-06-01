@@ -1,0 +1,47 @@
+<!-- administration/partials/sidebar.html -->
+
+<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark vh-100 sidebar">
+    <ul class="nav nav-pills flex-column mb-auto">
+        <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
+        data-bs-toggle="tooltip" data-bs-placement="right" title="{{ Text.nav_admin_h }}">
+          <span class="fs-4">{{ Text.nav_admin }}</span>
+        </a>
+        <hr>{# saut de section#}
+        {% include 'evenement/partials/evenement_status.html' %}
+        <li class="nav-item customSideItem">
+            <a href="{% url 'organization' %}" class="nav-link px-0 text-warning" title="{{Text.nav_admin_teams_h}}" 
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="{{Text.nav_admin_teams_h}}" onclick="loader()">
+                <i class="fs-1 bi-calendar2-plus"></i><span class="ms-1 fs-5 d-none d-sm-inline">{{Text.nav_admin_teams}}<span>
+            </a>
+        </li>
+        <hr>{# saut de section#}
+        <li class="nav-item customSideItem">
+            <a href="{% url 'dashboard' %}" class="nav-link px-0 text-warning" title="Dashboard" 
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Dashboard" onclick="loader()">
+                <i class="bi-speedometer2 fs-1"></i><span class="ms-1 fs-5 d-none d-sm-inline">Dashboard<span>
+            </a>
+        </li>
+        
+        <li class="nav-item customSideItem">
+            <a href="{% url 'benevoles_liste' %}" class="nav-link px-0 text-warning" title="Bénévoles" 
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Bénévoles" onclick="loader()">
+                <i class="bi-people fs-1"></i><span class="ms-1 fs-5 d-none d-sm-inline">Bénévoles<span>
+            </a>
+        </li>
+        <li class="nav-item customSideItem">
+            <a href="{% url 'creneaux_liste' %}" class="nav-link px-0 text-warning" title="Créneaux" 
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Créneaux" onclick="loader()">
+                <i class="bi-calendar2-week fs-1"></i><span class="ms-1 fs-5 d-none d-sm-inline">Créneaux<span>
+            </a>
+        </li>
+        <hr>{# saut de section#}
+        <li class="nav-item customSideItem">
+            <a href="{% url 'evenement' uuid_evenement=Evenement.UUID %}" class="nav-link px-0 text-warning" 
+            title="{{ Text.back_volunteer_view_h}}" data-bs-toggle="tooltip" data-bs-placement="right" 
+            data-bs-original-title="Icon-only" onclick="loader()">
+                <i class="bi bi-backspace fs-1"></i><span class="ms-1 fs-5 d-none d-sm-inline">{{ Text.back_volunteer_view}}<span>
+            </a>
+        </li>
+    </ul>
+</div>
+

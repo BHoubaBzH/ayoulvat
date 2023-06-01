@@ -1,4 +1,4 @@
-<!-- evenement/equipe_edite.html -->
+<!-- administration/evenement/organization/equipe_edite.html -->
 
  <form  id="form-equipe-change-{{ equipe.UUID }}" method='post'>
     {% csrf_token %}
@@ -17,7 +17,7 @@
  {% endif %} ">
     <button style=""
         form="form-equipe-change-{{ equipe.UUID }}"
-        class="equipe-{{ equipe.UUID }} btn btn-sm btn-info"
+        class="equipe-{{ equipe.UUID }} equipe-button btn btn-sm btn-info"
         title="{{Text.team_mod_t}}"
         id="bouton-equipe-change-{{ equipe.UUID }}"
         type="button"

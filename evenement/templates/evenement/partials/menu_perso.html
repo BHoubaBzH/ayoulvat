@@ -1,13 +1,13 @@
-<!-- evenement/menu_perso.html -->
+<!-- evenement/partials/menu_perso.html -->
 {# menu perso  avec drop down menu#}
 {% if user.is_authenticated %}
-<li class="nav-item dropdown list-unstyled" 
-    data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" data-bs-original-title="{{Text.nav_profile_h}}">     
+<li class="nav-item dropdown list-unstyled" >
+    {# data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" data-bs-original-title="{{Text.nav_profile_h}}" #}
     <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle " 
         id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="fs-1 bi-person-circle"></i>
         <span class="ms-1 d-none d-sm-inline" >
-        <strong>{%if request.user.first_name%}{{ request.user.first_name|capfirst }}{%else%}{{Text.nav_my_infos}}{%endif%}</span> </a></strong>
+          <strong>{%if request.user.first_name%}{{ request.user.first_name|capfirst }}{%else%}{{Text.nav_my_infos}}{%endif%}</a></strong>
         </span>
     </a>
     <ul class="dropdown-menu dropdown-menu-dark position-absolute" aria-labelledby="dropdownMenu">

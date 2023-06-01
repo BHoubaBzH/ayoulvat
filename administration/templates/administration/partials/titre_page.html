@@ -1,0 +1,30 @@
+<!-- evenement/titre_page.html -->
+
+<figure class="text-center">
+    <blockquote class="blockquote">
+    {# page du planning avec les postes et les creneaux #}
+    {% if page == 'plannings' %}
+        <p class='h5 titre_page'>{{ Text.title_plannings|upper }}</p>
+    {% endif %}
+    {% if page == 'planning' %}
+    <p class='h5 titre_page'>{{ Text.title_planning|upper }}</p>
+    {% endif %}
+    {% if page == 'benevoles' %}
+        <p class='h5 titre_page'>{{ Text.title_volunteer|upper }}</p>
+    {% endif %}
+    {% if page == 'creneaux' %}
+        <p class='h5 titre_page'>{{ Text.title_slots|upper }}</p>
+    {% endif %}
+    {% if page == 'dashboard' %}
+        <p class='h5 titre_page'>{{ Text.title_dashboard|upper }}</p>
+    {% endif %}
+    {% if page == 'remplissage' %}
+    <p class='h5 titre_page'>{{ Text.title_rate_busy|upper }}</p>
+{% endif %}
+    </blockquote>
+</figure>
+
+{# barre horizontale #}
+<hr class="border-2 border-top border-dark"> 
+
+

@@ -11,7 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {# internal CSS calculé dynamiquement #}
   <style>
-    {% include 'evenement/evenement.css.html'%}
+    {% include 'evenement/partials/evenement.css.html'%}
   </style>
   {# ressources JQUERY #}
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -42,7 +42,7 @@
   </form>
   <nav class="navbar navbar-dark sticky-top bg-dark navbar-expand-lg shadow">
     <div class="container-fluid">
-      {% include 'benevole/navbar.html'%}
+      {% include 'benevole/partials/navbar.html'%}
     </div>
   </nav>
 
@@ -51,7 +51,7 @@
     <div class="row content">
       <div class="col-auto col-lg-2 bg-dark sidebar">
         <!-- sidebar -->
-        {% include "evenement/sidebar.html" %}
+        {% include "evenement/partials/sidebar.html" %}
       </div>
       <!-- page -->
       <div class="col-lg-10 espace-evenement">
@@ -64,7 +64,7 @@
   <!-- footer -->
   <footer class="container-fluid text-center ">
     <div class=" bg-light text-center text-lg-start fixed-bottom pied ">
-      {% include "benevole/footer.html" %}
+      {% include "benevole/partials/footer.html" %}
     </div>
   </footer>
 

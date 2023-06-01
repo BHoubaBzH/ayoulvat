@@ -1,0 +1,192 @@
+<!-- administration/evenement/organization/modal_planning_edite.html -->
+
+{##################################################################}
+{# modal admin de modification des plannings#}
+<div class="modal fade" 
+    id="modal-planning_editer" 
+    tabindex="-1" role="dialog" aria-labelledby="Planningdetails" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">{{ Text.planning_edit }}</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form  id="form-planning-edite"  method='post'>
+                <div class="modal-body modal-body-edite">
+                    {% csrf_token %}
+                    <table class="table">
+                        <tbody id="fetch_form">
+                            {# rempli par le javascript #}
+                        </tbody>
+                        <input id="planning_uuid" name="planning" type="hidden">                                   
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm text-start">
+                                <button type="submit" class="btn btn-success" data-bs-dismiss="modal" 
+                                    id="planning_editer" name="planning_editer" title="{{ Text.event_planning_edit_t }}">
+                                    {{ Text.button_edit }}
+                                </button>
+                            </div>
+                            <div class="col-sm text-end">
+                                <button class="btn btn-danger" title="{{ Text.event_planning_del_t }}" name="planning_supprimer"
+                                        id="planning_supprimer" value="supprimer" type="button"
+                                        data-bs-toggle="modal" data-bs-target="#modal-confirme-planning-supprime">
+                                        {{ Text.button_del }}
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
+                                <button type="submit" id="planning_modifier" name="planning_modifier"  class="btn btn-primary success" title="{{ Text.event_planning_mod_t }}">
+                                    {{ Text.button_mod }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="PageType" value="admin"/> {# indique qu'on doit revenir sur la page d'admin #}
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{# modal de confirmation de suppression #}
+<div class="modal fade"
+    id="modal-confirme-planning-supprime"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="planning_supprime"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">{{ Text.planning_del_confirm }}</h5>
+            </div>
+            <div class="modal-body modal-body-planning-supprime">
+                <table class="table">
+                    <tbody id="fetch_json">
+                        <tr>
+                            <th>{{ Text.name }} :</th>
+                            <td><input class="form-control-plaintext" id="planning_table_nom" name="planning" type="text" readonly></td>
+                        </tr>
+                        <tr>
+                            <th>{{ Text.team }} :</th>
+                            <td><input class="form-control-plaintext" id="planning_table_equipe" name="equipe" type="text" readonly></td>
+                        </tr>        
+                        <tr>
+                            <th>{{ Text.start }} :</th>
+                            <td><input class="form-control-plaintext" id="planning_table_debut" name="debut" type="datetime" readonly></td>
+                        </tr>
+                        <tr>
+                            <th>{{ Text.end }} :</th>
+                            <td><input class="form-control-plaintext" id="planning_table_fin" name="fin" type="datetime" readonly></td>
+                        </tr>                    
+                    </tbody>
+
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">{{ Text.no }}</button>
+                <button type="submit" id="planning_supprimer_confirme" class="btn btn-danger success">{{ Text.yes }}</button>
+            </div>
+        </div>
+    </div>
+</div>       
+
+
+{# scripts de remplissage des forms par api fetch #}
+<script>
+    var planning_bs_data;
+    /* script de popul du modal editer : utilise api fetch javascript et recupere la form du planning */
+    var modalPlanningPlanningEditer = document.getElementById('modal-planning_editer')
+    if (modalPlanningPlanningEditer) {
+        modalPlanningPlanningEditer.addEventListener('show.bs.modal', function (event) {
+            /* Button that triggered the modal */
+            /* console.log(planning_bs_data); */
+            var button = event.relatedTarget;
+            /* Extract info from data-bs-* button attributes */
+            planning_bs_data = button.getAttribute('data-bs-planninguuid');
+            evenement_bs_data = button.getAttribute('data-bs-evenementuuid');
+            // fetch process pour récuperer les infos de notre planning
+            let form = new FormData();
+            form.append("planning_uuid", planning_bs_data);
+            form.append("evenement_uuid", evenement_bs_data);
+            form.append("planning_affiche", 'form');
+            let csrfTokenValue = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            var requete = new Request('{% url "planning_fetch" %}', {
+                headers:{
+                    'X-CSRFToken': csrfTokenValue  // ajoute le token dans l'en-tête
+                    }, 
+                body: form, //form contient les datas envoyées
+                method: 'POST', 
+                });
+            fetch(requete)
+            .then(response => response.text())
+            .then(planning_form => {
+                // console.log(planning_form);
+                var target = document.getElementById("fetch_form");
+                target.innerHTML = planning_form;
+                $(".modal-body-edite #planning_uuid").val( planning_bs_data );
+
+            })
+            .catch(console.error)
+        });
+    }
+
+    /* script de popul du modal supprimer : utilise api fetch javascript et recupere un json du planning*/
+    var modalConfirmePlanningSupprime = document.getElementById('modal-confirme-planning-supprime')
+    if (modalConfirmePlanningSupprime) {
+        modalConfirmePlanningSupprime.addEventListener('show.bs.modal', function (event) {
+            // on travail toujours sur le meme planning que la fonction précédente
+            // console.log(planning_bs_data);
+            // fetch process pour récuperer les infos de notre planning
+            let form = new FormData();
+            form.append("planning_uuid", planning_bs_data);
+            form.append("planning_affiche", 'json');
+            let csrfTokenValue = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            var requete = new Request('{% url "planning_fetch" %}', {
+                headers:{
+                    'X-CSRFToken': csrfTokenValue  // ajoute le token dans l'en-tête
+                    }, 
+                body: form, //form contient les datas envoyées
+                method: 'POST', 
+                });
+
+            fetch(requete)
+            .then(response => response.json())
+            .then(planning_json => {
+                // console.log(planning_json);
+                // alert(JSON.stringify(result))
+                // alert(result)
+                let planning_table = JSON.parse(JSON.stringify(planning_json));
+                // console.log(planning_table);
+                // afficher les données recues
+                //document.getElementById("planning_edit").innerHTML = planning_table.UUID
+                $(".modal-body-planning-supprime #planning_table_debut").val( planning_table.planning.debut );
+                $(".modal-body-planning-supprime #planning_table_fin").val( planning_table.planning.fin );
+                $(".modal-body-planning-supprime #planning_table_equipe").val( planning_table.equipe_nom );
+                $(".modal-body-planning-supprime #planning_table_nom").val( planning_table.planning.nom );
+            })
+            .catch(console.error)
+            //$(".modal-body-edite #planning-uuid").val( planning_bs_data );
+            //$(".modal-body-supprime #planning-uuid").val( planning_bs_data );
+        });
+    }
+
+    /* quand le bouton OUI est utilisé dans modal de suppression, submit la form et ferme le modal */
+    $('#modal-confirme-planning-supprime').on('click', '#planning_supprimer_confirme', function(e){
+        /* alert('submitting-{{ planning.UUID }}'); */
+        $('#form-planning-edite').append('<input type="hidden" name="planning_supprimer" value="'+planning_bs_data+'">');
+        document.getElementById('form-planning-edite').submit();
+        $('#modal-confirme-planning-supprime').modal('toggle');
+        e.preventDefault();
+    });
+
+</script>

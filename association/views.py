@@ -6,9 +6,15 @@ import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
+from utils.evenement import *
+from utils.generic import *
+from utils.benevole import *
+from utils.administration import *
+from ayoulvat.languages import *
+
 from association.models import Association
 from benevole.models import ProfileAdministrateur
-from benevole.views import ListeGroupesUserFiltree
+
 
 @login_required(login_url='login')
 def liste_assos(request):

@@ -1,13 +1,13 @@
 <!-- evenement/admin_page_evenements.html -->
 
 {# bandeau message d erreur si besoins #}
-{% include "evenement/error_message.html" %}
+{% include "evenement/partials/error_message.html" %}
 
 {# titre de la page #}
 {% if Evenement %}
-    {% include "evenement/titre_page.html" with page='admin evenement' %}
+    {% include "evenement/partials/titre_page.html" with page='admin evenement' %}
 {% else %}
-    {% include "evenement/titre_page.html" with page='admin evenements' %}
+    {% include "evenement/partials/titre_page.html" with page='admin evenements' %}
 {% endif %}
 
 <div class="grid-planning-equipes" >

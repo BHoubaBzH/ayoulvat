@@ -128,6 +128,17 @@ footer .right {
 
 /* styles des plannings*/
 
+.equipe-slot, .poste-slot { /* en cours : formatage de la premiere colonne des grid */
+	/* pb : sticky vertical */
+	position: sticky;
+	left: 0;
+	padding-top: 0px;
+}
+
+.equipe-button {
+	width: 100%;
+}
+
 .planning-ayoulvat {
 	/*box-shadow: 3px 2px #888;*/
 	background-color: var(--planning_couleur);
@@ -340,8 +351,8 @@ footer .right {
 }
 
 .customNav {
-	border-left: 1px solid var(--fond_body);
-	padding: 14px 18px;
+	/* border-left: 1px solid var(--fond_body); */
+	/* padding: 14px 18px; */
 }
 
 @media screen and (max-width: 991px) {
@@ -428,6 +439,15 @@ footer .right {
 }
 
 /*################ administration ###################*/
+
+.admin-evenement {
+	overflow: auto;
+	height: 800px;
+}
+
+/*################ divers ###################*/
+
+
 .table-row-border-top {
 	border-top: double;
 	vertical-align : middle;

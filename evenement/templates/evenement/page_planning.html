@@ -2,10 +2,10 @@
 {# page de toutle planning de l'evenement #}
 
 {# bandeau message d erreur si besoins #}
-{% include "evenement/error_message.html" %}
+{% include "evenement/partials/error_message.html" %}
 
 {# titre de la page #}
-{% include "evenement/titre_page.html" with page='evenement' %}
+{% include "evenement/partials/titre_page.html" with page='evenement' %}
 <div class="grid-planning-equipes" >
     {# affiche les entetes des colonnes du planning : les heures #}
     {% include 'evenement/grid_entete_heures.html' with ligne="heures" role="benevole" %}

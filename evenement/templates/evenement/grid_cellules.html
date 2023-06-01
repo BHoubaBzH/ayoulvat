@@ -16,7 +16,6 @@
                     {# si utilisateur a le droit, on presente les form pour ajouter un creneau (creneau type creneau) sur le poste #}
                     <form id ="form-case-bouton-planning" class="bouton-cell" method="post">
                         <input type="hidden" name="case-ligne-init" value="{{ row_type.UUID }}">
-                        <!--input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'d/m/Y H:i' }}"-->
                         {# format du champs compatible avec SplitDateTimeMultiWidget de la form #}
                         <input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'Y-m-d H:i' }}">
                         <input type="hidden" name="creneau-moyen" value="{{ Planning.creneau_moyen }}">
@@ -27,7 +26,6 @@
                                 onClick="cellule_pre_modal_info(this.form)"
                                 data-bs-toggle="modal" data-bs-target="#modal-creneau_ajouter">
                         </button>
-                        
                     </form>
                 {% endif %}
 
@@ -58,7 +56,6 @@
                     {# si utilisateur a le droit, on presente les form pour ajouter un planning a l equipe #}
                     <form id ="form-case-bouton-planning-{{ row_type.UUID }}-{{ dateheure.1|date:'Y-m-d-Hi' }}" class="bouton-cell" method="post">
                         <input type="hidden" name="case-ligne-init" value="{{ row_type.UUID }}">
-                        <!--input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'d/m/Y H:i' }}"-->
                         {# format du champs compatible avec SplitDateTimeMultiWidget de la form #}
                         <input type="hidden" name="case-debut-init" value="{{ dateheure.1|date:'Y-m-d H:i' }}">
 
