@@ -10,13 +10,13 @@
 
 {# PLANNING CRENEAUX : grid ou on peut prendre ou liberer des creneaux 
 
-					postes		postes-boutons	time-date-heure	time-date-heure+30m time-date-heure+60m ...
-	jours				.				. 				. 				. 					.
-	heures				.				. 				. 				. 					.
-	ligne-poste.1		.				. 				. 				. 					.
-	ligne-poste.2		.				. 				. 				. 					.
-	ligne-poste.3		.				. 				. 				. 					.
-	ligne-poste.4		.				. 				. 				. 					.
+					postes	time-date-heure	time-date-heure+30m time-date-heure+60m ...
+	jours				.				. 				. 				. 					
+	heures				.				. 				. 				. 					
+	ligne-poste.1		.				. 				. 				. 					
+	ligne-poste.2		.				. 				. 				. 					
+	ligne-poste.3		.				. 				. 				. 					
+	ligne-poste.4		.				. 				. 				. 					
 	...
 #}
 
@@ -43,7 +43,6 @@
 	{# construction des entete et des colonnes de la grille planning: postes puis heures puis boutons #}
 	grid-template-columns:
 		[postes] auto {# colonne 1 #}
-		[postes-boutons] auto {# colonne 2 #}
 		{% for dates, heures in PlanningRange.items %}
 		[time-{{ dates }}] auto  {# colonnes suivantes #}
 		{% endfor %}
@@ -64,13 +63,13 @@
 
 {# PLANNING EQUIPES : grid des plannings 
 
-						equipes		equipes-boutons	time-date-heure	time-date-heure+30m time-date-heure+60m ...
-	jours					.				. 				. 				. 					.
-	heures					.				. 				. 				. 					.
-	ligne-equipe.1			.				. 				. 				. 					.
-	ligne-equipe.2			.				. 				. 				. 					.
-	ligne-equipe.3			.				. 				. 				. 					.
-	ligne-equipe.4			.				. 				. 				. 					.
+						equipes		time-date-heure	time-date-heure+30m time-date-heure+60m ...
+	jours					.				. 				. 				. 					
+	heures					.				. 				. 				. 					
+	ligne-equipe.1			.				. 				. 				. 					
+	ligne-equipe.2			.				. 				. 				. 					
+	ligne-equipe.3			.				. 				. 				. 					
+	ligne-equipe.4			.				. 				. 				. 					
 	...
 #}
 
@@ -99,7 +98,6 @@
 	{# construction des entete et des colonnes de la grille planning: equipes puis heures puis boutons #}
 	grid-template-columns:
 		[equipes] auto {# colonne 1 #}
-		[equipes-boutons] auto {# colonne 2 #}
 		{% for dates, heures in PlanningRange.items %}
 		[time-{{ dates }}] auto {# colonnes suivantes #}
 		{% endfor %}

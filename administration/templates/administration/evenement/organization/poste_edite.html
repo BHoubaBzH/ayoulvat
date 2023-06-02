@@ -1,0 +1,142 @@
+<!-- administration/evenement/organization/poste_edite.html -->
+
+<form  id="form-poste-change-{{ poste.UUID }}" method='post'>
+    {% csrf_token %}
+    <input name="poste_modifier-{{ poste.UUID }}" value="{{ poste.UUID }}" type="hidden">
+    {# données pour garder le planning affiché apres submission POST#}
+    <input type="hidden" name="PlanningEditer" value="true">
+</form>
+
+<div class="poste-slot ligne-{{ poste.UUID }}"
+                aria-hidden="true"
+                style="grid-row: ligne-{{ poste.UUID }}; grid-column: postes;"
+                id="bouton-poste-change-{{ poste.UUID }}"
+                data-bs-toggle="tooltip" data-bs-placement="left"  data-bs-html="true"
+                title="
+                {{ Text.poste}} : {{ poste.nom }}<br>
+                {# affiche les infos aux bénévoles sur les raisons de non accès a ce poste #}
+                {% if not PlanningEditer %} {# page bénévole#}
+                    {% if not poste.ouvert %}
+                        <b>{{ Text.poste_not_open }}</b><br><br>
+                    {% elif not poste.ouvert_mineur %}
+                        <b>{{ Text.poste_not_minor }}</b><br><br>
+                    {% endif %}
+                    {% if poste.description %}
+                        description :
+                        {{poste.description}}
+                    {% endif %}
+                {% else %} {# orga festival arrivé en edition #}
+                    {% if not poste.ouvert %}
+                    <b>{{ Text.adm_poste_not_open }}</b><br>
+                    {% endif %}
+                    {% if not poste.ouvert_mineur %}
+                    <b>{{ Text.adm_poste_not_minor }}</b><br>
+                    {% endif %}
+                {% endif %}
+                ">
+    <button style=""
+        form="form-poste-change-{{ poste.UUID }}"
+        class="poste-{{ poste.UUID }} poste-button btn btn-sm btn-info"
+        title="{{Text.team_mod_t}}"
+        id="bouton-poste-change-{{ poste.UUID }}"
+        type="button"
+        data-bs-toggle="modal" 
+        data-bs-target="#modal-poste-change-{{ poste.UUID }}">
+        <p style="margin-bottom: 0px;">{{ poste.nom|capfirst|truncatechars:9 }}</p>
+    </button>
+        {#{ poste.nom }#}
+</div>
+
+{##################### MODALS #####################}
+{# modal d edition du poste doit etre en dehors du div pour s'afficher correctement #}
+<div class="modal fade"
+     id="modal-poste-change-{{ poste.UUID }}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="poste"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Modifer le poste</h5>
+            </div>
+
+            <form  id="form-poste-{{ poste.UUID }}"  method='post'>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <table class="table">
+                        {% for uuid, postef in DicPostes.items %}
+                            {% if uuid|stringformat:"s" == poste.UUID|stringformat:"s" %}
+                                {{ postef.as_table }}
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+                    {% if Administrateur or Organisateur or Responsable %}
+                        <button class="btn btn-danger" title="supprimer ce poste" name="poste_supprimer"
+                                id="poste_supprimer" value="supprimer" type="button"
+                                data-bs-toggle="modal" data-bs-target="#modal-confirme-poste-supprime-{{ poste.UUID }}">
+                                {{ Text.button_del }}
+                        </button>
+                    {% endif %}
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
+                    <button type="submit" id="poste_modifier" name="poste_modifier" value="modifier" class="btn btn-primary success">{{ Text.button_mod }}</button>
+                </div>
+                {# données pour garder le planning affiché apres submission POST#}
+                <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                {# si on vient ajouter directement un creneau au planning sans passer par equipe, nous ne connaisson pas Equipe.UUID #}
+                <!--input name="equipe" value="{{ Equipe.UUID }}" type="hidden"-->
+                <input name="equipe" value="{{ Planning.equipe_id }}" type="hidden">
+                <input  name="planning" value="{{ Planning.UUID }}" type="hidden">
+                <input  name="poste" value="{{ poste.UUID }}" type="hidden">
+                <input name="benevole" value="" type="hidden">
+                {# données pour garder le planning affiché apres submission POST#}
+                <input type="hidden" name="PlanningEditer" value="true">
+            </form>
+        </div>
+    </div>
+</div>
+
+{# modal de confirmation de suppression doit etre en dehors du div pour s'afficher correctement #}
+<div class="modal fade"
+     id="modal-confirme-poste-supprime-{{ poste.UUID }}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="poste_supprime"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">{{ Text.poste_del_confirm }}</h5>
+            </div>
+            <div class="modal-body">
+                {{ Text.you_sure }}
+                <table class="table">
+                    <tr><th>{{ Text.team }}</th><td id="equipe">{{ Equipe.nom }}</td></tr>
+                    <tr><th>{{ Text.planning }}</th><td id="equipe">{{ Planning.nom }}</td></tr>
+                    <tr><th>{{ Text.poste }}</th><td id="poste_supprimer">{{ poste.nom }}</td></tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">{{ Text.no }}</button>
+                <button type="submit" id="poste_supprimer_confirme" class="btn btn-danger success">{{ Text.yes }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
+    $('#modal-confirme-poste-supprime-{{ poste.UUID }}').on('click', '#poste_supprimer_confirme', function(e){
+        /* alert('submitting-{{ forloop.counter }}'); */
+        $('#form-poste-{{ poste.UUID }}').append('<input type="hidden" name="poste_supprimer" value="{{ poste.UUID }}">');
+        $('#form-poste-{{ poste.UUID }}').append('<input type="hidden" name="PlanningEditer" value="true">');
+        document.getElementById('form-poste-{{ poste.UUID }}').submit();
+        $('#modal-confirme-poste-supprime-{{ poste.UUID }}').modal('toggle');
+        e.preventDefault();
+    });
+
+</script>

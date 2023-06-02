@@ -10,7 +10,7 @@
     {% include "evenement/partials/error_message.html" %}
 
     {% if not PlanningEditer %}
-    {% include 'administration/partials/titre_page.html' with page="plannings" %}
+        {% include 'administration/partials/titre_page.html' with page="plannings" %}
         {% include 'administration/evenement/organization/plannings.html' %}
     {% else %}
         {% include 'administration/partials/titre_page.html' with page="planning" %}

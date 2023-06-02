@@ -1,55 +1,57 @@
-<!-- administration/evenement/organization/equipe_ajoute.html -->
+<!-- administration/evenement/organization/poste_ajoute.html -->
 
-<span class="equipe-ajoute" aria-hidden="true" style="grid-row: equipe-add; grid-column: equipes;">
-        <form  id="form-equipe_ajouter" method='post'>
+<span class="poste-ajoute" aria-hidden="true" style="grid-row: poste-add; grid-column: postes;">
+        <form  id="form-poste_ajouter" method='post'>
             {% csrf_token %}
             <button style=""
                     class="btn btn-sm"
-                    title="{{Text.team_add_t}}"
-                    id="bouton-equipe_ajouter"
+                    title="{{Text.poste_add}}"
+                    id="bouton-poste_ajouter"
                     type="submit"
                     data-bs-toggle="modal"
-                    data-bs-target="#modal-equipe_ajouter">
+                    data-bs-target="#modal-poste_ajouter">
                 <div>
                     <i class="bi bi-plus-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i>
                 </div>
             </button>
             <input type="hidden" name="PageType" value="admin"/>
+            {# données pour garder le planning affiché apres submission POST#}
+            <input type="hidden" name="PlanningEditer" value="true"/>
         </form>
     </button>
 </span>
 
 {# modal #}
 <div class="modal fade"
-     id="modal-equipe_ajouter"
+     id="modal-poste_ajouter"
      tabindex="-1"
      role="dialog"
-     aria-labelledby="equipe_ajouter"
+     aria-labelledby="poste_ajouter"
      aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalLabel">{{Text.team_add_t}}</h5>
             </div>
-            <form  id="form-equipe" method='post'>
+            <form  id="form-poste" method='post'>
                 <div class="modal-body">
                         {% csrf_token %}
                     <table class="table">
-                        {{ FormEquipe.as_table }}
+                        {{ FormPoste.as_table }}
                     </table>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{Text.button_null}}</button>
-                    <button type="submit" id="equipe_ajouter" class="btn btn-primary success">{{Text.button_add}}</button>
+                    <button type="submit" id="poste_ajouter" class="btn btn-primary success">{{Text.button_add}}</button>
                 </div>
-
                 <input name="evenement_id" value="{{ Evenement.UUID }}" type="hidden">
                 {# données pour garder le planning affiché apres submission POST#}
-                <input name="equipe" value="{{ Planning.equipe_id }}" type="hidden">
-                <input name="equipe_ajouter" value="" type="hidden">
+                <input name="poste" value="{{ Planning.poste_id }}" type="hidden">
+                {# données pour garder le planning affiché apres submission POST#}
+                <input type="hidden" name="PlanningEditer" value="true">
+                <input name="poste_ajouter" value="" type="hidden">
                 <input type="hidden" name="PageType" value="admin"/> {# indique qu'on doit revenir sur la page d'admin #}
-
             </form>
         </div>
     </div>
@@ -57,16 +59,16 @@
 
 <script>
     /* affiche le modal de confirmation quand appuie sur le bouton type=submit */
-    $('#form-equipe_ajouter').on('submit', function(e){
+    $('#form-poste_ajouter').on('submit', function(e){
         /* alert('modal'); */
-        $('#modal-equipe_ajouter').modal('show');
+        $('#modal-poste_ajouter').modal('show');
         e.preventDefault();
     });
 
     /* quand le bouton Ajouter est utilisé dans modal, submit la form et ferme le modal */
-    $(document).on('click', '#equipe_ajouter', function () {
+    $(document).on('click', '#poste_ajouter', function () {
         /* alert('submitting-{{ forloop.counter }}'); */
-        document.getElementById('form-equipe').submit();
-        $('#modal-equipe_ajouter').modal('toggle');
+        document.getElementById('form-poste').submit();
+        $('#modal-poste_ajouter').modal('toggle');
     });
 </script>

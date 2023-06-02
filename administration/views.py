@@ -232,6 +232,7 @@ class OrganizationView(View):
             "Text"                  : text_template[language], # textes traduits
             "PlanningRange"         : planning_range(self.Evt.debut, self.Evt.fin, 30),
             "DicEquipes"            : dic_forms_equipes(self.Evt),
+            "FormEquipe"            : EquipeForm(initial={'evenement': self.Evt}),
         }
         # liste les roles de l'utilisateur et les envoi au template
         self.RolesUtilisateur = liste_roles_utilisateur(request, self.Evt)
@@ -253,7 +254,7 @@ class OrganizationView(View):
         #    self.context["Planning"] = Planning.objects.get(UUID=request.POST.get('planning'))
 
         # Forms non liées de creation d objets
-        self.context["FormEquipe"] = EquipeForm(initial={'evenement': self.Evt})
+        #self.context["FormEquipe"] = EquipeForm(initial={'evenement': self.Evt})
         self.context["FormPoste"] = PosteForm(initial={'evenement': self.Evt,
                                     'equipe': request.POST.get('equipe'),
                                     'planning': request.POST.get('planning')})
@@ -279,16 +280,17 @@ class OrganizationView(View):
         if any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter', 'equipe_supprimer']):
             self.context["Form"] = forms_equipe(request)
 
-        # un admin a cliqué sur le bouton d edition du planning : on va dans la page d un planning
-        if any(item in ['planning_editer', 
-                        'poste_ajouter', 'poste_modifier', 'poste_supprimer', 
-                        'creneau_ajouter', 'creneau_modifier', 'creneau_supprimer'] for item in request.POST):
-            self.context["PlanningEditer"] = "oui"
-
-        # edite un planning / ??? a modifier pour sortir de l'edition du planning
-        if request.POST.get('planning'):
-            print("plan")
-            self.context["Planning"] = request.POST.get('planning')
+        # un admin a cliqué sur le bouton d edition du planning : on va dans la page d un planning et on y reste
+        if request.POST.get('PlanningEditer'):
+            if uuid_planning := request.POST.get('planning'):
+                self.context["Planning"]        = Planning.objects.get(UUID=uuid_planning)
+                self.context["PostesCreneaux"]  = postes_creneaux(self.context["Planning"])
+                self.context["PlanningRange"]   = planning_range(self.context["Planning"].debut,
+                                                                self.context["Planning"].fin,
+                                                                self.context["Planning"].pas)
+                self.context["DicPostes"] = dic_forms_postes(Planning.objects.get(UUID=uuid_planning))
+                # passe info au template d aller a la page du planning
+                self.context["PlanningEditer"] = "oui"
 
         # recharge les objets apres modifociation
         self.context["Equipes"]     = list(Equipe.objects.filter(evenement=self.Evt).order_by('nom'))

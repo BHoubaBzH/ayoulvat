@@ -163,7 +163,7 @@ text_template['fr_fr']['nav_my_infos']          = _("Mes Infos")
 text_template['fr_fr']['nav_participate_h']     = _("Participer à l'évènement en tant que bénévole")
 text_template['fr_fr']['nav_asso_details']      = _("détails de l'association")
 text_template['fr_fr']['nav_nb_free_slots']     = _("Nb créneaux libres")
-text_template['fr_fr']['back_admin_view']       = _('Vue Administrateur')
+text_template['fr_fr']['back_admin_view']       = _('Vue Admin')
 text_template['fr_fr']['back_admin_view_h']     = _('Aller à la Vue d\'administration de l\'évènement')
 
 
@@ -317,7 +317,7 @@ text_template['fr_fr']['back_volunteer_view']   = _('Vue Bénévole')
 text_template['fr_fr']['back_volunteer_view_h'] = _('Aller à la Vue Bénévole')
 
 #administration > titre_page
-text_template['fr_fr']['title_plannings']       = _('Organisation')
+text_template['fr_fr']['title_plannings']       = _('Organisation des équipes')
 text_template['fr_fr']['title_planning']        = _('Planning')
 text_template['fr_fr']['title_volunteer']       = _('Bénévoles')
 text_template['fr_fr']['title_slots']           = _('Créneaux')

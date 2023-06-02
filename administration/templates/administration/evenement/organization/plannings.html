@@ -15,7 +15,7 @@
                         {% include "administration/evenement/organization/planning_bouton.html" %}
                 {% endif %}
             {% endfor %}
-            {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" PageType="admin" %}
+            {% include "administration/evenement/organization/grid_cellules.html" with row_type=equipe ligne="equipe" PageType="admin" %}
         {% endfor %}
         {# ajoute une ligne vide pour pouvoir ajouter des equipes au besoins et le modal de modif des plannings #}
         {% include "administration/evenement/organization/equipe_ajoute.html" %}

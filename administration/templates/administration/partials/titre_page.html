@@ -1,13 +1,19 @@
-<!-- evenement/titre_page.html -->
+<!-- administration/partials/titre_page.html -->
 
 <figure class="text-center">
     <blockquote class="blockquote">
-    {# page du planning avec les postes et les creneaux #}
+    {# page des equipes avec les plannings #}
     {% if page == 'plannings' %}
         <p class='h5 titre_page'>{{ Text.title_plannings|upper }}</p>
     {% endif %}
+    {# page des postes avec et les creneaux #}
     {% if page == 'planning' %}
-    <p class='h5 titre_page'>{{ Text.title_planning|upper }}</p>
+        {% if  Planning.debut|date:'l j F'|stringformat:"s" ==  Planning.fin|date:'l j F'|stringformat:"s" %}
+            <p class='h5 titre_page'>{{Planning.equipe.nom|upper}} : {{ Planning.debut|date:'l j F' }} de {{ Planning.debut|date:'H:i' }} à {{ Planning.fin|date:'H:i' }}</p>
+        {% else %}
+            <p class='h5 titre_page'>{{Planning.equipe.nom|upper}} : {{ Planning.debut|date:'l j F' }} {{ Planning.debut|date:'H:i' }} - {{ Planning.fin|date:'l j F' }} {{ Planning.fin|date:'H:i' }}</p>
+        {% endif %}    
+    </p>
     {% endif %}
     {% if page == 'benevoles' %}
         <p class='h5 titre_page'>{{ Text.title_volunteer|upper }}</p>
