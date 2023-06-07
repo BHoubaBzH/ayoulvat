@@ -10,7 +10,7 @@
 	--scrollbar_couleur: #0b6dff;
 	--footer-height: 120px;
 	--gradient: linear-gradient(to left top, #ddc124 10%, #FF512F 90%) !important; /*boutons des cards evenements */ 
-	--maxheight_grid : 3em;/* hauteur des carrés de grids */
+	--maxheight_grid : 2.5em;/* hauteur des carrés de grids */
 	--cell_width : 0.8em; /* largeur des carrés de grids */
   }
   
@@ -79,7 +79,6 @@ body {
 	box-shadow: #222 1px 0 10px;
 	text-decoration: underline;
 }
-
 
 /*************************
  * footer
@@ -341,6 +340,110 @@ footer .right {
 	text-decoration: auto;
 }
 
+/*************************
+ * parties statiques des grids
+ *************************/
+
+ .grid-planning-creneaux {
+	inline-size: fit-content;
+	display: grid;
+	gap: 0.2em;
+	padding-top: 3em;
+	padding-bottom: 2em;
+	padding-left: 2em;
+	padding-right: 2em;
+	/* pour ne pas déborder de la page */
+	max-width: 100%;
+	overflow-x: auto;
+ }
+
+ .grid-planning-equipes {
+	inline-size: fit-content;
+	display: grid;
+	gap: 0.2em;
+	padding-top: 3em;
+	padding-bottom: 2em;
+	padding-left: 2em;
+	padding-right: 2em;
+	/* pour ne pas déborder de la page */
+	max-width: 100%;
+	overflow-x: auto;
+ }
+ 
+/*************************
+* PLANNING PARTIE COMMUNE
+* 
+*************************/
+
+.poste-slot, .poste-bouton-slot, .equipe-slot {
+	text-align: left;
+	width: 8vw;
+	height: 40px;
+}
+
+.poste-bouton-slot, .benevole-bouton-slot  {
+	min-width: 10px;
+	width: 20px;
+}
+
+.poste-slot, .benevole-slot, .equipe-slot, .poste-bouton-slot, .benevole-bouton-slot   {
+	display: block;
+	/* padding: 10px 5px 5px; */
+	/* position: sticky; */
+	height: 2em;
+	top: 0;
+	z-index: 20;
+}
+
+.equipe-slot {
+	height: var(--maxheight_grid);
+	width: 6em;
+	text-align: initial;
+ }
+
+.bouton_edite_poste  {
+	padding: 1;
+	margin-left: -5px;
+	margin-top: 5px;
+}
+
+
+@media screen and (max-width:400px) {
+	/* PLANNING CRENEAUX */
+	.planning-creneaux, .planning-equipes {
+		display: none;
+	}
+	.sidebar {
+		display: none;
+	}
+	#nav-creneaux {
+		display: none;
+	}
+}
+
+/*
+@supports( display:grid ) {
+	@media screen and (min-width:700px) {
+
+	}
+}
+*/
+
+
+/* Small-screen & fallback styles */
+.session {
+	margin-bottom:  1em;
+}
+
+@supports( display:grid ) {
+	@media screen and (min-width: 700px) {
+		.poste, .benevole, .planning {
+			margin: 0;
+			z-index: 20;
+		}
+
+	}
+}
 
 
 /*************************
@@ -421,7 +524,7 @@ footer .right {
 
 ::-webkit-scrollbar
 {
-	width: 10px;
+	/* width: 10px; */
 	background-color: #F5F5F5;
 }
 
@@ -441,8 +544,8 @@ footer .right {
 /*################ administration ###################*/
 
 .admin-evenement {
-	overflow: auto;
-	height: 800px;
+	overflow-x: auto;
+	/*height: 800px;*/
 }
 
 /*################ divers ###################*/

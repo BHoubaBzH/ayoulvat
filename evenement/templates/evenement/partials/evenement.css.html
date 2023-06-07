@@ -21,15 +21,6 @@
 #}
 
 .grid-planning-creneaux {
-	inline-size: fit-content;
-	display: grid;
-	gap: 0.2em;
-	padding-top: 1em;
-	padding-bottom: 1em;
-	/* pour ne pas déborder de la page */
-	max-width: 100%;
-	max-height: 60vh;  /* a adapter en fonction du reste de la page */
-	overflow: auto;
 	{# construction des entetes et des lignes de la grille planning: heures puis postes #}
 	grid-template-rows:
 		[jours] auto {# ligne 1#}
@@ -74,19 +65,6 @@
 #}
 
 .grid-planning-equipes {
-	#overflow-x: scroll;
-	inline-size: fit-content;
-	display: grid;
-	gap: 0.2em;
-	/*border: 1px solid #ffffff;*/
-	padding-top: 3em;
-	padding-bottom: 2em;
-	padding-left: 2em;
-	padding-right: 2em;
-	/* pour ne pas déborder de la page */
-	max-width: 100%;
-	max-height: 60vh;  /* a adapter en fonction du reste de la page */
-	overflow: auto;
 	{# construction des entetes et des lignes de la grille planning: heures puis equipes #}
 	grid-template-rows:
 		[jours]  auto {# ligne 1#}
@@ -131,76 +109,16 @@
 	}
 {% endfor %}	
 
-/*************************
-* PLANNING PARTIE COMMUNE
-* 
-*************************/
-
-.poste-slot, .poste-bouton-slot, .equipe-slot {
-	# display: none; /* hidden on small screens and browsers without grid support */
-	text-align: left;
-	width: 8vw;
-	height: 40px;
-}
-
-.poste-bouton-slot, .benevole-bouton-slot  {
-	min-width: 10px;
-	width: 20px;
-}
-
-.poste-slot, .benevole-slot, .equipe-slot, .poste-bouton-slot, .benevole-bouton-slot   {
-	display: block;
-	padding: 10px 5px 5px;
-	/* position: sticky; */
-	height: 2em;
-	top: 0;
-	z-index: 20;
-	#background-color: rgb(255, 255, 255);
-}
-
-.bouton_edite_poste  {
-	padding: 1;
-	margin-left: -5px;
-	margin-top: 5px;
-}
-
-
-@media screen and (max-width:400px) {
-	{# PLANNING CRENEAUX #}
-	.planning-creneaux, .planning-equipes {
-		display: none;
+{% for equipe in Equipes %}
+	.grid-cell.ligne-{{ equipe.UUID }}, .grid-cell-minuit.ligne-{{ equipe.UUID }} {
+		border-bottom-color: {{ equipe.couleur }};
 	}
-	.sidebar {
-		display: none;
+	.equipe-slot.ligne-{{ equipe.UUID }} {
+		border-bottom: 1px solid #ffffff;
+		border-bottom-color: {{ equipe.couleur }};
 	}
-	#nav-creneaux {
-		display: none;
-	}
-}
+{% endfor %}	
 
-/*
-@supports( display:grid ) {
-	@media screen and (min-width:700px) {
-
-	}
-}
-*/
-
-
-/* Small-screen & fallback styles */
-.session {
-	margin-bottom:  1em;
-}
-
-@supports( display:grid ) {
-	@media screen and (min-width: 700px) {
-		.poste, .benevole, .planning {
-			margin: 0;
-			z-index: 20;
-		}
-
-	}
-}
 
 
 

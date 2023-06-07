@@ -8,48 +8,45 @@
       {% if Evenement %}
         {% include 'evenement/partials/evenement_status.html' %}
         {# top menu #}
-{% comment "renfonte de la sidebar admin" %}
-        {% if Administrateur or Organisateur %} 
-          <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
-          data-bs-toggle="tooltip" data-bs-placement="right" title="{{ Text.nav_admin_h }}">
-            <span class="fs-4">{{ Text.nav_admin }}</span>
-          </a>
-          <hr>{# saut de section#}
-            {% if Evenement %}
-              <li class="nav-item customSideItem">     
-                <form class="form evenement-form" method="get">
-                  {% csrf_token %}
-                  <button class="nav-link align-middle px-0"
-                    data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" 
-                    title="{{Text.nav_admin_dashboard_h}}" formaction="{% url 'dashboard' %}" onclick="loader()">
-                      <i class="fs-1 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">{{Text.nav_admin_dashboard}}</span>
-                  </button>
-                </form>
-              </li>
-            {% endif %}
-
-            <li class="nav-item customSideItem">
-              <form class="form evenement-form" method="post">
-                  <button class="nav-link align-middle px-0" 
-                    data-bs-toggle="tooltip" data-bs-placement="right" title="{{Text.nav_admin_teams_h}}" onclick="loader()">
-                    <i class="fs-1 bi-calendar2-plus"></i><span class="ms-1 d-none d-sm-inline">{{Text.nav_admin_teams}}</span>
-                      {% csrf_token %}
-                    <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                    <input  name="PageType" value="admin" type="hidden"> <!-- lien vers une page d'admin -->
-                  </button>
-              </form>
-            </li>   
-          <br><br>
-          <hr>{# saut de section#}
-          <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
-          data-bs-toggle="tooltip" data-bs-placement="right" title="détails de l'évènement">
-            <span class="fs-4">{{Text.nav_event}}</span>
-          </a>
-          <hr>{# saut de section#}
-        {% endif %}   
-{% endcomment %}
 
 {# menu planning & equipes #}
+
+        {% if Benevole and creneaux_benevole %} {# si benevole sur l evenement et des creneaux choisis, lien vers son planning#}
+        <li>
+          <form class="form evenement-form" method="post">
+            {% csrf_token %}
+            <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+            <input  name="equipe" value="{{ team.UUID }}" type="hidden">
+            <input type="hidden" name="planning_perso" value="oui">
+            <button class="nav-link align-middle px-0" 
+              data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"  
+              title="{{Text.nav_planning_perso_h}}" onclick="loader()">
+                <i class="fs-1 bi-clipboard-heart"></i><span class="ms-1 d-none d-sm-inline">{{Text.nav_planning_perso }}</span>
+                {% csrf_token %}
+              <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+            </button>
+
+          </form>
+        </li>
+        {% elif not Benevole and Evenement %} {# si dans un evenement mais pas benevole , propose de le devenir (cas des organisateurs) #}
+        <li>
+          <form class="form evenement-form" method="post">
+            {% csrf_token %}
+            <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+            <input type="hidden" name="devenir_benevole" value="">
+            <button class="nav-link align-middle px-0" 
+              data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"  
+              title="{{Text.nav_participate_h}}" onclick="loader()">
+                <i class="fs-1 bi-emoji-kiss-fill"></i><span class="ms-1 d-none d-sm-inline">{{Text.nav_participate }}</span>
+                {% csrf_token %}
+              <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+            </button>
+
+          </form>
+        </li>
+        {% endif %}
+
+        <hr>{# saut de section#}
         {# planning de l evenement #}
         <li class="nav-item customSideItem">
           <form class="form evenement-form" method="post">
@@ -68,7 +65,7 @@
           </form>
         </li>
 
-          {# equipes #}
+        {# equipes #}
         <li class="nav-item customSideItem">
           <a href="#submenu-equipes" data-bs-toggle="collapse" class="nav-link px-0 align-middle"
           data-bs-toggle="tooltip" data-bs-placement="right" title="{{ Text.nav_teams_h }}" >

@@ -1,27 +1,6 @@
-<!-- evenement/poste_edite.html -->
+<!-- administration/evenement/organization/modal_poste_edite.html -->
 
-<div id="boutons des postes" class="poste-bouton-slot" aria-hidden="true"
-    style="grid-row: ligne-{{ poste.UUID }}; grid-column: postes-boutons;">
-        {# affiche le bouton d edition de poste #}
-    <form  id="form-poste-change-{{ poste.UUID }}" method='post'>
-        {% csrf_token %}
-        <input name="poste_modifier" value="{{ poste.UUID }}" type="hidden">
-        <button style=""
-                class="bouton_edite_poste btn btn-sm"
-                title="{{ Text.poste_edit }}"
-                id="bouton-poste-change-{{ poste.UUID }}"
-                type="button"
-                data-bs-toggle="modal" 
-                data-bs-target="#modal-poste-change-{{ poste.UUID }}">
-            <div>
-                <i class="bi bi-chevron-down"></i>
-            </div>
-        </button>
-    </form>
-</div>
-
-{##################### MODALS #####################}
-{# modal d edition du poste doit etre en dehors du div pour s'afficher correctement #}
+{# modal d edition du poste #}
 <div class="modal fade"
      id="modal-poste-change-{{ poste.UUID }}"
      tabindex="-1"
@@ -47,14 +26,6 @@
                 </div>
 
                 <div class="modal-footer">
-                    {# données pour garder le planning affiché apres submission POST#}
-                    <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
-                    {# si on vient ajouter directement un creneau au planning sans passer par equipe, nous ne connaisson pas Equipe.UUID #}
-                    <!--input name="equipe" value="{{ Equipe.UUID }}" type="hidden"-->
-                    <input name="equipe" value="{{ Planning.equipe_id }}" type="hidden">
-                    <input  name="planning" value="{{ Planning.UUID }}" type="hidden">
-                    <input  name="poste" value="{{ poste.UUID }}" type="hidden">
-                    <input name="benevole" value="" type="hidden">
                     {% if Administrateur or Organisateur or Responsable %}
                         <button class="btn btn-danger" title="supprimer ce poste" name="poste_supprimer"
                                 id="poste_supprimer" value="supprimer" type="button"
@@ -65,13 +36,22 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
                     <button type="submit" id="poste_modifier" name="poste_modifier" value="modifier" class="btn btn-primary success">{{ Text.button_mod }}</button>
                 </div>
+                {# données pour garder le planning affiché apres submission POST#}
+                <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                {# si on vient ajouter directement un creneau au planning sans passer par equipe, nous ne connaisson pas Equipe.UUID #}
+                <!--input name="equipe" value="{{ Equipe.UUID }}" type="hidden"-->
+                <input name="equipe" value="{{ Planning.equipe_id }}" type="hidden">
+                <input  name="planning" value="{{ Planning.UUID }}" type="hidden">
+                <input  name="poste" value="{{ poste.UUID }}" type="hidden">
+                <input name="benevole" value="" type="hidden">
+                {# données pour garder le planning affiché apres submission POST#}
+                <input type="hidden" name="PlanningEditer" value="true">
             </form>
         </div>
     </div>
 </div>
 
 {# modal de confirmation de suppression doit etre en dehors du div pour s'afficher correctement #}
-{% if Administrateur or Organisateur or Responsable %}
 <div class="modal fade"
      id="modal-confirme-poste-supprime-{{ poste.UUID }}"
      tabindex="-1"
@@ -105,10 +85,10 @@
     $('#modal-confirme-poste-supprime-{{ poste.UUID }}').on('click', '#poste_supprimer_confirme', function(e){
         /* alert('submitting-{{ forloop.counter }}'); */
         $('#form-poste-{{ poste.UUID }}').append('<input type="hidden" name="poste_supprimer" value="{{ poste.UUID }}">');
+        $('#form-poste-{{ poste.UUID }}').append('<input type="hidden" name="PlanningEditer" value="true">');
         document.getElementById('form-poste-{{ poste.UUID }}').submit();
         $('#modal-confirme-poste-supprime-{{ poste.UUID }}').modal('toggle');
         e.preventDefault();
     });
 
 </script>
-{% endif %}

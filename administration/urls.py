@@ -6,4 +6,6 @@ urlpatterns = [
     path('creneaux', views.CreneauxListView.as_view(), name='creneaux_liste'),
     path('dashboard', views.DashboardView.as_view(), name='dashboard'),
     path('organization', views.OrganizationView.as_view(), name='organization'),
+    path('creneau_fetch', views.CreneauFetch, name='creneau_fetch'),
+    path('planning_fetch', views.PlanningFetch, name='planning_fetch'),
 ]

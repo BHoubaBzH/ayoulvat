@@ -18,13 +18,6 @@
     <input type="hidden" name="planning" value="{{ planning_uuid }}">
     <input type="hidden" name="equipe" value="{{ equipe_uuid }}">
 </form>
-{# form admin pour ajouter un poste #}
-{% if Administrateur or Organisateur or Responsable %}
-    <form  id="form-poste_ajouter" method='post'>
-        {% csrf_token %}
-    </form>
-    {% include "evenement/modal_poste_ajoute.html" %}
-{% endif %}
 
 {# bandeau message d erreur si besoins #}
 {% include "evenement/partials/error_message.html" %}
@@ -33,86 +26,56 @@
 {% include "evenement/partials/titre_page.html" with page='planning'%}
 
 {% if  PostesCreneaux %}
-    <div class="overflow-scroll">
-        <div class="grid-planning-creneaux" id="planning-creneaux">
-            {# affiche les entetes des colonnes du planning : les heures #}
-            {% for dates, heures in PlanningRange.items %}
-                <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">
-                    <h6 class="time-slot">{{ heures.0 }}</h6>
-                </div>
-            {% endfor %}
-            
-            {% for poste,creneaux in PostesCreneaux.items %} 
-                {# affiche les entetes des lignes du planning : postes #}
-                <div class="poste-slot ligne-{{ poste.UUID }}"
-                    aria-hidden="true"
-                    style="grid-row: ligne-{{ poste.UUID }}; grid-column: postes;"
-                    data-bs-toggle="tooltip" data-bs-placement="right"  data-bs-html="true"
-                    title="
-                    {{ Text.poste}} : {{ poste.nom }}<br>
-                    {# affiche les infos aux bénévoles sur les raisons de non accès a ce poste #}
-                    {% if not PlanningEditer %} {# page bénévole#}
-                        {% if not poste.ouvert %}
-                            <b>{{ Text.poste_not_open }}</b><br><br>
-                        {% elif not poste.ouvert_mineur %}
-                            <b>{{ Text.poste_not_minor }}</b><br><br>
-                        {% endif %}
-                        {% if poste.description %}
-                            description :
-                            {{poste.description}}
-                        {% endif %}
-                    {% else %} {# orga festival arrivé en edition #}
-                        {% if not poste.ouvert %}
-                        <b>{{ Text.adm_poste_not_open }}</b><br>
-                        {% endif %}
-                        {% if not poste.ouvert_mineur %}
-                        <b>{{ Text.adm_poste_not_minor }}</b><br>
-                        {% endif %}
+    <div class="grid-planning-creneaux" id="planning-creneaux">
+        {# affiche les entetes des colonnes du planning : les heures #}
+        {% for dates, heures in PlanningRange.items %}
+            <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">
+                <h6 class="time-slot">{{ heures.0 }}</h6>
+            </div>
+        {% endfor %}
+        {# affiche les entetes des colonnes du planning : les heures #}
+        {% include 'evenement/grid_entete_heures.html' with ligne="heures"  %}
+        
+        {% for poste,creneaux in PostesCreneaux.items %} 
+            {# affiche les entetes des lignes du planning : postes #}
+            <div class="poste-slot ligne-{{ poste.UUID }}"
+                aria-hidden="true"
+                style="grid-row: ligne-{{ poste.UUID }}; grid-column: postes;"
+                data-bs-toggle="tooltip" data-bs-placement="right"  data-bs-html="true"
+                title="
+                {{ Text.poste}} : {{ poste.nom }}<br>
+                {# affiche les infos aux bénévoles sur les raisons de non accès a ce poste #}
+                {% if not PlanningEditer %} {# page bénévole#}
+                    {% if not poste.ouvert %}
+                        <b>{{ Text.poste_not_open }}</b><br><br>
+                    {% elif not poste.ouvert_mineur %}
+                        <b>{{ Text.poste_not_minor }}</b><br><br>
                     {% endif %}
-                    ">
-                        {{ poste.nom }}
-                </div>
-                {% if PlanningEditer %} 
-                    {% include "evenement/poste_edite.html" %} {# bouton d'édition du poste#}
+                    {% if poste.description %}
+                        description :
+                        {{poste.description}}
+                    {% endif %}
+                {% else %} {# orga festival arrivé en edition #}
+                    {% if not poste.ouvert %}
+                    <b>{{ Text.adm_poste_not_open }}</b><br>
+                    {% endif %}
+                    {% if not poste.ouvert_mineur %}
+                    <b>{{ Text.adm_poste_not_minor }}</b><br>
+                    {% endif %}
                 {% endif %}
-                {% for creno in creneaux%}
-                    {% include "evenement/creneau_affiche.html" with source_type="creneau" %}
-                {% endfor %}
-                {% include "evenement/grid_cellules.html" with row_type=poste ligne="poste" %}
-            {% endfor%}
-
-            {# ajoute une ligne vide pour pouvoir ajouter des postes #}
-            {% if PlanningEditer %}
-            <span class="poste-ajoute" aria-hidden="true" style="grid-row: poste-add; grid-column: postes;">
-                <button style="" class="btn btn-sm" title="ajouter un poste" id="bouton-poste_ajouter"
-                        type="submit" data-bs-toggle="modal" data-bs-target="#modal-poste_ajouter" form="form-poste_ajouter">
-                    <div>
-                        <i class="bi bi-plus-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i>
-                    </div>
-                </button>
-            </span>
-
-        </div>
-    </div>
-{% endif %}
+                ">
+                    {{ poste.nom }}
+            </div>
+            {% for creno in creneaux%}
+                {% include "evenement/creneau_affiche.html" with source_type="creneau" %}
+            {% endfor %}
+            {% include "evenement/grid_cellules.html" with row_type=poste ligne="poste" %}
+        {% endfor%}
+    </div>            
 
 {% else %}
         <p> {{ Text.poste_not_yet }} </p>
-        {# bouton pour pouvoir ajouter des postes #}
-        {% if PlanningEditer %}
-            <button style="" class="btn btn-sm" title="ajouter un poste" id="bouton-poste_ajouter"
-                    type="submit" data-bs-toggle="modal" data-bs-target="#modal-poste_ajouter" form="form-poste_ajouter">
-                <div>
-                    <i class="bi bi-plus-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i>
-                </div>
-            </button>
-        {% endif %}
+
 {% endif %}
 
-{# modal d ajout et de modif des creneaux type=creneau #}
-{% comment "" %}{% endcomment %}
-{% if PlanningEditer %}
-    {% include "evenement/modal_creneau_ajoute.html" with type='poste' %}
-    {% include "evenement/modal_creneau_edite.html" with type='poste' source_type="creneau" %}
-{% endif %} 
 

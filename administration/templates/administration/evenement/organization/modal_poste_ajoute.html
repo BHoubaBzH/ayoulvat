@@ -1,6 +1,6 @@
 <!-- administration/evenement/organization/modal_poste_ajoute.html -->
 
-{# modal doit etre en dehors du div pour s'afficher correctement #}
+{# modal #}
 <div class="modal fade"
      id="modal-poste_ajouter"
      tabindex="-1"
@@ -10,7 +10,7 @@
     <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">{{ Text.poste_add }}</h5>
+                <h5 class="modal-title" id="ModalLabel">{{Text.team_add_t}}</h5>
             </div>
             <form  id="form-poste" method='post'>
                 <div class="modal-body">
@@ -21,17 +21,16 @@
                 </div>
 
                 <div class="modal-footer">
-                    {# données pour garder le planning affiché apres submission POST#}
-                    <input name="equipe" value="{{ Planning.equipe_id }}" type="hidden">
-                    <input  name="planning" value="{{ Planning.UUID }}" type="hidden">
-                    
-                    <input name="type" value="benevole" type="hidden">
-                    <input name="poste_ajouter" value="" type="hidden">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
-                    <button type="submit" id="poste_ajouter" class="btn btn-primary success">{{ Text.button_add }}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{Text.button_null}}</button>
+                    <button type="submit" id="poste_ajouter" class="btn btn-primary success">{{Text.button_add}}</button>
                 </div>
+                <input name="evenement_id" value="{{ Evenement.UUID }}" type="hidden">
+                {# données pour garder le planning affiché apres submission POST#}
+                <input name="poste" value="{{ Planning.poste_id }}" type="hidden">
                 {# données pour garder le planning affiché apres submission POST#}
                 <input type="hidden" name="PlanningEditer" value="true">
+                <input name="poste_ajouter" value="" type="hidden">
+                <input type="hidden" name="PageType" value="admin"/> {# indique qu'on doit revenir sur la page d'admin #}
             </form>
         </div>
     </div>

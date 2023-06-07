@@ -2,42 +2,27 @@
 {% extends 'evenement/partials/base.html' %}
 
 {% block base_evenement %}
-<!-- affiche le popup d'aide quand on passe sur un element contenant un tooltip -->
-<script>
-$(document).ready(function(){
-  $('[data-bs-toggle="tooltip"]').tooltip();   
-});
-</script>
-
-    {% if not planning_perso %}
-        {# si planning selectionné, on affiche #}
-        {% if Planning or PostesCreneaux %}
-            {% if Administrateur or Organisateur or Responsable %}
-                <div class="tab-content post_display_javascript" id="nav-tabContent">
+    <div class="col-lg-10 d-flex flex-column vh-100 sidebar">
+        {% if not planning_perso %}
+            {# si planning selectionné, on affiche #}
+            {% if Planning or PostesCreneaux %}
+                {% if Administrateur or Organisateur or Responsable %}
                     {# postes du planning on affiche que si un planning ou un poste est selectionné #}
-                    <div class="tab-pane fade show active post_display_javascript" id="nav-creneaux" 
-                        role="tabpanel" aria-labelledby="nav-creneaux-tab">
-                            {% include "evenement/page_postes.html" %}
-                    </div>
-                </div>
-
-            {% else %} {# benevoles #}
-                <div class="tab-content post_display_javascript" id="nav-tabContent">
+                        {% include "evenement/page_postes.html" %}
+                {% else %} {# benevoles #}
                     {% include "evenement/page_postes.html" %}
-                </div>
+                {% endif %}
+            {# bouton de la sidebar planning global utilisé #}
+            {% elif planning_global %}
+                {% include "evenement/page_planning.html" %}
+            {# une equipe est selectionnée par un benevole, pas de planning ou de poste #}
+            {# un admin a cliqué arrive de la page liste evenements #}    
+            {% else %}
+                {% include "evenement/page_planning.html" %}
             {% endif %}
-        {# bouton de la sidebar planning global utilisé #}
-        {% elif planning_global %}
-            {% include "evenement/page_planning.html" %}
-        {# une equipe est selectionnée par un benevole, pas de planning ou de poste #}
-        {# un admin a cliqué arrive de la page liste evenements #}    
-        {% else %}
-            {% include "evenement/page_planning.html" %}
-        {% endif %}
 
-    {% elif planning_perso %}
-        {# si planning perso choisi #}
-        <div class="tab-content post_display_javascript" id="nav-tabContent">
+        {% elif planning_perso %}
+            {# si planning perso choisi #}
             <div class="tab-pane fade show active" id="nav-equipes"
                 role="tabpanel" aria-labelledby="nav-equipes-tab"> 
                 {% if equipe_uuid %} 
@@ -46,16 +31,14 @@ $(document).ready(function(){
                     {% include "evenement/page_planning_perso.html" %}
                 {% endif %}
             </div>
-        </div>
-    {% else %}
-        {# page par defaut des benevoles de l'evenement: son planning global #}
-        {% if Evenement and Benevole %} 
-            <div class="tab-content post_display_javascript" id="nav-tabContent">
+        {% else %}
+            {# page par defaut des benevoles de l'evenement: son planning global #}
+            {% if Evenement and Benevole %} 
                 <div class="tab-pane fade show active" id="nav-equipes"
                     role="tabpanel" aria-labelledby="nav-equipes-tab"> 
                         {% include "evenement/page_planning.html" %}
                 </div>
-            </div>
+            {% endif %}
         {% endif %}
-    {% endif %}
+    </div>
 {% endblock base_evenement %}

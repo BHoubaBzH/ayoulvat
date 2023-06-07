@@ -57,14 +57,12 @@
   <!-- container -->
   <div class="container-fluid text-center">    
     <div class="row content">
-      <div class="col-auto col-lg-2 bg-dark sidebar">
+      <div class="col-lg-2 bg-dark sidebar">
         <!-- sidebar -->
         {% include "administration/partials/sidebar.html" %}
       </div>
       <!-- page -->
-      <div class="col-lg-10 admin-evenement">
         {% block content %}{% endblock %}
-      </div>
     </div>
   </div>
 
@@ -74,13 +72,6 @@
       {% include "benevole/partials/footer.html" %}
     </div>
   </footer>
-  
-  <div class="modalPlanningAjout">
-    {# modal d'ajout d'un planning pour les organisateurs #}
-    {% if Administrateur or Organisateur %} 
-      {% include "administration/evenement/organization/modal_planning_ajoute.html" %}
-    {% endif %} 
-  </div>
 
   {# debut : cookie consent #}
   <script src="{% static 'js/cookie.notice.js' %}"></script>

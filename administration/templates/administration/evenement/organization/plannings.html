@@ -2,7 +2,13 @@
 
 <div class="grid-planning-equipes" >
     {# affiche les entetes des colonnes du planning : les heures #}
-    {% include 'evenement/grid_entete_heures.html' with ligne="heures" role="admin" %}    
+    {% for dates, heures in PlanningRange.items %}
+    <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">
+        <h6 class="time-slot">{{ heures.0 }}</h6>
+    </div>
+    {% endfor %}
+    {# affiche les entetes des colonnes du planning : les heures #}
+    {% include 'evenement/grid_entete_heures.html' with ligne="heures"%}    
 
     {% if not Equipe  %}
         {# affiche toutes les equipes #}
@@ -17,14 +23,13 @@
             {% endfor %}
             {% include "administration/evenement/organization/grid_cellules.html" with row_type=equipe ligne="equipe" PageType="admin" %}
         {% endfor %}
-        {# ajoute une ligne vide pour pouvoir ajouter des equipes au besoins et le modal de modif des plannings #}
-        {% include "administration/evenement/organization/equipe_ajoute.html" %}
-        {% include "administration/evenement/organization/modal_planning_edite.html"  %}
+        {# affiche les entetes des colonnes du planning en bas: les heures #}
+        {% include 'evenement/grid_entete_heures.html' with ligne="bas" role="admin" %}
     {% else %}
         <span class="benevole-slot" aria-hidden="true" style="grid-row: heures; grid-column: benevoles-boutons;">
             <p> {{ Text.admin_list_events }} </p>
         </span>
     {% endif %}
-    {# affiche les entetes des colonnes du planning en bas: les heures #}
-    {% include 'evenement/grid_entete_heures.html' with ligne="bas" role="admin" %}
+    {# ajoute une ligne vide pour pouvoir ajouter des equipes au besoins et le modal de modif des plannings #}
+    {% include "administration/evenement/organization/equipe_ajoute.html" %}
 </div>

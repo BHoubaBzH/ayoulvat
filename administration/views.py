@@ -298,3 +298,72 @@ class OrganizationView(View):
         self.context["Plannings"]   = list(Planning.objects.filter(evenement=self.Evt).order_by('debut'))
 
         return render(request, self.template_name, self.context)
+    
+
+@login_required(login_url='login')
+def CreneauFetch(request):
+    """
+        view pour requete javascript fetch 
+        retourne un form creneau
+        le but est de ne pas avoir a charger un modal spécifique par creneau affiché
+    """
+    logger.info(request)
+    if request.method == "POST":
+
+        evt=Evenement.objects.get(UUID=request.POST.get('evenement_uuid'))
+        RolesUtilisateur = liste_roles_utilisateur(request, evt)
+
+        log_post(request.POST)
+        
+        if request.POST.get('creneau_affiche') == 'form' :
+            creneau = CreneauForm(personne_connectee=request.user, 
+                                personne_connectee_roles=RolesUtilisateur,
+                                type="creneau",
+                                evenement=request.POST.get('evenement_uuid'),
+                                instance=Creneau.objects.get(UUID=request.POST.get('creneau_uuid')))
+            return HttpResponse(creneau.as_table(), content_type="text/plain")
+            # return JsonResponse({'creneau_form' : creneau }, safe=False)
+        elif request.POST.get('creneau_affiche') == 'json':
+            creneau = Creneau.objects.filter(UUID=request.POST.get('creneau_uuid')).values()
+            creneau_obj = Creneau.objects.get(UUID=request.POST.get('creneau_uuid'))
+            poste = Poste.objects.get(UUID=creneau_obj.poste_id).nom
+            planning = Planning.objects.get(UUID=creneau_obj.planning_id).nom
+            equipe = Equipe.objects.get(UUID=creneau_obj.equipe_id).nom
+            try : 
+                benevole_nom = ProfileBenevole.objects.get(UUID=creneau_obj.benevole_id).personne.last_name
+                benevole_pre = ProfileBenevole.objects.get(UUID=creneau_obj.benevole_id).personne.first_name
+                benevole= f"{benevole_nom.upper()} {benevole_pre.title()}"
+            except:
+                benevole = "Libre"
+            context = {
+                'creneau' : list(creneau)[0],
+                'poste_nom' : poste,
+                'planning_nom': planning,
+                'equipe_nom' : equipe,
+                'benevole_nom' : benevole,
+            }
+            return JsonResponse(context, safe=False) 
+
+@login_required(login_url='login')
+def PlanningFetch(request):
+    """
+        view pour requete javascript fetch 
+        retourne un form planning
+        le but est de ne pas avoir a charger un modal spécifique par planning affiché
+    """
+    logger.info(request)
+    if request.method == "POST":
+        log_post(request.POST)
+        
+        if request.POST.get('planning_affiche') == 'form' :
+            planning = PlanningForm(instance=Planning.objects.get(UUID=request.POST.get('planning_uuid')))
+            return HttpResponse(planning.as_table(), content_type="text/plain")
+        elif request.POST.get('planning_affiche') == 'json':
+            planning = Planning.objects.filter(UUID=request.POST.get('planning_uuid')).values()
+            equipe_nom = Equipe.objects.get(planning__UUID=request.POST.get('planning_uuid')).nom
+            logger.info(equipe_nom)
+            context = {
+                'planning' : list(planning)[0],
+                'equipe_nom' : equipe_nom,
+            }
+            return JsonResponse(context, safe=False)

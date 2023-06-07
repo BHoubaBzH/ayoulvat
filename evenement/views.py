@@ -157,102 +157,55 @@ def evenement(request, uuid_evenement):
             if ('benevole_libere_creneau' in request.POST):
                 messages.info(request, flash[language]['free_creneau_success'])
 
-        # admin change un objet de l'evenement : retour en post de la l info modifier / ajouter / supprimer
-        if  any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter', 'creneau_supprimer']):
-            data["Form"]=forms_creneau(request, RolesUtilisateur)
-        if any(x in request.POST for x in ['poste_modifier', 'poste_ajouter','poste_supprimer']):
-            data["Form"]=forms_poste(request)
-        if any(x in request.POST for x in ['planning_modifier', 'planning_ajouter', 'planning_supprimer']):
-            data["Form"]=forms_planning(request)
-        if any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter', 'equipe_supprimer']):
-            data["Form"]=forms_equipe(request)
+        # dans equipe
+        if request.POST.get('equipe'):  
+            # selection d'une équipe
 
-        if 'planning_modifier' in request.POST or 'planning_ajouter' in request.POST:
-            # admin dans gestion des equipes planning, il y reste
+            # UUID equipe selectionnée
+            data["equipe_uuid"] = request.POST.get('equipe')  
+            data["planning_uuid"] = request.POST.get('planning')
+            data["Planning"] = Planning.objects.get(UUID=data["planning_uuid"])  # planning selectionnée
+            # instances de form poste & creneau liées : modifs & suppression & liste des postes
+            data["PlanningRange"] = planning_range(data["Planning"].debut,
+                                                data["Planning"].fin,
+                                                data["Planning"].pas)
+            # retourne les creneaux d'un evenement sur une plage et sur tous les plannings 
+            # permet de savoir si le user est occupe sur la plage 
+            data["Creneaux_plage"] = \
+                tous_creneaux_entre_2_heures(data["Planning"].debut,
+                                                data["Planning"].fin,
+                                                uuid_evenement)
+
+            # envoi les forms au template
+            if data["planning_uuid"]:
+                planning = Planning.objects.get(UUID=data["planning_uuid"])
+                data["DicPostes"] = dic_forms_postes(planning)
+                data["DicCreneaux"] = dic_forms_creneaux(request, planning, RolesUtilisateur)
+                data["PostesCreneaux"] = postes_creneaux(planning)
+
+        else:  
+            # selection d'un evenement uniquement
+            # pas de 30 minutes par défaut a voir pour variabiliser
             data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
-        else:
-            # dans equipe
-            if request.POST.get('equipe') and not any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter', 'equipe_supprimer']):  
-                # selection d'une équipe
-
-                if not request.POST.get('planning_supprimer'):
-                    # UUID equipe selectionnée
-                    data["equipe_uuid"] = request.POST.get('equipe')  
-                    data["planning_uuid"] = request.POST.get('planning')
-                    data["Planning"] = Planning.objects.get(UUID=data["planning_uuid"])  # planning selectionnée
-                    # instances de form poste & creneau liées : modifs & suppression & liste des postes
-                    data["PlanningRange"] = planning_range(data["Planning"].debut,
-                                                        data["Planning"].fin,
-                                                        data["Planning"].pas)
-                    # retourne les creneaux d'un evenement sur une plage et sur tous les plannings 
-                    # permet de savoir si le user est occupe sur la plage 
-                    data["Creneaux_plage"] = \
-                        tous_creneaux_entre_2_heures(data["Planning"].debut,
-                                                        data["Planning"].fin,
-                                                        uuid_evenement)
-
-                    # envoi les forms au template
-                    if data["planning_uuid"]:
-                        planning = Planning.objects.get(UUID=data["planning_uuid"])
-                        data["DicPostes"] = dic_forms_postes(planning)
-                        data["DicCreneaux"] = dic_forms_creneaux(request, planning, RolesUtilisateur)
-                        data["PostesCreneaux"] = postes_creneaux(planning)
-                    # un admin a cliqué sur le bouton d edition du planning : editer les postes et les creneaux
-                    if 'planning_editer' in request.POST \
-                        or 'poste_ajouter' in request.POST \
-                        or 'poste_modifier' in request.POST \
-                        or 'poste_supprimer' in request.POST \
-                        or 'creneau_ajouter' in request.POST \
-                        or 'creneau_modifier' in request.POST \
-                        or 'creneau_supprimer' in request.POST :
-                        data["PlanningEditer"] = "oui"
-                # selection d'un planning
-                else:
-                    data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
-
-            elif not request.POST.get('equipe') or any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter', 'equipe_supprimer']):  
-                # selection d'un evenement uniquement
-                # pas de 30 minutes par défaut a voir pour variabiliser
-                data["PlanningRange"] = planning_range(evenement.debut, evenement.fin, 30)
-                # si la personne a cliqué sur le bouton pour recevoir ses créneaux par email
-                if 'creneaux_courriel' in request.POST:
-                    try:
-                        envoi_courriel_plan_perso(request, evenement)
-                        messages.success(request, flash[language]['message_sent_success'])
-                    except:
-                        messages.error(request, flash[language]['message_sent_error'])
-                # un admin/orga veut devenir bénévole sur l evenement
-                if 'devenir_benevole' in request.POST:
-                    devenir_benevole(request.user, EVENEMENT=evenement)
-            
-            # on envoie la form non liée au template pour ajout d un nouveau poste
-            data["FormPoste"] = PosteForm(initial={'evenement': evenement,
-                                                'equipe': data["equipe_uuid"],
-                                                'planning': data["planning_uuid"]})
-                            
-            # on envoie la form non liée au template pour ajout d un nouveau creneau
-            # si pas de creneau selectionné : type = "", sinon type = "creneau" ou "benevole" 
-            # logger.info('POST TYPE : {}'.format(request.POST.get('type')))
-            data["FormCreneau"] = CreneauForm(initial={'evenement': evenement,
-                                                    'equipe': data["equipe_uuid"],
-                                                    'planning': data["planning_uuid"],
-                                                    'id_benevole': ProfileBenevole.UUID},
-                                            pas_creneau=planning_retourne_pas(request),
-                                            planning_uuid=request.POST.get('planning'),
-                                            poste_uuid=request.POST.get('poste'),
-                                            benevole_uuid=request.POST.get('benevole'),
-                                            personne_connectee=request.user,
-                                            personne_connectee_roles=RolesUtilisateur,
-                                            evenement=uuid_evenement,
-                                            type=request.POST.get('type'), )
-            # si le benevole appuie sur le bouton "mon planning"
-            if request.POST.get('planning_perso'):
-                data["planning_perso"] = "oui"
-                data["PlanningRange"] = planning_range(evenement.debut,
-                                                    evenement.fin,
-                                                    30)
-            if request.POST.get('planning_global'):
-                data["planning_global"] = "oui"
+            # si la personne a cliqué sur le bouton pour recevoir ses créneaux par email
+            if 'creneaux_courriel' in request.POST:
+                try:
+                    envoi_courriel_plan_perso(request, evenement)
+                    messages.success(request, flash[language]['message_sent_success'])
+                except:
+                    messages.error(request, flash[language]['message_sent_error'])
+            # un admin/orga veut devenir bénévole sur l evenement
+            if 'devenir_benevole' in request.POST:
+                devenir_benevole(request.user, EVENEMENT=evenement)
+        
+        # si le benevole appuie sur le bouton "mon planning"
+        if request.POST.get('planning_perso'):
+            data["planning_perso"] = "oui"
+            data["PlanningRange"] = planning_range(evenement.debut,
+                                                evenement.fin,
+                                                30)
+        if request.POST.get('planning_global'):
+            data["planning_global"] = "oui"
 
 
         # recupere l info si le lien vers une page admin ou autre
@@ -270,72 +223,3 @@ def evenement(request, uuid_evenement):
 
     logger.info(f'*** Fin traitement view : {datetime.now()}')
     return render(request, "evenement/partials/base_evenement.html", data)
-
-
-@login_required(login_url='login')
-def CreneauFetch(request):
-    """
-        view pour requete javascript fetch 
-        retourne un form creneau
-        le but est de ne pas avoir a charger un modal spécifique par creneau affiché
-    """
-    logger.info(request)
-    if request.method == "POST":
-
-        evt=Evenement.objects.get(UUID=request.POST.get('evenement_uuid'))
-        RolesUtilisateur = liste_roles_utilisateur(request, evt)
-
-        log_post(request.POST)
-        
-        if request.POST.get('creneau_affiche') == 'form' :
-            creneau = CreneauForm(personne_connectee=request.user, 
-                                personne_connectee_roles=RolesUtilisateur,
-                                type="creneau",
-                                evenement=request.POST.get('evenement_uuid'),
-                                instance=Creneau.objects.get(UUID=request.POST.get('creneau_uuid')))
-            return HttpResponse(creneau.as_table(), content_type="text/plain")
-            # return JsonResponse({'creneau_form' : creneau }, safe=False)
-        elif request.POST.get('creneau_affiche') == 'json':
-            creneau = Creneau.objects.filter(UUID=request.POST.get('creneau_uuid')).values()
-            creneau_obj = Creneau.objects.get(UUID=request.POST.get('creneau_uuid'))
-            poste = Poste.objects.get(UUID=creneau_obj.poste_id).nom
-            planning = Planning.objects.get(UUID=creneau_obj.planning_id).nom
-            equipe = Equipe.objects.get(UUID=creneau_obj.equipe_id).nom
-            try : 
-                benevole_nom = ProfileBenevole.objects.get(UUID=creneau_obj.benevole_id).personne.last_name
-                benevole_pre = ProfileBenevole.objects.get(UUID=creneau_obj.benevole_id).personne.first_name
-                benevole= f"{benevole_nom.upper()} {benevole_pre.title()}"
-            except:
-                benevole = "Libre"
-            context = {
-                'creneau' : list(creneau)[0],
-                'poste_nom' : poste,
-                'planning_nom': planning,
-                'equipe_nom' : equipe,
-                'benevole_nom' : benevole,
-            }
-            return JsonResponse(context, safe=False) 
-
-@login_required(login_url='login')
-def PlanningFetch(request):
-    """
-        view pour requete javascript fetch 
-        retourne un form planning
-        le but est de ne pas avoir a charger un modal spécifique par planning affiché
-    """
-    logger.info(request)
-    if request.method == "POST":
-        log_post(request.POST)
-        
-        if request.POST.get('planning_affiche') == 'form' :
-            planning = PlanningForm(instance=Planning.objects.get(UUID=request.POST.get('planning_uuid')))
-            return HttpResponse(planning.as_table(), content_type="text/plain")
-        elif request.POST.get('planning_affiche') == 'json':
-            planning = Planning.objects.filter(UUID=request.POST.get('planning_uuid')).values()
-            equipe_nom = Equipe.objects.get(planning__UUID=request.POST.get('planning_uuid')).nom
-            logger.info(equipe_nom)
-            context = {
-                'planning' : list(planning)[0],
-                'equipe_nom' : equipe_nom,
-            }
-            return JsonResponse(context, safe=False)
