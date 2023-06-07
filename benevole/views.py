@@ -2,13 +2,18 @@ import logging
 from sys import api_version
 
 from django.http import HttpResponseRedirect
-from association.models import AssoPartenaire, Association
-from ayoulvat.methods import envoi_courriel
+from association.models import AssoPartenaire
+from utils.generic import envoi_courriel
 from ayoulvat.languages import *
 
-from benevole.models import Personne, ProfileBenevole
-from evenement.models import Creneau, Equipe, Evenement, evenement_benevole_assopart
-from django.contrib.auth.models import Group
+from utils.evenement import *
+from utils.generic import *
+from utils.benevole import *
+from utils.administration import *
+from ayoulvat.languages import *
+
+from benevole.models import Personne, ProfileAdministrateur, ProfileOrganisateur, ProfileResponsable, ProfileBenevole
+from evenement.models import Evenement, evenement_benevole_assopart
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.urls.base import reverse
@@ -18,174 +23,13 @@ from django.db.models import Q
 from datetime import date
 
 from benevole.forms import BenevoleForm, PersonneForm, RegisterForm
-from benevole.models import ProfileAdministrateur, ProfileOrganisateur, ProfileResponsable, ProfileBenevole
+from benevole.models import ProfileBenevole
 from django.contrib import messages
 
 # import the logging library
 import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
-
-################################################
-#            fonctions 
-################################################
-
-def RoleUtilisateur(request, objet="", filtre=""): # remplace GroupeUtilisateur pour avoir le role par evenement
-    """
-        renvoi les roles du user connecte 
-        filtre si en parametre est passé 
-        ass : pour l'asso uniquement
-        ev : pour l'evenement uniquement
-        eq : pour l'equipe uniquement
-        plan : pour le planning uniquement
-
-        sortie
-            dictionnaire: groupe, queryset
-    """
-    association, evenement, equipe, planning = "", "" , "", ""
-    out={}
-    if objet=='plan':
-        # roles de la personne dans le planning
-        planning = filtre
-        equipe = Equipe.objects.get(UUID=planning.equipe_id)
-        evenement = Evenement.objects.get(UUID=planning.evenement_id)
-        association = Association.objects.get(UUID=evenement.association_id)
-        filtre_asso = 'Q(referent=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
-        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, evenement.UUID)
-        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, equipe.UUID)
-        #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(planning_id="{}")'.format(request.user.UUID, planning.UUID)
-    if objet=='eq':
-        # roles de la personne dans l equipe
-        equipe = filtre
-        evenement = Evenement.objects.get(UUID=equipe.evenement_id)
-        association = Association.objects.get(UUID=evenement.association_id)
-        filtre_asso = 'Q(referent=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
-        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, evenement.UUID)
-        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, equipe.UUID)
-        #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(equipe_id="{}")'.format(request.user.UUID, equipe.UUID)
-    if objet=='ev':
-        # roles de la personne dans l evenement
-        evenement = filtre
-        association = Association.objects.get(UUID=evenement.association_id)
-        filtre_asso='Q(referent=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
-        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, evenement.UUID)
-        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(evenement_id="{}")'.format(request.user.UUID, evenement.UUID)
-        #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(evenement_id="{}")'.format(request.user.UUID, evenement.UUID)
-    if objet=='ass':
-        # roles de la personne dans l asso
-        association = filtre
-        filtre_asso = 'Q(referent=ProfileAdministrateur.objects.get(personne_id="{}")), Q(UUID="{}")'.format(request.user.UUID, association.UUID)
-        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}")), Q(association_id="{}")'.format(request.user.UUID, association.UUID)
-        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}")), Q(evenement__association_id="{}")'.format(request.user.UUID, association.UUID)
-        #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}")), Q(evenement__association_id="{}")'.format(request.user.UUID, association.UUID)
-        filtre_ben = 'Q(benevole="{}"), Q(evenement__association_id="{}")'.format(request.user.profilebenevole, association.UUID)
-    if not planning and not equipe and not evenement and not association:
-        # roles de la personne sur tout le logiciel
-        filtre_asso = 'Q(referent=ProfileAdministrateur.objects.get(personne_id="{}"))'.format(request.user.UUID)
-        filtre_ev = 'Q(organisateur=ProfileOrganisateur.objects.get(personne_id="{}"))'.format(request.user.UUID)
-        filtre_eq = 'Q(responsable=ProfileResponsable.objects.get(personne_id="{}"))'.format(request.user.UUID)
-        #filtre_cre = 'Q(benevole=ProfileBenevole.objects.get(personne_id="{}"))'.format(request.user.UUID)
-
-    # test !
-    #logger.info(f'admin test : {ProfileAdministrateur.objects.get(personne_id=request.user.UUID).association}')
-    #logger.info(f'orga test : {ProfileOrganisateur.objects.get(personne_id=request.user.UUID).OrganisateurEvenement.all()}')
-    #logger.info(f'resp test : {ProfileResponsable.objects.get(personne_id=request.user.UUID).ResponsableEquipe.all()}')
-    #logger.info(f'bene test : {ProfileBenevole.objects.get(personne_id=request.user.UUID).BenevolesEvenement.all()}')
-    #logger.info(f'orga test : {ProfileOrganisateur.objects.get(personne_id=request.user.UUID).OrganisateurEvenement.filter(UUID=evenement.UUID)}')
-
-    try:
-        out['Administrateur'] = eval('Association.objects.filter({})'.format(filtre_asso))
-    except:
-        out['Administrateur'] = ""
-    try:
-        out['Organisateur'] = eval('Evenement.objects.filter({})'.format(filtre_ev))
-    except:
-        out['Organisateur'] = ""
-    try:
-        out['Responsable'] = eval('Equipe.objects.filter({})'.format(filtre_eq))
-    except:
-        out['Responsable'] = ""
-    try:
-        out['Benevole'] = Evenement.objects.filter(Q(benevole=request.user.profilebenevole), Q(UUID=evenement.UUID))
-    except:
-        out['Benevole'] = ""
-    return out
-
-def ListeGroupesUserFiltree(request, objet="", filtre=""):
-    """
-        roles du user connecte
-        filtre si en parametre est passé 
-        objet :
-            ass : pour l'asso uniquement
-            ev : pour l'evenement uniquement
-            eq : pour l'equipe uniquement
-            plan : pour le planning uniquement
-        filtre : objet bdd 
-
-        sortie
-            liste: groupes aux quel le user appartient en fonction du filtre
-    """
-    # groupes du logiciel
-    # groupes_liste=Group.objects.all()
-    RolesUtilisateur = []
-    for role, entite in RoleUtilisateur(request, objet, filtre).items():
-        if entite:
-            logger.info(f'#        {role:<15} ->')
-            for obj in entite:
-                logger.info(f'#                               {obj.nom:<25}   {obj.UUID}')
-                RolesUtilisateur.append(role)
-    return RolesUtilisateur
- 
-def check_majeur(date_naissance, date_evenement):
-    '''
-        vérifie si le bénévole est majeur ou non au debut de l'evenement
-        entree : date de naissance du bénévole , date de début de l'evenement
-        sortie : booleen , True : Majeur , False : Mineur
-    '''
-    pivot = 6570 # age pivot : 18 ans = 6570 jours
-    delta = date_evenement - date_naissance
-    if delta.days < pivot:
-        return False # mineur
-    else:
-        return True # majeur
-
-def devenir_benevole(user, **kwargs):
-    # on ajoute le bénévole à l evenement
-    if 'POST' in kwargs:
-        # un benevole s inscrit a l evenement sur la page des evenements
-        post = kwargs.get('POST')
-        insc_ev = Evenement.objects.get(UUID=post.get('inscription_event'))
-    elif 'EVENEMENT' :
-        # un admin/orga decide de devenir benevole sur l evenement
-        evt = kwargs.get('EVENEMENT')
-        insc_ev = evt
-    insc_be = ProfileBenevole.objects.get(personne_id=user.UUID)
-    if insc_ev:
-        logger.info('bénévole {} inscrit à l\'evenement {}'.format(insc_be, insc_ev))
-        insc_ev.benevole.add(insc_be)
-
-def envoi_courriel_orga_inscription(request):
-    """
-        envoi un courrier quand un bénévole s inscrit a l evenement
-    """
-    evt_uuid = request.POST.get('inscription_event')
-    evt = Evenement.objects.get(UUID=evt_uuid)
-    emails_orga = []
-    logger.debug(f'evt nom : {evt.nom}')
-    logger.debug(f'ben nom : {request.user}')
-    for orga in evt.organisateur.all():
-        emails_orga.append(orga.personne.email)
-    if emails_orga:
-        sujet = '[Ayoulvat] Nouveau bénévole inscrit à ton évènement'
-        message_text = '{} vient de s\'inscrit à l\'évènement {} comme bénévole'.format(request.user, evt)
-        message_html = ' \
-            <html> <head> </head> <body> {} vient de s\'inscrit à l\'évènement {} comme bénévole</body> </html> \
-            '.format(request.user, evt)
-        from_courriel = 'no-reply@deusta.bzh'
-        to_courriel = emails_orga
-        logger.debug(to_courriel)
-        if sujet and to_courriel and from_courriel:
-            envoi_courriel(sujet, message_text, from_courriel, to_courriel, message_html)
 
 ################################################
 #            views 
@@ -231,12 +75,6 @@ def Home(request):
                                         ~Q(benevole__personne_id=request.user.UUID)).order_by("debut"),# evenements à venir , ou en cours benevole pas inscrit 
         "Text": text_template[language], # textes traduits
     }
-    try :
-        # a un profile administrateur d asso
-        # attention ok car on ne peut estre admin que d un evenement
-        data['Assos'] = [request.user.profileadministrateur.association]
-    except:
-        data['Assos'] = Association.objects.all()
 
     # check si on a un administrateur:
     logger.info('#########################################################')
@@ -245,11 +83,9 @@ def Home(request):
     logger.info('#   roles : ')
 
     RolesUtilisateur = ListeGroupesUserFiltree(request)
-    try:
-        if 'Administrateur' in RolesUtilisateur:
-            data['Administrateur'] = "oui" # passe les roles 
-    except:
-        logger.error('erreur dans les RolesUtilisateur')
+    # passe les assos de l administrateur
+    if RolesUtilisateur['Administrateur']: data['Administrateur'] = RolesUtilisateur['Administrateur']  
+
     logger.info('#########################################################')  
 
     try:
@@ -358,3 +194,16 @@ def Profile(request):
         "Action" : "modifier",
     }
     return render(request, "benevole/profil.html", data)
+
+# boostrap template test
+def Test(request):
+    X = 50
+    Y = 50
+    data = {}
+    data['X'] = []
+    data['Y'] = []
+    for i in range(1, X+1):
+        data['X'].append(i)
+    for i in range(1, Y+1):
+        data['Y'].append(i)
+    return render(request, "benevole/test_bootstrap.html", data)

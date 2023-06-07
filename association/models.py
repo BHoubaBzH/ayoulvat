@@ -20,18 +20,22 @@ class Association(models.Model):
                                 unique=False)  # unique=False car une personne peu etre contact pour plusieures assos
     site_web = models.URLField(blank=False, default='')
     description = models.CharField(max_length=500, blank=True, default='')
-    referent = models.ForeignKey('benevole.ProfileAdministrateur',
-                                       null=True,
-                                       default='',
-                                       related_name='admin',
-                                       on_delete=models.SET_NULL,
-                                       help_text='administrateur référent de l\'asso',)
+    #referent = models.ForeignKey('benevole.ProfileAdministrateur',
+    #                                 null=True,
+    #                                default='',
+    #                                related_name='admin',
+    #                                on_delete=models.SET_NULL,
+    #                                help_text='administrateur référent de l\'asso',)
+    # fait le lien avec les Administrateurs
+    administrateur = models.ManyToManyField('benevole.ProfileAdministrateur',
+                                    related_name='AdministrateurAssociation',
+                                    blank=True,
+                                    default='',
+                                    help_text="administrateurs de l\'association")
     est_actif = models.BooleanField(default=False, help_text="permet de geler une asso : "
                                                              " - qui n'a pas payé"
                                                              " - supprimée, pour garder l'historique")
     date_creation = models.DateField(default=now, blank=False)
-    # fait le lien avec les Administrateurs
-    # Administrateurs = models.ManyToManyField('benevole.ProfileAdministrateur', related_name='Administrateur')
 
     def __str__(self):
         return self.nom

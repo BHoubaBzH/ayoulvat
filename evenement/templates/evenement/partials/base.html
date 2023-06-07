@@ -1,0 +1,81 @@
+<!-- evenement/base.html -->
+
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}{{ Text.base_event }}{% endblock %}</title>
+
+    {# ressources JQUERY #}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    {# sources scripts #}
+    <script src="{% static 'js/loader.js' %}"></script>
+    {# fonts et icons BOOTSTRAP #}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <!-- XDSoft DateTimePicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+    {# specifique slider #}
+    <!-- link href="http://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css" rel="stylesheet" -->
+    <!-- script src="http://code.jquery.com/ui/1.12.0/jquery-ui.min.js" ></script -->
+
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    <style>
+      {# internal CSS calculé dynamiquement #}
+      {% include 'evenement/partials/evenement.css.html' %}
+    </style>
+    {% bootstrap_messages %}
+    {% bootstrap_javascript %}
+    <link rel="stylesheet" href="{% static 'css/ayoulvat.css' %}" type="text/css" />
+</head>
+
+<body>  
+  <!-- affiche le popup d'aide quand on passe sur un element contenant un tooltip -->
+  <script>
+    $(document).ready(function(){
+      $('[data-bs-toggle="tooltip"]').tooltip();   
+    });
+  </script>
+
+  {#affiche un loader pendant que le client attend un retour du serveur#}
+  <div class="loader" id="loader" style="display:none"></div>
+
+  <!-- topbar -->
+  <form id="nav_bar" method='GET'>
+    {% csrf_token %}
+  </form>
+  <nav class="navbar navbar-dark sticky-top bg-dark navbar-expand-lg shadow">
+    <div class="container-fluid">
+      {% include 'benevole/partials/navbar.html'%}
+    </div>
+  </nav>
+
+  <!-- container -->
+  <div class="container-fluid text-center">    
+    <div class="row content">
+      <div class="col-lg-2 bg-dark sidebar">
+        <!-- sidebar -->
+        {% include "evenement/partials/sidebar.html" %}
+      </div>
+      <!-- page -->
+        {% block base_evenement %} {# fichier evenement/base_evenement.html#}
+        {% endblock base_evenement %}
+    </div>
+  </div>
+  
+  <!-- footer -->
+  <footer class="container-fluid text-center ">
+    <div class=" bg-light text-center text-lg-start fixed-bottom pied ">
+      {% include "benevole/partials/footer.html" %}
+    </div>
+  </footer>
+
+  {# cookie consent #}
+  <script src="{% static 'js/cookie.notice.js' %}"></script>
+  {# timeout flash message #}
+  <script src="{% static 'js/timeout.flashmessage.js' %}"></script>
+</body>
+</html>

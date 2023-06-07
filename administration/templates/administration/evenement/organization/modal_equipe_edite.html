@@ -1,0 +1,88 @@
+<!-- administration/evenement/organization/equipe_edite.html -->
+
+{# modal d edition d equipe #}
+<div class="modal fade"
+     id="modal-equipe-change-{{ equipe.UUID }}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="equipe"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">{{Text.team_mod|capfirst}} {{equipe.nom|upper}}</h5>
+            </div>
+
+            <form  id="form-equipe-{{ equipe.UUID }}"  method='post'>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <table class="table">
+                        {% for uuid, equipef in DicEquipes.items %}
+                            {% if uuid|stringformat:"s" == equipe.UUID|stringformat:"s" %}
+                                {{ equipef.as_table }}
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+                    {# données pour garder le planning affiché apres submission POST#}
+                    <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                    <input  name="equipe" value="{{ equipe.UUID }}" type="hidden">
+                    <input type="hidden" name="PageType" value="admin"/> {# indique qu'on doit revenir sur la page d'admin #}
+                    {% if Administrateur or Organisateur %}
+                        {# peut supprimer une équipe #}
+                        <button class="btn btn-danger" title="supprimer cette equipe" name="equipe_supprimer"
+                                id="equipe_supprimer-{{ equipe.UUID }}" value="supprimer" type="button"
+                                data-bs-toggle="modal" data-bs-target="#modal-confirme-equipe-supprime-{{ equipe.UUID }}">
+                                {{Text.button_del}}
+                        </button>
+                    {% endif %}
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{Text.button_null}}</button>
+                    <button type="submit" id="equipe_modifier-{{ equipe.UUID }}" name="equipe_modifier" value="" class="btn btn-primary success">{{Text.button_mod}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# modal de confirmation de suppression doit etre en dehors du div pour s'afficher correctement #}
+{% if Administrateur or Organisateur %}
+<div class="modal fade"
+     id="modal-confirme-equipe-supprime-{{ equipe.UUID }}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="equipe_supprime"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">{{ Text.team_del_confirm }}</h5>
+            </div>
+            <div class="modal-body">
+                {{ Text.you_sure }}
+                <table class="table">
+                    <tr><th>{{ Text.team }}</th><td id="equipe">{{ Equipe.nom }}</td></tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">{{Text.button_no}}</button>
+                <button type="submit" id="equipe_supprimer_confirme" class="btn btn-danger success">{{Text.button_yes}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* quand le bouton OUI est utilisé dans modal, submit la form et ferme le modal */
+    $('#modal-confirme-equipe-supprime-{{ equipe.UUID }}').on('click', '#equipe_supprimer_confirme', function(e){
+        /* alert('submitting-{{ forloop.counter }}'); */
+        $('#form-equipe-{{ equipe.UUID }}').append('<input type="hidden" name="equipe_supprimer" value="{{ equipe.UUID }}">');
+        document.getElementById('form-equipe-{{ equipe.UUID }}').submit();
+        $('#modal-confirme-equipe-supprime-{{ equipe.UUID }}').modal('toggle');
+        e.preventDefault();
+    });
+
+</script>
+{% endif %}

@@ -10,7 +10,7 @@
 	--scrollbar_couleur: #0b6dff;
 	--footer-height: 120px;
 	--gradient: linear-gradient(to left top, #ddc124 10%, #FF512F 90%) !important; /*boutons des cards evenements */ 
-	--maxheight_grid : 3em;/* hauteur des carrés de grids */
+	--maxheight_grid : 2.5em;/* hauteur des carrés de grids */
 	--cell_width : 0.8em; /* largeur des carrés de grids */
   }
   
@@ -20,15 +20,24 @@ body {
 	margin: 0 auto;
 	line-height: 1.5;*/
     background-color: var(--fond_body);
+	overflow: hidden;
 }
 
+#disposition {
+	position:fixed; /* navbar & side bar a 100% */
+}
 .card-default {
-	z-index: 1048;
+	z-index: 90;
 }
 
 /*************************
  * page evements
  *************************/
+
+.evenements-home{
+	overflow: auto;
+	height: 60vh;
+}
 
 .card-inscrit{
     opacity: 1;
@@ -71,14 +80,12 @@ body {
 	text-decoration: underline;
 }
 
-
 /*************************
  * footer
  *************************/
 
  .pied {
-	z-index: 1000;
-	font-size: small;
+	z-index: 110;
 	height:22px !important; /* hauteur du footer caché */
 	transition: height 1s; /* temps animation affichage du footer */ 
 }
@@ -119,6 +126,17 @@ footer .right {
 }
 
 /* styles des plannings*/
+
+.equipe-slot, .poste-slot { /* en cours : formatage de la premiere colonne des grid */
+	/* pb : sticky vertical */
+	/* position: sticky; */
+	left: 0;
+	padding-top: 0px;
+}
+
+.equipe-button, .poste-button {
+	width: 100%;
+}
 
 .planning-ayoulvat {
 	/*box-shadow: 3px 2px #888;*/
@@ -208,10 +226,7 @@ footer .right {
 .equipe-slot,
 .benevole-slot, 
 .time-slot {
-	/*display: flex;*/
-	/*font-size: 1vw;*/
     font-weight: bold;
-	/*overflow : hidden;*/
 }
 
 .time-slot {
@@ -221,7 +236,6 @@ footer .right {
 }
 
 /* headers grid specificites */
-
 .planning-head, .planning-head-equipes {
 	display: inline-grid;
 	/*width: 1.5em;*/
@@ -242,6 +256,7 @@ footer .right {
 .planning-head-planningperso {
 	width: var(--cell_width);
 	max-height: var(--maxheight_grid);
+	text-align: initial;
 }
 
 /* case header avec heure, ajoute un petit border */ 
@@ -268,13 +283,6 @@ footer .right {
 
 .meta a {
 	color: #555;
-}
-
-/* styles evenement */
-.evenement-button {
-	/* width: -webkit-fill-available; */
-	width: 100%;
-	text-align: left;
 }
 
 /* boutons de choix de son asso dans la page evenements */
@@ -317,6 +325,7 @@ footer .right {
 .equipe-slot-planningperso {
 	height: var(--maxheight_grid);
 	width: 6em;
+	text-align: initial;
 }
 
 .form_grid_button_planningperso .planningperso { 
@@ -331,21 +340,142 @@ footer .right {
 	text-decoration: auto;
 }
 
+/*************************
+ * parties statiques des grids
+ *************************/
+
+ .grid-planning-creneaux {
+	inline-size: fit-content;
+	display: grid;
+	gap: 0.2em;
+	padding-top: 3em;
+	padding-bottom: 2em;
+	padding-left: 2em;
+	padding-right: 2em;
+	/* pour ne pas déborder de la page */
+	max-width: 100%;
+	overflow-x: auto;
+ }
+
+ .grid-planning-equipes {
+	inline-size: fit-content;
+	display: grid;
+	gap: 0.2em;
+	padding-top: 3em;
+	padding-bottom: 2em;
+	padding-left: 2em;
+	padding-right: 2em;
+	/* pour ne pas déborder de la page */
+	max-width: 100%;
+	overflow-x: auto;
+ }
+ 
+/*************************
+* PLANNING PARTIE COMMUNE
+* 
+*************************/
+
+.poste-slot, .poste-bouton-slot, .equipe-slot {
+	text-align: left;
+	width: 8vw;
+	height: 40px;
+}
+
+.poste-bouton-slot, .benevole-bouton-slot  {
+	min-width: 10px;
+	width: 20px;
+}
+
+.poste-slot, .benevole-slot, .equipe-slot, .poste-bouton-slot, .benevole-bouton-slot   {
+	display: block;
+	/* padding: 10px 5px 5px; */
+	/* position: sticky; */
+	height: 2em;
+	top: 0;
+	z-index: 20;
+}
+
+.equipe-slot {
+	height: var(--maxheight_grid);
+	width: 6em;
+	text-align: initial;
+ }
+
+.bouton_edite_poste  {
+	padding: 1;
+	margin-left: -5px;
+	margin-top: 5px;
+}
+
+
+@media screen and (max-width:400px) {
+	/* PLANNING CRENEAUX */
+	.planning-creneaux, .planning-equipes {
+		display: none;
+	}
+	.sidebar {
+		display: none;
+	}
+	#nav-creneaux {
+		display: none;
+	}
+}
+
+/*
+@supports( display:grid ) {
+	@media screen and (min-width:700px) {
+
+	}
+}
+*/
+
+
+/* Small-screen & fallback styles */
+.session {
+	margin-bottom:  1em;
+}
+
+@supports( display:grid ) {
+	@media screen and (min-width: 700px) {
+		.poste, .benevole, .planning {
+			margin: 0;
+			z-index: 20;
+		}
+
+	}
+}
 
 
 /*************************
  * navbar
  *************************/
 .navbar {
-	z-index: 1050;
+	z-index: 100;
 }
 
+.customNav {
+	/* border-left: 1px solid var(--fond_body); */
+	/* padding: 14px 18px; */
+}
+
+@media screen and (max-width: 991px) {
+	.customNav {
+		display: block!important;
+		border: none;
+		background: rgba(0,0,0,.2);
+		text-align: center;
+		margin-top: 4px;
+		margin-bottom: 4px;
+		margin-left: -5px;
+		margin-right: -5px;
+	}
+}
 /*************************
  * sidebar
  *************************/
 
  /* cache la side bar sur petit ecran */
- /* @media screen and (max-width: 799px) {
+ /* @media screen and (max-width: 796px) {
 	.sidebar {
 		display:none!important;
 		width:22px !important; 
@@ -358,29 +488,29 @@ footer .right {
 
  }*/
 
- .sidebar {
-	z-index: 1049;}
-
+.sidebar {
+	z-index: 99;
+	overflow-y: auto;
+	/* padding-top: 4rem!important; */
+	padding-bottom: 8rem!important;
+}
 
 .bouton-sidebar {
 	width: 100%;
 }
 
-.evenement-button.active {
-	background-color: darkmagenta;
-	border-color: black;
-}
-
-.evenement-button.active:hover, .evenement-button:hover {
-	background-color: black;
-	border-color: black;
-	color: white; /* text */
+.customSideItem {
+	text-align: left;
 }
 
 /* boutons lien vers evenement */
 .bouton-evenement {
 	border: 0px;
 	padding: 0px;
+}
+
+.status-evenement {
+	text-align: center;
 }
 
 /*************************
@@ -394,7 +524,7 @@ footer .right {
 
 ::-webkit-scrollbar
 {
-	width: 10px;
+	/* width: 10px; */
 	background-color: #F5F5F5;
 }
 
@@ -412,6 +542,15 @@ footer .right {
 }
 
 /*################ administration ###################*/
+
+.admin-evenement {
+	overflow-x: auto;
+	/*height: 800px;*/
+}
+
+/*################ divers ###################*/
+
+
 .table-row-border-top {
 	border-top: double;
 	vertical-align : middle;

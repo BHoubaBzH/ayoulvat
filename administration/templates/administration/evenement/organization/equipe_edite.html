@@ -1,0 +1,28 @@
+<!-- administration/evenement/organization/equipe_edite.html -->
+
+ <form  id="form-equipe-change-{{ equipe.UUID }}" method='post'>
+    {% csrf_token %}
+    <input name="equipe_modifier-{{ equipe.UUID }}" value="{{ equipe.UUID }}" type="hidden">
+</form>
+
+ <div class="equipe-slot"
+    aria-hidden="true" style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;"
+
+    data-bs-toggle="tooltip" data-bs-placement="left"  data-bs-html="true"
+    title="
+    {{Text.admin_event_equipe}} : {{ equipe.nom }}<br>
+    {% if equipe.description %}
+        {{Text.admin_event_equipe_h}} :
+        {{equipe.description}}
+    {% endif %} ">
+        <button style=""
+            form="form-equipe-change-{{ equipe.UUID }}"
+            class="equipe-{{ equipe.UUID }} equipe-button btn btn-sm btn-info"
+            title="{{Text.team_mod_t}}"
+            id="bouton-equipe-change-{{ equipe.UUID }}"
+            type="button"
+            data-bs-toggle="modal" 
+            data-bs-target="#modal-equipe-change-{{ equipe.UUID }}">
+            <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst|truncatechars:9 }}</p>
+        </button>
+</div>

@@ -22,7 +22,6 @@ class RegisterForm(UserCreationForm):
 
     class Meta:
         model = get_user_model()
-        #fields = ['email', 'username', 'password1', 'password2', 'last_name', 'first_name', 'genre', 'date_de_naissance', 'portable']
         fields = ['email', 'username', 'password1', 'password2']
         exclude = ['username']
 

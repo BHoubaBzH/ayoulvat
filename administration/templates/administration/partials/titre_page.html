@@ -1,0 +1,36 @@
+<!-- administration/partials/titre_page.html -->
+
+<figure class="text-center">
+    <blockquote class="blockquote">
+    {# page des equipes avec les plannings #}
+    {% if page == 'plannings' %}
+        <p class='h5 titre_page'>{{ Text.title_plannings|upper }}</p>
+    {% endif %}
+    {# page des postes avec et les creneaux #}
+    {% if page == 'planning' %}
+        {% if  Planning.debut|date:'l j F'|stringformat:"s" ==  Planning.fin|date:'l j F'|stringformat:"s" %}
+            <p class='h5 titre_page'>{{Planning.equipe.nom|upper}} : {{ Planning.debut|date:'l j F' }} de {{ Planning.debut|date:'H:i' }} à {{ Planning.fin|date:'H:i' }}</p>
+        {% else %}
+            <p class='h5 titre_page'>{{Planning.equipe.nom|upper}} : {{ Planning.debut|date:'l j F' }} {{ Planning.debut|date:'H:i' }} - {{ Planning.fin|date:'l j F' }} {{ Planning.fin|date:'H:i' }}</p>
+        {% endif %}    
+    </p>
+    {% endif %}
+    {% if page == 'benevoles' %}
+        <p class='h5 titre_page'>{{ Text.title_volunteer|upper }}</p>
+    {% endif %}
+    {% if page == 'creneaux' %}
+        <p class='h5 titre_page'>{{ Text.title_slots|upper }}</p>
+    {% endif %}
+    {% if page == 'dashboard' %}
+        <p class='h5 titre_page'>{{ Text.title_dashboard|upper }}</p>
+    {% endif %}
+    {% if page == 'remplissage' %}
+    <p class='h5 titre_page'>{{ Text.title_rate_busy|upper }}</p>
+{% endif %}
+    </blockquote>
+</figure>
+
+{# barre horizontale #}
+<hr class="border-2 border-top border-dark"> 
+
+

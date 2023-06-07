@@ -1,0 +1,140 @@
+<!-- evenement/sidebar.html -->
+{% load filters_perso %}
+
+<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark vh-100 sidebar">
+
+    <ul class="nav nav-pills flex-column mb-auto">
+      {# si un evenement, affiche la sidebar evenement #}
+      {% if Evenement %}
+        {% include 'evenement/partials/evenement_status.html' %}
+        {# top menu #}
+
+{# menu planning & equipes #}
+
+        {% if Benevole and creneaux_benevole %} {# si benevole sur l evenement et des creneaux choisis, lien vers son planning#}
+        <li>
+          <form class="form evenement-form" method="post">
+            {% csrf_token %}
+            <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+            <input  name="equipe" value="{{ team.UUID }}" type="hidden">
+            <input type="hidden" name="planning_perso" value="oui">
+            <button class="nav-link align-middle px-0" 
+              data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"  
+              title="{{Text.nav_planning_perso_h}}" onclick="loader()">
+                <i class="fs-1 bi-clipboard-heart"></i><span class="ms-1 d-none d-sm-inline">{{Text.nav_planning_perso }}</span>
+                {% csrf_token %}
+              <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+            </button>
+
+          </form>
+        </li>
+        {% elif not Benevole and Evenement %} {# si dans un evenement mais pas benevole , propose de le devenir (cas des organisateurs) #}
+        <li>
+          <form class="form evenement-form" method="post">
+            {% csrf_token %}
+            <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+            <input type="hidden" name="devenir_benevole" value="">
+            <button class="nav-link align-middle px-0" 
+              data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"  
+              title="{{Text.nav_participate_h}}" onclick="loader()">
+                <i class="fs-1 bi-emoji-kiss-fill"></i><span class="ms-1 d-none d-sm-inline">{{Text.nav_participate }}</span>
+                {% csrf_token %}
+              <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+            </button>
+
+          </form>
+        </li>
+        {% endif %}
+
+        <hr>{# saut de section#}
+        {# planning de l evenement #}
+        <li class="nav-item customSideItem">
+          <form class="form evenement-form" method="post">
+            <input type="hidden" name="planning_global" value="oui">
+            <button class="nav-link align-middle px-0" 
+              data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"  
+              title="{{ Text.nav_plannings_h }}<br>
+              <hr>
+              {{ Text.nav_nb_free_slots }}: <br>
+              <h3>{{ EvenementCreneauxDispo }}</h3>" 
+              onclick="loader()">
+              <i class="fs-1 bi-calendar2-range"></i><span class="ms-1 d-none d-sm-inline">{{ Text.nav_plannings }}</span>
+                {% csrf_token %}
+              <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+            </button>
+          </form>
+        </li>
+
+        {# equipes #}
+        <li class="nav-item customSideItem">
+          <a href="#submenu-equipes" data-bs-toggle="collapse" class="nav-link px-0 align-middle"
+          data-bs-toggle="tooltip" data-bs-placement="right" title="{{ Text.nav_teams_h }}" >
+          <i class="fs-1 bi-people"></i> <span class="ms-1 d-none d-sm-inline">{{ Text.nav_teams }}</span>
+          </a>
+          <ul class="collapse nav flex-column ms-1" id="submenu-equipes">
+            {% for team in equipes_avec_planning %}
+              <li class="ms-3 w-100"> 
+                <a href="#submenu-{{team.UUID}}" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                  <i class="bi-people"></i> <span class="ms-1 d-none d-sm-inline"
+                    {% if team.description %} data-bs-toggle="tooltip" data-bs-placement="right" title="{{team.description}}" {% endif %}>{{ team.nom|capfirst }}
+                  </span>
+                </a>
+                {% for planning in  Plannings %}
+                  {% if  planning.equipe == team %}
+                    <ul class="collapse nav flex-column ms-1" id="submenu-{{team.UUID}}">
+                      <form class="form evenement-form" method="post">
+                        {% csrf_token %}
+                        <input  name="evenement" value="{{ Evenement.UUID }}" type="hidden">
+                        <input  name="equipe" value="{{ planning.equipe_id }}" type="hidden">
+                        <input  name="planning" value="{{ planning.UUID }}" type="hidden">
+                        <button class="nav-link align-middle px-0"
+                                {% if  planning.UUID in PlanningCreneauxDispo %}
+                                  data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" 
+                                  title="{{ Text.nav_nb_free_slots }}: <br>
+                                  <h3>{{ PlanningCreneauxDispo|get_item:planning.UUID }}</h3>"
+                                {% elif planning.description %}
+                                  data-bs-toggle="tooltip" data-bs-placement="right" title="{{planning.description}}"
+                                {% endif %} onclick="loader()" >
+                          <i class="ms-3 bi-table"></i> <span class="ms-1 d-none d-sm-inline">{{ planning.nom }}</span>
+                        </button>
+                      </form>
+                    </ul>
+                  {% endif %}
+                {% endfor %}
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+
+        {% if Administrateur or Organisateur %} 
+        <hr>{# saut de section#}
+        <li class="nav-item customSideItem">
+            <a href="{% url 'dashboard' %}" class="nav-link px-0" 
+            title="{{ Text.back_admin_view_h}}" data-bs-toggle="tooltip" data-bs-placement="right" 
+            data-bs-original-title="Icon-only" onclick="loader()">
+                <i class="bi bi-backspace fs-1"></i><span class="ms-1 fs-5 d-none d-sm-inline">{{ Text.back_admin_view}}<span>
+            </a>
+        </li>
+        {% endif %}
+
+      {# sinon si on a plusieurs evenement, on affiche les evenements dans la sidebar#}
+      {% elif Evenements %}
+        <ul class="nav nav-pills flex-column mb-auto" id="menu-equipes">
+          <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
+          data-bs-toggle="tooltip" data-bs-placement="right" title="{{ Text.nav_events_asso_h }}">
+            <span class="fs-4">{{ Text.nav_events_asso }}</span>
+          </a>
+          <hr>{# saut de section#}
+          {% for event in Evenements %}
+            <li class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+              <form class="form evenement-form" method="get" action="{% url 'evenement' uuid_evenement=event.UUID %}">
+                <button class="nav-link align-middle px-0" onclick="loader()">
+                  <i class="bi-calendar3-event-fill"></i> <span class="ms-1 d-none d-sm-inline">{{ event.nom }}</span>
+                </button>
+              </form>
+            </li>
+          {% endfor%}
+        </ul>
+      {% endif %}
+    </ul>
+</div>

@@ -1,0 +1,20 @@
+<!-- administration/evenement/organization/equipe_ajoute.html -->
+
+<span class="equipe-ajoute" aria-hidden="true" style="grid-row: equipe-add; grid-column: equipes;">
+        <form  id="form-equipe_ajouter" method='post'>
+            {% csrf_token %}
+            <button style=""
+                    class="btn btn-sm"
+                    title="{{Text.team_add_t}}"
+                    id="bouton-equipe_ajouter"
+                    type="submit"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal-equipe_ajouter">
+                <div>
+                    <i class="bi bi-plus-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i>
+                </div>
+            </button>
+            <input type="hidden" name="PageType" value="admin"/>
+        </form>
+    </button>
+</span>

@@ -1,0 +1,56 @@
+<span class="navbar-brand">
+  {% if Evenement %}
+    {% if Evenement.vignette %}<img src="{{ Evenement.vignette.url }}" style="max-width: 40px;max-height: 40px;">{% endif %}
+    {% if Administrateur or Organisateur %}<a class="ms-1" href="{% url 'liste_evenements' %}">{{ Association.nom }}</a>{% endif %}
+      {%if Evenement.nom%}<a class="ms-1 text-white text-decoration-none"> {% if Administrateur or Organisateur%}<i class="bi bi-chevron-right"></i>{% endif %} {{ Evenement.nom }}</a>{%endif%}
+  {% elif Association %}
+    <a  href="{% url 'detail_asso' uuid_asso=Association.UUID %}" data-bs-original-title="{{Text.nav_asso_details}}" 
+      data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom">
+      {{ Association.nom|upper }}</a>
+  {% else %}
+    AYOULVAT
+  {% endif %}
+</span>
+
+<span class="navbar-text list-unstyled">
+  {% if Administrateur or Organisateur or Responsable%}
+    <li class="nav-item customNav">
+      <a class="nav-link"> 
+      {% if Administrateur %}
+        <font color="Red">{{Text.administrator}}</font></a>
+      {% elif Organisateur %}
+        <font color="OrangeRed">{{Text.organiser}}</font></a>
+      {% elif Responsable %}
+        <font color="Orange">{{Text.responsible}}</font>
+      {% endif %}
+      </a>
+    </li>
+  {% endif %}
+</span>
+
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarmenu" aria-controls="navbarmenu" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+</button>
+
+<div class="collapse navbar-collapse" id="navbarmenu">
+  {% if user.is_authenticated %}
+    <ul class="navbar-nav me-auto">
+      {% if user.is_staff %}
+        {# admin django #}
+        <li class="nav-item customNav">
+          <a class="nav-link" href="/admin_ayoulvat/"  target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">
+            <font color="Red">{{Text.nav_django_admin}}</font></a>
+        </li>
+      {% endif %}
+      <li class="nav-item customNav">
+        <a href="{% url 'home' %}" id="profile" class="nav-link" 
+          data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{Text.nav_events_h}}" >
+          {{Text.nav_events}}</a>
+      </li>
+    </ul>
+  {% endif %}
+
+  <span class="navbar-text customNav">
+    {% include 'evenement/partials/menu_perso.html' %}
+  </span>
+</div>                       

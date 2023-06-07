@@ -1,0 +1,48 @@
+<!-- administration/evenement/organization/poste_edite.html -->
+
+<form  id="form-poste-change-{{ poste.UUID }}" method='post'>
+    {% csrf_token %}
+    <input name="poste_modifier-{{ poste.UUID }}" value="{{ poste.UUID }}" type="hidden">
+    {# données pour garder le planning affiché apres submission POST#}
+    <input type="hidden" name="PlanningEditer" value="true">
+</form>
+
+<div class="poste-slot ligne-{{ poste.UUID }}"
+                aria-hidden="true"
+                style="grid-row: ligne-{{ poste.UUID }}; grid-column: postes;"
+                id="bouton-poste-change-{{ poste.UUID }}"
+                data-bs-toggle="tooltip" data-bs-placement="left"  data-bs-html="true"
+                title="
+                {{ Text.poste}} : {{ poste.nom }}<br>
+                {# affiche les infos aux bénévoles sur les raisons de non accès a ce poste #}
+                {% if not PlanningEditer %} {# page bénévole#}
+                    {% if not poste.ouvert %}
+                        <b>{{ Text.poste_not_open }}</b><br><br>
+                    {% elif not poste.ouvert_mineur %}
+                        <b>{{ Text.poste_not_minor }}</b><br><br>
+                    {% endif %}
+                    {% if poste.description %}
+                        description :
+                        {{poste.description}}
+                    {% endif %}
+                {% else %} {# orga festival arrivé en edition #}
+                    {% if not poste.ouvert %}
+                    <b>{{ Text.adm_poste_not_open }}</b><br>
+                    {% endif %}
+                    {% if not poste.ouvert_mineur %}
+                    <b>{{ Text.adm_poste_not_minor }}</b><br>
+                    {% endif %}
+                {% endif %}
+                ">
+    <button style=""
+        form="form-poste-change-{{ poste.UUID }}"
+        class="poste-{{ poste.UUID }} poste-button btn btn-sm btn-info"
+        title="{{Text.team_mod_t}}"
+        id="bouton-poste-change-{{ poste.UUID }}"
+        type="button"
+        data-bs-toggle="modal" 
+        data-bs-target="#modal-poste-change-{{ poste.UUID }}">
+        <p style="margin-bottom: 0px;">{{ poste.nom|capfirst|truncatechars:9 }}</p>
+    </button>
+        {#{ poste.nom }#}
+</div>

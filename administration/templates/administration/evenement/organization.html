@@ -1,0 +1,40 @@
+<!-- administration/evenement/planning.html -->
+
+{% extends 'administration/partials/base.html' %}
+{% load filters_perso %}
+{% load bootstrap5 %}
+
+{% block content %}
+    <div class="col-lg-10 admin-evenement d-flex flex-column vh-100 sidebar">
+        {# bandeau message d erreur si besoins #}
+        {% include "evenement/partials/error_message.html" %}
+
+        {% if not PlanningEditer %}
+            {% include 'administration/partials/titre_page.html' with page="plannings" %}
+            {% include 'administration/evenement/organization/plannings.html' %}
+        {% else %}
+            {% include 'administration/partials/titre_page.html' with page="planning" %}
+            {% include 'administration/evenement/organization/planning.html' %}
+        {% endif %}
+    </div>
+
+    {# modals relatifs a un evenement#}
+    {% if not PlanningEditer %}
+    {% include "administration/evenement/organization/modal_planning_edite.html"  %}
+    {% include "administration/evenement/organization/modal_planning_ajoute.html" %}
+    {% include "administration/evenement/organization/modal_equipe_ajoute.html" %}
+    {% for equipe in Equipes %}
+        {% include "administration/evenement/organization/modal_equipe_edite.html" %}
+    {% endfor %}
+    {% else %}
+    {# dans un planning#}
+    {% include "administration/evenement/organization/modal_creneau_ajoute.html" with type='poste' %}
+    {% include "administration/evenement/organization/modal_creneau_edite.html" with type='poste' source_type="creneau" %}
+    {% include "administration/evenement/organization/modal_poste_ajoute.html" %}
+    {% for poste,creneaux in PostesCreneaux.items %}
+        {% include "administration/evenement/organization/modal_poste_edite.html" %}
+    {% endfor %}
+    {% endif %}
+
+
+{% endblock %}

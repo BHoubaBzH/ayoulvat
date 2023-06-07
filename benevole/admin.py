@@ -76,11 +76,11 @@ class BenevoleCustom(BenevoleCommun):
             return qs
     inlines = (BenevoleEvenementInLine,)
 
-@admin.register(models.ProfileAdministrateur)
-class AdministrateurCustom(BenevoleCommun):
-    def assos(self, obj):
-        return obj.association
-    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname', 'assos')
+#@admin.register(models.ProfileAdministrateur)
+#class AdministrateurCustom(BenevoleCommun):
+#    def assos(self, obj):
+#        return obj.association
+#    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname', 'assos')
 
 @admin.register(models.ProfileOrganisateur)
 class OrganisateurCustom(BenevoleCommun):
@@ -94,6 +94,6 @@ class ResponsableCustom(BenevoleCommun):
 #admin.site.unregister(User)
 #admin.site.register(User, BenevoleDetails)
 
-#admin.site.register(models.ProfileAdministrateur)
+admin.site.register(models.ProfileAdministrateur)
 #admin.site.register(models.ProfileOrganisateur)
 #admin.site.register(models.ProfileResponsable)

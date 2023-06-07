@@ -1,0 +1,56 @@
+<!-- evenement/evenement_status.html -->
+{# affiche l etat de l evenement et des inscriptions a celui-ci #}
+
+<ul class="nav nav-pills flex-column mb-auto" id="top-menu">
+    <li class="nav-item status-evenement">
+      {# si l evenement est bloqué ou pas ouvert aux inscriptions , on affiche#}
+      {% now "Y-m-d" as aujourdhui %}
+      {% if not Evenement.editable %}
+        <div class="btn-group me-2">
+            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="right" 
+                title="{{Text.evt_blocked_h}}">
+                <i class="bi bi-cloud-minus-fill"></i><br>
+                {{Text.evt_blocked}}
+            </button>
+        </div>
+      {# si l evenement est terminé , on affiche#}
+      {% elif aujourdhui > Evenement.fin|date:"Y-m-d" %}
+        <div class="btn-group me-2">
+            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="right" 
+                title="{{Text.evt_ended_h}}">
+                <i class="bi bi-cloud-slash-fill"></i><br>
+                {{Text.evt_ended}}
+            </button>
+        </div>
+
+      {# si les inscriptions à l evenements n ont pas commencees , on affiche#}
+      {% elif EvtOuvertBenevoles|stringformat:"s" == '0'%}
+        <div class="btn-group me-2">
+            <button id="profile" class="btn btn-outline-warning" data-bs-toggle="tooltip" data-bs-placement="right" 
+                title="{{Text.enrolments_tocome_h}} {{Evenement.inscription_debut}}">
+                <i class="bi bi-brightness-alt-low-fill"></i><br> 
+                {{Text.enrolments_tocome}}</b>
+            </button>
+        </div>
+      {# si les inscriptions à l evenements sont en cours , on affiche#}
+      {% elif EvtOuvertBenevoles|stringformat:"s" == '1'%}
+        <div class="btn-group me-2">
+            <button id="profile" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="right" 
+                title="{{Text.enrolments_ongoing_h}} {{Evenement.inscription_fin}}">
+                <i class="bi bi-brightness-high-fill"></i><br> 
+                {{Text.enrolments_ongoing}} <b>{{Evenement.inscription_fin}}</b>
+            </button>
+        </div>
+      {# si les inscriptions à l evenements sont terminees , on affiche#}
+      {% elif EvtOuvertBenevoles|stringformat:"s" == '2'%}
+        <div class="btn-group me-2">
+            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="right" 
+                title="{{Text.enrolments_ended_h}} {{Evenement.inscription_fin}}">
+                <i class="bi bi-cloudy-fill"></i><br>
+                {{Text.enrolments_ended}}
+            </button>
+        </div>
+      {% endif %}
+    </li>
+  </ul>
+  <hr>{# saut de section#}

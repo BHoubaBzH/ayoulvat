@@ -1,0 +1,44 @@
+<!-- evenement/base_evenement.html --> 
+{% extends 'evenement/partials/base.html' %}
+
+{% block base_evenement %}
+    <div class="col-lg-10 d-flex flex-column vh-100 sidebar">
+        {% if not planning_perso %}
+            {# si planning selectionné, on affiche #}
+            {% if Planning or PostesCreneaux %}
+                {% if Administrateur or Organisateur or Responsable %}
+                    {# postes du planning on affiche que si un planning ou un poste est selectionné #}
+                        {% include "evenement/page_postes.html" %}
+                {% else %} {# benevoles #}
+                    {% include "evenement/page_postes.html" %}
+                {% endif %}
+            {# bouton de la sidebar planning global utilisé #}
+            {% elif planning_global %}
+                {% include "evenement/page_planning.html" %}
+            {# une equipe est selectionnée par un benevole, pas de planning ou de poste #}
+            {# un admin a cliqué arrive de la page liste evenements #}    
+            {% else %}
+                {% include "evenement/page_planning.html" %}
+            {% endif %}
+
+        {% elif planning_perso %}
+            {# si planning perso choisi #}
+            <div class="tab-pane fade show active" id="nav-equipes"
+                role="tabpanel" aria-labelledby="nav-equipes-tab"> 
+                {% if equipe_uuid %} 
+                    {% include "evenement/admin_page_equipes.html" %}
+                {% else %}
+                    {% include "evenement/page_planning_perso.html" %}
+                {% endif %}
+            </div>
+        {% else %}
+            {# page par defaut des benevoles de l'evenement: son planning global #}
+            {% if Evenement and Benevole %} 
+                <div class="tab-pane fade show active" id="nav-equipes"
+                    role="tabpanel" aria-labelledby="nav-equipes-tab"> 
+                        {% include "evenement/page_planning.html" %}
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock base_evenement %}

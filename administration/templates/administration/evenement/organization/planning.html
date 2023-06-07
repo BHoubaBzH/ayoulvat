@@ -1,0 +1,54 @@
+<!-- administration/evenement/organization/planning.html -->
+
+{# form admin pour ajouter un poste #}
+
+{###########################################}
+<div class="grid-planning-creneaux" >
+    {# affiche les entetes des colonnes du planning : les heures #}
+    {% for dates, heures in PlanningRange.items %}
+    <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">
+        <h6 class="time-slot">{{ heures.0 }}</h6>
+    </div>
+    {% endfor %}
+    {# affiche les entetes des colonnes du planning : les heures #}
+    {% include 'evenement/grid_entete_heures.html' with ligne="heures"%}    
+    
+    {% if  PostesCreneaux %}
+        {% for poste,creneaux in PostesCreneaux.items %}
+            {# affiche les entetes des lignes du planning : postes #}
+            {% include "administration/evenement/organization/poste_edite.html" %} {# bouton d'édition du poste#}
+            {% for creno in creneaux %}
+                {# AFFICHE LES PLANNINGS DANS LA GRID CSS #}
+                {% include "administration/evenement/organization/creneau_bouton.html" %}
+                {#% include "evenement/creneau_affiche.html" with source_type="creneau" %#}
+            {% endfor %}
+            {% include "administration/evenement/organization/grid_cellules.html" with row_type=poste ligne="poste" %}
+        {% endfor%}
+        {# affiche les entetes des colonnes du planning en bas: les heures #}
+        {% include 'evenement/grid_entete_heures.html' with ligne="bas" role="admin" %}
+    {% else %}
+        <p> {{ Text.poste_not_yet }} </p>
+    {% endif %}
+
+    {# bouton pour pouvoir ajouter des postes #}
+    <span class="poste-ajoute" aria-hidden="true" style="grid-row: poste-add; grid-column: postes;">
+        <form  id="form-poste_ajouter" method='post'>
+            {% csrf_token %}
+            <button style=""
+                    class="btn btn-sm"
+                    title="{{Text.poste_add}}"
+                    id="bouton-poste_ajouter"
+                    type="submit"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal-poste_ajouter">
+                <div>
+                    <i class="bi bi-plus-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i>
+                </div>
+            </button>
+            <input type="hidden" name="PageType" value="admin"/>
+            {# données pour garder le planning affiché apres submission POST#}
+            <input type="hidden" name="PlanningEditer" value="true"/>
+        </form>
+    </button>
+    </span>
+</div>

@@ -22,7 +22,7 @@ class BenevoleEvenementInLine(admin.TabularInline):
     model = models.Evenement.benevole.through 
     formset = BenevoleEvenementFormSet
     extra = 0
-    raw_id_fields = ('profilebenevole', 'asso_part') # pas de selection directe dans la liste = divise le nombre de requete a la db par 8
+    raw_id_fields = ('profilebenevole', 'asso_part') # pas de selection directe dans la liste = divise le nombre de requete db par 8
 
 @admin.register(models.Evenement)
 class EvenementAdmin(admin.ModelAdmin):

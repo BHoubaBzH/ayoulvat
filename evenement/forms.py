@@ -3,9 +3,6 @@ from curses.ascii import CR
 from datetime import datetime
 from django.db import connection
 
-from django.db.models.query import QuerySet
-from benevole.forms import PersonneForm
-from uuid import UUID
 from django.forms import ModelForm, DateTimeField, HiddenInput, ValidationError
 from django.forms import ModelChoiceField, ModelMultipleChoiceField, CheckboxSelectMultiple
 from django_range_slider.fields import RangeSliderField
@@ -32,13 +29,18 @@ class EquipeForm(ModelForm):
                   'couleur',
                   'seuil1',
                   'seuil2',
-                  'evenement',]
+                  'evenement', # test pour la creation de equipe et sans accès à ce champs
+                  ]
                 
     # cache certains champs
     def __init__(self, *args, **kwargs):
+        logger.debug(f'kwargs: {kwargs}')
+        if initial := kwargs.get('initial', {}):
+            self.evenements = initial['evenement']
         super().__init__(*args, **kwargs)
         # pas encore codé, on cache le champs
-        self.fields['editable'].widget = HiddenInput()
+        self.fields['editable'].widget            = HiddenInput()
+        self.fields['evenement'].widget           = HiddenInput()
         self.fields['seuil1'].widget.attrs['min'] = '0'
         self.fields['seuil1'].widget.attrs['max'] = '100'
         self.fields['seuil2'].widget.attrs['min'] = '0'
@@ -66,29 +68,35 @@ class PlanningForm(ModelForm):
                   'equipe',
                   'evenement',
                   ]
-
+        
+    ################ methode __init__
+    # surcharge les definition précédente de la class et permet de gerer les champs
     def __init__(self, *args, **kwargs):
+        logger.debug(f'kwargs: {kwargs}')
+        if initial := kwargs.get('initial', {}):
+            self.equipe     = initial['equipe']
+            self.evenements = initial['evenement']
 
         super().__init__(*args, **kwargs)
         # pas encore codé, on cache le champs
-        self.fields['editable'].widget = HiddenInput()
-        self.fields['ouvert_mineur'].widget = HiddenInput()
+        self.fields['editable'].widget            = HiddenInput()
+        self.fields['ouvert_mineur'].widget       = HiddenInput()
+        self.fields['equipe'].widget              = HiddenInput()
+        self.fields['evenement'].widget           = HiddenInput()
         self.fields['seuil1'].widget.attrs['min'] = '0'
         self.fields['seuil1'].widget.attrs['max'] = '100'
         self.fields['seuil2'].widget.attrs['min'] = '0'
         self.fields['seuil2'].widget.attrs['max'] = '100'
-        #self.fields['equipe'].disabled = True
-        #self.fields['evenement'].disabled = True
 
     ################ methode clean
     # on valide les données pour avoir de la cohérence
     def clean(self):
-
         super().clean()
         debut = self.cleaned_data['debut']
         fin = self.cleaned_data['fin']
-        event = self.cleaned_data['evenement']
         equipe = self.cleaned_data['equipe']
+        event = self.cleaned_data['evenement']
+
         uuid = self.instance.UUID
         #    si debut planning est avant debut evenement ou apres fin evenement ou
         #    si fin planning est avant debut evenement ou apres fin evenement
@@ -99,7 +107,7 @@ class PlanningForm(ModelForm):
         #    si fin self est entre debut et fin autres planning equipe
         #    si self contient un autre planning
         #    si self est contenu dans un autre planning
-        plans = Planning.objects.filter(equipe_id=equipe.UUID)
+        plans = Planning.objects.filter(equipe_id=equipe)
         for plan in plans:
             if  uuid != plan.UUID:
                 # le planning de la liste n est pas self
@@ -144,11 +152,15 @@ class PosteForm(ModelForm):
 
 
     def __init__(self, *args, **kwargs):
+        logger.debug(f'kwargs: {kwargs}')
+        if initial := kwargs.get('initial', {}):
+            self.equipe     = initial['equipe']
+            self.evenements = initial['evenement']
         super().__init__(*args, **kwargs)
         # cache certains champs
-        self.fields['planning'].widget = HiddenInput()
-        self.fields['equipe'].widget = HiddenInput()
-        self.fields['benevole'].widget = HiddenInput()
+        self.fields['planning'].widget  = HiddenInput()
+        self.fields['equipe'].widget    = HiddenInput()
+        self.fields['benevole'].widget  = HiddenInput()
         self.fields['evenement'].widget = HiddenInput()
 
 
@@ -217,15 +229,14 @@ class CreneauForm(ModelForm):
 
         # les bénévoles actif et inscrit sur l evenement
         self.querysetbenevoles = ProfileBenevole.objects.filter(personne__is_active='1', BenevolesEvenement=self.evenement).order_by('personne__last_name', 'personne__first_name').select_related('personne')
-
         # cache certains champs
-        self.fields['poste'].widget = HiddenInput()
-        self.fields['planning'].widget = HiddenInput()
-        self.fields['equipe'].widget = HiddenInput()
+        self.fields['poste'].widget     = HiddenInput()
+        self.fields['planning'].widget  = HiddenInput()
+        self.fields['equipe'].widget    = HiddenInput()
         self.fields['evenement'].widget = HiddenInput()
-        self.fields['type'].widget = HiddenInput()
+        self.fields['type'].widget      = HiddenInput()
         # pas encore codé, on cache le champs
-        self.fields['editable'].widget = HiddenInput()
+        self.fields['editable'].widget  = HiddenInput()
 
         # recuperer le pas du planning associé
         # time_attr.step :  valeurs valides liées au pas du planning dans les choix en unités secondes :

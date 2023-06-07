@@ -1,8 +1,5 @@
 <!-- evenement/grid_entete_heures.html -->
 
-<!-- préparation d affichage des jours plus propre-->
-
-
 {% for dates, heures in PlanningRange.items %}
     <div class="planning-head-planningperso" style="grid-column: time-{{ dates }}; grid-row: jours"></div>
 {% endfor %}    

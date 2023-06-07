@@ -2,55 +2,60 @@
 {# page de toutle planning de l'evenement #}
 
 {# bandeau message d erreur si besoins #}
-{% include "evenement/error_message.html" %}
+{% include "evenement/partials/error_message.html" %}
 
 {# titre de la page #}
-{% include "evenement/titre_page.html" with page='evenement' %}
-<div class="planning-equipes" aria-labelledby="planning-heading" >
-    {# affiche les entetes des colonnes du planning : les heures #}
-    {% include 'evenement/grid_entete_heures.html' with ligne="heures" role="benevole" %}
-
-    {# affiche toutes les equipes #}
-    {% for equipe in Equipes %}
-        {# affiche les entetes des lignes du planning : equipes #}
-        <div class="equipe-slot-planningperso text-truncate"
-            aria-hidden="true"
-            style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;"
-            data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ equipe.nom|capfirst }}">
-                <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
+{% include "evenement/partials/titre_page.html" with page='evenement' %}
+    <div class="grid-planning-equipes" >
+        {# affiche les entetes des colonnes du planning : les heures #}
+        {% for dates, heures in PlanningRange.items %}
+        <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">
+            <h6 class="time-slot">{{ heures.0 }}</h6>
         </div>
-        {% for planning in Plannings %}
-            {% if planning.equipe_id == equipe.UUID %}
-            {# AFFICHE LES PLANNINGS DES EQUIPES DANS LA GRID CSS #}
-                {% include "evenement/planning_bouton.html" %}
-            {% endif %}
         {% endfor %}
-        {# AFFICHE LES DISPO ET LES CRENEAUX DU BENEVOLE #}
-        {# le bénévole peut editer uniquement ses dispos #}
-        {% for creno in creneaux_benevole %}
-            {% if creno.equipe_id == equipe.UUID %}
-                <button  class="creneau-planningperso {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe_planning{%endif%} equipe equipe-{{ equipe.UUID }}" 
-                        style="grid-row: ligne-{{ equipe.UUID }};
-                        grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
-                        title="{%if creno.type == 'benevole'%}{{ Text.available_edit }}{%else%}
-{{ Text.slot_mine_part }} : 
-{{ creno.equipe.nom }} - {{ creno.poste.nom }} : {{ creno.debut|date:'d/m/Y' }}
-{{ creno.debut|date:'H:i' }} > {{ creno.fin|date:'H:i' }}
-{%endif%}"
-                        data-bs-toggle="modal" data-bs-target="{% if creno.type == 'benevole' %}#modal-dispo_editer-{{ creno.UUID }}{% endif %}"
-                        {# on autorise la modif de dispo que si dispo_actif=True #}
-                        {% if dispo_actif != "True" %}disabled{% endif %}
-                        >
-                            <a>{%if creno.poste%}{{ creno.poste.nom }}{%endif%}</a>
-                </button>
-            {% endif %}
-        {% endfor %}
-        {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" %}
-    {% endfor %}
-    {# affiche les entetes des colonnes du planning en bas: les heures #}
-    {% include 'evenement/grid_entete_heures.html' with ligne="bas" role="benevole" %}
-</div>
+        {# affiche les entetes des colonnes du planning : les heures #}
+        {% include 'evenement/grid_entete_heures.html' with ligne="heures" %}
 
+        {# affiche toutes les equipes #}
+        {% for equipe in Equipes %}
+            {# affiche les entetes des lignes du planning : equipes #}
+            <div class="equipe-slot ligne-{{ equipe.UUID }} text-truncate"
+                aria-hidden="true"
+                style="grid-row: ligne-{{ equipe.UUID }}; grid-column: equipes;"
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ equipe.nom|capfirst }}">
+                    <p style="margin-bottom: 0px;">{{ equipe.nom|capfirst }}</p>
+            </div>
+            {% for planning in Plannings %}
+                {% if planning.equipe_id == equipe.UUID %}
+                {# AFFICHE LES PLANNINGS DES EQUIPES DANS LA GRID CSS #}
+                    {% include "evenement/planning_bouton.html" %}
+                {% endif %}
+            {% endfor %}
+            {# AFFICHE LES DISPO ET LES CRENEAUX DU BENEVOLE #}
+            {# le bénévole peut editer uniquement ses dispos #}
+            {% for creno in creneaux_benevole %}
+                {% if creno.equipe_id == equipe.UUID %}
+                    <button  class="creneau-planningperso {%if creno.type == 'benevole'%}creneau_libre{%else%}creneau_occupe_planning{%endif%} equipe equipe-{{ equipe.UUID }}" 
+                            style="grid-row: ligne-{{ equipe.UUID }};
+                            grid-column: time-{{ creno.debut|date:'Y-m-d-Hi' }} / time-{{ creno.fin|date:'Y-m-d-Hi' }};"
+                            title="{%if creno.type == 'benevole'%}{{ Text.available_edit }}{%else%}
+    {{ Text.slot_mine_part }} : 
+    {{ creno.equipe.nom }} - {{ creno.poste.nom }} : {{ creno.debut|date:'d/m/Y' }}
+    {{ creno.debut|date:'H:i' }} > {{ creno.fin|date:'H:i' }}
+    {%endif%}"
+                            data-bs-toggle="modal" data-bs-target="{% if creno.type == 'benevole' %}#modal-dispo_editer-{{ creno.UUID }}{% endif %}"
+                            {# on autorise la modif de dispo que si dispo_actif=True #}
+                            {% if dispo_actif != "True" %}disabled{% endif %}
+                            >
+                                <a>{%if creno.poste%}{{ creno.poste.nom }}{%endif%}</a>
+                    </button>
+                {% endif %}
+            {% endfor %}
+            {% include "evenement/grid_cellules.html" with row_type=equipe ligne="equipe" %}
+        {% endfor %}
+        {# affiche les entetes des colonnes du planning en bas: les heures #}
+        {% include 'evenement/grid_entete_heures.html' with ligne="bas" role="benevole" %}
+    </div>
 
 {#####################################################################################}
 {#################                  MODALS                ############################}

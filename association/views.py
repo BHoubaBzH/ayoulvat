@@ -6,20 +6,24 @@ import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
+from utils.evenement import *
+from utils.generic import *
+from utils.benevole import *
+from utils.administration import *
+from ayoulvat.languages import *
+
 from association.models import Association
 from benevole.models import ProfileAdministrateur
+
 
 @login_required(login_url='login')
 def liste_assos(request):
     """
     liste toutes les assosciations,a filtrer par assos affectées a administrateur
     """
-    try :
-        # a un profile administrateur d asso
-        # attention ok car on ne peut estre admin que d un evenement
-        data['Assos'] = [request.user.profileadministrateur.association]
-    except:
-        data['Assos'] = Association.objects.all()
+    data = {}
+    groupes = ListeGroupesUserFiltree(request)
+    data['Administrateur'] = groupes['Administrateur']
     return render(request, "association/associations_liste.html", data)
 
 

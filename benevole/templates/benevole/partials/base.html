@@ -1,0 +1,77 @@
+<!-- benevole/base.html -->
+
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AYOULVAT</title>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {# internal CSS calculé dynamiquement #}
+  <style>
+    {% include 'evenement/partials/evenement.css.html'%}
+  </style>
+  {# ressources JQUERY #}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  {# sources scripts #}
+  <script src="{% static 'js/loader.js' %}"></script>
+  {#decale affichae des grilles #}
+  <script>
+    $(document).ready(function(){
+      $('.post_display_javascript').show();
+  });
+  </script>
+  {# fonts et icons BOOTSTRAP #}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+  {% bootstrap_messages %}
+  <link rel="stylesheet" href="{% static 'css/ayoulvat.css' %}" type="text/css" />
+</head>
+
+<body >
+  {#affiche un loader pendant que le client attend un retour du serveur#}
+  <div class="loader" id="loader" style="display:none"></div>
+  
+  <!-- topbar -->
+  <form id="nav_bar" method='GET'>
+    {% csrf_token %}
+  </form>
+  <nav class="navbar navbar-dark sticky-top bg-dark navbar-expand-lg shadow">
+    <div class="container-fluid">
+      {% include 'benevole/partials/navbar.html'%}
+    </div>
+  </nav>
+
+  <!-- container -->
+  <div class="container-fluid text-center">    
+    <div class="row content">
+      <div class="col-auto col-lg-2 bg-dark sidebar">
+        <!-- sidebar -->
+        {% include "evenement/partials/sidebar.html" %}
+      </div>
+      <!-- page -->
+      <div class="col-lg-10 espace-evenement">
+            {% block content %} {# fichier benevole/home.html#}
+            {% endblock content %}
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <footer class="container-fluid text-center ">
+    <div class=" bg-light text-center text-lg-start fixed-bottom pied ">
+      {% include "benevole/partials/footer.html" %}
+    </div>
+  </footer>
+
+  {# cookie consent #}
+  <script src="{% static 'js/cookie.notice.js' %}"></script>
+  {# timeout flash message #}
+  <script src="{% static 'js/timeout.flashmessage.js' %}"></script>
+
+</body>
+</html>
