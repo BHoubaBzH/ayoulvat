@@ -129,7 +129,7 @@ footer .right {
 
 .equipe-slot, .poste-slot { /* en cours : formatage de la premiere colonne des grid */
 	/* pb : sticky vertical */
-	position: sticky;
+	/* position: sticky; */
 	left: 0;
 	padding-top: 0px;
 }
