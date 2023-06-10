@@ -1,6 +1,6 @@
 from datetime import date, timedelta
 
-from django.http.response import Http404
+from django.http.response import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
@@ -254,7 +254,8 @@ class OrganizationView(View):
         #    self.context["Planning"] = Planning.objects.get(UUID=request.POST.get('planning'))
 
         # Forms non liées de creation d objets
-        #self.context["FormEquipe"] = EquipeForm(initial={'evenement': self.Evt})
+        self.context["FormPlanning"] = PlanningForm(initial={'evenement': self.Evt,
+                                    'equipe': request.POST.get('equipe')})
         self.context["FormPoste"] = PosteForm(initial={'evenement': self.Evt,
                                     'equipe': request.POST.get('equipe'),
                                     'planning': request.POST.get('planning')})
@@ -299,6 +300,13 @@ class OrganizationView(View):
 
         return render(request, self.template_name, self.context)
     
+
+#########################################
+#
+# vues fetch javascript : recharge juste
+#      une partie pour afficher le modal
+#
+#########################################
 
 @login_required(login_url='login')
 def CreneauFetch(request):

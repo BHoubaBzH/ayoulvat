@@ -9,6 +9,10 @@ class AbonnementInLine(admin.TabularInline):
     model = Abonnement
     extra = 0
 
+class AssopartInline(admin.TabularInline):
+    model = AssoPartenaire
+    extra = 0
+
 '''
 class ProfileAdministrateurInLine(admin.TabularInline):
     model = ProfileAdministrateur
@@ -21,8 +25,9 @@ class ProfileAdministrateurInLine(admin.TabularInline):
 #class AssociationDetails(admin.ModelAdmin):
 class AssociationDetails(TranslationAdmin):
     # details affichés de l'asso dans la liste
-    list_display = ['nom', 'description', 'courriel']
-    inlines = [AbonnementInLine, ]
+
+    list_display = ['nom', 'description', 'courriel', ]
+    inlines = [AbonnementInLine, AssopartInline]
 
 class AssoPartenairesDetails(admin.ModelAdmin):
     def asso_nom(self):

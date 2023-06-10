@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.forms.models import BaseInlineFormSet
+from association.models import AssoPartenaire
 from evenement import models
 
 
@@ -23,6 +24,10 @@ class BenevoleEvenementInLine(admin.TabularInline):
     formset = BenevoleEvenementFormSet
     extra = 0
     raw_id_fields = ('profilebenevole', 'asso_part') # pas de selection directe dans la liste = divise le nombre de requete db par 8
+
+#class AssopartInLine(admin.TabularInline):
+#    model = AssoPartenaire
+#    extra = 0
 
 @admin.register(models.Evenement)
 class EvenementAdmin(admin.ModelAdmin):

@@ -2,32 +2,40 @@
 
 <figure class="text-center">
     <blockquote class="blockquote">
-    {# page du planning avec les postes et les creneaux #}
-    {% if page == 'planning' %}
-        {% if  Planning.debut|date:'l j F'|stringformat:"s" ==  Planning.fin|date:'l j F'|stringformat:"s" %}
-            <p class='h5 titre_page'>{{Planning.equipe.nom|upper}} : {{ Planning.debut|date:'l j F' }} de {{ Planning.debut|date:'H:i' }} à {{ Planning.fin|date:'H:i' }}</p>
-        {% else %}
-            <p class='h5 titre_page'>{{Planning.equipe.nom|upper}} : {{ Planning.debut|date:'l j F' }} {{ Planning.debut|date:'H:i' }} - {{ Planning.fin|date:'l j F' }} {{ Planning.fin|date:'H:i' }}</p>
-        {% endif %}    
-    {# page de l evenement contenant les plannings des equipes #}
-    {% elif page == 'evenement' %}
-        <p class='h5 titre_page'>
-            {{ Text.title_planning_event }}
-        </p>
-    {# page d admin de l evenement : equipes #}
-    {% elif page == 'admin evenement' %}
-        <p class='h5 titre_page'>
-            {{ Text.title_admin_event }}
-        </p>
-    {# page d'admin des evenements de l'association #}
-    {% elif page == 'admin evenements' %}
-        <p class='h5 titre_page'>{{ Text.title_admin_events }}</p>
-    {% endif %}
+        <div class="card mt-2">
+            <div class="card-body">
+                <div class="container">
+                    {# page de l evenement contenant les plannings des equipes #}
+                    {% if page == 'evenement' %}
+                        <div class="row align-items-start">
+                            <div class="col-6">
+                                <p class='h5 titre_page'>{{ Text.title_planning_event }}</p>
+                            </div>
+                            <div class="col-6">
+                            </div>
+                        </div>
+                    {# page du planning avec les postes et les creneaux #}
+                    {% elif page == 'planning' %}
+                        <div class="row align-items-start">
+                            <div class="col-6">
+                                <p class='h5 titre_page'>{{Planning.equipe.nom|upper}} </p>
+                            </div>
+                            <div class="col-6">
+                                {% if  Planning.debut|date:'l j F'|stringformat:"s" ==  Planning.fin|date:'l j F'|stringformat:"s" %}
+                                    <p class='h5 titre_page'>{{ Planning.debut|date:'l j F' }} de {{ Planning.debut|date:'H:i' }} à {{ Planning.fin|date:'H:i' }}</p>
+                                {% else %}
+                                    <p class='h5 titre_page'>{{ Planning.debut|date:'l j F' }} {{ Planning.debut|date:'H:i' }} - {{ Planning.fin|date:'l j F' }} {{ Planning.fin|date:'H:i' }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
     </blockquote>
 </figure>
 
 
 {# barre horizontale #}
-<hr class="border-2 border-top border-dark"> 
+<!--hr class="border-2 border-top border-dark"--> 
 
 
