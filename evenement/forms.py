@@ -266,13 +266,14 @@ class CreneauForm(ModelForm):
 
                 if self.instance.debut and self.instance.fin:
                     # si on trouve un creneau sur la meme plage horaire ou le benevole est pris, alors on retire le benevole de la liste
-                    for Creno in Creneau.objects.filter(Q(type="creneau"), 
+                    crenos = Creneau.objects.filter(Q(type="creneau"), 
                                                         Q(evenement_id=self.evenement), 
                                                         Q(benevole_id=id_benevole),
                                                         Q(debut__lte=self.instance.debut)&Q(fin__gt=self.instance.debut)|
                                                         Q(debut__lt=self.instance.fin)&Q(fin__gte=self.instance.fin)|
-                                                        Q(debut__gt=self.instance.debut)&Q(fin__lt=self.instance.fin)&Q(debut__lt=F('fin')),
-                                                        ):
+                                                        Q(debut__gt=self.instance.debut)&Q(fin__lt=self.instance.fin)&Q(debut__lt=F('fin'))
+                                                        )
+                    for Creno in crenos:
                         id_benevole = None
 
                 self.fields['benevole'].queryset = self.querysetbenevoles.filter(UUID=id_benevole)

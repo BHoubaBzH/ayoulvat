@@ -214,5 +214,4 @@ def dic_forms_creneaux(request, planning, RolesUtilisateur):
                                   personne_connectee_roles=RolesUtilisateur,
                                   type=creneau._meta.get_field('type').value_from_object(creneau), )
         dic_creneaux_init[creneau.UUID] = formcreneau  # dictionnaire des forms: key: UUID / val: form
-    # logger.info('*** Fin fonction forms_creneaux : {}'.format(datetime.now()))
     return dic_creneaux_init

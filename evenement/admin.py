@@ -52,9 +52,12 @@ class EvenementAdmin(admin.ModelAdmin):
                     'classes': ('wide', 'extrapretty'),
                                 }),
                 )
+    filter_horizontal = ('organisateur', 'assopartenaire', )
     #filter_horizontal = ('benevole', 'assopartenaire')
     list_select_related = ['association']
     inlines = (BenevoleEvenementInLine, )
+
+    list_filter = ['association']
 
 admin.site.register(models.Equipe)
 admin.site.register(models.Planning)

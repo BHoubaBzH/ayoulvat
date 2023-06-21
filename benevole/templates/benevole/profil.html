@@ -5,28 +5,21 @@
 {% block title %}{{Text.profile_block}}{% endblock %}
 
 {% block content %}
-<form  id="form-profile"  method='post'>
-  <div class="row card card-default">
-    <div class="card-header">{{Text.profile_title}}</div>
-    <div class="card-body">
-          <div class="modal-body">
-            {% csrf_token %}
-
-            <table class="table text-white">
-              {{ FormPersonne.as_table }}
-              {{ FormBenevole.as_table }}
-            </table>
-            <input type="hidden" name="username" value="{{ user.username }}">
-            <input type="hidden" name="personne" value="{{ user.UUID }}">
-            {% if user.last_name %} {# si le benevole a déjà renseigné son profile alors il n'est pas obligé de modifier son profile #}
-              <button type = "button" class="btn btn-secondary"  onclick="history.back()">{{Text.back}}</button>
-              <button type="submit" class="btn btn-primary" id="profile" onclick="loader()">{{Text.record}}</button>
-            {%else%} {# sinon il doit renseigner son profile #}
-              <button type="submit" class="btn btn-primary" id="profile" onclick="loader()">{{Text.validate}}</button>
-            {%endif%}
-          
-        </div>
-    </div>
+  <div class="mb-3 overflow-auto">
+    <form  id="form-profile"  method='post'>
+      {% csrf_token %}
+      <table class="table " style="text-align: left;">
+        {{ FormPersonne.as_table }}
+        {{ FormBenevole.as_table }}
+      </table>
+      <input type="hidden" name="username" value="{{ user.username }}">
+      <input type="hidden" name="personne" value="{{ user.UUID }}">
+      {% if user.last_name %} {# si le benevole a déjà renseigné son profile alors il n'est pas obligé de modifier son profile #}
+        <button type = "button" class="btn btn-secondary"  onclick="history.back()">{{Text.back}}</button>
+        <button type="submit" class="btn btn-primary" id="profile" onclick="loader()">{{Text.record}}</button>
+      {%else%} {# sinon il doit renseigner son profile #}
+        <button type="submit" class="btn btn-primary" id="profile" onclick="loader()">{{Text.validate}}</button>
+      {%endif%}
+    </form>
   </div>
-</form>
 {% endblock %}

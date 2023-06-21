@@ -4,15 +4,6 @@ from .models import AssoPartenaire, Association, Abonnement
 from benevole.models import *
 from modeltranslation.admin import TranslationAdmin
 
-
-class AbonnementInLine(admin.TabularInline):
-    model = Abonnement
-    extra = 0
-
-class AssopartInline(admin.TabularInline):
-    model = AssoPartenaire
-    extra = 0
-
 '''
 class ProfileAdministrateurInLine(admin.TabularInline):
     model = ProfileAdministrateur
@@ -22,11 +13,20 @@ class ProfileAdministrateurInLine(admin.TabularInline):
     extra = 1
 '''
 
+class AbonnementInLine(admin.TabularInline):
+    model = Abonnement
+    extra = 0
+
+class AssopartInline(admin.TabularInline):
+    model = AssoPartenaire
+    extra = 0
+
 #class AssociationDetails(admin.ModelAdmin):
 class AssociationDetails(TranslationAdmin):
     # details affichés de l'asso dans la liste
 
     list_display = ['nom', 'description', 'courriel', ]
+    filter_horizontal = ('administrateur',)
     inlines = [AbonnementInLine, AssopartInline]
 
 class AssoPartenairesDetails(admin.ModelAdmin):
