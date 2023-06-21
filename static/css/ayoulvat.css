@@ -34,11 +34,6 @@ body {
  * page evements
  *************************/
 
-.evenements-home{
-	overflow: auto;
-	height: 60vh;
-}
-
 .card-inscrit{
     opacity: 1;
 }
