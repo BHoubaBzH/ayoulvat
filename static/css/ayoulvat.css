@@ -20,7 +20,6 @@ body {
 	margin: 0 auto;
 	line-height: 1.5;*/
     background-color: var(--fond_body);
-	overflow: hidden;
 }
 
 #disposition {
@@ -109,7 +108,11 @@ footer .right {
 /*************************
  * pages evenements / plannings
  *************************/
- 
+
+.main_page {
+    padding-bottom: 8rem!important;
+}
+
 .espace-evenement, .espace-administration {
 	padding-bottom: var(--footer-height); /* assenceur s affiche si l affichage passe derriere le footer*/
 }
@@ -403,28 +406,6 @@ footer .right {
 }
 
 
-@media screen and (max-width:400px) {
-	/* PLANNING CRENEAUX */
-	.planning-creneaux, .planning-equipes {
-		display: none;
-	}
-	.sidebar {
-		display: none;
-	}
-	#nav-creneaux {
-		display: none;
-	}
-}
-
-/*
-@supports( display:grid ) {
-	@media screen and (min-width:700px) {
-
-	}
-}
-*/
-
-
 /* Small-screen & fallback styles */
 .session {
 	margin-bottom:  1em;
@@ -448,11 +429,6 @@ footer .right {
 	z-index: 100;
 }
 
-.customNav {
-	/* border-left: 1px solid var(--fond_body); */
-	/* padding: 14px 18px; */
-}
-
 @media screen and (max-width: 991px) {
 	.customNav {
 		display: block!important;
@@ -470,18 +446,23 @@ footer .right {
  *************************/
 
  /* cache la side bar sur petit ecran */
- /* @media screen and (max-width: 796px) {
+  @media screen and (max-width: 991px) {
+	.body{
+		overflow: auto;
+	}
 	.sidebar {
-		display:none!important;
-		width:22px !important; 
+		/*display:none!important;
+		width:22px !important; */
+		width: 100%;
+		height: auto!important;
+		position: relative;
 		transition: height 1s; 
-	}
 
-	.sidebar:hover {
-		width: 100% !important; 
 	}
-
- }*/
+	.sidebar li{
+		text-align: -webkit-center;
+	}
+ }
 
 .sidebar {
 	z-index: 99;
@@ -511,29 +492,30 @@ footer .right {
 /*************************
  * scrollbar perso
  *************************/
-::-webkit-scrollbar-track
-{
-	--webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	background-color: #F5F5F5;
+ 
+.all-modules {
+    scrollbar-color: #666 #201c29;
+    padding: 1rem;
+    margin: 4rem 0;
+    overflow-x: auto;
+    width: 100%;
+    text-align: center;
+    white-space: nowrap
 }
 
-::-webkit-scrollbar
-{
-	/* width: 10px; */
-	background-color: #F5F5F5;
+ ::-webkit-scrollbar {
+    width: 20px;
+    height: 20px
 }
 
-::-webkit-scrollbar-thumb
-{
-	background-color: var(--scrollbar_couleur);	
-	background-image: -webkit-linear-gradient(45deg,
-											rgba(255, 255, 255, .2) 25%,
-											transparent 25%,
-											transparent 50%,
-											rgba(255, 255, 255, .2) 50%,
-											rgba(255, 255, 255, .2) 75%,
-											transparent 75%,
-											transparent)
+ ::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg,#2e40e5,#44a5e6);
+    border-radius: 4px;
+    box-shadow: inset 2px 2px 2px hsla(0,0%,100%,.25),inset -2px -2px 2px rgba(0,0,0,.25)
+}
+
+ ::-webkit-scrollbar-track {
+    background: linear-gradient(90deg,#434343,#434343 1px,#262626 0,#262626)
 }
 
 /*################ administration ###################*/
