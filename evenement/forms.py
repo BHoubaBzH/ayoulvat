@@ -16,6 +16,21 @@ from evenement.customwidgets import SplitDateTimeMultiWidget
 import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
+
+################################################################################################
+class EvenementForm(ModelForm):
+    class Meta:
+        model = Evenement
+        fields = '__all__'
+
+    ################ methode __init__
+    # surcharge les definition précédente de la class et permet de gerer les champs
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['association'].widget            = HiddenInput()
+        self.fields['benevole'].widget            = HiddenInput()
+
+
 ################################################################################################
 class EquipeForm(ModelForm):
     class Meta:

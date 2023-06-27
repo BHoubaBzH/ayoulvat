@@ -23,6 +23,7 @@ from django.db.models import Q
 from datetime import date
 
 from benevole.forms import BenevoleForm, PersonneForm, RegisterForm
+from evenement.forms import EvenementForm
 from benevole.models import ProfileBenevole
 from django.contrib import messages
 
@@ -87,6 +88,7 @@ def Home(request):
     if RolesUtilisateur['Administrateur']: 
         data['Administrateur'] = RolesUtilisateur['Administrateur'] 
         data['evts'] = Evenement.objects.filter(association__in= data['Administrateur'])
+        data['FormEvenement'] = EvenementForm() #Forms non liee pour la creation
         print('evenements : {}'.format(data['evts'])) 
 
     logger.info('#########################################################')  

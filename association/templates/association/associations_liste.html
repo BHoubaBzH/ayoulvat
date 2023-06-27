@@ -52,19 +52,51 @@
                                         {% endif %}
                                     {% endfor %}
                                     <li class="list-group-item">
-                                        <a href="#" onclick="loader()" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"
+                                        <div data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"
                                             data-bs-original-title="{{Text.add_event}}">
-                                            <i class="bi bi-plus-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i>
-                                        </a>
+                                            <a class="btn btn-primary" 
+                                                data-bs-toggle="modal" data-bs-target="#new-event-{{asso.UUID}}" >
+                                                <i class="bi bi-plus-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i>
+                                            </a>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>   
                         </td>
                     </tr>
                     {% endfor %}
-
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+
+<!-- modals de creation d evenement -->
+{% for asso in Administrateur %}
+<div class="modal fade" id="new-event-{{asso.UUID}}" 
+    data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="new-event" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">
+                    <b>{{ asso.nom|upper }}</b> : {{ Text.add_event }}
+                </h5>
+            </div>
+            <form  id="form-ajout-evenement" class="form-ajout-evenement" method='post'>
+                <div class="modal-body">
+                        {% csrf_token %}
+                        <table class="table">
+                            {{ FormEvenement.as_table }}
+                        </table>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="association" id="id_association" value="{{ asso.UUID }}">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
+                    <button type="submit" id="evenement" name="evenement" value="creer"  class="btn btn-primary success">{{ Text.button_add }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
