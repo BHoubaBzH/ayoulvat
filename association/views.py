@@ -20,6 +20,7 @@ from benevole.models import ProfileAdministrateur
 def liste_assos(request):
     """
     liste toutes les assosciations,a filtrer par assos affectées a administrateur
+    on passe par là des fois?
     """
     data = {}
     groupes = ListeGroupesUserFiltree(request)

@@ -229,7 +229,7 @@ text_template['fr_fr']['admin_event_equipe_h']  = _('description')
 text_template['fr_fr']['admin_list_events']     = _('choisis ton evenement dans la barre de gauche')
 
 #evenement > titre_page
-text_template['fr_fr']['title_planning_event']  = _('Planning de l\'évènement et créneaux perso')
+text_template['fr_fr']['title_planning_event']  = _('Planning de l\'évènement et tes créneaux')
 text_template['fr_fr']['title_admin_event']     = _('Gestion des équipes et plannings de l\'évènement')
 text_template['fr_fr']['title_admin_events']    = _('liste des évenements de l\'asso')
 
@@ -323,3 +323,9 @@ text_template['fr_fr']['title_volunteer']       = _('Bénévoles')
 text_template['fr_fr']['title_slots']           = _('Créneaux')
 text_template['fr_fr']['title_dashboard']       = _('Tableau de bord')
 text_template['fr_fr']['title_rate_busy']       = _('Remplissages des créneaux')
+
+#association/associations_liste
+text_template['fr_fr']['goto_event']            = _('Aller à l\'évènement')
+text_template['fr_fr']['add_event']             = _('Ajouter un nouvel évènement')
+text_template['fr_fr']['associations']          = _('Associations')
+text_template['fr_fr']['events']                = _('Evenements')

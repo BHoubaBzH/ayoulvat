@@ -1,9 +1,7 @@
-# ficher présent dans la sidebar, donc dans tout le projet
+# fichier présent dans la sidebar, donc dans tout le projet
 
 from django import template
 from django.template.defaultfilters import stringfilter
-
-
 
 register = template.Library()
 
@@ -21,4 +19,3 @@ def has_group(user, group_name):
         fonction permettant de trouver si le user appartient a un groupe
     """
     return user.groups.filter(name=group_name).exists() 
-

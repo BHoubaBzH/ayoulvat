@@ -12,6 +12,11 @@
                                 <p class='h5 titre_page'>{{ Text.title_planning_event }}</p>
                             </div>
                             <div class="col-6">
+                                {% if  Evenement.debut|date:'l j F'|stringformat:"s" ==  Evenement.fin|date:'l j F'|stringformat:"s" %}
+                                <p class='h5 titre_page'>{{ Evenement.debut|date:'l j F' }} de {{ Evenement.debut|date:'H:i' }} à {{ Evenement.fin|date:'H:i' }}</p>
+                                {% else %}
+                                    <p class='h5 titre_page'>{{ Evenement.debut|date:'l j F' }} {{ Evenement.debut|date:'H:i' }} - {{ Evenement.fin|date:'l j F' }} {{ Evenement.fin|date:'H:i' }}</p>
+                                {% endif %}
                             </div>
                         </div>
                     {# page du planning avec les postes et les creneaux #}

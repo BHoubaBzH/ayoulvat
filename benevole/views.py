@@ -84,7 +84,10 @@ def Home(request):
 
     RolesUtilisateur = ListeGroupesUserFiltree(request)
     # passe les assos de l administrateur
-    if RolesUtilisateur['Administrateur']: data['Administrateur'] = RolesUtilisateur['Administrateur']  
+    if RolesUtilisateur['Administrateur']: 
+        data['Administrateur'] = RolesUtilisateur['Administrateur'] 
+        data['evts'] = Evenement.objects.filter(association__in= data['Administrateur'])
+        print('evenements : {}'.format(data['evts'])) 
 
     logger.info('#########################################################')  
 
@@ -195,15 +198,3 @@ def Profile(request):
     }
     return render(request, "benevole/profil.html", data)
 
-# boostrap template test
-def Test(request):
-    X = 50
-    Y = 50
-    data = {}
-    data['X'] = []
-    data['Y'] = []
-    for i in range(1, X+1):
-        data['X'].append(i)
-    for i in range(1, Y+1):
-        data['Y'].append(i)
-    return render(request, "benevole/test_bootstrap.html", data)

@@ -33,6 +33,12 @@
 </head>
 
 <body >
+  <!-- affiche le popup d'aide quand on passe sur un element contenant un tooltip -->
+  <script>
+    $(document).ready(function(){
+      $('[data-bs-toggle="tooltip"]').tooltip();   
+    });
+  </script>
   {#affiche un loader pendant que le client attend un retour du serveur#}
   <div class="loader" id="loader" style="display:none"></div>
   

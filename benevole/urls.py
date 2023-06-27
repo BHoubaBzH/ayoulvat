@@ -6,6 +6,5 @@ from . import views
 urlpatterns = [
     path('inscription', InscriptionView.as_view(), name='inscription'),
     path('profile', views.Profile, name='profile'),
-    path('test', views.Test, name='test'), # boostrap template test
 ]
 
