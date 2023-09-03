@@ -475,10 +475,10 @@ def duplique_equipe(instance, clone_event, delta_time=0):
                     duplique_planning(pl_instance, clone_equipe, delta_time)
 
 @transaction.atomic
-def duplique_evenement(instance, delta_time=0):
+def duplique_evenement(instance, delta_days=0):
     ''' duplique un evenement et les equipes, plannings, postes, creneaux associés'''
     logger.info(f'duplique evenement: {instance}')
-    #delta_time = timedelta(days=600)
+    delta_time = timedelta(days=delta_days)
     clone_event = copy.copy(instance)
     clone_event.pk = None
     clone_event.debut = clone_event.debut + delta_time
