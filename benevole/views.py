@@ -1,7 +1,7 @@
 import logging
 from sys import api_version
 
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from association.models import AssoPartenaire
 from utils.generic import envoi_courriel
 from ayoulvat.languages import *
@@ -20,7 +20,7 @@ from django.urls.base import reverse
 from django.urls import reverse_lazy
 from django.views import generic
 from django.db.models import Q
-from datetime import date
+from datetime import date, datetime
 
 from benevole.forms import BenevoleForm, PersonneForm, RegisterForm
 from evenement.forms import EvenementForm
@@ -66,14 +66,14 @@ def Home(request):
     logger.info('#########################################################')
     data = {
         "FormPersonne" : PersonneForm(),  # form personne non liée
-        #"Evenements" : Evenement.objects.all().order_by("debut"),  # liste de tous les evenements
         # evenements a venir ou en cours où le benevole est deja inscrit 
         "Evenements_inscrit" : Evenement.objects.filter(
                                         Q(fin__gt=date.today()),
                                         Q(benevole__personne_id=request.user.UUID)).order_by("debut"), 
+        # evenements à venir , ou en cours benevole pas inscrit 
         "Evenements_disponible" : Evenement.objects.filter(
                                         Q(fin__gt=date.today()),
-                                        ~Q(benevole__personne_id=request.user.UUID)).order_by("debut"),# evenements à venir , ou en cours benevole pas inscrit 
+                                        ~Q(benevole__personne_id=request.user.UUID)).order_by("debut"),
         "Text": text_template[language], # textes traduits
     }
 
@@ -82,32 +82,17 @@ def Home(request):
     logger.info('#   utilisateur connecté: ')
     logger.info(f'#        {request.user.first_name} {request.user.last_name} ')
     logger.info('#   roles : ')
-
     RolesUtilisateur = ListeGroupesUserFiltree(request)
-    # passe les assos de l administrateur
-    if RolesUtilisateur['Administrateur']: 
-        data['Administrateur'] = RolesUtilisateur['Administrateur'] 
-        data['evts'] = Evenement.objects.filter(association__in= data['Administrateur'])
-        data['FormEvenement'] = EvenementForm() #Forms non liee pour la creation
-        print('evenements : {}'.format(data['evts'])) 
-
     logger.info('#########################################################')  
 
     try:
+        # contient la queryset de la table relationnelle evenement, benevole, asso part filtrée sur le bénévole connecté
         data["Ev_ass_par_benevole"] = evenement_benevole_assopart.objects.filter(
-                                        Q(profilebenevole=request.user.profilebenevole)) # contient la queryset de la table relationnelle evenement, benevole, asso part filtrée sur le bénévole connecté
+                                        Q(profilebenevole=request.user.profilebenevole)) 
     except:
-        print('pas encore de profile benevole -> page de profile')
-    # récupère dans la session l'uuid de l'association, si on est passé par l'asso
-    try:
-        uuid_evenement = request.session['uuid_evenement']
-        evenement = Evenement.objects.get(UUID=uuid_evenement)
-        #data["Evenement"] = evenement
-        #data["Benevoles"] = ProfileBenevole.objects.filter(BenevolesEvenement=evenement)  # objets benevoles de l'evenement
-    except:
-        # pas passé la page evenement
-        pass
-    # pour trier dans le home du benevoles les evenements et le fait qu'il puisse s'y inscrire
+        logger.info('pas encore de profile benevole -> page de profile')
+
+    # trier dans le home du benevoles les evenements et le fait qu'il puisse s'y inscrire
     if request.method == 'POST' and ProfileBenevole.objects.filter(personne_id=request.user.UUID).exists(): #post et le user a renseigné son profile
         if 'inscription_event' in request.POST:
             try:
@@ -137,6 +122,47 @@ def Home(request):
                 
             # empeche les renvois multiples d email d inscription aux admins 
             HttpResponseRedirect(request.path_info)
+    
+    # gestion de la form evenement
+    if request.method == 'POST':
+        if request.POST.get('evenement') == 'creer':
+            logger.info( 'on va creer l evenement')
+            formevenement = EvenementForm(request.POST)
+            if formevenement.is_valid():
+                messages.success(request, flash[language]['event_new_success'])
+                logger.info('planning modifié ou ajouté')
+                formevenement.save()
+            else:
+                messages.error(request, flash[language]['event_new_error'])
+                logger.info(f'erreur de creation de l\'évènement : {formevenement.errors}')
+                # raise Http404(f'erreur de creation de l\'évènement : {formevenement.errors}')
+                # tbd : creer controle de form sauvegarde de l objet #
+        if request.POST.get('evenement') == 'modifier':
+            logger.info( 'on va modifier l evenement')
+            # tbd : creer controle de form sauvegarde de l objet #
+
+        # duplicate event
+        if request.POST.get('evenement_copy'):
+            evt = Evenement.objects.get(UUID=request.POST.get('evenement_copy'))
+            if request.POST.get('nom'):
+                evt.nom = request.POST.get('nom')
+            else:
+                evt.nom = "copy - " + evt.nom
+            # calcul le décalage en jours
+            if  request.POST.get('date'):
+                delta= datetime.strptime(request.POST.get('date'), '%Y-%m-%d') - evt.debut 
+                #logger.info(f' jours de delta : {delta}')
+            else:
+                # si rien , l evenement commence aujourd hui
+                delta=date.datetime.now() - evt.debut 
+            duplique_evenement(evt, delta)
+            
+    # passe les infos de l administrateur
+    if RolesUtilisateur['Administrateur']: 
+        data['Administrateur'] = RolesUtilisateur['Administrateur'] 
+        data['evts'] = Evenement.objects.filter(association__in= data['Administrateur'])
+        data['nb_evts_par_asso'] = nb_evenements_par_asso(data['Administrateur'])
+        data['FormEvenement'] = EvenementForm() #Forms non liee pour la creation
 
     # on redirige vers la page profile tant que celui-ci n est pas rempli
     if request.user.is_authenticated :

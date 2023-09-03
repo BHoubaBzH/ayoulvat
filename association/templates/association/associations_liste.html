@@ -1,5 +1,7 @@
 <!-- association/associations_liste.html -->
-    {# titre #}
+{# page evenements partie admin, a déplacer #}
+
+{# titre #}
 <div class="container">
     <div class="row align-items-end">
         <div class="col-md-12">
@@ -16,57 +18,64 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-10">
+
             <table class="table table-dark table-striped table-hover"  id="table_associations">
                 <thead>
                     <tr>
-                    <th scope="col" class="col col-lg-8">{{Text.associations}}</th><th scope="col">{{Text.events}}</th>
+                    <th scope="col" class="col col-lg-6">{{Text.associations}}</th><th scope="col">{{Text.events}}</th><th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
-
                     {% for asso in Administrateur %}
-                    <tr style="vertical-align : middle;">
-                        <td>
-                            <H2><a href="{% url 'detail_asso' uuid_asso=asso.UUID %}">{{ asso.nom }}</a></H2>
-                        </td>
-                        <td>
-                            <!--
-                            <form method="get" id="{{ asso.UUID }}_evts" action="{% url 'liste_evenements' %}">
-                                <button type="submit" name="uuid_asso" value="{{ asso.UUID }}">
-                                        <i class="bi bi-list fs-1" 
-                                        data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" title="liste evenements"></i>
-                                </button>
-                            </form>
-                            -->
-                            <div class="card" style="width: 18rem;">
-                                <ul class="list-group list-group-flush">
-                                    {% for evt in evts|dictsort:"debut" %}
-                                        {% if  evt.association == asso %}
-                                        <li class="list-group-item">
-                                            <a href="{% url 'evenement' uuid_evenement=evt.UUID %}" onclick="loader()" 
-                                                data-bs-toggle="tooltip" data-bs-placement="right" 
-                                                data-bs-html="true" data-bs-original-title="{{Text.goto_event}} :</br> {{evt.nom}}">
-                                                {{ evt.nom }}
-                                            </a>
-                                        </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                    <li class="list-group-item">
-                                        <div data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"
-                                            data-bs-original-title="{{Text.add_event}}">
-                                            <a class="btn btn-primary" 
-                                                data-bs-toggle="modal" data-bs-target="#new-event-{{asso.UUID}}" >
-                                                <i class="bi bi-plus-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i>
-                                            </a>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>   
-                        </td>
-                    </tr>
+                        <tr style="vertical-align : middle;">
+                            {% for a, n in nb_evts_par_asso.items %}
+                            {% if a == asso %} <td rowspan="{{ n|add:'2' }}"> {% endif %}
+                            {% endfor %}
+                                <H2><a href="{% url 'detail_asso' uuid_asso=asso.UUID %}">{{ asso.nom }}</a></H2>
+                            </td>
+                        
+                            {% for evt in evts|dictsort:"debut" %}
+                                {% if  evt.association == asso %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'evenement' uuid_evenement=evt.UUID %}" onclick="loader()" 
+                                        data-bs-toggle="tooltip" data-bs-placement="right" 
+                                        data-bs-html="true" data-bs-original-title="{{Text.goto_event}} :</br> {{evt.nom}}">
+                                        {{ evt.nom }}
+                                        </a>
+                                    </td>
+                                    {# copier un evenement #}
+                                    <td data-bs-toggle="tooltip" data-bs-placement="left" 
+                                        data-bs-html="true" data-bs-original-title="{{Text.evt_copy}} :</br> {{evt.nom}} ">
+                                        {# dupliquer un evenement #}
+                                        <button type="button" class="btn" id="butt-evenement_copy" 
+                                                data-id="{{evt.UUID}}"
+                                                data-bs-toggle="modal" data-bs-target="#modal-evenement_copy">
+                                            <i class="bi bi-c-square-fill" style="color: cornflowerblue;"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {# ajout d un evenement #}
+                        <tr >
+                            <td>
+                            </td>
+                            <td>
+                                <div data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true"
+                                    data-bs-original-title="{{asso|upper}} : {{Text.add_event}}">
+                                    <a class="btn" 
+                                        data-bs-toggle="modal" data-bs-target="#new-event-{{asso.UUID}}" >
+                                        <i class="bi bi-plus-square-fill" style="color: cornflowerblue;"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
                     {% endfor %}
                 </tbody>
+
             </table>
+
         </div>
     </div>
 </div>
@@ -74,29 +83,77 @@
 
 <!-- modals de creation d evenement -->
 {% for asso in Administrateur %}
-<div class="modal fade" id="new-event-{{asso.UUID}}" 
-    data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="new-event" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">
-                    <b>{{ asso.nom|upper }}</b> : {{ Text.add_event }}
-                </h5>
-            </div>
-            <form  id="form-ajout-evenement" class="form-ajout-evenement" method='post'>
-                <div class="modal-body">
+    <div class="modal fade" id="new-event-{{asso.UUID}}" 
+        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="new-event" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">
+                        <b>{{ asso.nom|upper }}</b> : {{ Text.add_event }}
+                    </h5>
+                </div>
+                <form  id="form-ajout-evenement" class="form-ajout-evenement" method='post'>
+                    <div class="modal-body">
                         {% csrf_token %}
                         <table class="table">
                             {{ FormEvenement.as_table }}
                         </table>
-                </div>
-                <div class="modal-footer">
-                    <input type="hidden" name="association" id="id_association" value="{{ asso.UUID }}">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
-                    <button type="submit" id="evenement" name="evenement" value="creer"  class="btn btn-primary success">{{ Text.button_add }}</button>
-                </div>
-            </form>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="association" id="id_association" value="{{ asso.UUID }}">
+                        <input type="hidden" name="benevole" id="benevole" value=""> {# liste de bénévoles vide à la création #}
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            {{ Text.button_null }}
+                        </button>
+                        <button type="submit" id="evenement" name="evenement" value="creer"  class="btn btn-primary success">
+                            {{ Text.button_add }}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 {% endfor %}
+
+<!-- modal de replication d evenement -->
+<div class="modal fade" id="modal-evenement_copy" 
+data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="new-event" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document" style="z-index:1050">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="ModalLabel">
+                <b> duplique evenement</b>
+            </h5>
+        </div>
+        <form  id="form-duplicate-evenement" class="form-duplicate-evenement" method='post'>
+            <div class="modal-body">
+                {% csrf_token %}
+                <table class="table">
+                    <tr>
+                        <th><label for="id_nom">Nom&nbsp;:</label></th>
+                        <td><input type="text" name="nom" maxlength="50" required="" id="id_nom"></td>
+                    </tr>
+                    <tr>
+                        <th><label for="id_date">Date de début&nbsp;:</label></th>
+                        <td><input type="date" name="date" maxlength="50" required="" id="id_date"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {{ Text.button_null }}
+                </button>
+                <button type="submit" id="evenement_copy" name="evenement_copy" value="" class="btn btn-primary success">
+                    {{ Text.button_add }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+<script>
+$(document).on("click", "#butt-evenement_copy", function () {
+    var event_uuid = $(this).data('id');
+    $(".modal-footer #evenement_copy").val( event_uuid );
+});
+</script>

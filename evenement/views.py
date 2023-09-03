@@ -98,10 +98,6 @@ def evenement(request, uuid_evenement):
         "Evenement": evenement,
         "Equipes":  list(evenement.equipe_set.order_by('nom').select_related('evenement')),  # objets equipes de l'evenement
         "Plannings": list(evenement.planning_set.order_by('debut').select_related('equipe', 'evenement')),  # objets planning de l'evenement
-        #"Postes": evenement.poste_set.order_by('nom').select_related('planning', 'equipe', 'evenement'),  # objets postes de l'evenement pour planning perso
-        #"Creneaux" : evenement.creneau_set.order_by('debut').select_related('poste', 'planning', 'equipe', 'evenement'),
-        #"PostesCreneaux" : postes_creneaux(evenement),
-        #"Benevoles": ProfileBenevole.objects.filter(BenevolesEvenement=evenement),  # objets benevoles de l'evenement
 
         "dispo_actif": "False", # active ou non la gestion des disponibilités par les bénévoles; par défaut désactivé
 
@@ -114,9 +110,7 @@ def evenement(request, uuid_evenement):
         "creneaux_benevole" : list(evenement.creneau_set.filter(benevole_id=request.user.profilebenevole.UUID).order_by('debut').select_related('poste', 'planning', 'equipe', 'benevole', 'evenement')), # crenaux du bénévole connecté
         
         "FormEquipe" : EquipeForm(initial={'evenement': evenement}), # form non liée au template pour ajout d une nouvelle equipe
-        #"DicEquipes" : dic_forms_equipes(evenement),
         "FormPlanning" : "", # form non liée au template pour ajout d un nouveau planning
-        #"DicPlannings" : dic_forms_plannings(evenement),
         "DicPostes" : "",  # dictionnaire des formes de poste de l'evenement liées aux objets de la db
         "FormPoste" : "",  # form non liée au template pour ajout d un nouveau poste
         "DicCreneaux" : "",  # dictionnaire des formes de creneau de l'evenement liées aux objets de la db
@@ -125,8 +119,7 @@ def evenement(request, uuid_evenement):
         "EvtOuvertBenevoles" : inscription_ouvert(evenement.inscription_debut, evenement.inscription_fin) , # integer précisant si on est avant/dans/après la période de modification des creneaux
         "Text": text_template[language], # textes traduits 
     }
-    #logger.debug(data["Equipes"])
-    #logger.debug(data["equipes_avec_planning"])
+
     data["FormPlanning"] = PlanningForm(initial={'evenement': evenement, 'equipe': data["equipe_uuid"]})
     data["PlanningCreneauxDispo"] = PlanningCreneauxDispo(data["Plannings"]) # dic UUID planning , nb creneaux dispo 
     data["EvenementCreneauxDispo"] = Creneau.objects.filter(Q(evenement_id=evenement.UUID), Q(benevole_id__isnull=True)).count() # nb creneaux dispo sur l evenement

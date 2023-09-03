@@ -3,7 +3,7 @@ from curses.ascii import CR
 from datetime import datetime
 from django.db import connection
 
-from django.forms import ModelForm, DateTimeField, HiddenInput, ValidationError
+from django.forms import DateField, DateInput, DateTimeInput, ModelForm, DateTimeField, HiddenInput, SelectDateWidget, ValidationError
 from django.forms import ModelChoiceField, ModelMultipleChoiceField, CheckboxSelectMultiple
 from django_range_slider.fields import RangeSliderField
 from django.db.models import Q,F
@@ -19,18 +19,54 @@ logger = logging.getLogger(__name__)
 
 ################################################################################################
 class EvenementForm(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['association'].widget         = HiddenInput()
+        self.fields['benevole'].widget            = HiddenInput()
+
+        self.fields['debut'].widget               = SplitDateTimeMultiWidget(
+                                                        attrs={
+                                                            'time_attrs' : {'value' : '00:00',},
+                                                        })
+        self.fields['fin'].widget                 = SplitDateTimeMultiWidget(
+                                                        attrs={
+                                                            'time_attrs' : {'value' : '00:00',},
+                                                        })
+
+        self.fields['inscription_debut'].widget   = DateInput(
+            attrs={
+                'type': 'date', 
+                }
+        )
+        self.fields['inscription_fin'].widget   = DateInput(
+            attrs={
+                'type': 'date', 
+                }
+        )
+
     class Meta:
         model = Evenement
         fields = '__all__'
 
-    ################ methode __init__
-    # surcharge les definition précédente de la class et permet de gerer les champs
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['association'].widget            = HiddenInput()
-        self.fields['benevole'].widget            = HiddenInput()
-
-
+    ################ methode clean
+    # on valide les données pour avoir de la cohérence
+    def clean(self):
+        super().clean()
+        debut = self.cleaned_data['debut']
+        fin = self.cleaned_data['fin']
+        inscription_debut = self.cleaned_data['inscription_debut']
+        inscription_fin = self.cleaned_data['inscription_fin']
+        
+        if debut > fin :
+            raise ValidationError("La fin de l\'évènement ne peut pas être avant le début")
+        if debut < datetime.today():
+            raise ValidationError("le nouvel évènement ne peut pas être dans le passé")
+        if inscription_debut > inscription_fin :
+            raise ValidationError("La fin des inscriptions ne peut pas être avant le début")
+        if inscription_fin > fin.date() :
+            raise ValidationError("La fin des inscriptions ne peut pas être après l\'évènement")
+    
 ################################################################################################
 class EquipeForm(ModelForm):
     class Meta:
@@ -117,7 +153,7 @@ class PlanningForm(ModelForm):
         #    si fin planning est avant debut evenement ou apres fin evenement
         if debut < event.debut  or event.fin < debut or \
             fin < event.debut  or event.fin < fin :
-            raise ValidationError("Le planning doit etre dans l'évènement")
+            raise ValidationError("Le planning doit être dans l'évènement")
         #    si debut self est entre debut et fin autres planning equipe 
         #    si fin self est entre debut et fin autres planning equipe
         #    si self contient un autre planning
@@ -274,7 +310,8 @@ class CreneauForm(ModelForm):
             if not self.personne_connectee:
                 pass
             # la personne connectée est uniquement bénévole
-            if 'Benevole' in self.personne_connectee_roles and not any(item in ('Administrateur', 'Organisateur', 'Responsable') for item in self.personne_connectee_roles):
+            if 'Benevole' in self.personne_connectee_roles \
+                and not any(item in ('Administrateur', 'Organisateur', 'Responsable') for item in self.personne_connectee_roles):
             #if hasattr(self.personne_connectee, 'profilebenevole') and not self.personne_connectee.has_perm('evenement.change_creneau'):
                 # par default, la liste de bénévole contient le benevole connecté
                 id_benevole = self.personne_connectee.profilebenevole.UUID

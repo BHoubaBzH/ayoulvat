@@ -6,6 +6,11 @@
     <ul class="nav nav-pills flex-column mb-auto">
       {# si un evenement, affiche la sidebar evenement #}
       {% if Evenement %}
+        <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
+        data-bs-toggle="tooltip" data-bs-placement="right" title="{{ Text.nav_volunteer_h }}">
+          <span class="fs-4">{{ Text.nav_volunteer }}</span>
+        </a>
+        <hr>{# saut de section#}
         {% include 'evenement/partials/evenement_status.html' %}
         {# top menu #}
 

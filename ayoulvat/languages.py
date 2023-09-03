@@ -41,12 +41,12 @@ flash['fr_fr']['creneau_mod_error']         = _("problème de modification du cr
 flash['fr_fr']['creneau_sup_success']       = _('créneau supprimé')
 flash['fr_fr']['creneau_sup_error']         = _("problème de supression du créneau")
 
-flash['fr_fr']['event_new_success']         = _("")
-flash['fr_fr']['event_new_error']           = _("")
+flash['fr_fr']['event_new_success']         = _("nouvel évènement ajouté")
+flash['fr_fr']['event_new_error']           = _("l\'évènement n\'a pas pus être créé")
 flash['fr_fr']['event_mod_success']         = _("")
-flash['fr_fr']['event_new_error']           = _("")
+flash['fr_fr']['event_mod_error']           = _("")
 flash['fr_fr']['event_sup_success']         = _("")
-flash['fr_fr']['event_new_error']           = _("")
+flash['fr_fr']['event_sup_error']           = _("")
 
 flash['fr_fr']['asso_new_success']          = _("")
 flash['fr_fr']['asso_new_error']            = _("")
@@ -142,6 +142,8 @@ text_template['fr_fr']['nav_events_h']          = _("retour à la liste des év�
 text_template['fr_fr']['nav_events_asso']       = _("Evenements")
 text_template['fr_fr']['nav_events_asso_h']     = _("Evènements de l'association")
 text_template['fr_fr']['nav_event']             = _("Evenement")
+text_template['fr_fr']['nav_volunteer']         = _("Bénévole")
+text_template['fr_fr']['nav_volunteer_h']       = _("")
 text_template['fr_fr']['nav_admin']             = _("Administration")
 text_template['fr_fr']['nav_admin_h']           = _("Administration de l'évènement")
 text_template['fr_fr']['nav_disconnect']        = _("Déconnexion")
@@ -165,7 +167,6 @@ text_template['fr_fr']['nav_asso_details']      = _("détails de l'association")
 text_template['fr_fr']['nav_nb_free_slots']     = _("Nb créneaux libres")
 text_template['fr_fr']['back_admin_view']       = _('Vue Admin')
 text_template['fr_fr']['back_admin_view_h']     = _('Aller à la Vue d\'administration de l\'évènement')
-
 
 #benevole > footer
 text_template['fr_fr']['foot_help']      = _("besoins d'aide? un renseignement?")
@@ -211,7 +212,7 @@ text_template['fr_fr']['team_del_confirm']      = _("Confirmer La suppression de
 # text_template['fr_fr']['team']                  = _('Equipe')
 text_template['fr_fr']['team_help']             = _("Choisis un planning dans le menu de gauche pour t'insrire sur un créneau")
 
-#evenement > error message
+#global > error message
 text_template['fr_fr']['error_msg_warning']     = _('Attention :')
 
 #evenement > admin_planning bouton
@@ -313,8 +314,16 @@ text_template['fr_fr']['volunteer_no_slots']    = _('Bénévoles sans créneau')
 text_template['fr_fr']['event_responsible']     = _('Responsables de l\'évènement')
 
 #administration sidebar
+text_template['fr_fr']['nav_dashboard']         = _("Statistiques")
+text_template['fr_fr']['nav_dashboard_h']       = _("Tableau de bord")
+text_template['fr_fr']['nav_volunteers']        = _("Bénévoles")
+text_template['fr_fr']['nav_volunteers_h']      = _("Contacts Bénévoles")
+text_template['fr_fr']['nav_slots']             = _("Créneaux")
+text_template['fr_fr']['nav_slots_h']           = _("Liste des créneaux")
 text_template['fr_fr']['back_volunteer_view']   = _('Vue Bénévole')
 text_template['fr_fr']['back_volunteer_view_h'] = _('Aller à la Vue Bénévole')
+text_template['fr_fr']['evt_edit']              = _("Paramètres")
+text_template['fr_fr']['evt_edit_h']            = _("modifier les paramètres de l'événement")
 
 #administration > titre_page
 text_template['fr_fr']['title_plannings']       = _('Organisation des équipes')
@@ -324,8 +333,10 @@ text_template['fr_fr']['title_slots']           = _('Créneaux')
 text_template['fr_fr']['title_dashboard']       = _('Tableau de bord')
 text_template['fr_fr']['title_rate_busy']       = _('Remplissages des créneaux')
 
+#administration > evenements liste
 #association/associations_liste
 text_template['fr_fr']['goto_event']            = _('Aller à l\'évènement')
-text_template['fr_fr']['add_event']             = _('Ajouter un nouvel évènement')
+text_template['fr_fr']['evt_copy']              = _('dupliquer l\'évènement ')
+text_template['fr_fr']['add_event']             = _('Ajouter un évènement')
 text_template['fr_fr']['associations']          = _('Associations')
 text_template['fr_fr']['events']                = _('Evenements')

@@ -4,13 +4,6 @@ from association.models import AssoPartenaire
 from evenement import models
 
 
-@admin.register(models.Creneau)
-class CreneauAdmin(admin.ModelAdmin):
-    list_display = ("nom", "benevole", "debut",  "type")
-    list_filter = (
-        "evenement", "benevole", "debut", 
-    )
-
 class BenevoleEvenementFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
         super(BenevoleEvenementFormSet, self).__init__(*args, **kwargs)
@@ -59,6 +52,22 @@ class EvenementAdmin(admin.ModelAdmin):
 
     list_filter = ['association']
 
-admin.site.register(models.Equipe)
-admin.site.register(models.Planning)
-admin.site.register(models.Poste)
+@admin.register(models.Equipe)
+class EquipeAdmin(admin.ModelAdmin):
+    list_display = ("nom", "evenement" )
+    list_filter = ['evenement', ]
+
+@admin.register(models.Planning)
+class PlanningAdmin(admin.ModelAdmin):
+    list_display = ("nom", "equipe", "evenement" )
+    list_filter = ['evenement', 'equipe']
+
+@admin.register(models.Poste)
+class PosteAdmin(admin.ModelAdmin):
+    list_display = ("nom", "equipe", "evenement", "planning" )
+    list_filter = ['evenement', 'equipe', 'planning']
+
+@admin.register(models.Creneau)
+class CreneauAdmin(admin.ModelAdmin):
+    list_display = ("nom", "benevole", "debut",  "type")
+    list_filter = ["evenement", "benevole", "debut"]

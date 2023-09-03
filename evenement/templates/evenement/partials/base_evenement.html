@@ -3,6 +3,9 @@
 
 {% block base_evenement %}
     <div class="col-lg-10 d-flex flex-column vh-100 main_page">
+        {# bandeau message d erreur si besoins #}
+        {% include "evenement/partials/error_message.html" %}
+        
         {% if not planning_perso %}
             {# si planning selectionné, on affiche #}
             {% if Planning or PostesCreneaux %}

@@ -11,6 +11,9 @@ from evenement.models import Creneau, Equipe, Poste, Planning, evenement_benevol
 from benevole.models import ProfileBenevole
 from ayoulvat.languages import flash, language
 
+import copy
+from django.db import transaction
+
 # import the logging library
 import logging
 # Get an instance of a logger
@@ -71,8 +74,8 @@ def forms_planning(request):
                 logger.info('planning modifié ou ajouté')
                 formplanning.save()
             else:
-                logger.waning(f'erreur dans la form : {formplanning.errors}')
                 messages.error(request, flash[language]['plan_new_error'])
+                logger.warning(f'erreur dans la form : {formplanning.errors}')
 
     if request.POST.get('planning_supprimer'):
         plan_supp = Planning.objects.get(UUID=request.POST.get('planning_supprimer'))
@@ -228,6 +231,14 @@ def nb_benevoles_par_asso(list_assos, evt):
     dic ={k: v for k, v in sorted(dic.items(), key=lambda x: x[1], reverse=True)}
     return dic
 
+def nb_evenements_par_asso(list_assos):
+    """ returne un dictionnaire de nombre d evenement par asso """
+    dic = {}
+    for asso in list_assos:
+        dic[asso] = Evenement.objects.filter(association=asso).count()
+    return dic
+
+
 def plannings_occupation(contenants):
     """
         retoune le taux d'occupation par contenant 
@@ -381,3 +392,106 @@ def inscription_ouvert(debut, fin):
         return 1
     else:
         return 2 
+    
+###
+### fonction pour la duplication d evenement
+###
+
+@transaction.atomic
+def duplique_creneau(instance, clone_poste, delta_time=0):
+    ''' duplique un creneau '''
+    logger.info(f'              duplique creneau: {instance}')
+    clone_creneau = copy.copy(instance)
+    clone_creneau.pk = None
+    clone_creneau.benevole = None # retire le benevole associé
+    clone_creneau.evenement = clone_poste.evenement
+    clone_creneau.equipe = clone_poste.equipe
+    clone_creneau.planning = clone_poste.planning
+    clone_creneau.poste = clone_poste
+    clone_creneau.debut = clone_creneau.debut + delta_time
+    clone_creneau.fin = clone_creneau.fin + delta_time
+    clone_creneau.save()
+
+@transaction.atomic
+def duplique_poste(instance, clone_planning, delta_time=0):
+    ''' duplique un poste et les creneaux associés'''
+    logger.info(f'          duplique poste: {instance}')
+    clone_poste = copy.copy(instance)
+    clone_poste.pk = None
+    clone_poste.evenement = clone_planning.evenement
+    clone_poste.equipe = clone_planning.equipe
+    clone_poste.planning = clone_planning
+    clone_poste.save()
+
+    for crs_object in instance._meta.related_objects:
+        crs_name = crs_object.get_accessor_name()
+        crs_manager = getattr(instance, crs_name)
+
+        # duplique creneaux
+        if (crs_name == 'creneau_set'):
+            for cr_instance in crs_manager.all():
+                if cr_instance.poste == instance:
+                    duplique_creneau(cr_instance, clone_poste, delta_time)
+
+@transaction.atomic
+def duplique_planning(instance, clone_equipe, delta_time=0):
+    ''' duplique un planning et les postes, creneaux associés'''
+    logger.info(f'      duplique planning: {instance}')
+    clone_planning = copy.copy(instance)
+    clone_planning.pk = None
+    clone_planning.evenement = clone_equipe.evenement
+    clone_planning.equipe = clone_equipe
+    clone_planning.debut = clone_planning.debut + delta_time
+    clone_planning.fin = clone_planning.fin + delta_time
+    clone_planning.save()
+
+    for pos_object in instance._meta.related_objects:
+        pos_name = pos_object.get_accessor_name()
+        pos_manager = getattr(instance, pos_name)
+
+        # duplique postes
+        if (pos_name == 'poste_set'):
+            for po_instance in pos_manager.all():
+                if po_instance.planning == instance:
+                    duplique_poste(po_instance, clone_planning, delta_time)
+
+@transaction.atomic
+def duplique_equipe(instance, clone_event, delta_time=0):
+    ''' duplique une équipe et les plannings, postes, creneaux associés'''
+    logger.info(f'  duplique equipe: {instance}')
+    clone_equipe = copy.copy(instance)
+    clone_equipe.pk = None
+    clone_equipe.evenement = clone_event
+    clone_equipe.save()
+
+    for pls_object in instance._meta.related_objects:
+        pls_name = pls_object.get_accessor_name()
+        pls_manager = getattr(instance, pls_name)
+
+        # duplique plannings
+        if (pls_name == 'planning_set'):
+            for pl_instance in pls_manager.all():
+                if pl_instance.equipe == instance:
+                    duplique_planning(pl_instance, clone_equipe, delta_time)
+
+@transaction.atomic
+def duplique_evenement(instance, delta_time=0):
+    ''' duplique un evenement et les equipes, plannings, postes, creneaux associés'''
+    logger.info(f'duplique evenement: {instance}')
+    #delta_time = timedelta(days=600)
+    clone_event = copy.copy(instance)
+    clone_event.pk = None
+    clone_event.debut = clone_event.debut + delta_time
+    clone_event.fin = clone_event.fin + delta_time
+    clone_event.inscription_debut = clone_event.inscription_debut + delta_time
+    clone_event.inscription_fin = clone_event.inscription_fin + delta_time
+    clone_event.save()
+
+    for eqs_object in instance._meta.related_objects:
+        eqs_name = eqs_object.get_accessor_name()
+        eqs_manager = getattr(instance, eqs_name)
+
+        # duplique equipes
+        if (eqs_name == 'equipe_set'):
+            for eq_instance in eqs_manager.all():
+                duplique_equipe(eq_instance, clone_event, delta_time)

@@ -293,7 +293,7 @@ class OrganizationView(View):
                 # passe info au template d aller a la page du planning
                 self.context["PlanningEditer"] = "oui"
 
-        # recharge les objets apres modifociation
+        # recharge les objets apres modification
         self.context["Equipes"]     = list(Equipe.objects.filter(evenement=self.Evt).order_by('nom'))
         self.context["DicEquipes"]  = dic_forms_equipes(self.Evt)
         self.context["Plannings"]   = list(Planning.objects.filter(evenement=self.Evt).order_by('debut'))
