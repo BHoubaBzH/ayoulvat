@@ -56,7 +56,7 @@
 
                                 <button type="submit" class="btn card-btn-evt mr-2 " name="evenement-{{ EV }}" form="inscrit_{{ EV.UUID }}" 
                                     style="float: left;" title="aller vers {{ EV }}" onclick="loader()">
-                                    evenement
+                                    {{Text.event}}
                                 </button>
 
                                 {# construit nos forms #}
@@ -148,7 +148,7 @@
 
                         <div class="card-body">
                             <h5 class="card-title">{{ EV.nom }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">association: {{ EV.association }}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted">{{Text.association}}: {{ EV.association }}</h6>
                             <p class="card-text">
                                 {{Text.events_evt_begin}} {{ EV.debut|date:'D, d F Y' }}<br>
                                 {{Text.events_evt_end}} {{ EV.fin|date:'D, d F Y' }}</p>
@@ -160,7 +160,7 @@
                             <button type="submit" class="btn card-btn-evt mr-2 " name="evenement-{{ EV }}" form="dispo_{{ EV.UUID }}" 
                                     title="devenir bénévole à {{ EV }} et accéder à l'evenement"
                                     style="float: left;" onclick="loader()">
-                                    s'inscrire
+                                    {{Text.vol_register}}
                             </button>
                         </div>
 

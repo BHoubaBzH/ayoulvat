@@ -55,7 +55,7 @@ def liste_evenements(request):
         "Text": text_template[language], # textes traduits 
     }
 
-    # check des roles de user sur l asso:
+    # check des roles du user sur :
     logger.info('#########################################################')
     logger.info('#   utilisateur connecté: ')
     logger.info(f'#        {request.user.first_name} {request.user.last_name} ')

@@ -190,8 +190,13 @@ class DashboardView(View):
  
     def dispatch(self, request, *args, **kwargs):
         logger.info(f'{__class__.__name__} : dispatch')
-        
-        self.Evt = Evenement.objects.get(UUID=self.request.session['uuid_evenement']) # recuper l evenement
+        # recuper l evenement
+        if 'uuid_evenement' in kwargs:
+            # on vient de la liste des evenements
+            self.Evt = Evenement.objects.get(UUID=kwargs.get("uuid_evenement"))
+        else:
+            # en etait deja dans l evenement
+            self.Evt = Evenement.objects.get(UUID=self.request.session['uuid_evenement'])
         self.Asso = self.Evt.association # recuper l asso
         self.queryset_c = self.Evt.creneau_set.filter(type="creneau") # les creneau de l evenement
         self.context = {

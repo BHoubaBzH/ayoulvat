@@ -115,6 +115,7 @@ text_template['fr_fr']['events_not_yours_h']    = _("Evenements disponible aux q
 text_template['fr_fr']['disconnected']          = _("tu es déconnecté")
 text_template['fr_fr']['connection']            = _("Connexion")
 text_template['fr_fr']['subscription']          = _("Inscription")
+text_template['fr_fr']['vol_register']          = _("s'inscrire")
 
 #benevole > navbar and sidebar
 text_template['fr_fr']['administrator']         = _("Administrateur")

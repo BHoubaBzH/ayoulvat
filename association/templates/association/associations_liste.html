@@ -38,7 +38,7 @@
                                 {% if  evt.association == asso %}
                                 <tr>
                                     <td>
-                                        <a href="{% url 'evenement' uuid_evenement=evt.UUID %}" onclick="loader()" 
+                                        <a href= "{% url 'dashboard' uuid_evenement=evt.UUID %}" onclick="loader()" 
                                         data-bs-toggle="tooltip" data-bs-placement="right" 
                                         data-bs-html="true" data-bs-original-title="{{Text.goto_event}} :</br> {{evt.nom}}">
                                         {{ evt.nom }}
