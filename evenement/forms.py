@@ -23,7 +23,7 @@ class EvenementForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['association'].widget         = HiddenInput()
-        self.fields['benevole'].widget            = HiddenInput()
+        #self.fields['benevole'].widget            = HiddenInput()
 
         self.fields['debut'].widget               = SplitDateTimeMultiWidget(
                                                         attrs={
@@ -35,11 +35,13 @@ class EvenementForm(ModelForm):
                                                         })
 
         self.fields['inscription_debut'].widget   = DateInput(
+            format=('%Y-%m-%d'),
             attrs={
                 'type': 'date', 
                 }
         )
         self.fields['inscription_fin'].widget   = DateInput(
+            format=('%Y-%m-%d'),
             attrs={
                 'type': 'date', 
                 }
@@ -48,6 +50,7 @@ class EvenementForm(ModelForm):
     class Meta:
         model = Evenement
         fields = '__all__'
+        exclude = ["benevole", ]  # a la creation on ne propose pas d'associer de bénévoles
 
     ################ methode clean
     # on valide les données pour avoir de la cohérence
@@ -57,7 +60,8 @@ class EvenementForm(ModelForm):
         fin = self.cleaned_data['fin']
         inscription_debut = self.cleaned_data['inscription_debut']
         inscription_fin = self.cleaned_data['inscription_fin']
-        
+        #benevole = self.cleaned_data['benevole']
+
         if debut > fin :
             raise ValidationError("La fin de l\'évènement ne peut pas être avant le début")
         if debut < datetime.today():
@@ -66,7 +70,15 @@ class EvenementForm(ModelForm):
             raise ValidationError("La fin des inscriptions ne peut pas être avant le début")
         if inscription_fin > fin.date() :
             raise ValidationError("La fin des inscriptions ne peut pas être après l\'évènement")
-    
+
+class EvenementForm_organisateur(EvenementForm):
+    '''
+        limite les champs proposés à la modification d evenement
+    '''
+    class Meta:
+        model = Evenement
+        exclude = ["benevole", "organisateur"] # modif accessible a un organisateur d evenement d'associer de bénévoles
+
 ################################################################################################
 class EquipeForm(ModelForm):
     class Meta:

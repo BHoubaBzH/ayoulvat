@@ -11,16 +11,23 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalLabel">
-                éditer l'évènement <b>{{Evenement}}</b>
+                {{ Text.evt_edit_title }} : <b>{{Evenement}}</b>
                 </h5>
             </div>
-            <div class="modal-body">
-                To be Done
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
-                <button type="submit" id="creneau_modifier" name="creneau_modifier"  class="btn btn-primary success">{{ Text.button_mod }}</button>
-            </div>
+            <form  id="evenement_edite"  method='post'>
+                <div class="modal-body">
+                    <table class="table">
+                    {% csrf_token %}
+                    {{ FormEvent_edit.as_table }}
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
+                    <button type="submit" id="evenement_edite" name="evenement_edite"  value="{{Evenement.UUID}}" class="btn btn-primary success">
+                        {{ Text.button_mod }}
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 

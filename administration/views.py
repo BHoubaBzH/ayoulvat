@@ -14,9 +14,9 @@ from utils.administration import *
 from ayoulvat.languages import *
 
 from benevole.forms import BenevoleForm, PersonneForm
+from evenement.forms import EvenementForm_organisateur
 from benevole.models import ProfileBenevole, ProfileResponsable
 from evenement.models import Creneau, Equipe, Evenement, Planning, evenement_benevole_assopart
-from ayoulvat.languages import *
 
 from django.shortcuts import render
 
@@ -46,7 +46,10 @@ class CreneauxListView(ListView):
             "Association" : self.Asso,
             "Evenement" : self.Evt, 
             "Creneaux" : self.queryset,
+            "FormEvent_edit" : EvenementForm_organisateur(instance=self.Evt),  # evenement form pour edition
             "Text": text_template[language], # textes traduits 
+
+
         }
         logger.info(f'{__class__.__name__} : dispatch')
         return super().dispatch(request, *args, **kwargs)
@@ -55,6 +58,11 @@ class CreneauxListView(ListView):
     def post(self, request, *args, **kwargs):
         logger.info(f'{__class__.__name__} : post')
         log_post(request.POST)
+
+        # on vient du modal edition de l evenement avec une modification 
+        if 'evenement_edite' in request.POST:
+            evenement_orga_edite(request)
+            return HttpResponseRedirect(request.path_info) # mise à jour de la page
 
         return render(request, self.template_name, self.context)
 
@@ -87,6 +95,7 @@ class BenevolesListView(ListView):
             "Evenement"             : self.Evt, 
             "FormPersonne"          : PersonneForm(), # sert a creer un benevole
             "FormBenevole"          : BenevoleForm(), # sert a creer un benevole
+            "FormEvent_edit"        : EvenementForm_organisateur(instance=self.Evt),  # evenement form pour edition
 
             "Equipes"               : list(Equipe.objects.filter(evenement=self.Evt).order_by('nom')),
 
@@ -114,6 +123,11 @@ class BenevolesListView(ListView):
     def post(self, request, *args, **kwargs):
         logger.info(f'{__class__.__name__} : post')
         log_post(request.POST)
+
+        # on vient du modal edition de l evenement avec une modification 
+        if 'evenement_edite' in request.POST:
+            evenement_orga_edite(request)
+            return HttpResponseRedirect(request.path_info) # mise à jour de la page
 
         # creer un benevole
         if 'benevole_creer' in request.POST:
@@ -187,13 +201,13 @@ class DashboardView(View):
             "Association"           : self.Asso,
             "Evenement"             : self.Evt, 
             "Plannings"             : Planning.objects.filter(evenement=self.Evt).order_by('debut'),  # objets planning de l'evenement
-
             "Creneaux"              : self.queryset_c,
             "Creneaux_libres"       : self.Evt.creneau_set.filter(type="creneau", benevole__isnull=True).count,
             "Creneaux_occupes"      : self.Evt.creneau_set.filter(type="creneau", benevole__isnull=False).count,
             "Assos_partenaires"     : self.Evt.assopartenaire.all(), # partenaire de l evenement
             "Benevoles_par_asso"    : nb_benevoles_par_asso(self.Evt.assopartenaire.all(), self.Evt),
             "Plannings_occupation"  : plannings_occupation(self.Evt.planning_set.order_by('equipe__nom','debut')),
+            "FormEvent_edit"        : EvenementForm_organisateur(instance=self.Evt),  # evenement form pour edition
 
             "Equipes_occupation"    : equipes_occupation(self.Evt.equipe_set.order_by('nom')),
             "Repartition_par_assos" : repartition_par_assos(self.queryset_c.filter(benevole__isnull=False)),
@@ -211,6 +225,16 @@ class DashboardView(View):
     #  
     def get(self, request, *args, **kwargs):
         logger.info(f'{__class__.__name__} : get_context_data')
+        return render(request, self.template_name, self.context)
+    
+    # recupere et traite les données post
+    def post(self, request, *args, **kwargs):
+        logger.info(f'{__class__.__name__} : post')
+        log_post(request.POST)
+        # on vient du modal edition de l evenement avec une modification 
+        if 'evenement_edite' in request.POST:
+            evenement_orga_edite(request)
+            return HttpResponseRedirect(request.path_info) # mise à jour de la page
         return render(request, self.template_name, self.context)
 
 @method_decorator(login_required(login_url='login'), name='dispatch')
@@ -233,6 +257,7 @@ class OrganizationView(View):
             "PlanningRange"         : planning_range(self.Evt.debut, self.Evt.fin, 30),
             "DicEquipes"            : dic_forms_equipes(self.Evt),
             "FormEquipe"            : EquipeForm(initial={'evenement': self.Evt}),
+            "FormEvent_edit"        : EvenementForm_organisateur(instance=self.Evt),  # evenement form pour edition
         }
         # liste les roles de l'utilisateur et les envoi au template
         self.RolesUtilisateur = liste_roles_utilisateur(request, self.Evt)
@@ -280,6 +305,11 @@ class OrganizationView(View):
             self.context["Form"] = forms_planning(request)
         if any(x in request.POST for x in ['equipe_modifier', 'equipe_ajouter', 'equipe_supprimer']):
             self.context["Form"] = forms_equipe(request)
+
+        # on vient du modal edition de l evenement avec une modification 
+        if 'evenement_edite' in request.POST:
+            evenement_orga_edite(request)
+            return HttpResponseRedirect(request.path_info) # mise à jour de la page
 
         # un admin a cliqué sur le bouton d edition du planning : on va dans la page d un planning et on y reste
         if request.POST.get('PlanningEditer'):

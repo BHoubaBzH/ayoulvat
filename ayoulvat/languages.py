@@ -43,8 +43,8 @@ flash['fr_fr']['creneau_sup_error']         = _("problème de supression du cré
 
 flash['fr_fr']['event_new_success']         = _("nouvel évènement ajouté")
 flash['fr_fr']['event_new_error']           = _("l\'évènement n\'a pas pus être créé")
-flash['fr_fr']['event_mod_success']         = _("")
-flash['fr_fr']['event_mod_error']           = _("")
+flash['fr_fr']['event_mod_success']         = _("évènement modifié")
+flash['fr_fr']['event_mod_error']           = _("problème de modification de l\'évènement")
 flash['fr_fr']['event_sup_success']         = _("")
 flash['fr_fr']['event_sup_error']           = _("")
 
@@ -324,6 +324,9 @@ text_template['fr_fr']['back_volunteer_view']   = _('Vue Bénévole')
 text_template['fr_fr']['back_volunteer_view_h'] = _('Aller à la Vue Bénévole')
 text_template['fr_fr']['evt_edit']              = _("Paramètres")
 text_template['fr_fr']['evt_edit_h']            = _("modifier les paramètres de l'événement")
+
+#administration event edit page or modal
+text_template['fr_fr']['evt_edit_title']        = _("éditer l'évènement ")
 
 #administration > titre_page
 text_template['fr_fr']['title_plannings']       = _('Organisation des équipes')

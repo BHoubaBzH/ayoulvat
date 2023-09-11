@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 #            views 
 ################################################
 
-# nouvelle class d'enregistrement 
+# nouvelle class d'enregistrement de personne
 class InscriptionView(generic.CreateView):
     form_class = RegisterForm               # on utilise notre form custom
     success_url = reverse_lazy('login')

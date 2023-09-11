@@ -6,7 +6,7 @@ from django.contrib import messages
 from utils.generic import *
 from utils.evenement import *
 
-from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
+from evenement.forms import EvenementForm, EvenementForm_organisateur, EquipeForm, PlanningForm, PosteForm, CreneauForm
 from evenement.models import Creneau, Equipe, Poste, Planning, evenement_benevole_assopart
 from benevole.models import ProfileBenevole
 from ayoulvat.languages import flash, language
@@ -22,6 +22,22 @@ logger = logging.getLogger(__name__)
 ################################################
 #            fonctions 
 ################################################
+
+def evenement_orga_edite(request):
+    """
+        entree:
+            la requete (contenant les infos POST)
+        sortie:
+            None
+        gère la modification d un evenement
+    """
+    formevenement = EvenementForm_organisateur(request.POST,instance=Evenement.objects.get(UUID=request.POST.get('evenement_edite')))
+    logger.info(formevenement.errors)
+    if formevenement.is_valid():
+        messages.success(request, flash[language]['event_mod_success'])
+        formevenement.save()
+    else:
+        messages.error(request, flash[language]['event_mod_error'])
 
 def forms_equipe(request):
     """
@@ -394,13 +410,13 @@ def inscription_ouvert(debut, fin):
         return 2 
     
 ###
-### fonction pour la duplication d evenement
+### fonctions pour la duplication d evenement
 ###
 
 @transaction.atomic
 def duplique_creneau(instance, clone_poste, delta_time=0):
     ''' duplique un creneau '''
-    logger.info(f'              duplique creneau: {instance}')
+    #logger.info(f'              duplique creneau: {instance}')
     clone_creneau = copy.copy(instance)
     clone_creneau.pk = None
     clone_creneau.benevole = None # retire le benevole associé
@@ -415,7 +431,7 @@ def duplique_creneau(instance, clone_poste, delta_time=0):
 @transaction.atomic
 def duplique_poste(instance, clone_planning, delta_time=0):
     ''' duplique un poste et les creneaux associés'''
-    logger.info(f'          duplique poste: {instance}')
+    #logger.info(f'          duplique poste: {instance}')
     clone_poste = copy.copy(instance)
     clone_poste.pk = None
     clone_poste.evenement = clone_planning.evenement
@@ -436,7 +452,7 @@ def duplique_poste(instance, clone_planning, delta_time=0):
 @transaction.atomic
 def duplique_planning(instance, clone_equipe, delta_time=0):
     ''' duplique un planning et les postes, creneaux associés'''
-    logger.info(f'      duplique planning: {instance}')
+    #logger.info(f'      duplique planning: {instance}')
     clone_planning = copy.copy(instance)
     clone_planning.pk = None
     clone_planning.evenement = clone_equipe.evenement
@@ -458,7 +474,7 @@ def duplique_planning(instance, clone_equipe, delta_time=0):
 @transaction.atomic
 def duplique_equipe(instance, clone_event, delta_time=0):
     ''' duplique une équipe et les plannings, postes, creneaux associés'''
-    logger.info(f'  duplique equipe: {instance}')
+    #logger.info(f'  duplique equipe: {instance}')
     clone_equipe = copy.copy(instance)
     clone_equipe.pk = None
     clone_equipe.evenement = clone_event
@@ -477,7 +493,7 @@ def duplique_equipe(instance, clone_event, delta_time=0):
 @transaction.atomic
 def duplique_evenement(instance, delta_days=0):
     ''' duplique un evenement et les equipes, plannings, postes, creneaux associés'''
-    logger.info(f'duplique evenement: {instance}')
+    #logger.info(f'duplique evenement: {instance}')
     delta_time = timedelta(days=delta_days + 1)
     clone_event = copy.copy(instance)
     clone_event.pk = None
