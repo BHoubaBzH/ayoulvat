@@ -219,7 +219,8 @@ text_template['fr_fr']['error_msg_warning']     = _('Attention :')
 #evenement > admin_planning bouton
 text_template['fr_fr']['event_planning_t']      = _('editer le planning')
 text_template['fr_fr']['event_planning_del_t']  = _('supprimer le planning')
-text_template['fr_fr']['event_planning_edit_t'] = _('aller aux postes et creneaux du planning')
+text_template['fr_fr']['event_slots_posts']     = _('postes et créneaux')
+text_template['fr_fr']['event_slots_posts_t']   = _('gestion des créneaux et postes du planning')
 text_template['fr_fr']['event_planning_mod_t']  = _('modifier les paramètres du planning')
 
 

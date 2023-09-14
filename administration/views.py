@@ -194,8 +194,9 @@ class DashboardView(View):
         if 'uuid_evenement' in kwargs:
             # on vient de la liste des evenements
             self.Evt = Evenement.objects.get(UUID=kwargs.get("uuid_evenement"))
+            request.session['uuid_evenement'] = kwargs.get("uuid_evenement").urn # store evt dans la session
         else:
-            # en etait deja dans l evenement
+            # on etait deja dans l evenement
             self.Evt = Evenement.objects.get(UUID=self.request.session['uuid_evenement'])
         self.Asso = self.Evt.association # recuper l asso
         self.queryset_c = self.Evt.creneau_set.filter(type="creneau") # les creneau de l evenement

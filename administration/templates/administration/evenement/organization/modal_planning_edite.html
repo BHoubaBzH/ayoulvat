@@ -9,6 +9,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalLabel">{{ Text.planning_edit }}</h5>
+                <div class="col-sm text-center">
+                    <button type="submit" class="btn btn-success" data-bs-dismiss="modal" 
+                        form="form-planning-edite"
+                        id="planning_editer" name="PlanningEditer" value="true" title="{{ Text.event_slots_posts_t }}">
+                        {{ Text.event_slots_posts }}
+                    </button>
+                </div>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -29,12 +36,6 @@
 
                     <div class="container">
                         <div class="row">
-                            <div class="col-sm text-start">
-                                <button type="submit" class="btn btn-success" data-bs-dismiss="modal" 
-                                    id="planning_editer" name="PlanningEditer" value="true" title="{{ Text.event_planning_edit_t }}">
-                                    {{ Text.button_edit }}
-                                </button>
-                            </div>
                             <div class="col-sm text-end">
                                 <button class="btn btn-danger" title="{{ Text.event_planning_del_t }}" name="planning_supprimer"
                                         id="planning_supprimer" value="supprimer" type="button"
