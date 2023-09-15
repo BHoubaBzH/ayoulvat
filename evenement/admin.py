@@ -47,10 +47,11 @@ class EvenementAdmin(admin.ModelAdmin):
                 )
     filter_horizontal = ('organisateur', 'assopartenaire', )
     #filter_horizontal = ('benevole', 'assopartenaire')
-    list_select_related = ['association']
+    #list_select_related = ['association', ]
     inlines = (BenevoleEvenementInLine, )
 
     list_filter = ['association']
+    
 
 @admin.register(models.Equipe)
 class EquipeAdmin(admin.ModelAdmin):

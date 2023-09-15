@@ -354,7 +354,7 @@ def CreneauFetch(request):
     logger.info(request)
     if request.method == "POST":
 
-        evt=Evenement.objects.get(UUID=request.POST.get('evenement_uuid'))
+        evt=Evenement.objects.get(UUID=request.session['uuid_evenement'])
         RolesUtilisateur = liste_roles_utilisateur(request, evt)
 
         log_post(request.POST)
@@ -363,7 +363,7 @@ def CreneauFetch(request):
             creneau = CreneauForm(personne_connectee=request.user, 
                                 personne_connectee_roles=RolesUtilisateur,
                                 type="creneau",
-                                evenement=request.POST.get('evenement_uuid'),
+                                evenement=request.session['uuid_evenement'],
                                 instance=Creneau.objects.get(UUID=request.POST.get('creneau_uuid')))
             return HttpResponse(creneau.as_table(), content_type="text/plain")
             # return JsonResponse({'creneau_form' : creneau }, safe=False)

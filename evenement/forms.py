@@ -10,7 +10,9 @@ from django.db.models import Q,F
 
 from evenement.models import Equipe, Evenement, Planning, Poste, Creneau
 from benevole.models import Personne, ProfileBenevole
+from association.models import AssoPartenaire
 from evenement.customwidgets import SplitDateTimeMultiWidget
+
 
 # import the logging library
 import logging
@@ -19,6 +21,11 @@ logger = logging.getLogger(__name__)
 
 ################################################################################################
 class EvenementForm(ModelForm):
+
+    class Meta:
+        model = Evenement
+        fields = '__all__'
+        exclude = ["benevole", ]  # a la creation on ne propose pas d'associer de bénévoles
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -47,10 +54,12 @@ class EvenementForm(ModelForm):
                 }
         )
 
-    class Meta:
-        model = Evenement
-        fields = '__all__'
-        exclude = ["benevole", ]  # a la creation on ne propose pas d'associer de bénévoles
+        # queryset filftré pour afficher uniquement les assos partenaires déclarée dans l asso de l evenement
+        try:
+            self.fields['assopartenaire'].queryset  = AssoPartenaire.objects.filter(Association=self.instance.association)
+        except:
+            pass
+
 
     ################ methode clean
     # on valide les données pour avoir de la cohérence
