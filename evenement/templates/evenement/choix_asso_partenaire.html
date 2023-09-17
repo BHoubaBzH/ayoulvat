@@ -8,7 +8,7 @@
     <!-- Tab panes -->
     <div class="tab-content">    
         {% for asso in Evenement.assopartenaire.all  %}
-            <div class="tab-pane" id="{{asso|cut:' '}}" role="tabpanel">
+            <div class="tab-pane" id="asso_{{forloop.counter}}" role="tabpanel">
                 <div class="row">
                     <div class="col-md-4">
                         <h2 style="margin-top: 2em;" >
@@ -35,7 +35,7 @@
     <!-- Tab list -->
     <div class="list-group" id="assos_partenaires" role="tablist">
         {% for asso in Evenement.assopartenaire.all  %}
-            <a class="list-group-item list-group-item-action text_assos_choix" data-bs-toggle="list" href="#{{asso|cut:' '}}" role="tab">
+            <a class="list-group-item list-group-item-action text_assos_choix" data-bs-toggle="list" href="#asso_{{forloop.counter}}" role="tab">
                 {{asso}}
             </a>
         {% endfor %}

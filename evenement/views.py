@@ -137,7 +137,6 @@ def evenement(request, uuid_evenement):
         # log les donnees post
         log_post(request.POST)
 
-
         lien_ben_ev_assopart = evenement_benevole_assopart.objects.get(Q(evenement=evenement),Q(profilebenevole=request.user.profilebenevole))
         # le benevole a selectionne une asso, on sauvegarde
         if 'asso_part_selected' in request.POST:
