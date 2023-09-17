@@ -1,0 +1,42 @@
+<!-- evenement/choix_asso_partenaire.html --> 
+
+{# titre de la page #}
+{% include "evenement/partials/titre_page.html" with page='asso partenaire' %}
+
+<div class="asso_part" >
+</div>
+    <!-- Tab panes -->
+    <div class="tab-content">    
+        {% for asso in Evenement.assopartenaire.all  %}
+            <div class="tab-pane" id="{{asso|cut:' '}}" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h2 style="margin-top: 2em;" >
+                            {{Text.asso_part_selected}} :
+                        </h2>
+                    </div>
+                    <div class="col-md-6 text-start">
+                        <h2 style="margin-top: 2em;" >
+                            <b>{{asso|upper}}</b>
+                        </h2>
+                    </div>
+                    <div class="col-md-2">
+                        <h2 style="margin-top: 2em;" >
+                            <form id="asso_part_selected" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-lg" id="asso_part_selected" name="asso_part_selected" value="{{asso.UUID}}">{{Text.asso_part_send}}</button>
+                            </form>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <!-- Tab list -->
+    <div class="list-group" id="assos_partenaires" role="tablist">
+        {% for asso in Evenement.assopartenaire.all  %}
+            <a class="list-group-item list-group-item-action text_assos_choix" data-bs-toggle="list" href="#{{asso|cut:' '}}" role="tab">
+                {{asso}}
+            </a>
+        {% endfor %}
+</div>

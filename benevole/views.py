@@ -59,11 +59,10 @@ def Home(request):
     """
         page profile de login et principale du benevole
     """
+    logger.info(f'\n################## {__name__} #####################\n')
     # log les donnees post
-    logger.info('#########################################################')
-    for key, value in request.POST.items():
-        logger.info(f'#        POST -> {key} : {value}')
-    logger.info('#########################################################')
+    log_post(request.POST)
+
     data = {
         "FormPersonne" : PersonneForm(),  # form personne non liée
         # evenements a venir ou en cours où le benevole est deja inscrit 
@@ -178,11 +177,9 @@ def Profile(request):
     """
         page profile des personnes
     """
+    logger.info(f'\n################## {__name__} #####################\n')
     # log les donnees post
-    logger.info('#########################################################')
-    for key, value in request.POST.items():
-        logger.info(f'#        POST -> {key} : {value}')
-    logger.info('#########################################################')
+    log_post(request.POST)
 
     # un bénévole accede a son profile
     if request.method == "POST" and request.POST.get('personne'):

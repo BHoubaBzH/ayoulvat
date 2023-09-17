@@ -17,7 +17,7 @@ from evenement.forms import EquipeForm, PlanningForm, PosteForm, CreneauForm
 from evenement.models import Evenement, Equipe, Planning, Poste, Creneau
 from benevole.models import ProfileBenevole
 #from benevole.views import ListeGroupesUserFiltree, check_majeur, devenir_benevole
-from association.models import Association
+from association.models import Association, AssoPartenaire
 
 from django.http import HttpResponse
 from django.contrib import messages
@@ -35,6 +35,7 @@ def liste_evenements(request):
     """
     liste les evenements de l'asso
     """
+    logger.info(f'\n################## {__name__} #####################\n')
     if request.method == 'GET' and 'uuid_asso' in request.GET :
         logger.info('get')
         # récupère dans url uuid de l association
@@ -80,8 +81,8 @@ def evenement(request, uuid_evenement):
     """
         page d'un evenement
     """
-    logger.info('')
-    logger.info('*******************************************************')
+    logger.info(f'\n################## {__name__} #####################\n')
+
     logger.info(f'*** Debut traitement view : {datetime.now()}')
     # store dans la session le uuid de l'evenement
     # il apparait dans l'url pour pouvoir donner le liens directe aux bénévoles par la suite
@@ -136,7 +137,21 @@ def evenement(request, uuid_evenement):
         # log les donnees post
         log_post(request.POST)
 
-        uuid_evenement = request.POST.get('evenement')
+
+        lien_ben_ev_assopart = evenement_benevole_assopart.objects.get(Q(evenement=evenement),Q(profilebenevole=request.user.profilebenevole))
+        # le benevole a selectionne une asso, on sauvegarde
+        if 'asso_part_selected' in request.POST:
+            lien_ben_ev_assopart.asso_part = AssoPartenaire.objects.get(UUID=request.POST.get('asso_part_selected'))
+            lien_ben_ev_assopart.save()
+        # logger.info(f' assos liées : {evenement.assopartenaire.exists()}')
+        # si pas d'asso partenaire selectionnee par le benevole, on traite
+        if lien_ben_ev_assopart.asso_part:
+            # le benevole a une asso partenaire
+            data["AssoPartUser"] = lien_ben_ev_assopart.asso_part
+        else:
+            # # le benevole n a pas d asso partenaire
+            data["AssoPartUser"] = ""
+
         # le bénévole prend ou libère un créneau
         # traitement normal, ne force pas le retour sur le planning global de l evenement
         if any(x in  request.POST for x in ['benevole_prend_creneau', 'benevole_libere_creneau']):
@@ -167,7 +182,7 @@ def evenement(request, uuid_evenement):
             data["Creneaux_plage"] = \
                 tous_creneaux_entre_2_heures(data["Planning"].debut,
                                                 data["Planning"].fin,
-                                                uuid_evenement)
+                                                evenement)
 
             # envoi les forms au template
             if data["planning_uuid"]:

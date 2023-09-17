@@ -97,8 +97,8 @@ text_template['fr_fr']['availability']          = _('Disponibilité')
 
 #benevole > evenements
 text_template['fr_fr']['events_welcome']        = _("Bienvenue")
-text_template['fr_fr']['events_welcome_2']      = _("Bienvenue sur le site AYOULVAT. Tu vas pouvoir t'inscrire comme bénévole sur des évènements.")
-text_template['fr_fr']['events_retour']         = _("Pour revenir sur cette page click sur 'Evenements' dans la barre du haut.")
+text_template['fr_fr']['events_welcome_2']      = _("Bienvenue sur le site AYOULVAT. Choisi un évènement pour y participer comme bénévole.")
+text_template['fr_fr']['events_retour']         = _("Pour revenir sur cette page, clique sur 'Evenements' dans la barre du haut.")
 text_template['fr_fr']['events_profile']        = _("Pour éditer tes informations, click sur \"ton nom > profile\" en haut à droite.")
 text_template['fr_fr']['events_list']           = _("Voici la liste des evenements")
 text_template['fr_fr']['events_yours']          = _("tu y es inscrit comme bénévole")
@@ -217,7 +217,7 @@ text_template['fr_fr']['team_help']             = _("Choisis un planning dans le
 text_template['fr_fr']['error_msg_warning']     = _('Attention :')
 
 #evenement > admin_planning bouton
-text_template['fr_fr']['event_planning_t']      = _('editer le planning')
+text_template['fr_fr']['event_planning_t']      = _('éditer le planning')
 text_template['fr_fr']['event_planning_del_t']  = _('supprimer le planning')
 text_template['fr_fr']['event_slots_posts']     = _('postes et créneaux')
 text_template['fr_fr']['event_slots_posts_t']   = _('gestion des créneaux et postes du planning')
@@ -235,6 +235,11 @@ text_template['fr_fr']['admin_list_events']     = _('choisis ton evenement dans 
 text_template['fr_fr']['title_planning_event']  = _('Planning de l\'évènement et tes créneaux')
 text_template['fr_fr']['title_admin_event']     = _('Gestion des équipes et plannings de l\'évènement')
 text_template['fr_fr']['title_admin_events']    = _('liste des évenements de l\'asso')
+text_template['fr_fr']['title_asso_part']       = _('Choisis l\'association partenaire pour la quelle tu participes l\'évènement')
+
+#evenement > choix_asso_partenaire
+text_template['fr_fr']['asso_part_selected']    = _('Association selectionnée')
+text_template['fr_fr']['asso_part_send']        = _('Valider')
 
 #evenement > page_planning (evenement)
 text_template['fr_fr']['slot_mine_part']        = _('MON CRENEAU')

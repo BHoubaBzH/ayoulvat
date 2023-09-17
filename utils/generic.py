@@ -174,8 +174,9 @@ def liste_roles_utilisateur(request, evenement):
     return RolesUtilisateur
 
 def log_post(post_datas):
-    logger.info('#########################################################')
-    logger.info('#   données POST passées: ')
-    for key, value in post_datas.items():
-        logger.info(f'#        POST -> {key} : {value}')
-    logger.info('#########################################################')
+    if post_datas:
+        logger.info('#########################################################')
+        logger.info('#   données POST passées: ')
+        for key, value in post_datas.items():
+            logger.info(f'#        POST -> {key} : {value}')
+        logger.info('#########################################################')

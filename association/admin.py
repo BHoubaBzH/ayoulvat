@@ -33,6 +33,7 @@ class AssoPartenairesDetails(admin.ModelAdmin):
     def asso_nom(self):
         return Association.objects.get(UUID=self.Association_id).nom
     list_display = ['nom', asso_nom]
+    list_filter = ('Association',)
 
 class AbonnementAdmin(admin.ModelAdmin):
     pass

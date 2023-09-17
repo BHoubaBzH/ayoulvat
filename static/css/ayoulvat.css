@@ -267,11 +267,16 @@ footer .right {
 	border-left: 1px solid white;
 }
 
-
 .text {
 	max-width: 750px;
 	font-size: 18px;
 	margin: 0 auto 50px;
+}
+
+.text_assos_choix {
+	max-width: 750px;
+	font-size: 18px;
+	margin: 0 auto 5px;
 }
 
 .meta {

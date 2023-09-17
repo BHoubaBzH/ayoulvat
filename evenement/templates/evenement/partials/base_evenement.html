@@ -5,8 +5,12 @@
     <div class="col-lg-10 d-flex flex-column vh-100 main_page">
         {# bandeau message d erreur si besoins #}
         {% include "evenement/partials/error_message.html" %}
-        
-        {% if not planning_perso %}
+
+        {# si evenement avec assos partenaire, oblige le benevole a faire un choix #}
+        {% if Evenement.assopartenaire.all and not AssoPartUser %}
+            {% include "evenement/choix_asso_partenaire.html" %}
+
+        {% elif not planning_perso %}
             {# si planning selectionné, on affiche #}
             {% if Planning or PostesCreneaux %}
                 {% if Administrateur or Organisateur or Responsable %}
