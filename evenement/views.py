@@ -130,26 +130,29 @@ def evenement(request, uuid_evenement):
     for role, value in RolesUtilisateur.items():
         if value: data[role] = value 
 
-    # recupere les uuid en POST, but est de tout gerer dans une seule page
+
+    # partie servant a forcer le choix d une asso partenaire
+    lien_ben_ev_assopart = evenement_benevole_assopart.objects.get(Q(evenement=evenement),Q(profilebenevole=request.user.profilebenevole))
+    # le benevole a selectionne une asso, on sauvegarde
+    if request.method == "POST" and 'asso_part_selected' in request.POST:
+        lien_ben_ev_assopart.asso_part = AssoPartenaire.objects.get(UUID=request.POST.get('asso_part_selected'))
+        lien_ben_ev_assopart.save()
+    # logger.info(f' assos liées : {lien_ben_ev_assopart}')
+    # check si une asso partenaire selectionnee par le benevole
+    if lien_ben_ev_assopart.asso_part:
+        # le benevole a une asso partenaire, on l envoie au template
+        data["AssoPartUser"] = lien_ben_ev_assopart.asso_part
+    else:
+        # le benevole n a pas d asso partenaire, en evoie vide au template pour forcer le choix si besoins
+        data["AssoPartUser"] = ""
+
+
+    # recupere les POST, but est de tout gerer dans une seule page
     # et d'afficher les infos en fonction des POST recus :
     if request.method == "POST":
 
         # log les donnees post
         log_post(request.POST)
-
-        lien_ben_ev_assopart = evenement_benevole_assopart.objects.get(Q(evenement=evenement),Q(profilebenevole=request.user.profilebenevole))
-        # le benevole a selectionne une asso, on sauvegarde
-        if 'asso_part_selected' in request.POST:
-            lien_ben_ev_assopart.asso_part = AssoPartenaire.objects.get(UUID=request.POST.get('asso_part_selected'))
-            lien_ben_ev_assopart.save()
-        # logger.info(f' assos liées : {evenement.assopartenaire.exists()}')
-        # si pas d'asso partenaire selectionnee par le benevole, on traite
-        if lien_ben_ev_assopart.asso_part:
-            # le benevole a une asso partenaire
-            data["AssoPartUser"] = lien_ben_ev_assopart.asso_part
-        else:
-            # # le benevole n a pas d asso partenaire
-            data["AssoPartUser"] = ""
 
         # le bénévole prend ou libère un créneau
         # traitement normal, ne force pas le retour sur le planning global de l evenement
