@@ -243,7 +243,8 @@ def nb_benevoles_par_asso(list_assos, evt):
     dic = {}
     for asso in list_assos:
         dic[asso] = evenement_benevole_assopart.objects.filter(Q(asso_part=asso),Q(evenement=evt)).count()
-    dic['Sans association'] = evenement_benevole_assopart.objects.filter(Q(asso_part=None),Q(evenement=evt)).count()
+    # on force le choix d asso part maintenant, donc plus utile normalement 
+    # dic['Sans association'] = evenement_benevole_assopart.objects.filter(Q(asso_part=None),Q(evenement=evt)).count()
     dic ={k: v for k, v in sorted(dic.items(), key=lambda x: x[1], reverse=True)}
     return dic
 

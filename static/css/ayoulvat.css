@@ -462,7 +462,7 @@ footer .right {
 		height: auto!important;
 		position: relative;
 		transition: height 1s; 
-
+		padding-bottom: 1rem!important;
 	}
 	.sidebar li{
 		text-align: -webkit-center;
@@ -473,7 +473,7 @@ footer .right {
 	z-index: 99;
 	overflow-y: auto;
 	/* padding-top: 4rem!important; */
-	padding-bottom: 8rem!important;
+	padding-bottom: 8rem;
 }
 
 .bouton-sidebar {
