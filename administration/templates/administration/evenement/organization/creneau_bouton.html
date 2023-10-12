@@ -9,7 +9,10 @@
         data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
         data-bs-evenementuuid="{{ Evenement.UUID }}"
         data-bs-creneauuuid="{{ creno.UUID }}">
-        <a><b>{{ creno.benevole }}</b></a>
+        <a data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"
+            title="{{user|upper}}<br>tel: {{user.portable}}<br>email: {{user.email}}">
+            <b>{{ creno.benevole }}</b>
+        </a>
     </button>
 {# creneau libre #}
 {% else %}
