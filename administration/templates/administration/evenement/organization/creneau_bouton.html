@@ -10,7 +10,7 @@
         data-bs-evenementuuid="{{ Evenement.UUID }}"
         data-bs-creneauuuid="{{ creno.UUID }}">
         <a data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"
-            title="{{user|upper}}<br>tel: {{user.portable}}<br>email: {{user.email}}">
+            title="{{creno.benevole.personne|upper}}<br>tel: {{creno.benevole.personne.portable}}<br>email: {{creno.benevole.personne.email}}">
             <b>{{ creno.benevole }}</b>
         </a>
     </button>
