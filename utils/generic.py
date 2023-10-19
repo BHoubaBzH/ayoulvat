@@ -36,10 +36,10 @@ def envoi_courriel_orga_inscription(request):
         emails_orga.append(orga.personne.email)
     if emails_orga:
         sujet = '[Ayoulvat] Nouveau bénévole inscrit à ton évènement'
-        message_text = '{} s\'est inscrit à l\'évènement {} comme bénévole'.format(request.user, evt)
-        message_html = ' \
-            <html> <head> </head> <body> {} s\'est inscrit à l\'évènement {} comme bénévole</body> </html> \
-            '.format(request.user, evt)
+        message_text = f'{request.user} s\'est inscrit à l\'évènement {evt} comme bénévole'
+        message_html = f' \
+            <html> <head> </head> <body> {request.user} s\'est inscrit à l\'évènement {evt} comme bénévole</body> </html> \
+            '
         from_courriel = 'no-reply@deusta.bzh'
         to_courriel = emails_orga
         logger.debug(to_courriel)

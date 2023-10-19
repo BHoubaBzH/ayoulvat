@@ -288,6 +288,16 @@ footer .right {
 	color: #555;
 }
 
+/* bouton as text : pas le fond quoi */
+.astext_white {
+    background:none;
+    border:none;
+    margin:0;
+    padding:0;
+    cursor: pointer;
+	color: white;
+}
+
 /* boutons de choix de son asso dans la page evenements */
 .assos-button {
 	position: absolute;

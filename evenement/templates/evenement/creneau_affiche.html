@@ -13,7 +13,12 @@
             {% if creno.poste.ouvert and EvtOuvertBenevoles|stringformat:"s" == '1' and Evenement.editable %}
                 {% include "evenement/creneau_bouton.html" with ouvert='oui' %}
             {% else %}
-                {% include "evenement/creneau_bouton.html" with ouvert='non' %}
+                {# un  admin/orga/resp peut editer n'importe quel créneau #}
+                {% if Administrateur or Organisateur or Responsable %}
+                    {% include "evenement/creneau_bouton.html" with ouvert='oui' %}
+                {% else %} {# uniquement bénévole #}
+                    {% include "evenement/creneau_bouton.html" with ouvert='non' %}
+                {% endif %}
             {% endif %}
         {% endif %}
     {% endfor %}

@@ -79,14 +79,27 @@
                 </thead>
                 <tbody>
                     {% for a, b in  Plannings_occupation.items %}
-                        <tr style="vertical-align : middle;"><td>{{ a.equipe.nom }} - {{ a.nom }}</td>
-                        {% if b < a.seuil1 %}
-                            <td style="background:var(--bs-danger)">{{ b }}</tr>
-                        {% elif b < a.seuil2 %}
-                            <td style="background:var(--bs-warning)">{{ b }}</tr>
-                        {% else %}
-                            <td style="background:var(--bs-success)">{{ b }}</tr>
-                        {%endif%}
+                        
+                        <tr style="vertical-align : middle;"><!--td><a href="{% url 'organization' %}">{{ a.equipe.nom }} - {{ a.nom }}</a></td-->
+                            <form id="goto_plan_{{a.UUID}}" action="{% url 'organization' %}" method='post' target="_blank">
+                                {% csrf_token %}
+                                <input type="hidden" name="PlanningEditer" value="true">
+                                <input type="hidden" name="planning" value="{{a.UUID}}">
+                            </form>
+                            <td>
+                                <button class="astext_white" type="submit" form="goto_plan_{{a.UUID}}"
+                                        data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right"
+                                        title="{{Text.edit_planning}}">
+                                    {{ a.equipe.nom }} - {{ a.nom }}</button>
+                            </td>
+                            {% if b < a.seuil1 %}
+                                <td style="background:var(--bs-danger)">{{ b }}
+                            {% elif b < a.seuil2 %}
+                                <td style="background:var(--bs-warning)">{{ b }}
+                            {% else %}
+                                <td style="background:var(--bs-success)">{{ b }}
+                            {%endif%}
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>

@@ -343,6 +343,9 @@ text_template['fr_fr']['title_slots']           = _('Créneaux')
 text_template['fr_fr']['title_dashboard']       = _('Tableau de bord')
 text_template['fr_fr']['title_rate_busy']       = _('Remplissages des créneaux')
 
+#administration > dashboard
+text_template['fr_fr']['edit_planning']         = _('aller au planning')
+
 #administration > evenements liste
 #association/associations_liste
 text_template['fr_fr']['goto_event']            = _('Aller à l\'évènement')
