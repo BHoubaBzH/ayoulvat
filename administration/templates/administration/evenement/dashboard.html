@@ -71,6 +71,15 @@
 
     {% include 'administration/partials/titre_page.html' with page="remplissage" %}
 
+    {# forms to link to planning #}
+    {% for a, b in  Plannings_occupation.items %}
+        <form id="goto_plan_{{a.UUID}}" action="{% url 'organization' %}" method='post' target="_blank">
+            {% csrf_token %}
+            <input type="hidden" name="PlanningEditer" value="true">
+            <input type="hidden" name="planning" value="{{a.UUID}}">
+        </form>
+    {% endfor %}
+
     <div class="row">
         <div class="col col-lg-6">
             <table class="table table-dark table-hover responsive"  id="table_planning1">
@@ -79,13 +88,7 @@
                 </thead>
                 <tbody>
                     {% for a, b in  Plannings_occupation.items %}
-                        
                         <tr style="vertical-align : middle;"><!--td><a href="{% url 'organization' %}">{{ a.equipe.nom }} - {{ a.nom }}</a></td-->
-                            <form id="goto_plan_{{a.UUID}}" action="{% url 'organization' %}" method='post' target="_blank">
-                                {% csrf_token %}
-                                <input type="hidden" name="PlanningEditer" value="true">
-                                <input type="hidden" name="planning" value="{{a.UUID}}">
-                            </form>
                             <td>
                                 <button class="astext_white" type="submit" form="goto_plan_{{a.UUID}}"
                                         data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right"
