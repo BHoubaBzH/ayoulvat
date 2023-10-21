@@ -139,10 +139,11 @@ class BenevolesListView(ListView):
                 # lien entre l evenement et le profilebenevole
                 evenementObj = get_object_or_404(Evenement, UUID=request.session['uuid_evenement'])
                 evenementObj.benevole.add(benevoleObj)
+                messages.success(request, "bénévole créé")
                 #return render(request, self.template_name, self.context )
             else:
-                logger.info(f'erreur de creation de bénévole : {formpersonne.errors}')
-                raise Http404(f'erreur de creation de bénévole : {formpersonne.errors}')
+                messages.error(request, flash[language]['user_new_error'])
+                #raise Http404(f'erreur de creation de bénévole : {formpersonne.errors}')
             ### ajouter la possibilité de lier à un benevole existant deja
             ###             creer lien evenement-profilebenevole
             ### ajouter la possibilite de lier à une personne dans profilebenevole

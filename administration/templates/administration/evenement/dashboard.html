@@ -93,7 +93,8 @@
                                 <button class="astext_white" type="submit" form="goto_plan_{{a.UUID}}"
                                         data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right"
                                         title="{{Text.edit_planning}}">
-                                    {{ a.equipe.nom }} - {{ a.nom }}</button>
+                                    {{ a.equipe.nom }} - {{ a.nom }}
+                                </button>
                             </td>
                             {% if b < a.seuil1 %}
                                 <td style="background:var(--bs-danger)">{{ b }}

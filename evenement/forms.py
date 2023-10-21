@@ -100,6 +100,7 @@ class EquipeForm(ModelForm):
                   'editable',
                   'couleur',
                   'seuil1',
+                  
                   'seuil2',
                   'evenement', # test pour la creation de equipe et sans accès à ce champs
                   ]

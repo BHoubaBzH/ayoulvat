@@ -42,7 +42,7 @@ flash['fr_fr']['creneau_sup_success']       = _('créneau supprimé')
 flash['fr_fr']['creneau_sup_error']         = _("problème de supression du créneau")
 
 flash['fr_fr']['event_new_success']         = _("nouvel évènement ajouté")
-flash['fr_fr']['event_new_error']           = _("l\'évènement n\'a pas pus être créé")
+flash['fr_fr']['event_new_error']           = _("l\'évènement n\'a pas pu être créé")
 flash['fr_fr']['event_mod_success']         = _("évènement modifié")
 flash['fr_fr']['event_mod_error']           = _("problème de modification de l\'évènement")
 flash['fr_fr']['event_sup_success']         = _("")
@@ -55,6 +55,8 @@ flash['fr_fr']['asso_new_error']            = _("")
 flash['fr_fr']['asso_sup_success']          = _("")
 flash['fr_fr']['asso_new_error']            = _("")
 
+flash['fr_fr']['user_new_success']         = _("nouveau bénévole ajouté")
+flash['fr_fr']['user_new_error']           = _("le nouveau bénévole n\'a pas pu être créé")
 
 #######################################################
 # textes templates

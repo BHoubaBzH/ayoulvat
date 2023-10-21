@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.forms import widgets
+from django.forms import ValidationError, widgets
 from django.forms.models import inlineformset_factory
 from django.forms.widgets import HiddenInput
 from evenement.customwidgets import SplitDateTimeMultiWidget
@@ -73,3 +73,10 @@ class PersonneForm(ModelForm):
             return super().save()
         else:
             return super().save(commit=False)        
+
+    def clean(self):
+        super().clean()
+        nom = self.cleaned_data['email']
+        list_personnes = Personne.objects.all().values_list("username", flat=True)
+        if nom in  list_personnes :
+            raise ValidationError(f"{nom} existe deja")
