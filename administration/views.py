@@ -142,7 +142,7 @@ class BenevolesListView(ListView):
                 messages.success(request, "bénévole créé")
                 #return render(request, self.template_name, self.context )
             else:
-                messages.error(request, flash[language]['user_new_error'])
+                messages.error(request, "{} {}".format(flash[language]['user_new_error'], formpersonne.errors))
                 #raise Http404(f'erreur de creation de bénévole : {formpersonne.errors}')
             ### ajouter la possibilité de lier à un benevole existant deja
             ###             creer lien evenement-profilebenevole

@@ -74,9 +74,9 @@ class PersonneForm(ModelForm):
         else:
             return super().save(commit=False)        
 
-    def clean(self):
-        super().clean()
-        nom = self.cleaned_data['email']
-        list_personnes = Personne.objects.all().values_list("username", flat=True)
-        if nom in  list_personnes :
-            raise ValidationError(f"{nom} existe deja")
+    #def clean(self):
+    #    super().clean()
+    #    email = self.cleaned_data['email']
+    #    #list_personnes = Personne.objects.all().values_list("username", flat=True)
+    #    if Personne.objects.filter(username=email).exists():
+    #        raise ValidationError(f"{email} existe deja")

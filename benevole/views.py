@@ -188,6 +188,7 @@ def Profile(request):
         try:
             # on a un profile bénévole déjà cree, on le recupere
             FormBenevole = BenevoleForm(request.POST, instance=ProfileBenevole.objects.get(personne_id=request.POST.get('personne')))
+            print('plop')
         except:
             # nouveau profile benevole
             FormBenevole = BenevoleForm(request.POST,
@@ -196,7 +197,8 @@ def Profile(request):
                                         #message=request.POST.get('message'), 
                                         )
             logger.info('nouveau bénévole inscrit: {0} {1} - {2}'.format(request.POST.get('last_name'), request.POST.get('first_name'), request.user.email))
-
+            print(f'form personne {FormPersonne.is_valid()}')
+            print(f'form benevole {FormBenevole.is_valid()}')
         if FormPersonne.is_valid() and FormBenevole.is_valid():
             FormPersonne.save()   
             new_profilebenevole = FormBenevole.save(Personne.objects.get(UUID=request.POST.get('personne')))
