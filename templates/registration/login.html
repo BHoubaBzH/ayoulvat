@@ -36,15 +36,11 @@
                                 <p class="bg-danger p-d ml-b">{{ error_message }}</p>
                             {% endif %}
                             <div class="form-group clearfix">
-                                Tu possèdes déjà un compte:<br><br>
-                                <label for="username" class="col-md-4 control-label text-right">Courriel:</label>
                                 <div class="col-md-6">
+                                    Connexion:<br><br>
+                                    <label for="username" class="control-label text-left">Courriel:</label>
                                     <input name="username" value="" type="text" class="form-control" />
-                                </div>
-                            </div>
-                            <div class="form-group clearfix">
-                                <label for="password" class="col-md-4 control-label text-right">Mot de Passe:</label>
-                                <div class="col-md-6">
+                                    <label for="password" class="control-label text-left">Mot de Passe:</label>
                                     <input name="password" type="password" class="form-control" />
                                 </div>
                             </div>
@@ -56,28 +52,21 @@
                                 <input name="login" type="submit" value="Connexion" class="btn btn-success" /> &nbsp;
                             </div>
                         </form>
-                    
                     </div>
                     <div class="col align-self-end">
-                        <div class="row">
-                            <div class="col-md-6 col-md-offset-4">
-                                Pas encore inscrit?
-                                <input name="login" type="submit" value="Créer un Compte" class="btn btn-info" onclick="window.location.href='{% url 'inscription' %}';" /> &nbsp;
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 col-md-offset-4">
-                                <br>
-                                Mot de passe perdu?
-                                <input name="login" type="submit" value="Réinitialiser le mot de passe" class="btn btn-warning" onclick="window.location.href='{% url 'password_reset' %}';"/> &nbsp;
-                            </div>
+                        <div class="col-md-6 col-md-offset-4">
+                            Pas encore inscrit?
+                            <input name="login" type="submit" value="Créer un Compte" class="btn btn-info" onclick="window.location.href='{% url 'inscription' %}';" /> &nbsp;
+                            <br/>
+                            Mot de passe perdu?
+                            <input name="login" type="submit" value="Réinitialiser le mot de passe" class="btn btn-warning" onclick="window.location.href='{% url 'password_reset' %}';"/> &nbsp;
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
                     <p></p><p></p>
-                    <p><b>nb:</b> si tu as déjà participé à un évèment ayoulvat, réutilise le même compte pour te connecter.</p>
+                    <p><b>nb:</b> tu as déjà participé à un évèment ayoulvat? réutilise le même compte pour te connecter.</p>
                 </div>
 
             </div>
