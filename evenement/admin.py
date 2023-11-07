@@ -3,6 +3,23 @@ from django.forms.models import BaseInlineFormSet
 from association.models import AssoPartenaire
 from evenement import models
 
+#class AssopartInLine(admin.TabularInline):
+#    model = AssoPartenaire
+#    extra = 0
+
+########### FORMSETS ###########
+
+class OrganisateurEvenementFormSet(BaseInlineFormSet):
+    ''' organisateur evenement '''
+    def __init__(self, *args, **kwargs):
+        super(OrganisateurEvenementFormSet, self).__init__(*args, **kwargs)
+        self.queryset = self.queryset.select_related('profileorganisateur__personne', 'evenement')
+
+class ResponsableEquipeFormSet(BaseInlineFormSet):
+    ''' responsable equipe '''
+    def __init__(self, *args, **kwargs):
+        super(ResponsableEquipeFormSet, self).__init__(*args, **kwargs)
+        self.queryset = self.queryset.select_related('profileresponsable__personne', 'equipe')
 
 class BenevoleEvenementFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
@@ -10,17 +27,32 @@ class BenevoleEvenementFormSet(BaseInlineFormSet):
         self.queryset = self.queryset.select_related('profilebenevole__personne', 'evenement', 'profilebenevole', 'asso_part')
         #print(self.queryset.query)
 
-class BenevoleEvenementInLine(admin.TabularInline):
+########### INLINES ###########
+
+class OrganisateurEvenementInLine(admin.TabularInline):
     # table evenement_benevole_assopart
+    verbose_name = 'organisateur événement'
+    model = models.Evenement.organisateur.through 
+    formset = OrganisateurEvenementFormSet
+    extra = 0
+    raw_id_fields = ('evenement', ) # pas de selection directe dans la liste = divise le nombre de requete db par 8
+
+class ResponsableEquipeInLine(admin.TabularInline):
+    # table evenement_benevole_assopart
+    verbose_name = 'organisateur événement'
+    model = models.Equipe.responsable.through 
+    formset = ResponsableEquipeFormSet
+    extra = 0
+    raw_id_fields = ('equipe', ) # pas de selection directe dans la liste = divise le nombre de requete db par 8    
+
+class BenevoleEvenementInLine(admin.TabularInline):
     verbose_name = 'bénévole événement'
     model = models.Evenement.benevole.through 
     formset = BenevoleEvenementFormSet
     extra = 0
     raw_id_fields = ('profilebenevole', 'asso_part') # pas de selection directe dans la liste = divise le nombre de requete db par 8
 
-#class AssopartInLine(admin.TabularInline):
-#    model = AssoPartenaire
-#    extra = 0
+###########  ###########
 
 @admin.register(models.Evenement)
 class EvenementAdmin(admin.ModelAdmin):
@@ -46,9 +78,11 @@ class EvenementAdmin(admin.ModelAdmin):
                                 }),
                 )
     filter_horizontal = ('organisateur', 'assopartenaire', )
-    #filter_horizontal = ('benevole', 'assopartenaire')
-    #list_select_related = ['association', ]
-    inlines = (BenevoleEvenementInLine, )
+    # filter_horizontal = ('benevole', 'assopartenaire')
+    # list_select_related = ['association', ]
+
+    # liste de benevole trop lourd pour édition, retiré
+    # inlines = (BenevoleEvenementInLine, )
 
     list_filter = ['association']
     

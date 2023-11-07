@@ -1,7 +1,8 @@
 from django.contrib import admin
+from django.forms.models import BaseInlineFormSet
 from benevole import models
-from evenement.admin import BenevoleEvenementInLine
-
+from association import models as models_a
+from evenement.admin import OrganisateurEvenementInLine, ResponsableEquipeInLine, BenevoleEvenementInLine 
 
 class PersonneInLine(admin.TabularInline):
     model = models.Personne
@@ -25,6 +26,44 @@ class BenevoleInLine(admin.TabularInline):
     #    }),
     #)
 
+########### FORMSETS ###########
+
+class AdministrateurAssociationFormSet(BaseInlineFormSet):
+    ''' admin asso '''
+    def __init__(self, *args, **kwargs):
+        super(AdministrateurAssociationFormSet, self).__init__(*args, **kwargs)
+        self.queryset = self.queryset.select_related('profileadministrateur__personne', 'association')
+
+class OrganisateurPersonneFormSet(BaseInlineFormSet):
+    ''' organisateur evenement '''
+    def __init__(self, *args, **kwargs):
+        super(OrganisateurPersonneFormSet, self).__init__(*args, **kwargs)
+        self.queryset = self.queryset.select_related('profileorganisateur__personne', 'evenement')
+
+class BenevolePersonneFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super(BenevolePersonneFormSet, self).__init__(*args, **kwargs)
+        self.queryset = self.queryset.select_related('profilebenevole__personne', 'evenement', 'profilebenevole', 'asso_part')
+        #print(self.queryset.query)
+
+########### INLINES ###########
+
+class AdministrateurAssociationInLine(admin.TabularInline):
+    verbose_name = 'administrateur association'
+    model = models_a.Association.administrateur.through
+    formset = AdministrateurAssociationFormSet
+    extra = 0
+    raw_id_fields = ('association', ) 
+
+class BenevolePersonneInLine(admin.TabularInline):
+    verbose_name = 'bénévole événement'
+    model = models.Personne
+    formset = BenevolePersonneFormSet
+    extra = 0
+    raw_id_fields = ('profilebenevole', 'asso_part') # pas de selection directe dans la liste = divise le nombre de requete db par 8
+
+########### TYPES USERS ###########
+
 @admin.register(models.Personne)
 class PersonneDetails(admin.ModelAdmin):
     def group(self, user):
@@ -32,13 +71,14 @@ class PersonneDetails(admin.ModelAdmin):
         for group in user.groups.all():
             groups.append(group.name)
         return ' '.join(groups)
-    #inlines = [BenevoleInLine, ]
     group.short_description = 'Groupes'
     list_display = ( "email", "last_name", "first_name", "date_joined", "is_superuser", "group")
     list_filter = ( "profilebenevole__evenement_benevole_assopart__evenement", 
                     "profilebenevole__evenement_benevole_assopart__evenement__association",
                     "groups", 
                     )
+    
+    # inlines = [BenevoleInLine, BenevolePersonneInLine], 
 
 class BenevoleCommun(admin.ModelAdmin):
     """
@@ -54,6 +94,21 @@ class BenevoleCommun(admin.ModelAdmin):
     get_user_fisrtname.short_description = 'Prénom'
     get_user_email.short_description = 'Courriel'
     get_user_name.admin_order_field = 'personne__last_name'
+
+@admin.register(models.ProfileAdministrateur)
+class AdministrateurCustom(BenevoleCommun):
+    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
+    inlines = (AdministrateurAssociationInLine,)
+
+@admin.register(models.ProfileOrganisateur)
+class OrganisateurCustom(BenevoleCommun):
+    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
+    inlines = (OrganisateurEvenementInLine,)
+
+@admin.register(models.ProfileResponsable)
+class ResponsableCustom(BenevoleCommun):
+    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
+    inlines = (ResponsableEquipeInLine,)
 
 @admin.register(models.ProfileBenevole)
 class BenevoleCustom(BenevoleCommun):
@@ -76,24 +131,9 @@ class BenevoleCustom(BenevoleCommun):
             return qs
     inlines = (BenevoleEvenementInLine,)
 
-#@admin.register(models.ProfileAdministrateur)
-#class AdministrateurCustom(BenevoleCommun):
-#    def assos(self, obj):
-#        return obj.association
-#    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname', 'assos')
-
-@admin.register(models.ProfileOrganisateur)
-class OrganisateurCustom(BenevoleCommun):
-    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
-
-@admin.register(models.ProfileResponsable)
-class ResponsableCustom(BenevoleCommun):
-    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
-
-
 #admin.site.unregister(User)
 #admin.site.register(User, BenevoleDetails)
 
-admin.site.register(models.ProfileAdministrateur)
-#admin.site.register(models.ProfileOrganisateur)
-#admin.site.register(models.ProfileResponsable)
+#admin.site.register(models.ProfileAdministrateur)
+#admin.site.register(models_b.ProfileOrganisateur)
+#admin.site.register(models_b.ProfileResponsable)
