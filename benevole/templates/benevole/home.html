@@ -7,7 +7,7 @@
     <div class="row card card-default">
       <div class="card-header">{{Text.events_welcome}} {% if user.last_name or user.first.name %}{{ user.first_name|capfirst }} {{ user.last_name|upper }}{% else %}{{ user.username }}{% endif %} !</div>
       <div class="card-body">
-        {{Text.events_welcome_2}}<br>
+        {{Text.events_welcome_2a}} {{global_site_name}}. {{Text.events_welcome_2b}}<br>
         {{Text.events_retour}}<br>
         {{Text.events_profile}}<br><br>
         {{Text.events_list}}

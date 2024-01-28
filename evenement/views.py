@@ -130,7 +130,6 @@ def evenement(request, uuid_evenement):
     for role, value in RolesUtilisateur.items():
         if value: data[role] = value 
 
-
     # partie servant a forcer le choix d une asso partenaire
     lien_ben_ev_assopart = evenement_benevole_assopart.objects.get(Q(evenement=evenement),Q(profilebenevole=request.user.profilebenevole))
     # le benevole a selectionne une asso, on sauvegarde
@@ -143,7 +142,7 @@ def evenement(request, uuid_evenement):
         # le benevole a une asso partenaire, on l envoie au template
         data["AssoPartUser"] = lien_ben_ev_assopart.asso_part
     else:
-        # le benevole n a pas d asso partenaire, en evoie vide au template pour forcer le choix si besoins
+        # le benevole n a pas d asso partenaire, envoie vide au template pour forcer le choix si besoins
         data["AssoPartUser"] = ""
 
 

@@ -99,7 +99,8 @@ text_template['fr_fr']['availability']          = _('Disponibilité')
 
 #benevole > evenements
 text_template['fr_fr']['events_welcome']        = _("Bienvenue")
-text_template['fr_fr']['events_welcome_2']      = _("Bienvenue sur le site AYOULVAT. Choisi un évènement pour y participer comme bénévole.")
+text_template['fr_fr']['events_welcome_2a']     = _("Bienvenue sur le site")
+text_template['fr_fr']['events_welcome_2b']     = _("Choisi un évènement pour y participer comme bénévole.")
 text_template['fr_fr']['events_retour']         = _("Pour revenir sur cette page, clique sur 'Evenements' dans la barre du haut.")
 text_template['fr_fr']['events_profile']        = _("Pour éditer tes informations, click sur \"ton nom > profile\" en haut à droite.")
 text_template['fr_fr']['events_list']           = _("Voici la liste des evenements")
@@ -307,6 +308,7 @@ text_template['fr_fr']['poste_del_confirm']     = _('Confirmer la suppression du
 #association
 text_template['fr_fr']['assos_events_admin']    = _('les associations et évènements que tu gères')
 
+
 #administration/benevoles
 text_template['fr_fr']['volunteers_list']       = _('Liste des bénévoles')
 text_template['fr_fr']['volunteer']             = _('Bénévoles')
@@ -321,6 +323,8 @@ text_template['fr_fr']['volunteer_with_slots']  = _('Bénévoles avec créneau')
 text_template['fr_fr']['volunteer_one_slot']    = _('Bénévoles avec un seul créneau')
 text_template['fr_fr']['volunteer_no_slots']    = _('Bénévoles sans créneau')
 text_template['fr_fr']['event_responsible']     = _('Responsables de l\'évènement')
+text_template['fr_fr']['optionnal_m']           = _('Optionnel')
+text_template['fr_fr']['required_m']            = _('Obligatoire')
 
 #administration sidebar
 text_template['fr_fr']['nav_dashboard']         = _("Statistiques")

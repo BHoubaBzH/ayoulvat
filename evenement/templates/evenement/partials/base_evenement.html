@@ -32,11 +32,7 @@
             {# si planning perso choisi #}
             <div class="tab-pane fade show active" id="nav-equipes"
                 role="tabpanel" aria-labelledby="nav-equipes-tab"> 
-                {% if equipe_uuid %} 
-                    {% include "evenement/admin_page_equipes.html" %}
-                {% else %}
-                    {% include "evenement/page_planning_perso.html" %}
-                {% endif %}
+                {% include "evenement/page_planning_perso.html" %}
             </div>
         {% else %}
             {# page par defaut des benevoles de l'evenement: son planning global #}

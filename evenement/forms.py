@@ -8,7 +8,7 @@ from django.forms import ModelChoiceField, ModelMultipleChoiceField, CheckboxSel
 from django_range_slider.fields import RangeSliderField
 from django.db.models import Q,F
 
-from evenement.models import Equipe, Evenement, Planning, Poste, Creneau
+from evenement.models import Equipe, Evenement, Planning, Poste, Creneau, evenement_benevole_assopart
 from benevole.models import Personne, ProfileBenevole
 from association.models import AssoPartenaire
 from evenement.customwidgets import SplitDateTimeMultiWidget

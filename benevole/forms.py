@@ -8,8 +8,14 @@ from django.contrib.auth import get_user_model
 from django import forms
 from django.forms import ModelForm
 from django.forms.fields import DateField, DateTimeField
+from random import randint
 from benevole.models import ProfileBenevole, Personne
+from ayoulvat.languages import text_template
 
+# import the logging library
+import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 # pour date picker
 class DateInput(forms.DateInput):
@@ -62,11 +68,18 @@ class PersonneForm(ModelForm):
         exclude = ['description',]
 
     def save(self, commit=True): # si pas indiqué commit est à true
-        # genere un username aleatoire et unique pour remplir le champs, pas utilisé vu qu'on utilise email pour se logguer
+
         if not self.instance.username:
-            #self.instance.username = uuid.uuid4().hex[:16].upper()
-            # met le mail au niveau du username
+            # met le mail au niveau du username, on vient de la page benevole
             self.instance.username = self.instance.email
+        if not self.instance.email:
+            # on vient de la page admin, pas d email renseigné
+            email1 = ''.join(letter for letter in self.instance.first_name if letter.isalnum()).lower() 
+            email2 = ''.join(letter for letter in self.instance.last_name if letter.isalnum()).lower()
+            email3 = randint(10, 99)
+            self.instance.email = f'{email1}.{email2}@acme{email3}.bzh'
+            self.instance.username = self.instance.email
+
         if commit:
             if not self.instance.password:
                 self.instance.password = 'mot_de_passe_temporaire'
@@ -80,3 +93,13 @@ class PersonneForm(ModelForm):
     #    #list_personnes = Personne.objects.all().values_list("username", flat=True)
     #    if Personne.objects.filter(username=email).exists():
     #        raise ValidationError(f"{email} existe deja")
+        
+class PersonneFormAdmin(PersonneForm):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.fields['email'].required = False
+        self.fields['email'].help_text = 'Optionnel'
+        self.fields['portable'].required = True
+        self.fields['portable'].help_text = 'Obligatoire'
+        self.fields['date_de_naissance'].initial = '1900-01-01'
+        self.fields['date_de_naissance'].required = False

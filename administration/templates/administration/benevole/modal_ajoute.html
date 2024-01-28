@@ -18,13 +18,30 @@
                 {% csrf_token %}
 
                 <table class="table">
-                {{ FormPersonne.as_table }}
-                {{ FormBenevole.as_table }}
+                  {{ FormPersonne.as_table }}
+                  {{ FormBenevole.as_table }}
+
+                  <tr>
+                    <th>
+                      Associations Partenaire :
+                    </th>
+                    <td>
+                      <select id="assopart" name="assopart_select">
+                        {% for assopart in EvtAssosPart %}
+                        <option value="{{assopart.UUID}}">
+                            {{assopart.nom|capfirst}}
+                        </option>
+                        {% endfor %}
+                      </select>
+                    </td>
+                  </tr>
+
                 </table>
+
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" id="benevole_creer" name="benevole_creer"  class="btn btn-primary success">Ajouter</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
+                <button type="submit" id="benevole_creer" name="benevole_creer"  class="btn btn-primary success">{{ Text.button_add }}</button>
               </div>
             </form>
         </div>
@@ -49,8 +66,8 @@
                 {% csrf_token %}
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" id="benevole_lie"  class="btn btn-primary success">Ajouter</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
+                <button type="submit" id="benevole_lie"  class="btn btn-primary success">{{ Text.button_add }}</button>
               </div>
             </form>
         </div>

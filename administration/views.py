@@ -13,10 +13,10 @@ from utils.benevole import *
 from utils.administration import *
 from ayoulvat.languages import *
 
-from benevole.forms import BenevoleForm, PersonneForm
+from benevole.forms import BenevoleForm, PersonneFormAdmin
 from evenement.forms import EvenementForm_organisateur
 from benevole.models import ProfileBenevole, ProfileResponsable
-from evenement.models import Creneau, Equipe, Evenement, Planning, evenement_benevole_assopart
+from evenement.models import Creneau, Equipe, Evenement, Planning
 
 from django.shortcuts import render
 
@@ -93,7 +93,7 @@ class BenevolesListView(ListView):
             # nav bar infos : fin
             "Association"           : self.Asso,
             "Evenement"             : self.Evt, 
-            "FormPersonne"          : PersonneForm(), # sert a creer un benevole
+            "FormPersonne"          : PersonneFormAdmin(), # sert a creer un benevole
             "FormBenevole"          : BenevoleForm(), # sert a creer un benevole
             "FormEvent_edit"        : EvenementForm_organisateur(instance=self.Evt),  # evenement form pour edition
 
@@ -101,7 +101,8 @@ class BenevolesListView(ListView):
 
             "BenevolesAgeCreneauxAssopart": liste_benevoles_age_creneaux_assopart(self.Evt, self.ListeBenevoles),
             #"NotBenevolesAgeCreneauxAssopart": liste_benevoles_age_creneaux_assopart(self.Evt, self.ListeNotBenevoles),
-            "EvtBeneAssopar"        : list(self.Evt.evenement_benevole_assopart_set.all()),
+            #"EvtBeneAssopar"        : list(self.Evt.evenement_benevole_assopart_set.all()),
+            "EvtAssosPart"          : list(self.Evt.assopartenaire.all()), # assos partenaires de l evenement
 
             "Administrateurs"       : list(self.Asso.administrateur.all()),
             "Organisateurs"         : list(self.Evt.organisateur.all().select_related('personne')),
@@ -116,7 +117,6 @@ class BenevolesListView(ListView):
             "Emails_benevoles_un_creneau"   : emails_benevoles_un_creneau(self.Evt),
             "Emails_responsables"           : emails_responsables(self.Evt),
         }
-
         return super().dispatch(request, *args, **kwargs)
 
     # recupere et traite les données post
@@ -131,7 +131,7 @@ class BenevolesListView(ListView):
 
         # creer un benevole
         if 'benevole_creer' in request.POST:
-            formpersonne = PersonneForm(request.POST) 
+            formpersonne = PersonneFormAdmin(request.POST) 
             formbenevole = BenevoleForm(request.POST)
             if all((formpersonne.is_valid(), formbenevole.is_valid())):
                 personneObj = formpersonne.save()
@@ -139,6 +139,11 @@ class BenevolesListView(ListView):
                 # lien entre l evenement et le profilebenevole
                 evenementObj = get_object_or_404(Evenement, UUID=request.session['uuid_evenement'])
                 evenementObj.benevole.add(benevoleObj)
+                if 'assopart_select' in request.POST:
+                    up_assopart = evenement_benevole_assopart.objects.\
+                        filter(profilebenevole=benevoleObj,evenement=evenementObj)
+                    logger.info(f' lien asso benevole evenement : {up_assopart}')
+                    up_assopart.update(asso_part=request.POST.get('assopart_select'))
                 messages.success(request, "bénévole créé")
                 #return render(request, self.template_name, self.context )
             else:
