@@ -102,7 +102,7 @@ class BenevolesListView(ListView):
             "BenevolesAgeCreneauxAssopart": liste_benevoles_age_creneaux_assopart(self.Evt, self.ListeBenevoles),
             #"NotBenevolesAgeCreneauxAssopart": liste_benevoles_age_creneaux_assopart(self.Evt, self.ListeNotBenevoles),
             #"EvtBeneAssopar"        : list(self.Evt.evenement_benevole_assopart_set.all()),
-            "EvtAssosPart"          : list(self.Evt.assopartenaire.all()), # assos partenaires de l evenement
+            "EvtAssosPart"          : list(self.Evt.assopartenaire.all().order_by('nom')), # assos partenaires de l evenement
 
             "Administrateurs"       : list(self.Asso.administrateur.all()),
             "Organisateurs"         : list(self.Evt.organisateur.all().select_related('personne')),
