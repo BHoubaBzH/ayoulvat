@@ -9,4 +9,5 @@ urlpatterns = [
     path('organization', views.OrganizationView.as_view(), name='organization'),
     path('creneau_fetch', views.CreneauFetch, name='creneau_fetch'),
     path('planning_fetch', views.PlanningFetch, name='planning_fetch'),
+    path('benevole_fetch', views.BenevoleFetch, name='benevole_fetch'),
 ]

@@ -43,7 +43,7 @@
 
                 <div class="col-md-9 ms-sm-auto col-lg-12 px-md-4 pt-3">
                     <h2> 
-                        <button style="" class="btn btn-sm" title="ajouter un bénévole sans compte ayoulvat à l'évènement" data-bs-toggle="modal" data-bs-target="#modal-benevole-ajoute">
+                        <button style="" class="btn btn-sm" title="{{ Text.volunteer_add_h }}" data-bs-toggle="modal" data-bs-target="#modal-benevole-ajoute">
                             <i style="color: var(--bs-success)" class="bi bi-plus-square fs-2"></i>
                         </button>
                     </h2>
@@ -81,15 +81,27 @@
                                         <i class="bi-pencil-square fs-3"></i>
                                     </a>
                                     {% endcomment %}
+                                    {# bouton editer le benevole #}
+                                    <button style="" class="benevole-edit btn btn-sm" title="{{ Text.volunteer_edit }}" 
+                                        data-bs-toggle="modal" data-bs-target="#modal-benevole-edit"
+                                        data-bs-id1="{{benevole.UUID}}" 
+                                        data-bs-id2="{{benevole.personne.last_name}}" 
+                                        data-bs-id3="{{benevole.personne.fisrt_name}}"
+                                        data-bs-id4="{{Evenement.UUID}}"
+                                        data-bs-id5="{{liste.3.UUID}}">
+                                        <i style="color: var(--bs-warning)" class="bi bi-pencil-square fs-6"></i>
+                                    </button>
+
                                     {# bouton pour supprimer le lien evenement - benevole #}
                                     {# si la personne est benevole sur cet evenement#}
-                                    <button style="" class="benevole-supprime btn btn-sm" title="le bénévole ne participe plus à cet évènement" 
+                                    <button style="" class="benevole-supprime btn btn-sm" title="{{ Text.volunteer_rem_evt_h }}" 
                                         data-bs-toggle="modal" data-bs-target="#modal-benevole-supprime"
                                         data-bs-id1="{{benevole.UUID}}" 
                                         data-bs-id2="{{benevole.personne.last_name}}" 
                                         data-bs-id3="{{benevole.personne.fisrt_name}}">
                                         <i style="color: var(--bs-danger)" class="bi bi-x-square fs-6"></i>
                                     </button>
+
                                 </div>
                             </td>
                         </tr>
@@ -294,7 +306,8 @@
     } );
 </script>
 
-{% include "administration/benevole/modal_courriels.html" %}
-{% include "administration/benevole/modal_ajoute.html" %}
-{% include "administration/benevole/modal_supprime.html" %}
+{% include "administration/evenement/benevole/modal_courriels.html" %}
+{% include "administration/evenement/benevole/modal_ajoute.html" %}
+{% include "administration/evenement/benevole/modal_edit.html" %}
+{% include "administration/evenement/benevole/modal_supprime.html" %}
 {% endblock %}

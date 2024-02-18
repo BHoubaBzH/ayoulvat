@@ -1,4 +1,4 @@
-<!-- administration/evenement/planning.html -->
+<!-- administration/evenement/organization.html -->
 
 {% extends 'administration/partials/base.html' %}
 {% load filters_perso %}
@@ -11,10 +11,10 @@
 
         {% if not PlanningEditer %}
             {% include 'administration/partials/titre_page.html' with page="plannings" %}
-            {% include 'administration/evenement/organization/plannings.html' %}
+            {% include 'administration/evenement/organization/equipes.html' %}
         {% else %}
             {% include 'administration/partials/titre_page.html' with page="planning" %}
-            {% include 'administration/evenement/organization/planning.html' %}
+            {% include 'administration/evenement/organization/postes.html' %}
         {% endif %}
     </div>
 

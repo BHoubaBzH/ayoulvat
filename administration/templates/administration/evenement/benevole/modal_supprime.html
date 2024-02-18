@@ -1,4 +1,4 @@
-<!-- administration/benevole/modal_supprime.html -->
+evenement/<!-- administration/evenement/benevole/modal_supprime.html -->
 {# modal suppression d'un bénévole #}
 <div class="modal fade"
      id="modal-benevole-supprime"
@@ -10,7 +10,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalLabel">
-                Es-tu sûr de supprimer ce bénévole? <!--script>document.write(BenevoleLastName)</script-->
+                  {{ Text.volunteer_rem_evt_t }}<!--script>document.write(BenevoleLastName)</script-->
                 </h5>
             </div>
             <form  id="form-ajout-supprimer" class="form-supprime-benevole" method='post'>
@@ -25,8 +25,8 @@
                 <input type="hidden" name="BenevoleUUID" id="BenevoleUUID" value="" />
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" id="benevole_supprimer" name="benevole_supprimer"  class="btn btn-danger">Supprimer</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_no }}</button>
+                <button type="submit" id="benevole_supprimer" name="benevole_supprimer"  class="btn btn-danger">{{ Text.button_yes }}</button>
               </div>
             </form>
         </div>

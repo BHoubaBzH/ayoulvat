@@ -204,6 +204,9 @@ text_template['fr_fr']['volunteer_infos_t']     = _('infos bénévole:')
 text_template['fr_fr']['volunteer_email_t']     = _('email :')
 text_template['fr_fr']['volunteer_phone_t']     = _('tel :')
 
+#evenement > poste ajoute
+text_template['fr_fr']['poste_add_t']            = _("Ajout d'un poste")
+
 #evenement > equipe ajoute
 text_template['fr_fr']['team_add_t']            = _("Ajout d'une équipe")
 
@@ -316,7 +319,8 @@ text_template['fr_fr']['registered_list']       = _('Liste des inscrits')
 text_template['fr_fr']['registered_emails']     = _('Courriels des inscrits')
 text_template['fr_fr']['nb_slots']              = _('Nb créneaux')
 text_template['fr_fr']['nb_hours']              = _('Nb heures')
-text_template['fr_fr']['partner_asso']          = _('Asso Partenaire')
+text_template['fr_fr']['partner_asso']          = _('Association Partenaire')
+text_template['fr_fr']['partner_assos']         = _('Associations Partenaires')
 text_template['fr_fr']['action']                = _('Action')
 text_template['fr_fr']['no_volunteer_yet']      = _('pas encore de bénévole inscrit')
 text_template['fr_fr']['volunteer_with_slots']  = _('Bénévoles avec créneau')
@@ -325,6 +329,12 @@ text_template['fr_fr']['volunteer_no_slots']    = _('Bénévoles sans créneau')
 text_template['fr_fr']['event_responsible']     = _('Responsables de l\'évènement')
 text_template['fr_fr']['optionnal_m']           = _('Optionnel')
 text_template['fr_fr']['required_m']            = _('Obligatoire')
+text_template['fr_fr']['volunteer_add']         = _('Ajout d\'un bénévole')
+text_template['fr_fr']['volunteer_add_h']       = _('Créer un bénévole pour cet évènement')
+text_template['fr_fr']['volunteer_edit']        = _('Modifier le bénévole')
+text_template['fr_fr']['volunteer_rem_evt_h']   = _('Ce bénévole ne participe plus à l\'évènement')
+text_template['fr_fr']['volunteer_rem_evt_t']   = _('Es-tu sûr de retirer ce bénévole?')
+text_template['fr_fr']['volunteer_subs_evt']    = _('inscrire le bénévole à l\'évènement')
 
 #administration sidebar
 text_template['fr_fr']['nav_dashboard']         = _("Statistiques")

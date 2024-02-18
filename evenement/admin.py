@@ -52,6 +52,13 @@ class BenevoleEvenementInLine(admin.TabularInline):
     extra = 0
     raw_id_fields = ('profilebenevole', 'asso_part') # pas de selection directe dans la liste = divise le nombre de requete db par 8
 
+class AssopartInline(admin.TabularInline):
+    model = AssoPartenaire
+    extra = 0
+
+    def get_form_queryset(self, obj):
+        return self.model.objects.filter(Association=obj.association)
+
 ###########  ###########
 
 @admin.register(models.Evenement)
@@ -78,6 +85,7 @@ class EvenementAdmin(admin.ModelAdmin):
                                 }),
                 )
     filter_horizontal = ('organisateur', 'assopartenaire', )
+    # inlines = [AssopartInline]
     # filter_horizontal = ('benevole', 'assopartenaire')
     # list_select_related = ['association', ]
 

@@ -1,4 +1,4 @@
-<!-- administration/benevole/modal_ajoute.html -->
+<!-- administration/evenement/benevole/modal_ajoute.html -->
 {# modal ajout bénévole #}
 <div class="modal fade"
      id="modal-benevole-ajoute"
@@ -10,7 +10,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalLabel">
-                Ajout d'un bénévole
+                {{ Text.volunteer_add }}
                 </h5>
             </div>
             <form  id="form-ajout-benevole" class="form-ajout-benevole" method='post'>
@@ -23,7 +23,7 @@
 
                   <tr>
                     <th>
-                      Associations Partenaire :
+                      {{ Text.partner_assos }} :
                     </th>
                     <td>
                       <select id="assopart" name="assopart_select">
@@ -58,7 +58,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalLabel">
-                inscrire le bénévole à l'évènement
+                {{ Text.volunteer_subs_evt }}
                 </h5>
             </div>
             <form  id="form-lie-benevole" class="form-lie-benevole" method='post'>

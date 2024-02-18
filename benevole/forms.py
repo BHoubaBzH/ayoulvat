@@ -69,15 +69,15 @@ class PersonneForm(ModelForm):
 
     def save(self, commit=True): # si pas indiqué commit est à true
 
-        if not self.instance.username:
-            # met le mail au niveau du username, on vient de la page benevole
-            self.instance.username = self.instance.email
         if not self.instance.email:
             # on vient de la page admin, pas d email renseigné
             email1 = ''.join(letter for letter in self.instance.first_name if letter.isalnum()).lower() 
             email2 = ''.join(letter for letter in self.instance.last_name if letter.isalnum()).lower()
             email3 = randint(10, 99)
             self.instance.email = f'{email1}.{email2}@acme{email3}.bzh'
+
+        if not self.instance.username:
+            # met le mail au niveau du username, on vient de la page benevole
             self.instance.username = self.instance.email
 
         if commit:
@@ -94,7 +94,7 @@ class PersonneForm(ModelForm):
     #    if Personne.objects.filter(username=email).exists():
     #        raise ValidationError(f"{email} existe deja")
         
-class PersonneFormAdmin(PersonneForm):
+class PersonneFormCreate(PersonneForm):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.fields['email'].required = False
@@ -103,3 +103,9 @@ class PersonneFormAdmin(PersonneForm):
         self.fields['portable'].help_text = 'Obligatoire'
         self.fields['date_de_naissance'].initial = '1900-01-01'
         self.fields['date_de_naissance'].required = False
+
+class PersonneFormEdit(PersonneFormCreate):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs['readonly'] = True
+        self.fields['email'].help_text = 'non modifiable'

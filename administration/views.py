@@ -13,9 +13,9 @@ from utils.benevole import *
 from utils.administration import *
 from ayoulvat.languages import *
 
-from benevole.forms import BenevoleForm, PersonneFormAdmin
+from benevole.forms import BenevoleForm, PersonneFormCreate, PersonneFormEdit
 from evenement.forms import EvenementForm_organisateur
-from benevole.models import ProfileBenevole, ProfileResponsable
+from benevole.models import ProfileBenevole, ProfileResponsable, Personne
 from evenement.models import Creneau, Equipe, Evenement, Planning
 
 from django.shortcuts import render
@@ -93,7 +93,7 @@ class BenevolesListView(ListView):
             # nav bar infos : fin
             "Association"           : self.Asso,
             "Evenement"             : self.Evt, 
-            "FormPersonne"          : PersonneFormAdmin(), # sert a creer un benevole
+            "FormPersonne"          : PersonneFormCreate(), # sert a creer un benevole
             "FormBenevole"          : BenevoleForm(), # sert a creer un benevole
             "FormEvent_edit"        : EvenementForm_organisateur(instance=self.Evt),  # evenement form pour edition
 
@@ -131,8 +131,15 @@ class BenevolesListView(ListView):
 
         # creer un benevole
         if 'benevole_creer' in request.POST:
-            formpersonne = PersonneFormAdmin(request.POST) 
+            formpersonne = PersonneFormCreate(request.POST) 
             formbenevole = BenevoleForm(request.POST)
+        if 'benevole_edit' in request.POST:
+            pers = Personne.objects.get(username=request.POST.get('email'))
+            ben = ProfileBenevole.objects.get(personne_id=pers.UUID)
+            formpersonne = PersonneFormEdit(request.POST,instance=pers) 
+            formbenevole = BenevoleForm(request.POST,instance=ben)
+
+        if 'benevole_creer' in request.POST or 'benevole_edit' in request.POST:
             if all((formpersonne.is_valid(), formbenevole.is_valid())):
                 personneObj = formpersonne.save()
                 benevoleObj = formbenevole.save(personneObj)
@@ -357,7 +364,7 @@ def CreneauFetch(request):
         retourne un form creneau
         le but est de ne pas avoir a charger un modal spécifique par creneau affiché
     """
-    logger.info(request)
+    logger.debug(request)
     if request.method == "POST":
 
         evt=Evenement.objects.get(UUID=request.session['uuid_evenement'])
@@ -401,7 +408,7 @@ def PlanningFetch(request):
         retourne un form planning
         le but est de ne pas avoir a charger un modal spécifique par planning affiché
     """
-    logger.info(request)
+    logger.debug(request)
     if request.method == "POST":
         log_post(request.POST)
         
@@ -417,3 +424,25 @@ def PlanningFetch(request):
                 'equipe_nom' : equipe_nom,
             }
             return JsonResponse(context, safe=False)
+        
+@login_required(login_url='login')
+def BenevoleFetch(request):
+    """
+        view pour requete javascript fetch 
+        retourne un form personne / benevole
+        le but est de ne pas avoir a charger un modal spécifique par planning affiché
+    """
+    logger.debug(f'{request}')
+    if request.method == "POST":
+        #log_post(request.POST)
+        benevole = ProfileBenevole.objects.get(UUID=request.POST.get('benevole_uuid'))
+        personne = Personne.objects.get(profilebenevole=benevole)
+        if request.POST.get('benevole_affiche') == 'form' :
+            logger.info(f'benevole : {benevole}')
+            context = []
+            context.append(PersonneFormEdit(instance=personne))
+            context.append(BenevoleForm(instance=benevole))
+            logger.info(f'form : {context}')
+            return HttpResponse(context, content_type="text/plain")
+        else:
+            raise Http404("Erreur dans la récpuération du bénévole")

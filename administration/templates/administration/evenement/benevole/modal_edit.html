@@ -1,0 +1,140 @@
+<!-- administration/evenement/benevole/modal_edit.html -->
+{# modal edite bénévole #}
+<div class="modal fade"
+     id="modal-benevole-edit"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="benevole_editer"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">
+                {{ Text.volunteer_edit }}
+                </h5>
+            </div>
+            <form  id="form-edit-benevole" class="form-edit-benevole" method='post'>
+              <div class="modal-body  modal-body-edite">
+                {% csrf_token %}
+                <table class="table">
+                  <tbody id="fetch_form">
+                    {# rempli par le javascript #}
+                  </tbody>                          
+
+                  <tr>
+                    <th>
+                      {{ Text.partner_assos }} :
+                    </th>
+                    <td>
+                      <select id="assopart_select" name="assopart_select">
+                        {% for assopart in EvtAssosPart %}
+                        <option value="{{assopart.UUID}}">
+                            {{assopart.nom|capfirst}}
+                        </option>
+                        {% endfor %}
+                      </select>
+                    </td>
+                  </tr>
+
+                </table>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
+                <button type="submit" id="benevole_edit" name="benevole_edit" class="btn btn-primary success">{{ Text.button_mod }}</button>
+              </div>
+            </form>
+        </div>
+    </div>
+</div>
+{# modal lie bénévole à evenement #}
+<div class="modal fade"
+     id="modal-benevole-lie"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="benevole_lie"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="z-index:1050">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">
+                {{ Text.volunteer_subs_evt }}
+                </h5>
+            </div>
+            <form  id="form-lie-benevole" class="form-lie-benevole" method='post'>
+              <div class="modal-body">
+                {% csrf_token %}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ Text.button_null }}</button>
+                <button type="submit" id="benevole_lie" class="btn btn-primary success">{{ Text.button_add }}</button>
+              </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+  var modalBenevoleLier = document.getElementById('modal-benevole-lie')
+  if (modalBenevoleLier) {
+    modalBenevoleLier.addEventListener('show.bs.modal', function (event) {
+    /* Button that triggered the modal */
+    var button = event.relatedTarget;
+    /* Extract info from data-bs-* attributes */
+    uuid_bs_data = button.getAttribute('data-bs-uuid');
+    // alert(uuid_bs_data);
+    // Create a text input
+    var uuid = document.createElement("input");
+    uuid.setAttribute("type", "hidden");
+    uuid.setAttribute("name", "benevole_lier");
+    uuid.setAttribute("value", uuid_bs_data);
+    var form = document.getElementById("form-lie-benevole");
+    form.appendChild(uuid);
+    });
+  }
+
+  var benevole_bs_data;
+  /* script de popul du modal editer : utilise api fetch javascript et recupere la form du benevole */
+  var modalBenevoleEditer = document.getElementById('modal-benevole-edit')
+  if (modalBenevoleEditer) {
+      
+      modalBenevoleEditer.addEventListener('show.bs.modal', function (event) {
+        /* Extract info from data-bs-* attributes */
+        /* Button that triggered the modal */
+        var button = event.relatedTarget;
+        benevole_uuid = button.getAttribute('data-bs-id1');
+        evenement_uuid = button.getAttribute('data-bs-id4');
+        assopart_uuid = button.getAttribute('data-bs-id5');
+
+        // on utilise assopart_uuid pour selectionner par default l'asso du bénévole par defaut dans la liste
+        $(function() {
+          var assopart_uuid = button.getAttribute('data-bs-id5');
+          $("#assopart_select").val(assopart_uuid);
+        });
+
+        // fetch process pour récuperer les infos de notre benevole
+        let form = new FormData();
+        form.append("benevole_uuid", benevole_uuid);
+        form.append("evenement_uuid", evenement_uuid);
+        form.append("benevole_affiche", 'form');
+        let csrfTokenValue = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        var requete = new Request('{% url "benevole_fetch" %}', {
+            headers:{
+                'X-CSRFToken': csrfTokenValue  // ajoute le token dans l'en-tête
+                }, 
+            body: form, //form contient les datas envoyées
+            method: 'POST', 
+            });
+            
+        fetch(requete).then(response => response.text())
+        .then(benevole_form => {
+           // console.log(' form : ' + benevole_form);
+           var target = document.getElementById("fetch_form");
+           target.innerHTML = benevole_form;
+           $(".modal-body-edite #benevole_uuid").val( benevole_uuid );
+        }).catch(console.error)
+
+      });
+    }
+</script>
