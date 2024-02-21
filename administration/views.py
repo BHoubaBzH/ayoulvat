@@ -118,7 +118,7 @@ class BenevolesListView(ListView):
             "Emails_responsables"           : emails_responsables(self.Evt),
         }
         return super().dispatch(request, *args, **kwargs)
-
+        
     # recupere et traite les données post
     def post(self, request, *args, **kwargs):
         logger.info(f'{__class__.__name__} : post')
@@ -180,8 +180,9 @@ class BenevolesListView(ListView):
         # recharge les listes infos pour mettre à jour suite aux modifs ( creation ou suppression de benevole)
         self.context['Benevoles']=self.queryset.select_related('personne').filter(BenevolesEvenement=self.Evt).order_by('personne__last_name')
         self.context['BenevolesAgeCreneauxAssopart']= liste_benevoles_age_creneaux_assopart(self.Evt, self.context['Benevoles'])
-        self.context['NotBenevoles']=self.queryset.select_related('personne').filter(~Q(BenevolesEvenement=self.Evt)).order_by('personne__last_name')
-        self.context['NotBenevolesAgeCreneauxAssopart']= liste_benevoles_age_creneaux_assopart(self.Evt, self.context['NotBenevoles'])
+        # les 2 veleurs suivantes utile si onglet des bénévole non inscrit a cet evenement activé
+        # self.context['NotBenevoles']=self.queryset.select_related('personne').filter(~Q(BenevolesEvenement=self.Evt)).order_by('personne__last_name')
+        # self.context['NotBenevolesAgeCreneauxAssopart']= liste_benevoles_age_creneaux_assopart(self.Evt, self.context['NotBenevoles'])
             
         # editer un benevole
         #personnesup = get_object_or_404(Personne, UUID=request.POST.get('BenevoleUUID'))

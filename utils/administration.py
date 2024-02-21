@@ -213,6 +213,7 @@ def liste_benevoles_age_creneaux_assopart(evt, benevoles):
     """ input queryset des benevoles
         out dictionnaire: objet benevole - (age, nb creneaux, asso partenaire) """
     out={}
+    logger.info(f'nb benevoles : {benevoles.count()}')
     for benevole in benevoles: 
         age=date.today().year - benevole.personne.date_de_naissance.year - ((date.today().month, date.today().day) < \
                         (benevole.personne.date_de_naissance.month, benevole.personne.date_de_naissance.day))
