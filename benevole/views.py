@@ -154,9 +154,9 @@ def Home(request):
             else:
                 # si rien , l evenement commence aujourd hui
                 delta=date.datetime.now() - evt.debut 
-            logger.info(f' jours de delta : {str(delta.days)}')
-            duplique_evenement(evt, delta.days)
-            
+            #logger.info(f' jours de delta : {str(delta.days)}')
+            duplique_evenement(evt, delta.days, request.POST.dict())
+        
     # passe les infos de l administrateur
     if RolesUtilisateur['Administrateur']: 
         data['Administrateur'] = RolesUtilisateur['Administrateur'] 

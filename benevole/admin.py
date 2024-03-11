@@ -72,12 +72,12 @@ class PersonneDetails(admin.ModelAdmin):
             groups.append(group.name)
         return ' '.join(groups)
     group.short_description = 'Groupes'
-    list_display = ( "email", "last_name", "first_name", "date_joined", "is_superuser", "group")
+    list_display = ( "email", "last_name", "first_name", "date_joined", "is_superuser", "group", "date_joined" )
     list_filter = ( "profilebenevole__evenement_benevole_assopart__evenement", 
                     "profilebenevole__evenement_benevole_assopart__evenement__association",
                     "groups", 
                     )
-    
+    ordering = ('last_name', 'first_name', 'email')
     # inlines = [BenevoleInLine, BenevolePersonneInLine], 
 
 class BenevoleCommun(admin.ModelAdmin):
@@ -94,28 +94,25 @@ class BenevoleCommun(admin.ModelAdmin):
     get_user_fisrtname.short_description = 'Prénom'
     get_user_email.short_description = 'Courriel'
     get_user_name.admin_order_field = 'personne__last_name'
+    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
+    ordering = ('personne__last_name'.lower(), 'personne__first_name'.lower())
 
 @admin.register(models.ProfileAdministrateur)
 class AdministrateurCustom(BenevoleCommun):
-    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
     inlines = (AdministrateurAssociationInLine,)
 
 @admin.register(models.ProfileOrganisateur)
 class OrganisateurCustom(BenevoleCommun):
-    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
     inlines = (OrganisateurEvenementInLine,)
 
 @admin.register(models.ProfileResponsable)
 class ResponsableCustom(BenevoleCommun):
-    list_display  = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
     inlines = (ResponsableEquipeInLine,)
 
 @admin.register(models.ProfileBenevole)
 class BenevoleCustom(BenevoleCommun):
     #def evenements(self, obj):
     #    return obj.evenement_benevole_assopart
-    list_display = ('get_user_email', 'get_user_name', 'get_user_fisrtname')
-
     list_filter = ( "evenement_benevole_assopart__evenement",
                 )
 

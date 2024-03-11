@@ -416,12 +416,14 @@ def inscription_ouvert(debut, fin):
 ###
 
 @transaction.atomic
-def duplique_creneau(instance, clone_poste, delta_time=0):
+def duplique_creneau(instance, clone_poste, delta_time=0, *args, **kwargs):
     ''' duplique un creneau '''
     #logger.info(f'              duplique creneau: {instance}')
     clone_creneau = copy.copy(instance)
     clone_creneau.pk = None
-    clone_creneau.benevole = None # retire le benevole associé
+    if 'avec_benevoles' not in args[0]:
+        # logger.info(f'do not keep benevole in slot param')
+        clone_creneau.benevole = None # retire le benevole associé
     clone_creneau.evenement = clone_poste.evenement
     clone_creneau.equipe = clone_poste.equipe
     clone_creneau.planning = clone_poste.planning
@@ -431,7 +433,7 @@ def duplique_creneau(instance, clone_poste, delta_time=0):
     clone_creneau.save()
 
 @transaction.atomic
-def duplique_poste(instance, clone_planning, delta_time=0):
+def duplique_poste(instance, clone_planning, delta_time=0, *args, **kwargs):
     ''' duplique un poste et les creneaux associés'''
     #logger.info(f'          duplique poste: {instance}')
     clone_poste = copy.copy(instance)
@@ -449,10 +451,10 @@ def duplique_poste(instance, clone_planning, delta_time=0):
         if (crs_name == 'creneau_set'):
             for cr_instance in crs_manager.all():
                 if cr_instance.poste == instance:
-                    duplique_creneau(cr_instance, clone_poste, delta_time)
+                    duplique_creneau(cr_instance, clone_poste, delta_time, args[0])
 
 @transaction.atomic
-def duplique_planning(instance, clone_equipe, delta_time=0):
+def duplique_planning(instance, clone_equipe, delta_time=0, *args, **kwargs):
     ''' duplique un planning et les postes, creneaux associés'''
     #logger.info(f'      duplique planning: {instance}')
     clone_planning = copy.copy(instance)
@@ -471,10 +473,10 @@ def duplique_planning(instance, clone_equipe, delta_time=0):
         if (pos_name == 'poste_set'):
             for po_instance in pos_manager.all():
                 if po_instance.planning == instance:
-                    duplique_poste(po_instance, clone_planning, delta_time)
+                    duplique_poste(po_instance, clone_planning, delta_time, args[0])
 
 @transaction.atomic
-def duplique_equipe(instance, clone_event, delta_time=0):
+def duplique_equipe(instance, clone_event, delta_time=0, *args, **kwargs):
     ''' duplique une équipe et les plannings, postes, creneaux associés'''
     #logger.info(f'  duplique equipe: {instance}')
     clone_equipe = copy.copy(instance)
@@ -490,10 +492,10 @@ def duplique_equipe(instance, clone_event, delta_time=0):
         if (pls_name == 'planning_set'):
             for pl_instance in pls_manager.all():
                 if pl_instance.equipe == instance:
-                    duplique_planning(pl_instance, clone_equipe, delta_time)
+                    duplique_planning(pl_instance, clone_equipe, delta_time, args[0])
 
 @transaction.atomic
-def duplique_evenement(instance, delta_days=0):
+def duplique_evenement(instance, delta_days=0, *args, **kwargs):
     ''' duplique un evenement et les equipes, plannings, postes, creneaux associés'''
     #logger.info(f'duplique evenement: {instance}')
     delta_time = timedelta(days=delta_days + 1)
@@ -512,4 +514,4 @@ def duplique_evenement(instance, delta_days=0):
         # duplique equipes
         if (eqs_name == 'equipe_set'):
             for eq_instance in eqs_manager.all():
-                duplique_equipe(eq_instance, clone_event, delta_time)
+                duplique_equipe(eq_instance, clone_event, delta_time, args[0])

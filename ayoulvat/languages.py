@@ -363,9 +363,15 @@ text_template['fr_fr']['title_rate_busy']       = _('Remplissages des créneaux'
 text_template['fr_fr']['edit_planning']         = _('aller au planning')
 
 #administration > evenements liste
+
 #association/associations_liste
 text_template['fr_fr']['goto_event']            = _('Aller à l\'évènement')
-text_template['fr_fr']['evt_copy']              = _('dupliquer l\'évènement ')
+text_template['fr_fr']['copy_event']            = _('dupliquer l\'évènement')
+text_template['fr_fr']['event_name']            = _('Nom')
+text_template['fr_fr']['event_start_date']      = _('date de début')
+text_template['fr_fr']['event_cp_organisers']   = _('garder les mêmes organisateurs')
+text_template['fr_fr']['event_cp_responsibles'] = _('garder les mêmes responsables d\'équipes')
+text_template['fr_fr']['event_cp_volunteers']   = _('garder les mêmes bénévoles')
 text_template['fr_fr']['add_event']             = _('Ajouter un évènement')
 text_template['fr_fr']['associations']          = _('Associations')
 text_template['fr_fr']['events']                = _('Evenements')

@@ -38,17 +38,16 @@
         <div class="tab-pane fade show active post_display_javascript" id="benevoles-liste" 
             role="tabpanel" aria-labelledby="benevoles-liste-tab">
 
+            <div class="col-md-9 ms-sm-auto col-lg-12 px-md-4 pt-3">
+                <h2> 
+                    <button style="" class="btn btn-sm" title="{{ Text.volunteer_add_h }}" data-bs-toggle="modal" data-bs-target="#modal-benevole-ajoute">
+                        <i style="color: var(--bs-success)" class="bi bi-plus-square fs-2"></i>
+                    </button>
+                </h2>
+            </div>
+            
             {% if BenevolesAgeCreneauxAssopart %}
                 {# AFFICHE LES BENEVOLES de l'evenement #}
-
-                <div class="col-md-9 ms-sm-auto col-lg-12 px-md-4 pt-3">
-                    <h2> 
-                        <button style="" class="btn btn-sm" title="{{ Text.volunteer_add_h }}" data-bs-toggle="modal" data-bs-target="#modal-benevole-ajoute">
-                            <i style="color: var(--bs-success)" class="bi bi-plus-square fs-2"></i>
-                        </button>
-                    </h2>
-                </div>
-
                 <table class="table table-dark table-striped table-hover responsive"  id="table_benevoles_evenement">
                     <thead>
                         <tr>

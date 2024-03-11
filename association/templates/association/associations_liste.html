@@ -46,7 +46,7 @@
                                     </td>
                                     {# copier un evenement #}
                                     <td data-bs-toggle="tooltip" data-bs-placement="left" 
-                                        data-bs-html="true" data-bs-original-title="{{Text.evt_copy}} :</br> {{evt.nom}} ">
+                                        data-bs-html="true" data-bs-original-title="{{Text.copy_event}} :</br> {{evt.nom}} ">
                                         {# dupliquer un evenement #}
                                         <button type="button" class="btn" id="butt-evenement_copy" 
                                                 data-id="{{evt.UUID}}"
@@ -122,7 +122,7 @@ data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="ModalLabel">
-                <b> duplique evenement</b>
+                <b>{{Text.copy_event}}</b>
             </h5>
         </div>
         <form  id="form-duplicate-evenement" class="form-duplicate-evenement" method='post'>
@@ -130,12 +130,26 @@ data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby
                 {% csrf_token %}
                 <table class="table">
                     <tr>
-                        <th><label for="id_nom">Nom&nbsp;:</label></th>
+                        <th><label for="id_nom">{{Text.event_name}}&nbsp;:</label></th>
                         <td><input type="text" name="nom" maxlength="50" required="" id="id_nom"></td>
                     </tr>
                     <tr>
-                        <th><label for="id_date">Date de début&nbsp;:</label></th>
+                        <th><label for="id_date">{{Text.event_start_date}}&nbsp;:</label></th>
                         <td><input type="date" name="date" maxlength="50" required="" id="id_date"></td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <th><label for="id_date">{{Text.event_cp_organisers}} " a coder "&nbsp;:</label></th>
+                        <td><input type="checkbox" name="avec_organisateurs"></td>
+                    </tr>
+                    <tr>
+                        <th><label for="id_date">{{Text.event_cp_responsibles}} " a coder "&nbsp;:</label></th>
+                        <td><input type="checkbox" name="avec_responsables"></td>
+                    </tr>
+                    -->
+                    <tr>
+                        <th><label for="id_date">{{Text.event_cp_volunteers}}&nbsp;:</label></th>
+                        <td><input type="checkbox" name="avec_benevoles"></td>
                     </tr>
                 </table>
             </div>
