@@ -96,6 +96,7 @@ def Home(request):
         if 'inscription_event' in request.POST:
             try:
                 devenir_benevole(request.user, POST=request.POST)
+                logger.debug(f'evoi notif')
                 envoi_courriel_orga_inscription(request)
                 messages.success(request, flash[language]['inscr_event_success'].format(Evenement.objects.get(UUID=request.POST.get('inscription_event'))))
                 # redirige vers la page evenement

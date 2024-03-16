@@ -25,15 +25,21 @@ def envoi_courriel(sujet, message_text, from_courriel, to_courriel, message_html
 
 def envoi_courriel_orga_inscription(request):
     """
-        envoi un courrier quand un bénévole s inscrit a l evenement
+        envoi un courriel quand un bénévole s inscrit a l evenement
     """
     evt_uuid = request.POST.get('inscription_event')
     evt = Evenement.objects.get(UUID=evt_uuid)
     emails_orga = []
     logger.debug(f'evt nom : {evt.nom}')
     logger.debug(f'ben nom : {request.user}')
-    for orga in evt.organisateur.all():
-        emails_orga.append(orga.personne.email)
+    if evt.courriel_organisateur:
+        # email uniquement au mail de contact de l evenement
+        emails_orga.append(evt.courriel_organisateur)
+    else:
+        # email a tous les organisateurs
+        for orga in evt.organisateur.all():
+            emails_orga.append(orga.personne.email)
+    logger.debug(f'emails : {emails_orga}')
     if emails_orga:
         sujet = '[Ayoulvat] Nouveau bénévole inscrit à ton évènement'
         message_text = f'{request.user} s\'est inscrit à l\'évènement {evt} comme bénévole'
