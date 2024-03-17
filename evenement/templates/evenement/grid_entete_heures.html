@@ -1,10 +1,9 @@
 <!-- evenement/grid_entete_heures.html -->
 
-{% for dates, heures in PlanningRange.items %}
-    <div class="planning-head-planningperso" style="grid-column: time-{{ dates }}; grid-row: jours"></div>
-{% endfor %}    
-
-    
+{# premiere case en haut à gauche #}
+<div class="planning-head-day {% if Planning %}poste-slot{% else %}equipe-slot{% endif %} resizable_h" 
+style="grid-column: {% if Planning %}postes{% else %}equipes{% endif %};grid-row: jours"
+data-bs-toggle="tooltip" data-bs-placement="right"  title="redimmensionner la colonne"></div>
 {% for dates, heures in PlanningRange.items %}
     {% if heures.0|stringformat:'s' == "00:00" %}
         <div class="planning-head-day" 
@@ -14,6 +13,10 @@
     {% endif %}
 {% endfor %}
 
+
+{% for dates, heures in PlanningRange.items %}
+    <div class="planning-head-planningperso" style="grid-column: time-{{ dates }}; grid-row: jours"></div>
+{% endfor %}    
     
 {# ligne d'entete de la grille des plannings en haut de la grid ccss ou en bas en fonction de "ligne" #}
 {% for dates, heures in PlanningRange.items %}

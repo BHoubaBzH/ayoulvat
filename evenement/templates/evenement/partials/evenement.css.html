@@ -103,6 +103,7 @@
 	.poste-slot.ligne-{{ poste.UUID }} {
 		border-bottom: 1px solid #ffffff;
 		border-bottom-color: {{ poste.couleur }};
+		width: 100%;
 		{%if not poste.ouvert %} {# le poste n'est pas ouvert aux bénévols : on edite le fond des cases de la ligne #}
 			background-color: #6c757d30;
 		{%endif%}
@@ -116,6 +117,7 @@
 	.equipe-slot.ligne-{{ equipe.UUID }} {
 		border-bottom: 1px solid #ffffff;
 		border-bottom-color: {{ equipe.couleur }};
+		width: 100%;
 	}
 {% endfor %}	
 

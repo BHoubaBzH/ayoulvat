@@ -7,10 +7,9 @@
     <input type="hidden" name="PlanningEditer" value="true">
 </form>
 
-<div class="poste-slot ligne-{{ poste.UUID }}"
+<div class="poste-slot "
                 aria-hidden="true"
                 style="grid-row: ligne-{{ poste.UUID }}; grid-column: postes;"
-                id="bouton-poste-change-{{ poste.UUID }}"
                 data-bs-toggle="tooltip" data-bs-placement="left"  data-bs-html="true"
                 title="
                 {{ Text.poste}} : {{ poste.nom }}<br>
@@ -42,7 +41,7 @@
         type="button"
         data-bs-toggle="modal" 
         data-bs-target="#modal-poste-change-{{ poste.UUID }}">
-        <p style="margin-bottom: 0px;">{{ poste.nom|capfirst|truncatechars:9 }}</p>
+        <p style="margin-bottom: 0px;">{{ poste.nom|capfirst}}</p>
     </button>
         {#{ poste.nom }#}
 </div>
