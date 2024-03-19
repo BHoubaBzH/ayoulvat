@@ -11,7 +11,7 @@
         data-bs-creneauuuid="{{ creno.UUID }}">
         <a data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"
             title="{{creno.benevole.personne|upper}}<br>tel: {{creno.benevole.personne.portable}}<br>email: {{creno.benevole.personne.email}}">
-            <b>{{ creno.benevole }}</b>
+            <b>{{ creno.benevole|truncatechars:30}}</b>
         </a>
     </button>
 {# creneau libre #}

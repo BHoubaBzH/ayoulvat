@@ -349,7 +349,7 @@ footer .right {
  *************************/
 
  .grid-planning-creneaux {
-	inline-size: fit-content;
+	/*inline-size: fit-content;*/
 	display: grid;
 	gap: 0.2em;
 	padding-top: 3em;
@@ -362,7 +362,7 @@ footer .right {
  }
 
  .grid-planning-equipes {
-	inline-size: fit-content;
+	/*inline-size: fit-content;*/
 	display: grid;
 	gap: 0.2em;
 	padding-top: 3em;

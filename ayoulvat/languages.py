@@ -258,6 +258,9 @@ text_template['fr_fr']['slot_edit']             = _('Editer le créneau')
 text_template['fr_fr']['available_del_h']       = _('supprimer cette disponibilité')
 text_template['fr_fr']['hour_short']            = _('H')
 
+#evenement > grid header
+text_template['fr_fr']['resize_column']         = _('redimensionner la colonne')
+
 #evenement > grid cellules
 text_template['fr_fr']['grid_slot_add_h']       = _('ajouter un créneau commençant à')
 text_template['fr_fr']['grid_poste_h']          = _('poste')
