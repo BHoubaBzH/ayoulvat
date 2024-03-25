@@ -15,8 +15,11 @@
     <table class="table table-dark table-striped table-hover responsive"  id="table_creneaux_evenement">
         <thead>
             <tr>
-            <th scope="col">equipe</th><th scope="col">planning</th><th scope="col">poste</th><th scope="col">date</th><th scope="col">début</th><th scope="col">fin</th>
-            <th scope="col">bénévole</th><th scope="col">portable</th><th scope="col">courriel</th>
+            <th scope="col">{{Text.admin_slots_team}}</th><th scope="col">{{Text.admin_slots_plan}}</th>
+            <th scope="col">{{Text.admin_slots_post}}</th><th scope="col">{{Text.admin_slots_date}}</th>
+            <th scope="col">{{Text.admin_slots_start}}</th><th scope="col">{{Text.admin_slots_end}}</th>
+            <th scope="col">{{Text.admin_slots_vol}}</th><th scope="col">{{Text.admin_slots_gsm}}</th>
+            <th scope="col">{{Text.admin_slots_email}}</th><th scope="col">{{ Text.partner_asso }}</th>
             </tr>
         </thead>
         <tbody>
@@ -32,6 +35,11 @@
                 <td>{{creneau.benevole.personne.last_name|upper }} {{creneau.benevole.personne.first_name|capfirst }}</td>
                 <td>{% if creneau.benevole.personne.portable %}{{creneau.benevole.personne.portable}}{% endif %}</td>
                 <td>{{creneau.benevole.personne.email}}</td>   
+                {% if  creneau.benevole.evenement_benevole_assopart_set.get.asso_part %}
+                    <td>{{creneau.benevole.evenement_benevole_assopart_set.get.asso_part}}</td>   
+                {% else %}
+                    <td>{{Text.no_asso_part}}</td>  
+                {% endif %}
             {% else %}
                 <td></td>
                 <td></td>    

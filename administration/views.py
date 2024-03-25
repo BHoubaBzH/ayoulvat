@@ -49,7 +49,6 @@ class CreneauxListView(ListView):
             "FormEvent_edit" : EvenementForm_organisateur(instance=self.Evt),  # evenement form pour edition
             "Text": text_template[language], # textes traduits 
 
-
         }
         logger.info(f'{__class__.__name__} : dispatch')
         return super().dispatch(request, *args, **kwargs)

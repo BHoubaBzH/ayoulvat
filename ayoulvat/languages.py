@@ -339,6 +339,18 @@ text_template['fr_fr']['volunteer_rem_evt_h']   = _('Ce bénévole ne participe 
 text_template['fr_fr']['volunteer_rem_evt_t']   = _('Es-tu sûr de retirer ce bénévole?')
 text_template['fr_fr']['volunteer_subs_evt']    = _('inscrire le bénévole à l\'évènement')
 
+#administration/creneaux
+text_template['fr_fr']['no_asso_part']          = _('non séléctionné')
+text_template['fr_fr']['admin_slots_team']      = _('équipe')
+text_template['fr_fr']['admin_slots_plan']      = _('planning')
+text_template['fr_fr']['admin_slots_post']      = _('poste')
+text_template['fr_fr']['admin_slots_date']      = _('date')
+text_template['fr_fr']['admin_slots_start']     = _('début')
+text_template['fr_fr']['admin_slots_end']       = _('fin')
+text_template['fr_fr']['admin_slots_vol']       = _('bénévole')
+text_template['fr_fr']['admin_slots_gsm']       = _('portable')
+text_template['fr_fr']['admin_slots_email']     = _('courriel')
+
 #administration sidebar
 text_template['fr_fr']['nav_dashboard']         = _("Statistiques")
 text_template['fr_fr']['nav_dashboard_h']       = _("Tableau de bord")
