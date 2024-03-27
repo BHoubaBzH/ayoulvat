@@ -23,6 +23,24 @@ logger = logging.getLogger(__name__)
 #            fonctions 
 ################################################
 
+def creneaux_asso_part(creneaux):
+    """
+        entree:
+            liste des creneaux
+        sortie:
+            dictionnaire 
+                creneaux : asso part du benevole
+    """
+    out = {}
+    for creneau in creneaux:
+        if creneau.benevole:
+            out[creneau] = evenement_benevole_assopart.objects.get(
+                evenement = creneau.evenement,
+                profilebenevole = creneau.benevole
+                ).asso_part
+    return out
+
+
 def evenement_orga_edite(request):
     """
         entree:

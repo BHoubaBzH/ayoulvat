@@ -45,7 +45,7 @@ class CreneauxListView(ListView):
             # nav bar infos : fin
             "Association" : self.Asso,
             "Evenement" : self.Evt, 
-            "Creneaux" : self.queryset,
+            "Creneaux" : creneaux_asso_part(self.queryset), # dictionnaire creneau : asso part
             "FormEvent_edit" : EvenementForm_organisateur(instance=self.Evt),  # evenement form pour edition
             "Text": text_template[language], # textes traduits 
 

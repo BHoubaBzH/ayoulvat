@@ -23,7 +23,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for creneau in Creneaux %}
+        {% for creneau, assopart in Creneaux.items %}
         <tr style="vertical-align : middle;">
             <td>{{creneau.equipe.nom}}</td> 
             <td>{{creneau.planning.nom}}</td> 
@@ -35,8 +35,8 @@
                 <td>{{creneau.benevole.personne.last_name|upper }} {{creneau.benevole.personne.first_name|capfirst }}</td>
                 <td>{% if creneau.benevole.personne.portable %}{{creneau.benevole.personne.portable}}{% endif %}</td>
                 <td>{{creneau.benevole.personne.email}}</td>   
-                {% if  creneau.benevole.evenement_benevole_assopart_set.get.asso_part %}
-                    <td>{{creneau.benevole.evenement_benevole_assopart_set.get.asso_part}}</td>   
+                {% if  assopart %}
+                    <td>{{assopart}}</td>   
                 {% else %}
                     <td>{{Text.no_asso_part}}</td>  
                 {% endif %}
