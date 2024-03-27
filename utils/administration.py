@@ -38,6 +38,8 @@ def creneaux_asso_part(creneaux):
                 evenement = creneau.evenement,
                 profilebenevole = creneau.benevole
                 ).asso_part
+        else:
+            out[creneau] = ""
     return out
 
 
