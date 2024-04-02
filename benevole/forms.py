@@ -11,6 +11,7 @@ from django.forms.fields import DateField, DateTimeField
 from random import randint
 from benevole.models import ProfileBenevole, Personne
 from ayoulvat.languages import text_template
+from unidecode import unidecode
 
 # import the logging library
 import logging
@@ -71,8 +72,8 @@ class PersonneForm(ModelForm):
 
         if not self.instance.email:
             # on vient de la page admin, pas d email renseigné
-            email1 = ''.join(letter for letter in self.instance.first_name if letter.isalnum()).lower() 
-            email2 = ''.join(letter for letter in self.instance.last_name if letter.isalnum()).lower()
+            email1 = unidecode(''.join(letter for letter in self.instance.first_name if letter.isalnum()).lower())
+            email2 = unidecode(''.join(letter for letter in self.instance.last_name if letter.isalnum()).lower())
             email3 = randint(10, 99)
             self.instance.email = f'{email1}.{email2}@acme{email3}.bzh'
 

@@ -43,7 +43,7 @@ def creneaux_asso_part(creneaux):
     return out
 
 
-def evenement_orga_edite(request):
+def evenement_orga_edite(request):  
     """
         entree:
             la requete (contenant les infos POST)
