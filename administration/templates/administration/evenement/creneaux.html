@@ -18,8 +18,9 @@
             <th scope="col">{{Text.admin_slots_team}}</th><th scope="col">{{Text.admin_slots_plan}}</th>
             <th scope="col">{{Text.admin_slots_post}}</th><th scope="col">{{Text.admin_slots_date}}</th>
             <th scope="col">{{Text.admin_slots_start}}</th><th scope="col">{{Text.admin_slots_end}}</th>
-            <th scope="col">{{Text.admin_slots_vol}}</th><th scope="col">{{Text.admin_slots_gsm}}</th>
-            <th scope="col">{{Text.admin_slots_email}}</th><th scope="col">{{ Text.partner_asso }}</th>
+            <th scope="col">{{Text.admin_slots_vol_name}}</th><th scope="col">{{Text.admin_slots_vol_first}}</th>
+            <th scope="col">{{Text.admin_slots_gsm}}</th><th scope="col">{{Text.admin_slots_email}}</th>
+            <th scope="col">{{ Text.partner_asso }}</th>
             </tr>
         </thead>
         <tbody>
@@ -32,7 +33,7 @@
             <td>{{creneau.debut|date:'H:i'}}</td>
             <td>{{creneau.fin|date:'H:i'}}</td>
             {% if creneau.benevole %}
-                <td>{{creneau.benevole.personne.last_name|upper }} {{creneau.benevole.personne.first_name|capfirst }}</td>
+                <td>{{creneau.benevole.personne.last_name|upper }}</td><td> {{creneau.benevole.personne.first_name|capfirst }}</td>
                 <td>{% if creneau.benevole.personne.portable %}{{creneau.benevole.personne.portable}}{% endif %}</td>
                 <td>{{creneau.benevole.personne.email}}</td>   
                 {% if  assopart %}
@@ -43,6 +44,7 @@
             {% else %}
                 <td></td>
                 <td></td>    
+                <td></td>
                 <td></td>
                 <td></td>
             {% endif %}
