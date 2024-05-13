@@ -21,6 +21,7 @@
             <th scope="col">{{Text.admin_slots_vol_name}}</th><th scope="col">{{Text.admin_slots_vol_first}}</th>
             <th scope="col">{{Text.admin_slots_gsm}}</th><th scope="col">{{Text.admin_slots_email}}</th>
             <th scope="col">{{ Text.partner_asso }}</th>
+            <th scope="col">{{ Text.action }}</th>
             </tr>
         </thead>
         <tbody>
@@ -48,11 +49,24 @@
                 <td></td>
                 <td></td>
             {% endif %}
+            <td>
+                <div style="display: flex;">
+                    {# bouton editer le creneau #}
+                    <button style="" class="benevole-edit btn btn-sm" title="{{ Text.slot_edit }}" 
+                        data-bs-toggle="modal" data-bs-target="#modal-creneau_creneau_editer"
+                        data-bs-evenementuuid="{{ Evenement.UUID }}"
+                        data-bs-creneauuuid="{{ creneau.UUID }}">
+                        <i style="color: var(--bs-warning)" class="bi bi-pencil-square fs-6"></i>
+                    </button>
+                </div>
+            </td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
 </div>
+
+{% include "administration/evenement/organization/modal_creneau_edite.html" with type='poste' source_type="creneau" %}
 
 {# table dynamique : datatables #}
 <script>

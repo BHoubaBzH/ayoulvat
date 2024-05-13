@@ -62,7 +62,14 @@ class CreneauxListView(ListView):
         if 'evenement_edite' in request.POST:
             evenement_orga_edite(request)
             return HttpResponseRedirect(request.path_info) # mise à jour de la page
-
+        # admin change un objet de l'evenement : retour en post de la l info modifier / ajouter / supprimer
+        RolesUtilisateur = liste_roles_utilisateur(request, self.Evt)
+        if  any(x in request.POST for x in ['creneau_modifier', 'creneau_ajouter', 'creneau_supprimer']):
+            self.context["Form"] = forms_creneau(request, RolesUtilisateur)
+        # recharge la liste suite aux modifs
+        self.queryset = list(self.Evt.creneau_set.all().order_by('debut').select_related('poste', 'planning', 'equipe', 'benevole', 'evenement'))
+        self.context["Creneaux"] = creneaux_asso_part(self.queryset)
+        
         return render(request, self.template_name, self.context)
 
     # envoi les datas au template
