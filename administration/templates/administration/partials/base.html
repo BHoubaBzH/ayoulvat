@@ -63,7 +63,8 @@
         {% include "administration/partials/sidebar.html" %}
       </div>
       <!-- page -->
-        {% block content %}{% endblock %}
+        <div class="col-lg-10 admin-evenement d-flex flex-column main_page">
+          {% block content %}{% endblock %}
     </div>
   </div>
 
@@ -81,6 +82,7 @@
   <script src="{% static 'js/cookie.notice.js' %}"></script>
   {# timeout flash message #}
   <script src="{% static 'js/timeout.flashmessage.js' %}"></script>
-
+  {# autoscroll grid #}
+  {#<script src="{% static 'js/autoscroll.js' %}"></script>#}
 </body>
 </html>

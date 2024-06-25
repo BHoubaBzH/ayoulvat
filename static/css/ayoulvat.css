@@ -9,6 +9,7 @@
 	--cells_admin: #ff110020; /* couleur de fond de la grid admin */ 
 	--scrollbar_couleur: #0b6dff;
 	--footer-height: 120px;
+	--footer-height-min: 22px;
 	--gradient: linear-gradient(to left top, #ddc124 10%, #FF512F 90%) !important; /*boutons des cards evenements */ 
 	--maxheight_grid : 2.5em;/* hauteur des carrés de grids */
 	--cell_width : 0.8em; /* largeur des carrés de grids */
@@ -80,7 +81,7 @@ body {
 
  .pied {
 	z-index: 110;
-	height:22px !important; /* hauteur du footer caché */
+	height:var(--footer-height-min) !important; /* hauteur du footer caché */
 	transition: height 1s; /* temps animation affichage du footer */ 
 }
 
@@ -89,9 +90,11 @@ body {
 }
 
 footer {
+	/*
     background-color: #dbd8d8;
 	margin-top: 2em;
 	height: var(--footer-height);
+	*/
 }
 
 footer .right {
@@ -110,11 +113,11 @@ footer .right {
  *************************/
 
 .main_page {
-    padding-bottom: 8rem!important;
+    padding-bottom: var(--footer-height-min);
 }
 
 .espace-evenement, .espace-administration {
-	padding-bottom: var(--footer-height); /* assenceur s affiche si l affichage passe derriere le footer*/
+	/*padding-bottom: var(--footer-height);*/ /* assenceur s affiche si l affichage passe derriere le footer*/
 }
 
 .titre_page {
@@ -493,8 +496,8 @@ footer .right {
 .sidebar {
 	z-index: 99;
 	overflow-y: auto;
-	/* padding-top: 4rem!important; */
-	padding-bottom: 8rem;
+	/*padding-bottom: 8rem;*/
+	border-bottom: 8rem;
 }
 
 .bouton-sidebar {

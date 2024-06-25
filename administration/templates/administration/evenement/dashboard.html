@@ -6,8 +6,6 @@
 
 {% block content %}
 
-<div class="col-lg-10 admin-evenement d-flex flex-column vh-100 main_page">
-
     {% include 'administration/partials/titre_page.html' with page="dashboard" %}
 
     <div class="row">
@@ -65,9 +63,8 @@
                     {% endfor %}
                 </tbody>
             </table>
-
         </div>
-    </div>
+    </div>  
 
     {% include 'administration/partials/titre_page.html' with page="remplissage" %}
 
@@ -129,40 +126,40 @@
         </div>
     </div>
 
-<script>
-    $(document).ready(function() {
-        $('#table_benevoles').DataTable({ dom:'' });
-        $('#table_creneaux').DataTable({ dom:'' });
-        $('#table_assospart1').DataTable({ 
-            dom:'lri', 
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
-            },
-            "lengthMenu": [[10, -1], [10, "Tous"]],
-        });
-        $('#table_assospart2').DataTable({
-            dom:'lrtiB', 
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
-            },
-            "lengthMenu": [[10, -1], [10, "Tous"]],
-            buttons: [ 'copy', 'excel']
-        });
-        $('#table_planning1').DataTable({ 
-            dom:'lp',
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
-            },
-            "lengthMenu": [[20, 50, -1], [20, 50, "Tous"]],
-        });
-        $('#table_planning2').DataTable({ 
-            dom:'lp',
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
-            },
-            "lengthMenu": [[20, 50, -1], [20, 50, "Tous"]],
-        });
-    } );
-</script>
+    <script>
+        $(document).ready(function() {
+            $('#table_benevoles').DataTable({ dom:'' });
+            $('#table_creneaux').DataTable({ dom:'' });
+            $('#table_assospart1').DataTable({ 
+                dom:'lri', 
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+                },
+                "lengthMenu": [[10, -1], [10, "Tous"]],
+            });
+            $('#table_assospart2').DataTable({
+                dom:'lrtiB', 
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+                },
+                "lengthMenu": [[10, -1], [10, "Tous"]],
+                buttons: [ 'copy', 'excel']
+            });
+            $('#table_planning1').DataTable({ 
+                dom:'lp',
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+                },
+                "lengthMenu": [[20, 50, -1], [20, 50, "Tous"]],
+            });
+            $('#table_planning2').DataTable({ 
+                dom:'lp',
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+                },
+                "lengthMenu": [[20, 50, -1], [20, 50, "Tous"]],
+            });
+        } );
+    </script>   
 
 {% endblock %}
