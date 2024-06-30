@@ -23,7 +23,7 @@
 {% include "evenement/partials/titre_page.html" with page='planning'%}
 
 {% if  PostesCreneaux %}
-    <div class="grid-planning-creneaux" id="planning-creneaux">
+    <div class="grid-planning-creneaux autoscroll-h" id="planning-creneaux">
         {# affiche les entetes des colonnes du planning : les heures #}
         {% for dates, heures in PlanningRange.items %}
             <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">

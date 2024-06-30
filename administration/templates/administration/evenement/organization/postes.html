@@ -3,7 +3,7 @@
 {# form admin pour ajouter un poste #}
 
 {###########################################}
-<div class="grid-planning-creneaux" >
+<div class="grid-planning-creneaux autoscroll-h" >
     {# affiche les entetes des colonnes du planning : les heures #}
     {% for dates, heures in PlanningRange.items %}
     <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">

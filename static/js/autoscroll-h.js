@@ -15,11 +15,11 @@ function animatethis(targetElement, speed) {
       }
   });
 };
-animatethis($('.autoscroll'), 10000);
+animatethis($('.autoscroll-h'), 10000);
 
-$('.autoscroll').hover(function(){
+$('.autoscroll-h').hover(function(){
   $(this).stop(); //Stop the animation when mouse in
 },
 function(){
-  animatethis($('.autoscroll'), 10000);; //Start the animation when mouse out
+  animatethis($('.autoscroll-h'), 10000);; //Start the animation when mouse out
 });
