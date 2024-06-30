@@ -3,7 +3,7 @@
 
 {# titre de la page #}
 {% include "evenement/partials/titre_page.html" with page='evenement' %}
-    <div class="grid-planning-equipes" >
+    <div class="grid-planning-equipes autoscroll" >
         {# affiche les entetes des colonnes du planning : les heures #}
         {% for dates, heures in PlanningRange.items %}
         <div class="planning-head" style="grid-column: time-{{ dates }}; grid-row: heures">

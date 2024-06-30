@@ -1,24 +1,25 @@
-$(document).ready(function() {
-  
-    var scrollHandler = null;
-    
-    function autoScroll () {
-      clearInterval(scrollHandler);
-      scrollHandler = setInterval(function() {
-        /*var nextScroll = $('.autoscroll').scrollTop() + 20;*/
-        /*$('.autoscroll').scrollTop(nextScroll);*/
-        var nextScroll2 = $('.autoscroll').scrollLeft() + 10;
-        $('.autoscroll').scrollLeft(nextScroll2);
-      },2000);
-    }
-    
-     $('.autoscroll').scroll(function() {
-      // Stop interval after user scrolls
-      clearInterval(scrollHandler);
-      // Wait 2 seconds and then start auto scroll again
-      // Or comment out this line if you don't want to autoscroll after the user has scrolled once
-      //setTimeout(autoScroll, 200);
-     });
-     
-     autoScroll();
+function animatethis(targetElement, speed) {
+  var scrollWidth = $(targetElement).get(0).scrollWidth;
+  var clientWidth = $(targetElement).get(0).clientWidth;
+  $(targetElement).animate({ scrollLeft: scrollWidth - clientWidth },
+  {
+      duration: speed,
+      complete: function () {
+          targetElement.animate({ scrollLeft: 0 },
+          {
+              duration: speed,
+              complete: function () {
+                  animatethis(targetElement, speed);
+              }
+          });
+      }
   });
+};
+animatethis($('.autoscroll'), 10000);
+
+$('.autoscroll').hover(function(){
+  $(this).stop(); //Stop the animation when mouse in
+},
+function(){
+  animatethis($('.autoscroll'), 10000);; //Start the animation when mouse out
+});
