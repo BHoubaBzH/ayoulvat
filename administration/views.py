@@ -285,6 +285,12 @@ class OrganizationView(View):
             "FormEquipe"            : EquipeForm(initial={'evenement': self.Evt}),
             "FormEvent_edit"        : EvenementForm_organisateur(instance=self.Evt),  # evenement form pour edition
         }
+
+        # le planning commence avant 17h, on affiche le nom de la priere journee en entete de grid
+        planningStartHour = self.context["PlanningRange"][list(self.context["PlanningRange"].keys())[0]][0][:2]
+        if ( int(planningStartHour) <= 17 ):
+            self.context["DisplayFirstDayName"] = 'True'
+
         # liste les roles de l'utilisateur et les envoi au template
         self.RolesUtilisateur = liste_roles_utilisateur(request, self.Evt)
         for role, value in self.RolesUtilisateur.items():

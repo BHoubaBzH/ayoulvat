@@ -232,6 +232,11 @@ def evenement(request, uuid_evenement):
         data["PlanningRange"] = planning_range(evenement.debut,
                                             evenement.fin,
                                             30)
+    # le planning commence avant 17h, on affiche le nom de la priere journee en entete de grid
+    planningStartHour = data["PlanningRange"][list(data["PlanningRange"].keys())[0]][0][:2]
+    if ( int(planningStartHour) <= 17 ):
+        logger.info(f' on cemmence avant midi')
+        data["DisplayFirstDayName"] = 'True'
 
     logger.info(f'*** Fin traitement view : {datetime.now()}')
     return render(request, "evenement/partials/base_evenement.html", data)

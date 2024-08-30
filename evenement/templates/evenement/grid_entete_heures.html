@@ -4,8 +4,16 @@
 <div class="planning-head-day {% if Planning %}poste-slot{% else %}equipe-slot{% endif %} resizable_h" 
 style="grid-row: 1; grid-column: 1"
 data-bs-toggle="tooltip" data-bs-placement="right"  title="{{Text.resize_column}}"></div>
+
 {% for dates, heures in PlanningRange.items %}
-    {% if heures.0|stringformat:'s' == "00:00" %}
+    {% if forloop.first and DisplayFirstDayName%}
+        <div class="planning-head-day" 
+            style="height: 4em; grid-column: time-{{ dates }} / time-{{ heures.1|date:'Y-m-d' }}-2330; grid-row: jours">
+            {{ heures.1|date:'l d/m'|upper }}
+        </div>
+    {% endif%}
+    {# si le planning démarre avant 0 heure du jour, on affiche le nom du jour#}
+    {% if heures.0|stringformat:'s' == "00:00"%}
         <div class="planning-head-day" 
             style="height: 4em; grid-column: time-{{ dates }} / time-{{ heures.1|date:'Y-m-d' }}-2330; grid-row: jours">
             {{ heures.1|date:'l d/m'|upper }}
