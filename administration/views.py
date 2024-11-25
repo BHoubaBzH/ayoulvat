@@ -1,5 +1,3 @@
-from datetime import date, timedelta
-
 from django.http.response import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required, user_passes_test

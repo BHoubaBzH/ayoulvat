@@ -48,6 +48,36 @@
           {{Text.nav_events}}</a>
       </li>
     </ul>
+    {# reste a voir comment masquer cette partie dans le module admin #}
+    <ul class="navbar-nav me-auto">
+      {% if Planning.equipe %} {# affiche les infos du planning : nom, debut, fin  #}
+        <font color="white">
+          <div>
+            {{Planning.equipe.nom}}
+          </div>
+          <div>
+            {% if  Planning.debut|date:'l j F'|stringformat:"s" ==  Planning.fin|date:'l j F'|stringformat:"s" %}
+                <p class=''>{{ Planning.debut|date:'l j F' }} de {{ Planning.debut|date:'H:i' }} à {{ Planning.fin|date:'H:i' }}</p>
+            {% else %}
+                <p class=''>{{ Planning.debut|date:'l j F' }} {{ Planning.debut|date:'H:i' }} - {{ Planning.fin|date:'l j F' }} {{ Planning.fin|date:'H:i' }}</p>
+            {% endif %}
+          </div>
+        </font>
+      {% elif Evenement and not planning_perso %} {# affiche les infos de l evenement : nom, debut, fin  #}
+        <font color="white">
+          <div>
+              {{ Text.title_planning_event }}
+          </div>
+          <div>
+              {% if  Evenement.debut|date:'l j F'|stringformat:"s" ==  Evenement.fin|date:'l j F'|stringformat:"s" %}
+              <p class=''>{{ Evenement.debut|date:'l j F' }} de {{ Evenement.debut|date:'H:i' }} à {{ Evenement.fin|date:'H:i' }}</p>
+              {% else %}
+                  <p class=''>{{ Evenement.debut|date:'l j F' }} {{ Evenement.debut|date:'H:i' }} - {{ Evenement.fin|date:'l j F' }} {{ Evenement.fin|date:'H:i' }}</p>
+              {% endif %}
+          </div>
+        </font>
+      {% endif %}
+    </ul> 
   {% endif %}
 
   <span class="navbar-text customNav">

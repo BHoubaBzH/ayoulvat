@@ -8,7 +8,7 @@ from utils.evenement import *
 
 from evenement.forms import EvenementForm, EvenementForm_organisateur, EquipeForm, PlanningForm, PosteForm, CreneauForm
 from evenement.models import Creneau, Equipe, Poste, Planning, evenement_benevole_assopart
-from benevole.models import ProfileBenevole
+from benevole.models import ProfileBenevole, ProfileOrganisateur
 from ayoulvat.languages import flash, language
 
 import copy
@@ -518,14 +518,18 @@ def duplique_equipe(instance, clone_event, delta_time=0, *args, **kwargs):
 def duplique_evenement(instance, delta_days=0, *args, **kwargs):
     ''' duplique un evenement et les equipes, plannings, postes, creneaux associés'''
     #logger.info(f'duplique evenement: {instance}')
-    delta_time = timedelta(days=delta_days + 1)
-    clone_event = copy.copy(instance)
-    clone_event.pk = None
-    clone_event.debut = clone_event.debut + delta_time
-    clone_event.fin = clone_event.fin + delta_time
-    clone_event.inscription_debut = clone_event.inscription_debut + delta_time
-    clone_event.inscription_fin = clone_event.inscription_fin + delta_time
+    delta_time                      = timedelta(days=delta_days + 1)
+    clone_event                     = copy.copy(instance)
+    clone_event.pk                  = None
+    clone_event.debut               = clone_event.debut + delta_time
+    clone_event.fin                 = clone_event.fin + delta_time
+    clone_event.inscription_debut   = clone_event.inscription_debut + delta_time
+    clone_event.inscription_fin     = clone_event.inscription_fin + delta_time
     clone_event.save()
+
+    # copi les liens organisateurs et assos parts
+    clone_event.organisateur.set(instance.organisateur.all())
+    clone_event.assopartenaire.set(instance.assopartenaire.all())
 
     for eqs_object in instance._meta.related_objects:
         eqs_name = eqs_object.get_accessor_name()
@@ -535,3 +539,15 @@ def duplique_evenement(instance, delta_days=0, *args, **kwargs):
         if (eqs_name == 'equipe_set'):
             for eq_instance in eqs_manager.all():
                 duplique_equipe(eq_instance, clone_event, delta_time, args[0])
+
+    if 'avec_benevoles' in args[0]:
+        #logger.info('recopie les liens bénévoles - asso part - evenement sur ce  clone')
+        benevoles = evenement_benevole_assopart.objects.filter(evenement=instance)
+        for ben in benevoles:
+            # recopie les bénévoles
+            #logger.info(f'benevole : {ben}')
+            clone_ben = copy.copy(ben)
+            clone_ben.pk = None
+            clone_ben.evenement = clone_event
+            clone_ben.save()
+            

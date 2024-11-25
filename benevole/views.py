@@ -180,7 +180,7 @@ def Profile(request):
     """
     logger.info(f'\n################## {__name__} #####################\n')
     # log les donnees post
-    log_post(request.POST)
+    log_post(request.POST)  # noqa: F405
 
     # un bénévole accede a son profile
     if request.method == "POST" and request.POST.get('personne'):
@@ -190,7 +190,7 @@ def Profile(request):
             # on a un profile bénévole déjà cree, on le recupere
             FormBenevole = BenevoleForm(request.POST, instance=ProfileBenevole.objects.get(personne_id=request.POST.get('personne')))
             print('plop')
-        except:
+        except Exception:
             # nouveau profile benevole
             FormBenevole = BenevoleForm(request.POST,
                                         #personne_id=request.POST.get('personne'),
