@@ -441,7 +441,7 @@ def duplique_creneau(instance, clone_poste, delta_time=0, *args, **kwargs):
     #logger.info(f'              duplique creneau: {instance}')
     clone_creneau = copy.copy(instance)
     clone_creneau.pk = None
-    if 'avec_benevoles' not in args[0]:
+    if 'avec_ben_creneau' not in args[0]:
         # logger.info(f'do not keep benevole in slot param')
         clone_creneau.benevole = None # retire le benevole associé
     clone_creneau.evenement = clone_poste.evenement
@@ -527,7 +527,7 @@ def duplique_evenement(instance, delta_days=0, *args, **kwargs):
     clone_event.inscription_fin     = clone_event.inscription_fin + delta_time
     clone_event.save()
 
-    # copi les liens organisateurs et assos parts
+    # copie les liens organisateurs et assos parts
     clone_event.organisateur.set(instance.organisateur.all())
     clone_event.assopartenaire.set(instance.assopartenaire.all())
 

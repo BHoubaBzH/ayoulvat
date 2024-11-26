@@ -238,7 +238,7 @@ text_template['fr_fr']['admin_event_equipe_h']  = _('description')
 text_template['fr_fr']['admin_list_events']     = _('choisis ton evenement dans la barre de gauche')
 
 #evenement > titre_page
-text_template['fr_fr']['title_planning_event']  = _('Planning de l\'évènement et tes créneaux')
+text_template['fr_fr']['title_planning_event']  = _('Planning de l\'évènement')
 text_template['fr_fr']['title_admin_event']     = _('Gestion des équipes et plannings de l\'évènement')
 text_template['fr_fr']['title_admin_events']    = _('liste des évenements de l\'asso')
 text_template['fr_fr']['title_asso_part']       = _('Choisis l\'association partenaire pour la quelle tu participes l\'évènement')
@@ -381,13 +381,14 @@ text_template['fr_fr']['edit_planning']         = _('aller au planning')
 #administration > evenements liste
 
 #association/associations_liste
-text_template['fr_fr']['goto_event']            = _('Aller à l\'évènement')
-text_template['fr_fr']['copy_event']            = _('dupliquer l\'évènement')
-text_template['fr_fr']['event_name']            = _('Nom')
+text_template['fr_fr']['goto_event']            = _('Aller à l\'événement')
+text_template['fr_fr']['copy_event']            = _('dupliquer l\'événement')
+text_template['fr_fr']['event_name']            = _('Nom de l\'événement')
 text_template['fr_fr']['event_start_date']      = _('date de début')
 text_template['fr_fr']['event_cp_organisers']   = _('garder les mêmes organisateurs')
 text_template['fr_fr']['event_cp_responsibles'] = _('garder les mêmes responsables d\'équipes')
-text_template['fr_fr']['event_cp_volunteers']   = _('garder les mêmes bénévoles')
+text_template['fr_fr']['event_cp_volunteers']   = _('copier la liste de bénévole')
+text_template['fr_fr']['event_cp_slots_vol']    = _('ne pas rendre disponibles les créneaux réservés par des bénévoles')
 text_template['fr_fr']['add_event']             = _('Ajouter un évènement')
 text_template['fr_fr']['associations']          = _('Associations')
 text_template['fr_fr']['events']                = _('Evenements')

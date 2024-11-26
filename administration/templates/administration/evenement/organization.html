@@ -9,10 +9,10 @@
         {% include "evenement/partials/error_message.html" %}
 
         {% if not PlanningEditer %}
-            {% include 'administration/partials/titre_page.html' with page="plannings" %}
+            {#% include 'administration/partials/titre_page.html' with page="plannings" %#}
             {% include 'administration/evenement/organization/equipes.html' %}
         {% else %}
-            {% include 'administration/partials/titre_page.html' with page="planning" %}
+            {#% include 'administration/partials/titre_page.html' with page="planning" %#}
             {% include 'administration/evenement/organization/postes.html' %}
         {% endif %}
     </div>

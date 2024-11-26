@@ -53,7 +53,7 @@
       {% if Planning.equipe %} {# affiche les infos du planning : nom, debut, fin  #}
         <font color="white">
           <div>
-            {{Planning.equipe.nom}}
+            {{Text.planning|upper}} : {{Planning.equipe.nom}}
           </div>
           <div>
             {% if  Planning.debut|date:'l j F'|stringformat:"s" ==  Planning.fin|date:'l j F'|stringformat:"s" %}
