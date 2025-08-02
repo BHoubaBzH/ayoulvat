@@ -34,6 +34,11 @@ logger = logging.getLogger(__name__)
 def liste_evenements(request):
     """
     liste les evenements de l'asso
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
     """
     logger.info(f'\n################## {__name__} #####################\n')
     if request.method == 'GET' and 'uuid_asso' in request.GET :

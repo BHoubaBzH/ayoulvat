@@ -2,7 +2,8 @@ var targetElement = $('.autoscroll-h')
 var scrollWidth = $(targetElement).get(0).scrollWidth;
 var clientWidth = $(targetElement).get(0).clientWidth;
 var hiddenPartWidth = scrollWidth - clientWidth;
-var seuil = 200; // si partie cachée est plus petite que seuil (px), alors ne fait rien
+// seuil haut pour desactiver le scroll auto
+var seuil = 20000; // si partie cachée est plus petite que seuil (px), alors ne fait rien
 
 //if (200 < hiddenPartWidth < 1000) {var speed = hiddenPartWidth * 10}
 //else if (hiddenPartWidth < 5000) {var speed = hiddenPartWidth * 5}
