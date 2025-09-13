@@ -229,34 +229,35 @@ def total_heures_benevoles(creneaux):
             total += c_duree
     return total
 
-def liste_benevoles_age_creneaux_assopart(evt, benevoles):
+def liste_benevoles_age_creneaux_assopart(evt, benevoles_qs):
     """ input queryset des benevoles
         out dictionnaire: objet benevole - (age, nb creneaux, asso partenaire) """
     out={}
-    logger.info(f'nb benevoles : {benevoles.count()}')
-    for benevole in benevoles: 
+    logger.info(f'nb benevoles : {benevoles_qs.count()}')
+
+    # Prefetch des infos nécessaires en une seule fois
+    benevoles_qs = benevoles_qs.prefetch_related(
+        'personne',
+        'evenement_benevole_assopart_set__asso_part',
+        'BenevolesCreneau'
+    )
+
+    for benevole in benevoles_qs:
         age=date.today().year - benevole.personne.date_de_naissance.year - ((date.today().month, date.today().day) < \
                         (benevole.personne.date_de_naissance.month, benevole.personne.date_de_naissance.day))
-        try:
-            creneaux=benevole.BenevolesCreneau.filter(evenement=evt)
-            nbcreneaux=creneaux.count()
-        except:
-            nbcreneaux=0
-        # calcul du nb heures par benevole
-        nbheures = 0
-        for creneau in creneaux:
-            td_h = (creneau.fin - creneau.debut).total_seconds() / 3600
-            nbheures = nbheures + td_h
-        try:
-            asso=evenement_benevole_assopart.objects.select_related('asso_part').get(Q(evenement=evt), Q(profilebenevole=benevole)).asso_part
-        except:
-            asso='None'
+
+        creneaux_evt = [c for c in benevole.BenevolesCreneau.all() if c.evenement_id == evt.UUID]
+        nbcreneaux = len(creneaux_evt)
+        nbheures = sum((c.fin - c.debut).total_seconds() / 3600 for c in creneaux_evt)
+
+        asso = 'None'
+        for lien in benevole.evenement_benevole_assopart_set.all():
+            if lien.evenement_id == evt.UUID:
+                asso = lien.asso_part
+                break
+
         out[benevole]=(
-            age,
-            nbcreneaux,
-            nbheures,
-            asso,
-        )
+            age, nbcreneaux, nbheures, asso)
     return out 
 
 def nb_benevoles_par_asso(list_assos, evt):

@@ -114,7 +114,7 @@ def evenement(request, uuid_evenement):
         "PlanningRange": "",  # dictionnaire formaté des dates heures de l'objet selectionné
         "equipes_avec_planning": list(evenement.equipe_set.filter(planning__isnull=False).order_by('nom').distinct().select_related('evenement')), # liste des équipes avec au moins un planning
         "creneaux_benevole" : list(evenement.creneau_set.filter(benevole_id=request.user.profilebenevole.UUID).order_by('debut').select_related('poste', 'planning', 'equipe', 'benevole', 'evenement')), # crenaux du bénévole connecté
-        
+
         "FormEquipe" : EquipeForm(initial={'evenement': evenement}), # form non liée au template pour ajout d une nouvelle equipe
         "FormPlanning" : "", # form non liée au template pour ajout d un nouveau planning
         "DicPostes" : "",  # dictionnaire des formes de poste de l'evenement liées aux objets de la db
