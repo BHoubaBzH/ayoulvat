@@ -200,7 +200,11 @@ def dic_forms_creneaux(request, planning, RolesUtilisateur):
     # key : UUID postes
     # val : form de creneau initialisée objet db lié
     # parcours les creneaux du planning dans la base
-    creneaux = planning.creneau_set.all()
+    creneaux = planning.creneau_set.select_related(
+        'poste', 'planning', 'equipe', 'evenement', 'benevole__personne'
+    ).prefetch_related(
+        'benevole__BenevolesEvenement'
+    )
     for creneau in creneaux:  # liste des creneaux du planning
         # form en lien avec l objet basé sur model et pk UUID creneau
         #formcreneau = CreneauForm(instance=Creneau.objects.get(UUID=creneau.UUID),  # trop de queries db
